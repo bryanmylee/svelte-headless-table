@@ -54,3 +54,22 @@
 		{/each}
 	</thead>
 </Table>
+
+<style global>
+	* {
+		font-family: sans-serif;
+	}
+
+	table {
+		border-spacing: 0;
+		border: 1px solid black;
+	}
+
+	th,
+	td {
+		margin: 0;
+		padding: 0.5rem;
+		border-bottom: 1px solid black;
+		border-right: 1px solid black;
+	}
+</style>
