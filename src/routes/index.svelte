@@ -43,4 +43,14 @@
 
 <h1>svelte-tables</h1>
 
-<Table data={sampleRows} {columns} />
+<Table data={sampleRows} {columns} let:headerRows>
+	<thead>
+		{#each headerRows as headerRow}
+			<tr>
+				{#each headerRow as { colspan, name }}
+					<th {colspan}>{name}</th>
+				{/each}
+			</tr>
+		{/each}
+	</thead>
+</Table>

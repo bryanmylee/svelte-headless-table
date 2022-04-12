@@ -1,15 +1,14 @@
 import type { Column, ColumnGroup, ColumnLeaf } from '$lib/types/Column';
-import type { HeaderBlank, HeaderCell } from '$lib/types/HeaderCell';
+import type { ThBlank, Th } from '$lib/types/Th';
 import { sum } from './math';
+import { NBSP } from '../constants';
 
 /**
  * Transform the column representation of the table headers into rows in the table head.
  * @param columns The column structure grouped by columns.
  * @returns A list of header groups representing rows in the table head.
  */
-export const getHeaderRows = <Item extends object>(
-	columns: Column<Item>[]
-): HeaderCell<Item>[][] => {
+export const getHeaderRows = <Item extends object>(columns: Column<Item>[]): Th<Item>[][] => {
 	/**
 	 * Map each column to a list of header rows.
 	 * The number of rows depends on the depth of nested columns in each column.
@@ -17,7 +16,7 @@ export const getHeaderRows = <Item extends object>(
 	 * columns: {...}        {...}        {...}
 	 * groups:  [[..] [..]]  [[..]]       [[..] [..] [..]]
 	 */
-	const columnGroups: HeaderCell<Item>[][][] = columns.map((column) => {
+	const columnGroups: Th<Item>[][][] = columns.map((column) => {
 		if ((column as ColumnLeaf<Item>).key !== undefined) {
 			const leaf = column as ColumnLeaf<Item>;
 			return [
@@ -66,9 +65,9 @@ export const getHeaderRows = <Item extends object>(
 	/**
 	 * Create a grid of blank header cells.
 	 */
-	const resultRows: Maybe<HeaderCell<Item>>[][] = [];
+	const resultRows: Maybe<Th<Item>>[][] = [];
 	for (let i = 0; i < height; i++) {
-		resultRows.push(Array(colspan).fill({ colspan: 1, type: 'blank' } as HeaderBlank));
+		resultRows.push(Array(colspan).fill({ colspan: 1, type: 'blank', name: NBSP } as ThBlank));
 	}
 
 	/**
@@ -97,5 +96,5 @@ export const getHeaderRows = <Item extends object>(
 	/**
 	 * Remove undefined elements.
 	 */
-	return resultRows.map((row) => row.filter((cell) => cell !== undefined)) as HeaderCell<Item>[][];
+	return resultRows.map((row) => row.filter((cell) => cell !== undefined)) as Th<Item>[][];
 };

@@ -1,7 +1,8 @@
 import type { RowData } from '$lib/sampleRows';
 import type { Column } from '$lib/types/Column';
-import type { HeaderCell } from '$lib/types/HeaderCell';
+import type { Th } from '$lib/types/Th';
 import { getHeaderRows } from './getHeaderRows';
+import { NBSP } from '../constants';
 
 describe('getHeaderRows', () => {
 	test('3 columns', () => {
@@ -22,7 +23,7 @@ describe('getHeaderRows', () => {
 
 		const actual = getHeaderRows(columns);
 
-		const expected: HeaderCell<RowData>[][] = [
+		const expected: Th<RowData>[][] = [
 			[
 				{
 					type: 'leaf',
@@ -71,7 +72,7 @@ describe('getHeaderRows', () => {
 
 		const actual = getHeaderRows(columns);
 
-		const expected: HeaderCell<RowData>[][] = [
+		const expected: Th<RowData>[][] = [
 			[
 				{
 					type: 'group',
@@ -140,7 +141,7 @@ describe('getHeaderRows', () => {
 
 		const actual = getHeaderRows(columns);
 
-		const expected: HeaderCell<RowData>[][] = [
+		const expected: Th<RowData>[][] = [
 			[
 				{
 					type: 'group',
@@ -221,7 +222,7 @@ describe('getHeaderRows', () => {
 
 		const actual = getHeaderRows(columns);
 
-		const expected: HeaderCell<RowData>[][] = [
+		const expected: Th<RowData>[][] = [
 			[
 				{
 					type: 'group',
@@ -231,14 +232,17 @@ describe('getHeaderRows', () => {
 				{
 					type: 'blank',
 					colspan: 1,
+					name: NBSP,
 				},
 				{
 					type: 'blank',
 					colspan: 1,
+					name: NBSP,
 				},
 				{
 					type: 'blank',
 					colspan: 1,
+					name: NBSP,
 				},
 			],
 			[
