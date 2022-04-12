@@ -1,9 +1,9 @@
-import type { DataCell } from '$lib/types/DataCell';
+import type { Data } from '$lib/types/Data';
 
 export const getDataRows = <Item extends object>(
 	data: Item[],
 	keys: (keyof Item)[]
-): DataCell<Item>[][] => {
+): Data<Item>[][] => {
 	return data.map((item) =>
 		keys.map((key) => ({
 			key,

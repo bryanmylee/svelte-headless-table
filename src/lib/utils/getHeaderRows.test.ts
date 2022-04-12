@@ -1,6 +1,6 @@
 import type { SampleRow } from '$lib/sampleRows';
 import type { Column } from '$lib/types/Column';
-import type { HeaderCell } from '$lib/types/HeaderCell';
+import type { Header } from '$lib/types/Header';
 import { getHeaderRows } from './getHeaderRows';
 import { NBSP } from '../constants';
 
@@ -23,7 +23,7 @@ describe('getHeaderRows', () => {
 
 		const actual = getHeaderRows(columns);
 
-		const expected: HeaderCell<SampleRow>[][] = [
+		const expected: Header<SampleRow>[][] = [
 			[
 				{
 					type: 'leaf',
@@ -72,7 +72,7 @@ describe('getHeaderRows', () => {
 
 		const actual = getHeaderRows(columns);
 
-		const expected: HeaderCell<SampleRow>[][] = [
+		const expected: Header<SampleRow>[][] = [
 			[
 				{
 					type: 'group',
@@ -141,7 +141,7 @@ describe('getHeaderRows', () => {
 
 		const actual = getHeaderRows(columns);
 
-		const expected: HeaderCell<SampleRow>[][] = [
+		const expected: Header<SampleRow>[][] = [
 			[
 				{
 					type: 'group',
@@ -222,7 +222,7 @@ describe('getHeaderRows', () => {
 
 		const actual = getHeaderRows(columns);
 
-		const expected: HeaderCell<SampleRow>[][] = [
+		const expected: Header<SampleRow>[][] = [
 			[
 				{
 					type: 'group',
