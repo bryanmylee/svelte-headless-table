@@ -17,8 +17,12 @@
 
 	$: transformedData = applyTransforms(data, transforms);
 	$: dataRows = getDataRows(transformedData, keys);
+
+	let className: Maybe<string> = undefined;
+	export { className as class };
+	export let style: Maybe<string> = undefined;
 </script>
 
-<table>
+<table class={className} {style}>
 	<slot {transformedData} {headerRows} {dataRows} />
 </table>
