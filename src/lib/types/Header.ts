@@ -1,22 +1,22 @@
 import type { NBSP } from '$lib/constants';
 
-export type ThGroup = {
+export type HeaderGroup = {
 	type: 'group';
 	header: string;
 	colspan: number;
 };
 
-export type ThLeaf<Item extends object> = {
+export type HeaderLeaf<Item extends object> = {
 	type: 'leaf';
 	header: string;
 	colspan: 1;
 	key: keyof Item;
 };
 
-export type ThBlank = {
+export type HeaderBlank = {
 	type: 'blank';
 	header: typeof NBSP;
 	colspan: 1;
 };
 
-export type Th<Item extends object> = ThGroup | ThLeaf<Item> | ThBlank;
+export type Header<Item extends object> = HeaderGroup | HeaderLeaf<Item> | HeaderBlank;
