@@ -4,14 +4,15 @@
 	import { applyTransforms } from '$lib/utils/applyTransforms';
 	import { getDataRows } from '$lib/utils/getDataRows';
 	import { getHeaderRows } from '$lib/utils/getHeaderRows';
-	import { getKeyArray } from '$lib/utils/getKeyArray';
+	import { getLeafColumns } from '$lib/utils/getLeafColumns';
 
 	type Item = $$Generic<object>;
 
 	export let data: Item[];
 	export let columns: Column<Item>[];
+	$: leafColumns = getLeafColumns(columns);
+	$: keys = leafColumns.map((column) => column.key);
 	$: headerRows = getHeaderRows(columns);
-	$: keys = getKeyArray(columns);
 
 	export let transforms: DataTransformer<Item>[] = [];
 
@@ -24,5 +25,5 @@
 </script>
 
 <table class={className} {style}>
-	<slot {transformedData} {headerRows} {dataRows} />
+	<slot {leafColumns} {headerRows} {dataRows} />
 </table>

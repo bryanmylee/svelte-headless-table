@@ -1,8 +1,8 @@
 import type { RowData } from '$lib/sampleRows';
-import type { Column } from '$lib/types/Column';
-import { getKeyArray } from './getKeyArray';
+import type { Column, ColumnLeaf } from '$lib/types/Column';
+import { getLeafColumns } from './getLeafColumns';
 
-describe('getKeyArray', () => {
+describe('getLeafColumns', () => {
 	test('3 columns', () => {
 		const columns: Column<RowData>[] = [
 			{
@@ -19,9 +19,22 @@ describe('getKeyArray', () => {
 			},
 		];
 
-		const actual = getKeyArray(columns);
+		const actual = getLeafColumns(columns);
 
-		const expected = ['firstName', 'lastName', 'age'];
+		const expected: ColumnLeaf<RowData>[] = [
+			{
+				header: 'First Name',
+				key: 'firstName',
+			},
+			{
+				header: 'Last Name',
+				key: 'lastName',
+			},
+			{
+				header: 'Age',
+				key: 'age',
+			},
+		];
 
 		expect(actual).toStrictEqual(expected);
 	});
@@ -47,9 +60,22 @@ describe('getKeyArray', () => {
 			},
 		];
 
-		const actual = getKeyArray(columns);
+		const actual = getLeafColumns(columns);
 
-		const expected = ['firstName', 'lastName', 'age'];
+		const expected: ColumnLeaf<RowData>[] = [
+			{
+				header: 'First Name',
+				key: 'firstName',
+			},
+			{
+				header: 'Last Name',
+				key: 'lastName',
+			},
+			{
+				header: 'Age',
+				key: 'age',
+			},
+		];
 
 		expect(actual).toStrictEqual(expected);
 	});
@@ -88,9 +114,30 @@ describe('getKeyArray', () => {
 			},
 		];
 
-		const actual = getKeyArray(columns);
+		const actual = getLeafColumns(columns);
 
-		const expected = ['firstName', 'lastName', 'age', 'status', 'progress'];
+		const expected: ColumnLeaf<RowData>[] = [
+			{
+				header: 'First Name',
+				key: 'firstName',
+			},
+			{
+				header: 'Last Name',
+				key: 'lastName',
+			},
+			{
+				header: 'Age',
+				key: 'age',
+			},
+			{
+				header: 'Status',
+				key: 'status',
+			},
+			{
+				header: 'Profile Progress',
+				key: 'progress',
+			},
+		];
 
 		expect(actual).toStrictEqual(expected);
 	});
@@ -124,9 +171,30 @@ describe('getKeyArray', () => {
 			},
 		];
 
-		const actual = getKeyArray(columns);
+		const actual = getLeafColumns(columns);
 
-		const expected = ['firstName', 'lastName', 'age', 'status', 'progress'];
+		const expected: ColumnLeaf<RowData>[] = [
+			{
+				header: 'First Name',
+				key: 'firstName',
+			},
+			{
+				header: 'Last Name',
+				key: 'lastName',
+			},
+			{
+				header: 'Age',
+				key: 'age',
+			},
+			{
+				header: 'Status',
+				key: 'status',
+			},
+			{
+				header: 'Profile Progress',
+				key: 'progress',
+			},
+		];
 
 		expect(actual).toStrictEqual(expected);
 	});

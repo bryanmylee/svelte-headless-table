@@ -6,17 +6,17 @@ import type { Column, ColumnGroup, ColumnLeaf } from '$lib/types/Column';
  * @param columns The column structure grouped by columns;
  * @returns A list of data keys in the order of column access.
  */
-export const getKeyArray = <Item extends object>(columns: Column<Item>[]): (keyof Item)[] => {
-	const keys: (keyof Item)[] = [];
+export const getLeafColumns = <Item extends object>(
+	columns: Column<Item>[]
+): ColumnLeaf<Item>[] => {
+	const leafColumns: ColumnLeaf<Item>[] = [];
 	columns.forEach((column) => {
 		if ((column as ColumnLeaf<Item>).key !== undefined) {
-			const leaf = column as ColumnLeaf<Item>;
-			keys.push(leaf.key);
+			leafColumns.push(column as ColumnLeaf<Item>);
 		} else {
 			const group = column as ColumnGroup<Item>;
-			const childKeys = getKeyArray(group.columns);
-			keys.push(...childKeys);
+			leafColumns.push(...getLeafColumns(group.columns));
 		}
 	});
-	return keys;
+	return leafColumns;
 };
