@@ -8,5 +8,8 @@ module.exports = {
 		],
 		'^.+\\.ts$': 'ts-jest',
 	},
-	moduleFileExtensions: ['ts', 'svelte'],
+	moduleFileExtensions: ['js', 'ts', 'svelte'],
+	moduleNameMapper: {
+		'^\\$lib/(.*)$': '<rootDir>/src/lib/$1',
+	},
 };
