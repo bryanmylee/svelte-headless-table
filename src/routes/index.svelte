@@ -43,7 +43,7 @@
 
 <h1>svelte-tables</h1>
 
-<Table data={sampleRows} {columns} let:headerRows>
+<Table data={sampleRows} {columns} let:headerRows let:dataRows>
 	<thead>
 		{#each headerRows as headerRow}
 			<tr>
@@ -53,6 +53,15 @@
 			</tr>
 		{/each}
 	</thead>
+	<tbody>
+		{#each dataRows as dataRow}
+			<tr>
+				{#each dataRow as { value }}
+					<td>{value}</td>
+				{/each}
+			</tr>
+		{/each}
+	</tbody>
 </Table>
 
 <style global>
