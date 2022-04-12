@@ -8,15 +8,15 @@ describe('getHeaderRows', () => {
 	test('3 columns', () => {
 		const columns: Column<RowData>[] = [
 			{
-				name: 'First Name',
+				header: 'First Name',
 				key: 'firstName',
 			},
 			{
-				name: 'Last Name',
+				header: 'Last Name',
 				key: 'lastName',
 			},
 			{
-				name: 'Age',
+				header: 'Age',
 				key: 'age',
 			},
 		];
@@ -27,19 +27,19 @@ describe('getHeaderRows', () => {
 			[
 				{
 					type: 'leaf',
-					name: 'First Name',
+					header: 'First Name',
 					key: 'firstName',
 					colspan: 1,
 				},
 				{
 					type: 'leaf',
-					name: 'Last Name',
+					header: 'Last Name',
 					key: 'lastName',
 					colspan: 1,
 				},
 				{
 					type: 'leaf',
-					name: 'Age',
+					header: 'Age',
 					key: 'age',
 					colspan: 1,
 				},
@@ -52,18 +52,18 @@ describe('getHeaderRows', () => {
 	test('1 group column over 3 columns', () => {
 		const columns: Column<RowData>[] = [
 			{
-				name: 'Info',
+				header: 'Info',
 				columns: [
 					{
-						name: 'First Name',
+						header: 'First Name',
 						key: 'firstName',
 					},
 					{
-						name: 'Last Name',
+						header: 'Last Name',
 						key: 'lastName',
 					},
 					{
-						name: 'Age',
+						header: 'Age',
 						key: 'age',
 					},
 				],
@@ -77,25 +77,25 @@ describe('getHeaderRows', () => {
 				{
 					type: 'group',
 					colspan: 3,
-					name: 'Info',
+					header: 'Info',
 				},
 			],
 			[
 				{
 					type: 'leaf',
-					name: 'First Name',
+					header: 'First Name',
 					key: 'firstName',
 					colspan: 1,
 				},
 				{
 					type: 'leaf',
-					name: 'Last Name',
+					header: 'Last Name',
 					key: 'lastName',
 					colspan: 1,
 				},
 				{
 					type: 'leaf',
-					name: 'Age',
+					header: 'Age',
 					key: 'age',
 					colspan: 1,
 				},
@@ -108,31 +108,31 @@ describe('getHeaderRows', () => {
 	test('1 group column over 2 columns, 1 group column over 3 columns', () => {
 		const columns: Column<RowData>[] = [
 			{
-				name: 'Name',
+				header: 'Name',
 				columns: [
 					{
-						name: 'First Name',
+						header: 'First Name',
 						key: 'firstName',
 					},
 					{
-						name: 'Last Name',
+						header: 'Last Name',
 						key: 'lastName',
 					},
 				],
 			},
 			{
-				name: 'Info',
+				header: 'Info',
 				columns: [
 					{
-						name: 'Age',
+						header: 'Age',
 						key: 'age',
 					},
 					{
-						name: 'Status',
+						header: 'Status',
 						key: 'status',
 					},
 					{
-						name: 'Profile Progress',
+						header: 'Profile Progress',
 						key: 'progress',
 					},
 				],
@@ -146,42 +146,42 @@ describe('getHeaderRows', () => {
 				{
 					type: 'group',
 					colspan: 2,
-					name: 'Name',
+					header: 'Name',
 				},
 				{
 					type: 'group',
 					colspan: 3,
-					name: 'Info',
+					header: 'Info',
 				},
 			],
 			[
 				{
 					type: 'leaf',
-					name: 'First Name',
+					header: 'First Name',
 					key: 'firstName',
 					colspan: 1,
 				},
 				{
 					type: 'leaf',
-					name: 'Last Name',
+					header: 'Last Name',
 					key: 'lastName',
 					colspan: 1,
 				},
 				{
 					type: 'leaf',
-					name: 'Age',
+					header: 'Age',
 					key: 'age',
 					colspan: 1,
 				},
 				{
 					type: 'leaf',
-					name: 'Status',
+					header: 'Status',
 					key: 'status',
 					colspan: 1,
 				},
 				{
 					type: 'leaf',
-					name: 'Profile Progress',
+					header: 'Profile Progress',
 					key: 'progress',
 					colspan: 1,
 				},
@@ -194,28 +194,28 @@ describe('getHeaderRows', () => {
 	test('uneven columns, 1 group column over 2 columns, 3 columns', () => {
 		const columns: Column<RowData>[] = [
 			{
-				name: 'Name',
+				header: 'Name',
 				columns: [
 					{
-						name: 'First Name',
+						header: 'First Name',
 						key: 'firstName',
 					},
 					{
-						name: 'Last Name',
+						header: 'Last Name',
 						key: 'lastName',
 					},
 				],
 			},
 			{
-				name: 'Age',
+				header: 'Age',
 				key: 'age',
 			},
 			{
-				name: 'Status',
+				header: 'Status',
 				key: 'status',
 			},
 			{
-				name: 'Profile Progress',
+				header: 'Profile Progress',
 				key: 'progress',
 			},
 		];
@@ -227,52 +227,52 @@ describe('getHeaderRows', () => {
 				{
 					type: 'group',
 					colspan: 2,
-					name: 'Name',
+					header: 'Name',
 				},
 				{
 					type: 'blank',
 					colspan: 1,
-					name: NBSP,
+					header: NBSP,
 				},
 				{
 					type: 'blank',
 					colspan: 1,
-					name: NBSP,
+					header: NBSP,
 				},
 				{
 					type: 'blank',
 					colspan: 1,
-					name: NBSP,
+					header: NBSP,
 				},
 			],
 			[
 				{
 					type: 'leaf',
-					name: 'First Name',
+					header: 'First Name',
 					key: 'firstName',
 					colspan: 1,
 				},
 				{
 					type: 'leaf',
-					name: 'Last Name',
+					header: 'Last Name',
 					key: 'lastName',
 					colspan: 1,
 				},
 				{
 					type: 'leaf',
-					name: 'Age',
+					header: 'Age',
 					key: 'age',
 					colspan: 1,
 				},
 				{
 					type: 'leaf',
-					name: 'Status',
+					header: 'Status',
 					key: 'status',
 					colspan: 1,
 				},
 				{
 					type: 'leaf',
-					name: 'Profile Progress',
+					header: 'Profile Progress',
 					key: 'progress',
 					colspan: 1,
 				},

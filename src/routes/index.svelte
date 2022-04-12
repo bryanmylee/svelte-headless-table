@@ -5,35 +5,35 @@
 
 	const columns: Column<RowData>[] = [
 		{
-			name: 'Name',
+			header: 'Name',
 			columns: [
 				{
-					name: 'First Name',
+					header: 'First Name',
 					key: 'firstName',
 				},
 				{
-					name: 'Last Name',
+					header: 'Last Name',
 					key: 'lastName',
 				},
 			],
 		},
 		{
-			name: 'Info',
+			header: 'Info',
 			columns: [
 				{
-					name: 'Age',
+					header: 'Age',
 					key: 'age',
 				},
 				{
-					name: 'Visits',
+					header: 'Visits',
 					key: 'visits',
 				},
 				{
-					name: 'Status',
+					header: 'Status',
 					key: 'status',
 				},
 				{
-					name: 'Profile Progress',
+					header: 'Profile Progress',
 					key: 'progress',
 				},
 			],
@@ -47,8 +47,8 @@
 	<thead>
 		{#each headerRows as headerRow}
 			<tr>
-				{#each headerRow as { colspan, name }}
-					<th {colspan}>{name}</th>
+				{#each headerRow as { colspan, header }}
+					<th {colspan}>{header}</th>
 				{/each}
 			</tr>
 		{/each}

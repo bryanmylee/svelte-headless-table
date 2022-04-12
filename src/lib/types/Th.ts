@@ -2,20 +2,20 @@ import type { NBSP } from '$lib/constants';
 
 export type ThGroup = {
 	type: 'group';
-	name: string;
+	header: string;
 	colspan: number;
 };
 
 export type ThLeaf<Item extends object> = {
 	type: 'leaf';
-	name: string;
+	header: string;
 	colspan: 1;
 	key: keyof Item;
 };
 
 export type ThBlank = {
 	type: 'blank';
-	name: typeof NBSP;
+	header: typeof NBSP;
 	colspan: 1;
 };
 

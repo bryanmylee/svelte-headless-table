@@ -1,10 +1,10 @@
 export type ColumnGroup<Item extends object> = {
-	name: string;
+	header: string;
 	columns: Column<Item>[];
 };
 
 export type ColumnLeaf<Item extends object> = {
-	name: string;
+	header: string;
 	key: keyof Item;
 };
 

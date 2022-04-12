@@ -25,7 +25,7 @@ export const getHeaderRows = <Item extends object>(columns: Column<Item>[]): Th<
 						type: 'leaf',
 						colspan: 1,
 						key: leaf.key,
-						name: leaf.name,
+						header: leaf.header,
 					},
 				],
 			];
@@ -50,7 +50,7 @@ export const getHeaderRows = <Item extends object>(columns: Column<Item>[]): Th<
 					{
 						type: 'group',
 						colspan,
-						name: group.name,
+						header: group.header,
 					},
 				],
 				...rows,
@@ -67,7 +67,7 @@ export const getHeaderRows = <Item extends object>(columns: Column<Item>[]): Th<
 	 */
 	const resultRows: Maybe<Th<Item>>[][] = [];
 	for (let i = 0; i < height; i++) {
-		resultRows.push(Array(colspan).fill({ colspan: 1, type: 'blank', name: NBSP } as ThBlank));
+		resultRows.push(Array(colspan).fill({ colspan: 1, type: 'blank', header: NBSP } as ThBlank));
 	}
 
 	/**
