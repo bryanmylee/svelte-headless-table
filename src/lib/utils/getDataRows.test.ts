@@ -1,18 +1,18 @@
-import type { RowData } from '$lib/sampleRows';
+import type { SampleRow } from '$lib/sampleRows';
 import type { DataCell } from '$lib/types/DataCell';
 import { getDataRows } from './getDataRows';
 
 describe('getDataRows', () => {
 	test('transforms empty data', () => {
-		const actual = getDataRows<RowData>([], ['firstName', 'lastName']);
+		const actual = getDataRows<SampleRow>([], ['firstName', 'lastName']);
 
-		const expected: DataCell<RowData>[][] = [];
+		const expected: DataCell<SampleRow>[][] = [];
 
 		expect(actual).toStrictEqual(expected);
 	});
 
 	test('transforms data', () => {
-		const actual = getDataRows<RowData>(
+		const actual = getDataRows<SampleRow>(
 			[
 				{
 					firstName: 'Adam',
@@ -34,7 +34,7 @@ describe('getDataRows', () => {
 			['firstName', 'lastName', 'progress']
 		);
 
-		const expected: DataCell<RowData>[][] = [
+		const expected: DataCell<SampleRow>[][] = [
 			[
 				{
 					key: 'firstName',

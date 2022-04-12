@@ -1,4 +1,4 @@
-export interface RowData {
+export interface SampleRow {
 	firstName: string;
 	lastName: string;
 	age: number;
@@ -7,7 +7,7 @@ export interface RowData {
 	status: string;
 }
 
-export const sampleRows: RowData[] = [
+export const sampleRows: SampleRow[] = [
 	{
 		firstName: 'apartment',
 		lastName: 'employment',

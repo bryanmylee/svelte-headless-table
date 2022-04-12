@@ -1,4 +1,4 @@
-import type { RowData } from '$lib/sampleRows';
+import type { SampleRow } from '$lib/sampleRows';
 import type { Column } from '$lib/types/Column';
 import type { HeaderCell } from '$lib/types/HeaderCell';
 import { getHeaderRows } from './getHeaderRows';
@@ -6,7 +6,7 @@ import { NBSP } from '../constants';
 
 describe('getHeaderRows', () => {
 	test('3 columns', () => {
-		const columns: Column<RowData>[] = [
+		const columns: Column<SampleRow>[] = [
 			{
 				header: 'First Name',
 				key: 'firstName',
@@ -23,7 +23,7 @@ describe('getHeaderRows', () => {
 
 		const actual = getHeaderRows(columns);
 
-		const expected: HeaderCell<RowData>[][] = [
+		const expected: HeaderCell<SampleRow>[][] = [
 			[
 				{
 					type: 'leaf',
@@ -50,7 +50,7 @@ describe('getHeaderRows', () => {
 	});
 
 	test('1 group column over 3 columns', () => {
-		const columns: Column<RowData>[] = [
+		const columns: Column<SampleRow>[] = [
 			{
 				header: 'Info',
 				columns: [
@@ -72,7 +72,7 @@ describe('getHeaderRows', () => {
 
 		const actual = getHeaderRows(columns);
 
-		const expected: HeaderCell<RowData>[][] = [
+		const expected: HeaderCell<SampleRow>[][] = [
 			[
 				{
 					type: 'group',
@@ -106,7 +106,7 @@ describe('getHeaderRows', () => {
 	});
 
 	test('1 group column over 2 columns, 1 group column over 3 columns', () => {
-		const columns: Column<RowData>[] = [
+		const columns: Column<SampleRow>[] = [
 			{
 				header: 'Name',
 				columns: [
@@ -141,7 +141,7 @@ describe('getHeaderRows', () => {
 
 		const actual = getHeaderRows(columns);
 
-		const expected: HeaderCell<RowData>[][] = [
+		const expected: HeaderCell<SampleRow>[][] = [
 			[
 				{
 					type: 'group',
@@ -192,7 +192,7 @@ describe('getHeaderRows', () => {
 	});
 
 	test('uneven columns, 1 group column over 2 columns, 3 columns', () => {
-		const columns: Column<RowData>[] = [
+		const columns: Column<SampleRow>[] = [
 			{
 				header: 'Name',
 				columns: [
@@ -222,7 +222,7 @@ describe('getHeaderRows', () => {
 
 		const actual = getHeaderRows(columns);
 
-		const expected: HeaderCell<RowData>[][] = [
+		const expected: HeaderCell<SampleRow>[][] = [
 			[
 				{
 					type: 'group',
