@@ -3,10 +3,10 @@ module.exports = {
 		'^.+\\.svelte$': [
 			'svelte-jester',
 			{
-				preprocess: true
-			}
+				preprocess: true,
+			},
 		],
-		'^.+\\.ts$': 'ts-jest'
+		'^.+\\.ts$': 'ts-jest',
 	},
-	moduleFileExtensions: ['ts', 'svelte']
+	moduleFileExtensions: ['ts', 'svelte'],
 };
