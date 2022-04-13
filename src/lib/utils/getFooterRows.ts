@@ -5,6 +5,14 @@ import { sum } from './math';
 export const getFooterRows = <Item extends object>(
 	columns: Column<Item>[]
 ): FooterCell<Item>[][] => {
+	const rows = _getFooterRows(columns);
+	/**
+	 * Remove rows with all blanks.
+	 */
+	return rows.filter((row) => row.some((cell) => cell.type !== 'blank'));
+};
+
+const _getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterCell<Item>[][] => {
 	/**
 	 * Map each column to a list of footer rows.
 	 * The number of rows depends on the depth of nested columns in each column.
@@ -34,13 +42,12 @@ export const getFooterRows = <Item extends object>(
 			 * column: {...}
 			 * rows:   [[..] [..]]
 			 */
-			const rows = getFooterRows(column.columns);
+			const rows = _getFooterRows(column.columns);
 
 			/**
 			 * The colspan of this group is the sum of colspans of the row directly below.
 			 */
-			const colspan =
-				rows.length === 0 ? 1 : sum(...rows[0].map((firstRowCell) => firstRowCell.colspan));
+			const colspan = sum(...rows[0].map((firstRowCell) => firstRowCell.colspan));
 
 			/**
 			 * Add this group on top of child column rows.
@@ -109,8 +116,5 @@ export const getFooterRows = <Item extends object>(
 		row.filter((cell) => cell !== undefined)
 	) as FooterCell<Item>[][];
 
-	/**
-	 * Remove rows with all blanks.
-	 */
-	return noUndefinedCells.filter((row) => row.some((cell) => cell.type !== 'blank'));
+	return noUndefinedCells;
 };

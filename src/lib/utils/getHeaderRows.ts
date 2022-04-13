@@ -95,5 +95,9 @@ export const getHeaderRows = <Item extends object>(
 	/**
 	 * Remove undefined elements.
 	 */
-	return resultRows.map((row) => row.filter((cell) => cell !== undefined)) as HeaderCell<Item>[][];
+	const noUndefinedCells = resultRows.map((row) =>
+		row.filter((cell) => cell !== undefined)
+	) as HeaderCell<Item>[][];
+
+	return noUndefinedCells;
 };

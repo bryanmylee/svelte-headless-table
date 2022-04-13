@@ -15,10 +15,12 @@
 			columns: [
 				createDataColumn({
 					header: 'First Name',
+					// footer: '1',
 					key: 'firstName',
 				}),
 				createDataColumn({
 					header: 'Last Name',
+					// footer: '2',
 					key: 'lastName',
 				}),
 			],
@@ -28,18 +30,22 @@
 			columns: [
 				createDataColumn({
 					header: 'Age',
+					// footer: '3',
 					key: 'age',
 				}),
 				createDataColumn({
 					header: (data) => `Visits: ${sum(...data.map((d) => d['visits']))}`,
 					key: 'visits',
+					// footer: '4',
 				}),
 				createDataColumn({
 					header: 'Status',
+					// footer: '5',
 					key: 'status',
 				}),
 				createDataColumn({
 					header: 'Profile Progress',
+					// footer: '6',
 					key: 'progress',
 				}),
 			],
