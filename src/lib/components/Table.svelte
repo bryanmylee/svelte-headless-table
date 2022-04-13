@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { Column } from '$lib/types/Column';
+	import type { ColumnDef } from '$lib/types/ColumnDef';
 	import { getDataRows } from '$lib/utils/getDataRows';
 	import { getHeaderRows } from '$lib/utils/getHeaderRows';
 	import { getLeafColumns } from '$lib/utils/getLeafColumns';
 
 	type Item = $$Generic<object>;
 
-	export let columns: Column<Item>[];
+	export let columns: ColumnDef<Item>[];
 	$: leafColumns = getLeafColumns(columns);
 	$: keys = leafColumns.map((column) => column.key);
 	$: headerRows = getHeaderRows(columns);

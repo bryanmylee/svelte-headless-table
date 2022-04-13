@@ -1,12 +1,12 @@
 import type { SampleRow } from '$lib/sampleRows';
-import type { Column } from '$lib/types/Column';
+import type { ColumnDef } from '$lib/types/ColumnDef';
 import type { Header } from '$lib/types/Header';
 import { getHeaderRows } from './getHeaderRows';
 import { NBSP } from '../constants';
 
 describe('getHeaderRows', () => {
 	test('3 columns', () => {
-		const columns: Column<SampleRow>[] = [
+		const columns: ColumnDef<SampleRow>[] = [
 			{
 				header: 'First Name',
 				key: 'firstName',
@@ -50,7 +50,7 @@ describe('getHeaderRows', () => {
 	});
 
 	test('1 group column over 3 columns', () => {
-		const columns: Column<SampleRow>[] = [
+		const columns: ColumnDef<SampleRow>[] = [
 			{
 				header: 'Info',
 				columns: [
@@ -106,7 +106,7 @@ describe('getHeaderRows', () => {
 	});
 
 	test('1 group column over 2 columns, 1 group column over 3 columns', () => {
-		const columns: Column<SampleRow>[] = [
+		const columns: ColumnDef<SampleRow>[] = [
 			{
 				header: 'Name',
 				columns: [
@@ -192,7 +192,7 @@ describe('getHeaderRows', () => {
 	});
 
 	test('uneven columns, 1 group column over 2 columns, 3 columns', () => {
-		const columns: Column<SampleRow>[] = [
+		const columns: ColumnDef<SampleRow>[] = [
 			{
 				header: 'Name',
 				columns: [

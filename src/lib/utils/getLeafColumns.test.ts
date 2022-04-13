@@ -1,10 +1,10 @@
 import type { SampleRow } from '$lib/sampleRows';
-import type { Column, ColumnLeaf } from '$lib/types/Column';
+import type { ColumnDef, ColumnLeafDef } from '$lib/types/ColumnDef';
 import { getLeafColumns } from './getLeafColumns';
 
 describe('getLeafColumns', () => {
 	test('3 columns', () => {
-		const columns: Column<SampleRow>[] = [
+		const columns: ColumnDef<SampleRow>[] = [
 			{
 				header: 'First Name',
 				key: 'firstName',
@@ -21,7 +21,7 @@ describe('getLeafColumns', () => {
 
 		const actual = getLeafColumns(columns);
 
-		const expected: ColumnLeaf<SampleRow>[] = [
+		const expected: ColumnLeafDef<SampleRow>[] = [
 			{
 				header: 'First Name',
 				key: 'firstName',
@@ -40,7 +40,7 @@ describe('getLeafColumns', () => {
 	});
 
 	test('1 group column over 3 columns', () => {
-		const columns: Column<SampleRow>[] = [
+		const columns: ColumnDef<SampleRow>[] = [
 			{
 				header: 'Info',
 				columns: [
@@ -62,7 +62,7 @@ describe('getLeafColumns', () => {
 
 		const actual = getLeafColumns(columns);
 
-		const expected: ColumnLeaf<SampleRow>[] = [
+		const expected: ColumnLeafDef<SampleRow>[] = [
 			{
 				header: 'First Name',
 				key: 'firstName',
@@ -81,7 +81,7 @@ describe('getLeafColumns', () => {
 	});
 
 	test('1 group column over 2 columns, 1 group column over 3 columns', () => {
-		const columns: Column<SampleRow>[] = [
+		const columns: ColumnDef<SampleRow>[] = [
 			{
 				header: 'Name',
 				columns: [
@@ -116,7 +116,7 @@ describe('getLeafColumns', () => {
 
 		const actual = getLeafColumns(columns);
 
-		const expected: ColumnLeaf<SampleRow>[] = [
+		const expected: ColumnLeafDef<SampleRow>[] = [
 			{
 				header: 'First Name',
 				key: 'firstName',
@@ -143,7 +143,7 @@ describe('getLeafColumns', () => {
 	});
 
 	test('uneven columns, 1 group column over 2 columns, 3 columns', () => {
-		const columns: Column<SampleRow>[] = [
+		const columns: ColumnDef<SampleRow>[] = [
 			{
 				header: 'Name',
 				columns: [
@@ -173,7 +173,7 @@ describe('getLeafColumns', () => {
 
 		const actual = getLeafColumns(columns);
 
-		const expected: ColumnLeaf<SampleRow>[] = [
+		const expected: ColumnLeafDef<SampleRow>[] = [
 			{
 				header: 'First Name',
 				key: 'firstName',

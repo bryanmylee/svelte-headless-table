@@ -1,9 +1,9 @@
 <script lang="ts">
 	import Table from '$lib/components/Table.svelte';
 	import { sampleRows, type SampleRow } from '$lib/sampleRows';
-	import type { Column } from '$lib/types/Column';
+	import type { ColumnDef } from '$lib/types/ColumnDef';
 
-	const columns: Column<SampleRow>[] = [
+	const columns: ColumnDef<SampleRow>[] = [
 		{
 			header: 'Name',
 			columns: [

@@ -1,4 +1,4 @@
-import type { Column, ColumnGroup, ColumnLeaf } from '$lib/types/Column';
+import type { ColumnDef, ColumnGroupDef, ColumnLeafDef } from '$lib/types/ColumnDef';
 
 /**
  * Get the data keys in the order of column access. This is the same as the
@@ -7,14 +7,14 @@ import type { Column, ColumnGroup, ColumnLeaf } from '$lib/types/Column';
  * @returns A list of data keys in the order of column access.
  */
 export const getLeafColumns = <Item extends object>(
-	columns: Column<Item>[]
-): ColumnLeaf<Item>[] => {
-	const leafColumns: ColumnLeaf<Item>[] = [];
+	columns: ColumnDef<Item>[]
+): ColumnLeafDef<Item>[] => {
+	const leafColumns: ColumnLeafDef<Item>[] = [];
 	columns.forEach((column) => {
-		if ((column as ColumnLeaf<Item>).key !== undefined) {
-			leafColumns.push(column as ColumnLeaf<Item>);
+		if ((column as ColumnLeafDef<Item>).key !== undefined) {
+			leafColumns.push(column as ColumnLeafDef<Item>);
 		} else {
-			const group = column as ColumnGroup<Item>;
+			const group = column as ColumnGroupDef<Item>;
 			leafColumns.push(...getLeafColumns(group.columns));
 		}
 	});

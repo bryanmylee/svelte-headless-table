@@ -1,4 +1,4 @@
-import type { Column, ColumnGroup, ColumnLeaf } from '$lib/types/Column';
+import type { ColumnDef, ColumnGroupDef, ColumnLeafDef } from '$lib/types/ColumnDef';
 import type { HeaderBlank, Header } from '$lib/types/Header';
 import { sum } from './math';
 import { NBSP } from '../constants';
@@ -8,7 +8,9 @@ import { NBSP } from '../constants';
  * @param columns The column structure grouped by columns.
  * @returns A list of header groups representing rows in the table head.
  */
-export const getHeaderRows = <Item extends object>(columns: Column<Item>[]): Header<Item>[][] => {
+export const getHeaderRows = <Item extends object>(
+	columns: ColumnDef<Item>[]
+): Header<Item>[][] => {
 	/**
 	 * Map each column to a list of header rows.
 	 * The number of rows depends on the depth of nested columns in each column.
@@ -17,8 +19,8 @@ export const getHeaderRows = <Item extends object>(columns: Column<Item>[]): Hea
 	 * groups:  [[..] [..]]  [[..]]       [[..] [..] [..]]
 	 */
 	const columnGroups: Header<Item>[][][] = columns.map((column) => {
-		if ((column as ColumnLeaf<Item>).key !== undefined) {
-			const leaf = column as ColumnLeaf<Item>;
+		if ((column as ColumnLeafDef<Item>).key !== undefined) {
+			const leaf = column as ColumnLeafDef<Item>;
 			return [
 				[
 					{
@@ -30,7 +32,7 @@ export const getHeaderRows = <Item extends object>(columns: Column<Item>[]): Hea
 				],
 			];
 		} else {
-			const group = column as ColumnGroup<Item>;
+			const group = column as ColumnGroupDef<Item>;
 			/**
 			 * Get the rows representing this column.
 			 *
