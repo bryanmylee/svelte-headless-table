@@ -1,6 +1,5 @@
-import type { HeaderBlankCell, HeaderCell } from '$lib/types/HeaderCell';
+import { HEADER_BLANK, type HeaderCell } from '$lib/types/HeaderCell';
 import { sum } from './math';
-import { NBSP } from '../constants';
 import type { Column } from '$lib/types/Column';
 
 /**
@@ -67,9 +66,7 @@ export const getHeaderRows = <Item extends object>(
 	 */
 	const resultRows: Maybe<HeaderCell<Item>>[][] = [];
 	for (let i = 0; i < height; i++) {
-		resultRows.push(
-			Array(colspan).fill({ colspan: 1, type: 'blank', label: NBSP } as HeaderBlankCell)
-		);
+		resultRows.push(Array(colspan).fill(HEADER_BLANK));
 	}
 
 	/**
