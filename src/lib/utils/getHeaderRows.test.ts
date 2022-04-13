@@ -1,8 +1,8 @@
 import type { SampleRow } from '$lib/sampleRows';
 import { getHeaderRows } from './getHeaderRows';
-import { NBSP } from '../constants';
 import { createColumns, createDataColumn, createGroup } from './createColumns';
 import { HeaderRow } from '$lib/types/HeaderRow';
+import { HeaderDataCell, HeaderGroupCell, HEADER_BLANK } from '$lib/types/HeaderCell';
 
 describe('getHeaderRows', () => {
 	describe('data shape', () => {
@@ -27,24 +27,24 @@ describe('getHeaderRows', () => {
 			const expected: HeaderRow<SampleRow>[] = [
 				new HeaderRow({
 					cells: [
-						{
+						new HeaderDataCell({
 							type: 'data',
 							label: 'First Name',
 							key: 'firstName',
 							colspan: 1,
-						},
-						{
+						}),
+						new HeaderDataCell({
 							type: 'data',
 							label: 'Last Name',
 							key: 'lastName',
 							colspan: 1,
-						},
-						{
+						}),
+						new HeaderDataCell({
 							type: 'data',
 							label: 'Age',
 							key: 'age',
 							colspan: 1,
-						},
+						}),
 					],
 				}),
 			];
@@ -78,33 +78,33 @@ describe('getHeaderRows', () => {
 			const expected: HeaderRow<SampleRow>[] = [
 				new HeaderRow({
 					cells: [
-						{
+						new HeaderGroupCell({
 							type: 'group',
 							colspan: 3,
 							label: 'Info',
-						},
+						}),
 					],
 				}),
 				new HeaderRow({
 					cells: [
-						{
+						new HeaderDataCell({
 							type: 'data',
 							label: 'First Name',
 							key: 'firstName',
 							colspan: 1,
-						},
-						{
+						}),
+						new HeaderDataCell({
 							type: 'data',
 							label: 'Last Name',
 							key: 'lastName',
 							colspan: 1,
-						},
-						{
+						}),
+						new HeaderDataCell({
 							type: 'data',
 							label: 'Age',
 							key: 'age',
 							colspan: 1,
-						},
+						}),
 					],
 				}),
 			];
@@ -151,50 +151,50 @@ describe('getHeaderRows', () => {
 			const expected: HeaderRow<SampleRow>[] = [
 				new HeaderRow({
 					cells: [
-						{
+						new HeaderGroupCell({
 							type: 'group',
 							colspan: 2,
 							label: 'Name',
-						},
-						{
+						}),
+						new HeaderGroupCell({
 							type: 'group',
 							colspan: 3,
 							label: 'Info',
-						},
+						}),
 					],
 				}),
 				new HeaderRow({
 					cells: [
-						{
+						new HeaderDataCell({
 							type: 'data',
 							label: 'First Name',
 							key: 'firstName',
 							colspan: 1,
-						},
-						{
+						}),
+						new HeaderDataCell({
 							type: 'data',
 							label: 'Last Name',
 							key: 'lastName',
 							colspan: 1,
-						},
-						{
+						}),
+						new HeaderDataCell({
 							type: 'data',
 							label: 'Age',
 							key: 'age',
 							colspan: 1,
-						},
-						{
+						}),
+						new HeaderDataCell({
 							type: 'data',
 							label: 'Status',
 							key: 'status',
 							colspan: 1,
-						},
-						{
+						}),
+						new HeaderDataCell({
 							type: 'data',
 							label: 'Profile Progress',
 							key: 'progress',
 							colspan: 1,
-						},
+						}),
 					],
 				}),
 			];
@@ -236,60 +236,48 @@ describe('getHeaderRows', () => {
 			const expected: HeaderRow<SampleRow>[] = [
 				new HeaderRow({
 					cells: [
-						{
+						new HeaderGroupCell({
 							type: 'group',
 							colspan: 2,
 							label: 'Name',
-						},
-						{
-							type: 'blank',
-							colspan: 1,
-							label: NBSP,
-						},
-						{
-							type: 'blank',
-							colspan: 1,
-							label: NBSP,
-						},
-						{
-							type: 'blank',
-							colspan: 1,
-							label: NBSP,
-						},
+						}),
+						HEADER_BLANK,
+						HEADER_BLANK,
+						HEADER_BLANK,
 					],
 				}),
 				new HeaderRow({
 					cells: [
-						{
+						new HeaderDataCell({
 							type: 'data',
 							label: 'First Name',
 							key: 'firstName',
 							colspan: 1,
-						},
-						{
+						}),
+						new HeaderDataCell({
 							type: 'data',
 							label: 'Last Name',
 							key: 'lastName',
 							colspan: 1,
-						},
-						{
+						}),
+						new HeaderDataCell({
 							type: 'data',
 							label: 'Age',
 							key: 'age',
 							colspan: 1,
-						},
-						{
+						}),
+						new HeaderDataCell({
 							type: 'data',
 							label: 'Status',
 							key: 'status',
 							colspan: 1,
-						},
-						{
+						}),
+						new HeaderDataCell({
 							type: 'data',
 							label: 'Profile Progress',
 							key: 'progress',
 							colspan: 1,
-						},
+						}),
 					],
 				}),
 			];

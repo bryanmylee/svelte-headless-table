@@ -1,4 +1,9 @@
-import { HEADER_BLANK, type HeaderCell } from '$lib/types/HeaderCell';
+import {
+	HeaderDataCell,
+	HeaderGroupCell,
+	HEADER_BLANK,
+	type HeaderCell,
+} from '$lib/types/HeaderCell';
 import { sum } from './math';
 import type { Column } from '$lib/types/Column';
 import { HeaderRow } from '$lib/types/HeaderRow';
@@ -27,12 +32,12 @@ const _getHeaderRowsData = <Item extends object>(columns: Column<Item>[]): Heade
 			return [
 				{
 					cells: [
-						{
+						new HeaderDataCell({
 							type: 'data',
 							colspan: 1,
 							key: column.key,
 							label: column.header,
-						},
+						}),
 					],
 				},
 			];
@@ -54,11 +59,11 @@ const _getHeaderRowsData = <Item extends object>(columns: Column<Item>[]): Heade
 			return [
 				{
 					cells: [
-						{
+						new HeaderGroupCell({
 							type: 'group',
 							colspan,
 							label: column.header,
-						},
+						}),
 					],
 				},
 				...rows,
