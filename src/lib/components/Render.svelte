@@ -8,7 +8,7 @@
 
 {#if text !== undefined}
 	{text}
-{:else}
+{:else if component !== undefined}
 	<svelte:component this={component} {...props}>
 		<slot />
 	</svelte:component>

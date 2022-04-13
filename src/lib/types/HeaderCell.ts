@@ -1,4 +1,5 @@
 import type { NBSP } from '$lib/constants';
+import type { Label } from './Label';
 
 export type HeaderGroupCell = {
 	type: 'group';
@@ -8,7 +9,7 @@ export type HeaderGroupCell = {
 
 export type HeaderLeafCell<Item extends object> = {
 	type: 'data';
-	label: string;
+	label: Label<Item>;
 	colspan: 1;
 	key: keyof Item;
 };

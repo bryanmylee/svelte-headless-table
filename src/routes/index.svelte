@@ -28,7 +28,7 @@
 					key: 'age',
 				}),
 				createDataColumn({
-					header: 'Visits',
+					header: (rows) => `Visits: ${rows.length}`,
 					key: 'visits',
 				}),
 				createDataColumn({
@@ -52,7 +52,7 @@
 			<tr>
 				{#each headerRow as cell}
 					<th {...getHeaderProps(cell)}>
-						<Render {...renderHeader(cell)} />
+						<Render {...renderHeader(cell, { dataRows })} />
 					</th>
 				{/each}
 			</tr>

@@ -6,19 +6,19 @@ export const createColumns = <Item extends object>(columns: Column<Item>[]): Col
 };
 
 export const createGroup = <Item extends object>(
-	groupDef: ColumnGroupProps<Item>
+	groupProps: ColumnGroupProps<Item>
 ): ColumnGroup<Item> => {
 	return {
 		type: 'group',
-		...groupDef,
+		...groupProps,
 	};
 };
 
 export const createDataColumn = <Item extends object>(
-	columnDef: ColumnDataProps<Item>
+	columnProps: ColumnDataProps<Item>
 ): ColumnData<Item> => {
 	return {
 		type: 'data',
-		...columnDef,
+		...columnProps,
 	};
 };

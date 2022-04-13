@@ -1,12 +1,14 @@
+import type { Label } from './Label';
+
 export type ColumnGroup<Item extends object> = {
 	type: 'group';
-	header: string;
+	header: Label<Item>;
 	columns: Column<Item>[];
 };
 
 export type ColumnData<Item extends object> = {
 	type: 'data';
-	header: string;
+	header: Label<Item>;
 	key: keyof Item;
 };
 
