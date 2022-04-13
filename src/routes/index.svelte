@@ -4,6 +4,7 @@
 	import { sampleRows, type SampleRow } from '$lib/sampleRows';
 	import { createColumns, createDataColumn, createGroup } from '$lib/utils/createColumns';
 	import { getHeaderProps } from '$lib/utils/getHeaderProps';
+	import { sum } from '$lib/utils/math';
 	import { renderHeader } from '$lib/utils/renderHeader';
 
 	const columns = createColumns<SampleRow>([
@@ -28,7 +29,7 @@
 					key: 'age',
 				}),
 				createDataColumn({
-					header: (rows) => `Visits: ${rows.length}`,
+					header: (data) => `Visits: ${sum(...data.map((d) => d['visits']))}`,
 					key: 'visits',
 				}),
 				createDataColumn({
@@ -46,13 +47,13 @@
 
 <h1>svelte-tables</h1>
 
-<Table data={sampleRows} {columns} let:headerRows let:dataRows>
+<Table data={sampleRows} {columns} let:data let:headerRows let:dataRows>
 	<thead>
 		{#each headerRows as headerRow}
 			<tr>
 				{#each headerRow as cell}
 					<th {...getHeaderProps(cell)}>
-						<Render {...renderHeader(cell, { dataRows })} />
+						<Render {...renderHeader(cell, { data })} />
 					</th>
 				{/each}
 			</tr>

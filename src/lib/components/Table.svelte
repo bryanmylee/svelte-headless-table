@@ -20,5 +20,5 @@
 </script>
 
 <table class={className} {style}>
-	<slot {dataColumns} {headerRows} {dataRows} />
+	<slot {data} {dataColumns} {headerRows} {dataRows} />
 </table>
