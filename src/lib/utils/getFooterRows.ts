@@ -1,4 +1,4 @@
-import type { ColumnData } from '$lib/models/Column';
+import type { Column } from '$lib/models/Column';
 import {
 	FooterDataCell,
 	FooterGroupCell,
@@ -8,9 +8,7 @@ import {
 import { FooterRow } from '$lib/models/FooterRow';
 import { sum } from './math';
 
-export const getFooterRows = <Item extends object>(
-	columns: ColumnData<Item>[]
-): FooterRow<Item>[] => {
+export const getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterRow<Item>[] => {
 	const rowsData = _getFooterRows(columns);
 	/**
 	 * Remove rows with all blanks.
@@ -21,7 +19,7 @@ export const getFooterRows = <Item extends object>(
 	return noBlanksRowsData.map((row) => new FooterRow(row));
 };
 
-const _getFooterRows = <Item extends object>(columns: ColumnData<Item>[]): FooterRow<Item>[] => {
+const _getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterRow<Item>[] => {
 	/**
 	 * Map each column to a list of footer rows.
 	 * The number of rows depends on the depth of nested columns in each column.

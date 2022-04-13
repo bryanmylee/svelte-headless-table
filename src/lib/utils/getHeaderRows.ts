@@ -5,7 +5,7 @@ import {
 	type HeaderCell,
 } from '$lib/models/HeaderCell';
 import { sum } from './math';
-import type { ColumnData } from '$lib/models/Column';
+import type { Column } from '$lib/models/Column';
 import { HeaderRow } from '$lib/models/HeaderRow';
 
 /**
@@ -13,17 +13,13 @@ import { HeaderRow } from '$lib/models/HeaderRow';
  * @param columns The column structure grouped by columns.
  * @returns A list of header groups representing rows in the table head.
  */
-export const getHeaderRows = <Item extends object>(
-	columns: ColumnData<Item>[]
-): HeaderRow<Item>[] => {
+export const getHeaderRows = <Item extends object>(columns: Column<Item>[]): HeaderRow<Item>[] => {
 	const rowsData = _getHeaderRowsData(columns);
 	const rows = rowsData.map((row) => new HeaderRow(row));
 	return rows;
 };
 
-const _getHeaderRowsData = <Item extends object>(
-	columns: ColumnData<Item>[]
-): HeaderRow<Item>[] => {
+const _getHeaderRowsData = <Item extends object>(columns: Column<Item>[]): HeaderRow<Item>[] => {
 	/**
 	 * Map each column to a list of header rows.
 	 * The number of rows depends on the depth of nested columns in each column.

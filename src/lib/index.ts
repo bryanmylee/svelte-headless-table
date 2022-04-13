@@ -6,11 +6,7 @@ export { getHeaderProps } from '$lib/utils/getHeaderProps';
 export { renderFooter } from '$lib/utils/renderFooter';
 export { renderHeader } from '$lib/utils/renderHeader';
 export { renderData } from '$lib/utils/renderData';
-export type {
-	ColumnData as Column,
-	DataColumnData as ColumnData,
-	GroupColumnData as ColumnGroup,
-} from '$lib/models/Column';
+export type { Column, DataColumn, GroupColumn } from '$lib/models/Column';
 export type { ColumnLabel, ColumnLabelRenderProps } from '$lib/types/ColumnLabel';
 export type { ColumnDataProps, ColumnGroupProps } from '$lib/types/ColumnProps';
 export type { DataCell } from '$lib/models/DataCell';
