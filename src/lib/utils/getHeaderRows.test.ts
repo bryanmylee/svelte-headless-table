@@ -1,8 +1,8 @@
 import type { SampleRow } from '$lib/sampleRows';
-import type { HeaderCell } from '$lib/types/HeaderCell';
 import { getHeaderRows } from './getHeaderRows';
 import { NBSP } from '../constants';
 import { createColumns, createDataColumn, createGroup } from './createColumns';
+import type { HeaderRow } from '$lib/types/HeaderRow';
 
 describe('getHeaderRows', () => {
 	test('3 columns', () => {
@@ -23,27 +23,29 @@ describe('getHeaderRows', () => {
 
 		const actual = getHeaderRows(columns);
 
-		const expected: HeaderCell<SampleRow>[][] = [
-			[
-				{
-					type: 'data',
-					label: 'First Name',
-					key: 'firstName',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Last Name',
-					key: 'lastName',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Age',
-					key: 'age',
-					colspan: 1,
-				},
-			],
+		const expected: HeaderRow<SampleRow>[] = [
+			{
+				cells: [
+					{
+						type: 'data',
+						label: 'First Name',
+						key: 'firstName',
+						colspan: 1,
+					},
+					{
+						type: 'data',
+						label: 'Last Name',
+						key: 'lastName',
+						colspan: 1,
+					},
+					{
+						type: 'data',
+						label: 'Age',
+						key: 'age',
+						colspan: 1,
+					},
+				],
+			},
 		];
 
 		expect(actual).toStrictEqual(expected);
@@ -72,34 +74,38 @@ describe('getHeaderRows', () => {
 
 		const actual = getHeaderRows(columns);
 
-		const expected: HeaderCell<SampleRow>[][] = [
-			[
-				{
-					type: 'group',
-					colspan: 3,
-					label: 'Info',
-				},
-			],
-			[
-				{
-					type: 'data',
-					label: 'First Name',
-					key: 'firstName',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Last Name',
-					key: 'lastName',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Age',
-					key: 'age',
-					colspan: 1,
-				},
-			],
+		const expected: HeaderRow<SampleRow>[] = [
+			{
+				cells: [
+					{
+						type: 'group',
+						colspan: 3,
+						label: 'Info',
+					},
+				],
+			},
+			{
+				cells: [
+					{
+						type: 'data',
+						label: 'First Name',
+						key: 'firstName',
+						colspan: 1,
+					},
+					{
+						type: 'data',
+						label: 'Last Name',
+						key: 'lastName',
+						colspan: 1,
+					},
+					{
+						type: 'data',
+						label: 'Age',
+						key: 'age',
+						colspan: 1,
+					},
+				],
+			},
 		];
 
 		expect(actual).toStrictEqual(expected);
@@ -141,51 +147,55 @@ describe('getHeaderRows', () => {
 
 		const actual = getHeaderRows(columns);
 
-		const expected: HeaderCell<SampleRow>[][] = [
-			[
-				{
-					type: 'group',
-					colspan: 2,
-					label: 'Name',
-				},
-				{
-					type: 'group',
-					colspan: 3,
-					label: 'Info',
-				},
-			],
-			[
-				{
-					type: 'data',
-					label: 'First Name',
-					key: 'firstName',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Last Name',
-					key: 'lastName',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Age',
-					key: 'age',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Status',
-					key: 'status',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Profile Progress',
-					key: 'progress',
-					colspan: 1,
-				},
-			],
+		const expected: HeaderRow<SampleRow>[] = [
+			{
+				cells: [
+					{
+						type: 'group',
+						colspan: 2,
+						label: 'Name',
+					},
+					{
+						type: 'group',
+						colspan: 3,
+						label: 'Info',
+					},
+				],
+			},
+			{
+				cells: [
+					{
+						type: 'data',
+						label: 'First Name',
+						key: 'firstName',
+						colspan: 1,
+					},
+					{
+						type: 'data',
+						label: 'Last Name',
+						key: 'lastName',
+						colspan: 1,
+					},
+					{
+						type: 'data',
+						label: 'Age',
+						key: 'age',
+						colspan: 1,
+					},
+					{
+						type: 'data',
+						label: 'Status',
+						key: 'status',
+						colspan: 1,
+					},
+					{
+						type: 'data',
+						label: 'Profile Progress',
+						key: 'progress',
+						colspan: 1,
+					},
+				],
+			},
 		];
 
 		expect(actual).toStrictEqual(expected);
@@ -222,61 +232,65 @@ describe('getHeaderRows', () => {
 
 		const actual = getHeaderRows(columns);
 
-		const expected: HeaderCell<SampleRow>[][] = [
-			[
-				{
-					type: 'group',
-					colspan: 2,
-					label: 'Name',
-				},
-				{
-					type: 'blank',
-					colspan: 1,
-					label: NBSP,
-				},
-				{
-					type: 'blank',
-					colspan: 1,
-					label: NBSP,
-				},
-				{
-					type: 'blank',
-					colspan: 1,
-					label: NBSP,
-				},
-			],
-			[
-				{
-					type: 'data',
-					label: 'First Name',
-					key: 'firstName',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Last Name',
-					key: 'lastName',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Age',
-					key: 'age',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Status',
-					key: 'status',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Profile Progress',
-					key: 'progress',
-					colspan: 1,
-				},
-			],
+		const expected: HeaderRow<SampleRow>[] = [
+			{
+				cells: [
+					{
+						type: 'group',
+						colspan: 2,
+						label: 'Name',
+					},
+					{
+						type: 'blank',
+						colspan: 1,
+						label: NBSP,
+					},
+					{
+						type: 'blank',
+						colspan: 1,
+						label: NBSP,
+					},
+					{
+						type: 'blank',
+						colspan: 1,
+						label: NBSP,
+					},
+				],
+			},
+			{
+				cells: [
+					{
+						type: 'data',
+						label: 'First Name',
+						key: 'firstName',
+						colspan: 1,
+					},
+					{
+						type: 'data',
+						label: 'Last Name',
+						key: 'lastName',
+						colspan: 1,
+					},
+					{
+						type: 'data',
+						label: 'Age',
+						key: 'age',
+						colspan: 1,
+					},
+					{
+						type: 'data',
+						label: 'Status',
+						key: 'status',
+						colspan: 1,
+					},
+					{
+						type: 'data',
+						label: 'Profile Progress',
+						key: 'progress',
+						colspan: 1,
+					},
+				],
+			},
 		];
 
 		expect(actual).toStrictEqual(expected);

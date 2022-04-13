@@ -75,7 +75,7 @@
 		<thead>
 			{#each headerRows as headerRow}
 				<tr>
-					{#each headerRow as cell}
+					{#each headerRow.cells as cell}
 						<th {...getHeaderProps(cell)}>
 							<Render {...renderHeader(cell, { data })} />
 						</th>

@@ -1,15 +1,21 @@
 import { HEADER_BLANK, type HeaderCell } from '$lib/types/HeaderCell';
 import { sum } from './math';
 import type { Column } from '$lib/types/Column';
+import type { HeaderRow } from '$lib/types/HeaderRow';
 
 /**
  * Transform the column representation of the table headers into rows in the table head.
  * @param columns The column structure grouped by columns.
  * @returns A list of header groups representing rows in the table head.
  */
-export const getHeaderRows = <Item extends object>(
-	columns: Column<Item>[]
-): HeaderCell<Item>[][] => {
+export const getHeaderRows = <Item extends object>(columns: Column<Item>[]): HeaderRow<Item>[] => {
+	const cells = _getHeaderRows(columns);
+	return cells.map((rowCells) => ({
+		cells: rowCells,
+	}));
+};
+
+const _getHeaderRows = <Item extends object>(columns: Column<Item>[]): HeaderCell<Item>[][] => {
 	/**
 	 * Map each column to a list of header rows.
 	 * The number of rows depends on the depth of nested columns in each column.
@@ -36,7 +42,7 @@ export const getHeaderRows = <Item extends object>(
 			 * column: {...}
 			 * rows:   [[..] [..]]
 			 */
-			const rows = getHeaderRows(column.columns);
+			const rows = _getHeaderRows(column.columns);
 			/**
 			 * The colspan of this group is the sum of colspans of the row directly below.
 			 */
