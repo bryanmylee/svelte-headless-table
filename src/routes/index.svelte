@@ -47,8 +47,8 @@
 	<thead>
 		{#each headerRows as headerRow}
 			<tr>
-				{#each headerRow as { colspan, header }}
-					<th {colspan}>{header}</th>
+				{#each headerRow as { colspan, label }}
+					<th {colspan}>{label}</th>
 				{/each}
 			</tr>
 		{/each}

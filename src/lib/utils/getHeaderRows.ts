@@ -1,4 +1,4 @@
-import type { HeaderBlank, Header } from '$lib/types/Header';
+import type { HeaderBlankCell, HeaderCell } from '$lib/types/HeaderCell';
 import { sum } from './math';
 import { NBSP } from '../constants';
 import type { Column } from '$lib/types/Column';
@@ -8,7 +8,9 @@ import type { Column } from '$lib/types/Column';
  * @param columns The column structure grouped by columns.
  * @returns A list of header groups representing rows in the table head.
  */
-export const getHeaderRows = <Item extends object>(columns: Column<Item>[]): Header<Item>[][] => {
+export const getHeaderRows = <Item extends object>(
+	columns: Column<Item>[]
+): HeaderCell<Item>[][] => {
 	/**
 	 * Map each column to a list of header rows.
 	 * The number of rows depends on the depth of nested columns in each column.
@@ -16,7 +18,7 @@ export const getHeaderRows = <Item extends object>(columns: Column<Item>[]): Hea
 	 * columns: {...}        {...}        {...}
 	 * groups:  [[..] [..]]  [[..]]       [[..] [..] [..]]
 	 */
-	const columnGroups: Header<Item>[][][] = columns.map((column) => {
+	const columnGroups: HeaderCell<Item>[][][] = columns.map((column) => {
 		if (column.type === 'data') {
 			return [
 				[
@@ -24,7 +26,7 @@ export const getHeaderRows = <Item extends object>(columns: Column<Item>[]): Hea
 						type: 'data',
 						colspan: 1,
 						key: column.key,
-						header: column.header,
+						label: column.header,
 					},
 				],
 			];
@@ -48,7 +50,7 @@ export const getHeaderRows = <Item extends object>(columns: Column<Item>[]): Hea
 					{
 						type: 'group',
 						colspan,
-						header: column.header,
+						label: column.header,
 					},
 				],
 				...rows,
@@ -63,10 +65,10 @@ export const getHeaderRows = <Item extends object>(columns: Column<Item>[]): Hea
 	/**
 	 * Create a grid of blank header cells.
 	 */
-	const resultRows: Maybe<Header<Item>>[][] = [];
+	const resultRows: Maybe<HeaderCell<Item>>[][] = [];
 	for (let i = 0; i < height; i++) {
 		resultRows.push(
-			Array(colspan).fill({ colspan: 1, type: 'blank', header: NBSP } as HeaderBlank)
+			Array(colspan).fill({ colspan: 1, type: 'blank', label: NBSP } as HeaderBlankCell)
 		);
 	}
 
@@ -96,5 +98,5 @@ export const getHeaderRows = <Item extends object>(columns: Column<Item>[]): Hea
 	/**
 	 * Remove undefined elements.
 	 */
-	return resultRows.map((row) => row.filter((cell) => cell !== undefined)) as Header<Item>[][];
+	return resultRows.map((row) => row.filter((cell) => cell !== undefined)) as HeaderCell<Item>[][];
 };

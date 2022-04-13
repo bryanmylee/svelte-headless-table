@@ -1,5 +1,5 @@
 import type { SampleRow } from '$lib/sampleRows';
-import type { Header } from '$lib/types/Header';
+import type { HeaderCell } from '$lib/types/HeaderCell';
 import { getHeaderRows } from './getHeaderRows';
 import { NBSP } from '../constants';
 import { createColumns, createDataColumn, createGroup } from './createColumns';
@@ -23,23 +23,23 @@ describe('getHeaderRows', () => {
 
 		const actual = getHeaderRows(columns);
 
-		const expected: Header<SampleRow>[][] = [
+		const expected: HeaderCell<SampleRow>[][] = [
 			[
 				{
 					type: 'data',
-					header: 'First Name',
+					label: 'First Name',
 					key: 'firstName',
 					colspan: 1,
 				},
 				{
 					type: 'data',
-					header: 'Last Name',
+					label: 'Last Name',
 					key: 'lastName',
 					colspan: 1,
 				},
 				{
 					type: 'data',
-					header: 'Age',
+					label: 'Age',
 					key: 'age',
 					colspan: 1,
 				},
@@ -72,30 +72,30 @@ describe('getHeaderRows', () => {
 
 		const actual = getHeaderRows(columns);
 
-		const expected: Header<SampleRow>[][] = [
+		const expected: HeaderCell<SampleRow>[][] = [
 			[
 				{
 					type: 'group',
 					colspan: 3,
-					header: 'Info',
+					label: 'Info',
 				},
 			],
 			[
 				{
 					type: 'data',
-					header: 'First Name',
+					label: 'First Name',
 					key: 'firstName',
 					colspan: 1,
 				},
 				{
 					type: 'data',
-					header: 'Last Name',
+					label: 'Last Name',
 					key: 'lastName',
 					colspan: 1,
 				},
 				{
 					type: 'data',
-					header: 'Age',
+					label: 'Age',
 					key: 'age',
 					colspan: 1,
 				},
@@ -141,47 +141,47 @@ describe('getHeaderRows', () => {
 
 		const actual = getHeaderRows(columns);
 
-		const expected: Header<SampleRow>[][] = [
+		const expected: HeaderCell<SampleRow>[][] = [
 			[
 				{
 					type: 'group',
 					colspan: 2,
-					header: 'Name',
+					label: 'Name',
 				},
 				{
 					type: 'group',
 					colspan: 3,
-					header: 'Info',
+					label: 'Info',
 				},
 			],
 			[
 				{
 					type: 'data',
-					header: 'First Name',
+					label: 'First Name',
 					key: 'firstName',
 					colspan: 1,
 				},
 				{
 					type: 'data',
-					header: 'Last Name',
+					label: 'Last Name',
 					key: 'lastName',
 					colspan: 1,
 				},
 				{
 					type: 'data',
-					header: 'Age',
+					label: 'Age',
 					key: 'age',
 					colspan: 1,
 				},
 				{
 					type: 'data',
-					header: 'Status',
+					label: 'Status',
 					key: 'status',
 					colspan: 1,
 				},
 				{
 					type: 'data',
-					header: 'Profile Progress',
+					label: 'Profile Progress',
 					key: 'progress',
 					colspan: 1,
 				},
@@ -222,57 +222,57 @@ describe('getHeaderRows', () => {
 
 		const actual = getHeaderRows(columns);
 
-		const expected: Header<SampleRow>[][] = [
+		const expected: HeaderCell<SampleRow>[][] = [
 			[
 				{
 					type: 'group',
 					colspan: 2,
-					header: 'Name',
+					label: 'Name',
 				},
 				{
 					type: 'blank',
 					colspan: 1,
-					header: NBSP,
+					label: NBSP,
 				},
 				{
 					type: 'blank',
 					colspan: 1,
-					header: NBSP,
+					label: NBSP,
 				},
 				{
 					type: 'blank',
 					colspan: 1,
-					header: NBSP,
+					label: NBSP,
 				},
 			],
 			[
 				{
 					type: 'data',
-					header: 'First Name',
+					label: 'First Name',
 					key: 'firstName',
 					colspan: 1,
 				},
 				{
 					type: 'data',
-					header: 'Last Name',
+					label: 'Last Name',
 					key: 'lastName',
 					colspan: 1,
 				},
 				{
 					type: 'data',
-					header: 'Age',
+					label: 'Age',
 					key: 'age',
 					colspan: 1,
 				},
 				{
 					type: 'data',
-					header: 'Status',
+					label: 'Status',
 					key: 'status',
 					colspan: 1,
 				},
 				{
 					type: 'data',
-					header: 'Profile Progress',
+					label: 'Profile Progress',
 					key: 'progress',
 					colspan: 1,
 				},
