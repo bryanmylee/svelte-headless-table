@@ -15,37 +15,37 @@
 			columns: [
 				createDataColumn({
 					header: 'First Name',
-					// footer: '1',
 					key: 'firstName',
 				}),
 				createDataColumn({
 					header: 'Last Name',
-					// footer: '2',
 					key: 'lastName',
 				}),
 			],
 		}),
 		createGroup({
 			header: 'Info',
+			footer: 'Summary',
 			columns: [
 				createDataColumn({
 					header: 'Age',
-					// footer: '3',
+					footer: (data) =>
+						`Average: ${sum(...data.map((d) => d['age'])) / Math.max(data.length, 1)}`,
 					key: 'age',
 				}),
 				createDataColumn({
-					header: (data) => `Visits: ${sum(...data.map((d) => d['visits']))}`,
+					header: 'Visits',
+					footer: (data) => `Total: ${sum(...data.map((d) => d['visits']))}`,
 					key: 'visits',
-					// footer: '4',
 				}),
 				createDataColumn({
 					header: 'Status',
-					// footer: '5',
 					key: 'status',
 				}),
 				createDataColumn({
 					header: 'Profile Progress',
-					// footer: '6',
+					footer: (data) =>
+						`Average: ${sum(...data.map((d) => d['progress'])) / Math.max(data.length, 1)}`,
 					key: 'progress',
 				}),
 			],
