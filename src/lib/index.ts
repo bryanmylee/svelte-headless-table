@@ -2,7 +2,6 @@ export { default as Table } from '$lib/components/Table.svelte';
 export { default as Render } from '$lib/components/Render.svelte';
 export { createColumns, createDataColumn, createGroup } from '$lib/utils/createColumns';
 export { getFooterProps } from '$lib/utils/getFooterProps';
-export { getHeaderProps } from '$lib/utils/getHeaderProps';
 export { renderFooter } from '$lib/utils/renderFooter';
 export { renderHeader } from '$lib/utils/renderHeader';
 export { renderData } from '$lib/utils/renderData';

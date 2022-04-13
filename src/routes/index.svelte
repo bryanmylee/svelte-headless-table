@@ -6,7 +6,6 @@
 		createDataColumn,
 		createGroup,
 		getFooterProps,
-		getHeaderProps,
 		renderFooter,
 		renderHeader,
 		renderData,
@@ -76,7 +75,7 @@
 			{#each headerRows as headerRow}
 				<tr>
 					{#each headerRow.cells as cell}
-						<th {...getHeaderProps(cell)}>
+						<th {...cell.getProps()}>
 							<Render {...renderHeader(cell, { data })} />
 						</th>
 					{/each}
