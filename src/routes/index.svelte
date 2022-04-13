@@ -74,7 +74,7 @@
 			{#each headerRows as headerRow}
 				<tr>
 					{#each headerRow.cells as cell}
-						<th {...cell.getProps()}>
+						<th {...cell.getAttrs()}>
 							<Render {...renderHeader(cell, { data })} />
 						</th>
 					{/each}
@@ -96,7 +96,7 @@
 			{#each footerRows as footerRow}
 				<tr>
 					{#each footerRow.cells as cell}
-						<td {...cell.getProps()}>
+						<td {...cell.getAttrs()}>
 							<Render {...renderFooter(cell, { data })} />
 						</td>
 					{/each}
