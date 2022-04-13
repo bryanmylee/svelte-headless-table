@@ -20,7 +20,7 @@ export const renderHeader = <Item extends object>(
 		if (data === undefined) {
 			throw new Error('data required for dynamic render');
 		}
-		const label = cell.label(data);
+		const label = cell.label({ data });
 		if (typeof label === 'string') {
 			return { text: label };
 		}

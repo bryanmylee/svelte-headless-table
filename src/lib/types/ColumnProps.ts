@@ -1,14 +1,14 @@
 import type { Column } from './Column';
-import type { Label } from './Label';
+import type { RowsLabel } from './RowsLabel';
 
 export type ColumnGroupProps<Item extends object> = {
-	header: Label<Item>;
-	footer?: Label<Item>;
+	header: RowsLabel<Item>;
+	footer?: RowsLabel<Item>;
 	columns: Column<Item>[];
 };
 
 export type ColumnDataProps<Item extends object> = {
-	header: Label<Item>;
-	footer?: Label<Item>;
+	header: RowsLabel<Item>;
+	footer?: RowsLabel<Item>;
 	key: keyof Item;
 };

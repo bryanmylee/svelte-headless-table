@@ -1,16 +1,16 @@
-import type { Label } from './Label';
+import type { RowsLabel } from './RowsLabel';
 
 export type ColumnGroup<Item extends object> = {
 	type: 'group';
-	header: Label<Item>;
-	footer?: Label<Item>;
+	header: RowsLabel<Item>;
+	footer?: RowsLabel<Item>;
 	columns: Column<Item>[];
 };
 
 export type ColumnData<Item extends object> = {
 	type: 'data';
-	header: Label<Item>;
-	footer?: Label<Item>;
+	header: RowsLabel<Item>;
+	footer?: RowsLabel<Item>;
 	key: keyof Item;
 };
 

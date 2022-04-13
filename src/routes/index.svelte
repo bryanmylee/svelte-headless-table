@@ -30,13 +30,13 @@
 			columns: [
 				createDataColumn({
 					header: 'Age',
-					footer: (data) =>
+					footer: ({ data }) =>
 						`Average: ${sum(...data.map((d) => d['age'])) / Math.max(data.length, 1)}`,
 					key: 'age',
 				}),
 				createDataColumn({
 					header: 'Visits',
-					footer: (data) => `Total: ${sum(...data.map((d) => d['visits']))}`,
+					footer: ({ data }) => `Total: ${sum(...data.map((d) => d['visits']))}`,
 					key: 'visits',
 				}),
 				createDataColumn({
@@ -50,7 +50,7 @@
 				}),
 				createDataColumn({
 					header: 'Profile Progress',
-					footer: (data) =>
+					footer: ({ data }) =>
 						`Average: ${sum(...data.map((d) => d['progress'])) / Math.max(data.length, 1)}`,
 					key: 'progress',
 				}),
