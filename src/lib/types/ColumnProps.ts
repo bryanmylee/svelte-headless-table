@@ -1,11 +1,11 @@
-import type { Column } from '$lib/models/Column';
+import type { ColumnData } from '$lib/models/Column';
 import type { ColumnLabel } from './ColumnLabel';
 import type { DataCellLabel } from './DataCellLabel';
 
 export type ColumnGroupProps<Item extends object> = {
 	header: ColumnLabel<Item>;
 	footer?: ColumnLabel<Item>;
-	columns: Column<Item>[];
+	columns: ColumnData<Item>[];
 };
 
 export type ColumnDataProps<Item extends object> = {

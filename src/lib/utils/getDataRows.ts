@@ -1,10 +1,10 @@
-import type { ColumnData } from '$lib/models/Column';
+import type { DataColumnData } from '$lib/models/Column';
 import { DataCell } from '$lib/models/DataCell';
 import { DataRow } from '$lib/models/DataRow';
 
 export const getDataRows = <Item extends object>(
 	data: Item[],
-	dataColumns: ColumnData<Item>[]
+	dataColumns: DataColumnData<Item>[]
 ): DataRow<Item>[] => {
 	return data.map(
 		(item) =>

@@ -1,5 +1,5 @@
 import type { SampleRow } from '$lib/sampleRows';
-import type { ColumnData } from '$lib/models/Column';
+import type { DataColumnData } from '$lib/models/Column';
 import { DataCell } from '$lib/models/DataCell';
 import { DataRow } from '$lib/models/DataRow';
 import { getDataRows } from './getDataRows';
@@ -24,7 +24,7 @@ describe('getDataRows', () => {
 		},
 	];
 
-	const columns: ColumnData<SampleRow>[] = [
+	const columns: DataColumnData<SampleRow>[] = [
 		{
 			type: 'data',
 			key: 'firstName',

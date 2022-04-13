@@ -1,14 +1,14 @@
 import type { ColumnLabel } from '$lib/types/ColumnLabel';
 import type { DataCellLabel } from '$lib/types/DataCellLabel';
 
-export type ColumnGroup<Item extends object> = {
+export type GroupColumnData<Item extends object> = {
 	type: 'group';
 	header: ColumnLabel<Item>;
 	footer?: ColumnLabel<Item>;
-	columns: Column<Item>[];
+	columns: ColumnData<Item>[];
 };
 
-export type ColumnData<Item extends object> = {
+export type DataColumnData<Item extends object> = {
 	type: 'data';
 	header: ColumnLabel<Item>;
 	footer?: ColumnLabel<Item>;
@@ -16,4 +16,4 @@ export type ColumnData<Item extends object> = {
 	key: keyof Item;
 };
 
-export type Column<Item extends object> = ColumnGroup<Item> | ColumnData<Item>;
+export type ColumnData<Item extends object> = GroupColumnData<Item> | DataColumnData<Item>;
