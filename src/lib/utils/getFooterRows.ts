@@ -4,8 +4,8 @@ import {
 	FooterGroupCell,
 	FOOTER_BLANK,
 	type FooterCell,
-} from '$lib/types/FooterCell';
-import { FooterRow } from '$lib/types/FooterRow';
+} from '$lib/models/FooterCell';
+import { FooterRow } from '$lib/models/FooterRow';
 import { sum } from './math';
 
 export const getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterRow<Item>[] => {

@@ -1,4 +1,4 @@
-import type { FooterCell } from '$lib/types/FooterCell';
+import type { FooterCell } from '$lib/models/FooterCell';
 
 export type FooterProps = {
 	colspan: number;

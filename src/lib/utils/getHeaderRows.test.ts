@@ -1,8 +1,8 @@
 import type { SampleRow } from '$lib/sampleRows';
 import { getHeaderRows } from './getHeaderRows';
 import { createColumns, createDataColumn, createGroup } from './createColumns';
-import { HeaderRow } from '$lib/types/HeaderRow';
-import { HeaderDataCell, HeaderGroupCell, HEADER_BLANK } from '$lib/types/HeaderCell';
+import { HeaderRow } from '$lib/models/HeaderRow';
+import { HeaderDataCell, HeaderGroupCell, HEADER_BLANK } from '$lib/models/HeaderCell';
 
 describe('getHeaderRows', () => {
 	describe('data shape', () => {

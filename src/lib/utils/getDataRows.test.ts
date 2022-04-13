@@ -1,7 +1,7 @@
 import type { SampleRow } from '$lib/sampleRows';
 import type { ColumnData } from '$lib/types/Column';
-import { DataCell } from '$lib/types/DataCell';
-import { DataRow } from '$lib/types/DataRow';
+import { DataCell } from '$lib/models/DataCell';
+import { DataRow } from '$lib/models/DataRow';
 import { getDataRows } from './getDataRows';
 
 describe('getDataRows', () => {

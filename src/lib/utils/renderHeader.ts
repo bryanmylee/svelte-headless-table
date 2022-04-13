@@ -1,4 +1,4 @@
-import type { HeaderCell } from '$lib/types/HeaderCell';
+import type { HeaderCell } from '$lib/models/HeaderCell';
 import type { RenderProps } from '$lib/types/RenderProps';
 import { isFunction } from './isFunction';
 

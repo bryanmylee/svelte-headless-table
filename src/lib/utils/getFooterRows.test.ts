@@ -1,6 +1,6 @@
 import type { SampleRow } from '$lib/sampleRows';
-import { FooterDataCell, FooterGroupCell, FOOTER_BLANK } from '$lib/types/FooterCell';
-import { FooterRow } from '$lib/types/FooterRow';
+import { FooterDataCell, FooterGroupCell, FOOTER_BLANK } from '$lib/models/FooterCell';
+import { FooterRow } from '$lib/models/FooterRow';
 import { createColumns, createDataColumn, createGroup } from './createColumns';
 import { getFooterRows } from './getFooterRows';
 

@@ -1,6 +1,6 @@
 import type { ColumnData } from '$lib/types/Column';
-import { DataCell } from '$lib/types/DataCell';
-import { DataRow } from '$lib/types/DataRow';
+import { DataCell } from '$lib/models/DataCell';
+import { DataRow } from '$lib/models/DataRow';
 
 export const getDataRows = <Item extends object>(
 	data: Item[],

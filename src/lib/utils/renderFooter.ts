@@ -1,4 +1,4 @@
-import type { FooterCell } from '$lib/types/FooterCell';
+import type { FooterCell } from '$lib/models/FooterCell';
 import type { RenderProps } from '$lib/types/RenderProps';
 import { isFunction } from './isFunction';
 

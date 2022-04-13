@@ -1,4 +1,4 @@
-import type { HeaderCell } from '$lib/types/HeaderCell';
+import type { HeaderCell } from '$lib/models/HeaderCell';
 
 export type HeaderProps = {
 	colspan: number;

@@ -3,10 +3,10 @@ import {
 	HeaderGroupCell,
 	HEADER_BLANK,
 	type HeaderCell,
-} from '$lib/types/HeaderCell';
+} from '$lib/models/HeaderCell';
 import { sum } from './math';
 import type { Column } from '$lib/types/Column';
-import { HeaderRow } from '$lib/types/HeaderRow';
+import { HeaderRow } from '$lib/models/HeaderRow';
 
 /**
  * Transform the column representation of the table headers into rows in the table head.

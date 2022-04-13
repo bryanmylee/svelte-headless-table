@@ -1,4 +1,4 @@
-import type { DataCellLabel } from './DataCellLabel';
+import type { DataCellLabel } from '$lib/types/DataCellLabel';
 
 export type DataCellData<Item extends object> = {
 	key: keyof Item;

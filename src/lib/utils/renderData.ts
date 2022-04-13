@@ -1,4 +1,4 @@
-import type { DataCell } from '$lib/types/DataCell';
+import type { DataCell } from '$lib/models/DataCell';
 import type { RenderProps } from '$lib/types/RenderProps';
 import { isFunction } from './isFunction';
 
