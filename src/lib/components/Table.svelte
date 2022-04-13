@@ -14,12 +14,6 @@
 
 	export let data: Item[];
 	$: dataRows = getDataRows(data, dataColumns);
-
-	let className: Maybe<string> = undefined;
-	export { className as class };
-	export let style: Maybe<string> = undefined;
 </script>
 
-<table class={className} {style}>
-	<slot {data} {dataColumns} {headerRows} {footerRows} {dataRows} />
-</table>
+<slot {data} {dataColumns} {headerRows} {footerRows} {dataRows} />

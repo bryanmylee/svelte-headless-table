@@ -67,39 +67,41 @@
 <h1>svelte-tables</h1>
 
 <Table data={sampleRows} {columns} let:data let:headerRows let:dataRows let:footerRows>
-	<thead>
-		{#each headerRows as headerRow}
-			<tr>
-				{#each headerRow as cell}
-					<th {...getHeaderProps(cell)}>
-						<Render {...renderHeader(cell, { data })} />
-					</th>
-				{/each}
-			</tr>
-		{/each}
-	</thead>
-	<tbody>
-		{#each dataRows as dataRow}
-			<tr>
-				{#each dataRow.cells as cell}
-					<td>
-						<Render {...renderData(cell)} />
-					</td>
-				{/each}
-			</tr>
-		{/each}
-	</tbody>
-	<tfoot>
-		{#each footerRows as footerRow}
-			<tr>
-				{#each footerRow as cell}
-					<td {...getFooterProps(cell)}>
-						<Render {...renderFooter(cell, { data })} />
-					</td>
-				{/each}
-			</tr>
-		{/each}
-	</tfoot>
+	<table>
+		<thead>
+			{#each headerRows as headerRow}
+				<tr>
+					{#each headerRow as cell}
+						<th {...getHeaderProps(cell)}>
+							<Render {...renderHeader(cell, { data })} />
+						</th>
+					{/each}
+				</tr>
+			{/each}
+		</thead>
+		<tbody>
+			{#each dataRows as dataRow}
+				<tr>
+					{#each dataRow.cells as cell}
+						<td>
+							<Render {...renderData(cell)} />
+						</td>
+					{/each}
+				</tr>
+			{/each}
+		</tbody>
+		<tfoot>
+			{#each footerRows as footerRow}
+				<tr>
+					{#each footerRow as cell}
+						<td {...getFooterProps(cell)}>
+							<Render {...renderFooter(cell, { data })} />
+						</td>
+					{/each}
+				</tr>
+			{/each}
+		</tfoot>
+	</table>
 </Table>
 
 <style global>
