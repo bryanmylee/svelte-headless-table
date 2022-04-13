@@ -59,22 +59,16 @@ describe('getFooterRows', () => {
 				new FooterRow({
 					cells: [
 						new FooterDataCell({
-							type: 'data',
 							label: 'First Name',
 							key: 'firstName',
-							colspan: 1,
 						}),
 						new FooterDataCell({
-							type: 'data',
 							label: 'Last Name',
 							key: 'lastName',
-							colspan: 1,
 						}),
 						new FooterDataCell({
-							type: 'data',
 							label: 'Age',
 							key: 'age',
-							colspan: 1,
 						}),
 					],
 				}),
@@ -111,7 +105,6 @@ describe('getFooterRows', () => {
 				new FooterRow({
 					cells: [
 						new FooterGroupCell({
-							type: 'group',
 							colspan: 3,
 							label: 'Info',
 						}),
@@ -147,22 +140,16 @@ describe('getFooterRows', () => {
 				new FooterRow({
 					cells: [
 						new FooterDataCell({
-							type: 'data',
 							label: 'First Name',
 							key: 'firstName',
-							colspan: 1,
 						}),
 						new FooterDataCell({
-							type: 'data',
 							label: 'Last Name',
 							key: 'lastName',
-							colspan: 1,
 						}),
 						new FooterDataCell({
-							type: 'data',
 							label: 'Age',
 							key: 'age',
-							colspan: 1,
 						}),
 					],
 				}),
@@ -202,29 +189,22 @@ describe('getFooterRows', () => {
 				new FooterRow({
 					cells: [
 						new FooterDataCell({
-							type: 'data',
 							label: 'First Name',
 							key: 'firstName',
-							colspan: 1,
 						}),
 						new FooterDataCell({
-							type: 'data',
 							label: 'Last Name',
 							key: 'lastName',
-							colspan: 1,
 						}),
 						new FooterDataCell({
-							type: 'data',
 							label: 'Age',
 							key: 'age',
-							colspan: 1,
 						}),
 					],
 				}),
 				new FooterRow({
 					cells: [
 						new FooterGroupCell({
-							type: 'group',
 							colspan: 3,
 							label: 'Info',
 						}),
@@ -282,46 +262,34 @@ describe('getFooterRows', () => {
 				new FooterRow({
 					cells: [
 						new FooterDataCell({
-							type: 'data',
 							label: 'First Name',
 							key: 'firstName',
-							colspan: 1,
 						}),
 						new FooterDataCell({
-							type: 'data',
 							label: 'Last Name',
 							key: 'lastName',
-							colspan: 1,
 						}),
 						new FooterDataCell({
-							type: 'data',
 							label: 'Age',
 							key: 'age',
-							colspan: 1,
 						}),
 						new FooterDataCell({
-							type: 'data',
 							label: 'Status',
 							key: 'status',
-							colspan: 1,
 						}),
 						new FooterDataCell({
-							type: 'data',
 							label: 'Profile Progress',
 							key: 'progress',
-							colspan: 1,
 						}),
 					],
 				}),
 				new FooterRow({
 					cells: [
 						new FooterGroupCell({
-							type: 'group',
 							colspan: 2,
 							label: 'Name',
 						}),
 						new FooterGroupCell({
-							type: 'group',
 							colspan: 3,
 							label: 'Info',
 						}),
@@ -373,41 +341,30 @@ describe('getFooterRows', () => {
 				new FooterRow({
 					cells: [
 						new FooterDataCell({
-							type: 'data',
 							label: 'First Name',
 							key: 'firstName',
-							colspan: 1,
 						}),
 						new FooterDataCell({
-							type: 'data',
 							label: 'Last Name',
 							key: 'lastName',
-							colspan: 1,
 						}),
 						new FooterDataCell({
-							type: 'data',
 							label: 'Age',
 							key: 'age',
-							colspan: 1,
 						}),
 						new FooterDataCell({
-							type: 'data',
 							label: 'Status',
 							key: 'status',
-							colspan: 1,
 						}),
 						new FooterDataCell({
-							type: 'data',
 							label: 'Profile Progress',
 							key: 'progress',
-							colspan: 1,
 						}),
 					],
 				}),
 				new FooterRow({
 					cells: [
 						new FooterGroupCell({
-							type: 'group',
 							colspan: 2,
 							label: 'Name',
 						}),

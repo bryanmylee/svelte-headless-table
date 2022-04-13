@@ -40,8 +40,6 @@ const _getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterRow
 				{
 					cells: [
 						new FooterDataCell({
-							type: 'data',
-							colspan: 1,
 							key: column.key,
 							label: column.footer,
 						}),
@@ -78,7 +76,6 @@ const _getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterRow
 				{
 					cells: [
 						new FooterGroupCell({
-							type: 'group',
 							colspan,
 							label: column.footer,
 						}),
