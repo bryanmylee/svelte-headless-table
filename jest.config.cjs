@@ -12,4 +12,5 @@ module.exports = {
 	moduleNameMapper: {
 		'^\\$lib/(.*)$': '<rootDir>/src/lib/$1',
 	},
+	testPathIgnorePatterns: ['/node_modules/', '<rootDir>/package'],
 };
