@@ -7,7 +7,7 @@ export type HeaderGroupCell<Item extends object> = {
 	colspan: number;
 };
 
-export type HeaderLeafCell<Item extends object> = {
+export type HeaderDataCell<Item extends object> = {
 	type: 'data';
 	label: Label<Item>;
 	colspan: 1;
@@ -22,5 +22,5 @@ export type HeaderBlankCell = {
 
 export type HeaderCell<Item extends object> =
 	| HeaderGroupCell<Item>
-	| HeaderLeafCell<Item>
+	| HeaderDataCell<Item>
 	| HeaderBlankCell;
