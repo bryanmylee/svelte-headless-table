@@ -62,8 +62,8 @@
 	<tbody>
 		{#each dataRows as dataRow}
 			<tr>
-				{#each dataRow as { value }}
-					<td>{value}</td>
+				{#each dataRow.cells as cell}
+					<td>{cell.value}</td>
 				{/each}
 			</tr>
 		{/each}

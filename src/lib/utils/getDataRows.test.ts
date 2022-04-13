@@ -1,12 +1,12 @@
 import type { SampleRow } from '$lib/sampleRows';
-import type { DataCell } from '$lib/types/DataCell';
+import type { DataRow } from '$lib/types/DataRow';
 import { getDataRows } from './getDataRows';
 
 describe('getDataRows', () => {
 	test('transforms empty data', () => {
 		const actual = getDataRows<SampleRow>([], ['firstName', 'lastName']);
 
-		const expected: DataCell<SampleRow>[][] = [];
+		const expected: DataRow<SampleRow>[] = [];
 
 		expect(actual).toStrictEqual(expected);
 	});
@@ -34,35 +34,39 @@ describe('getDataRows', () => {
 			['firstName', 'lastName', 'progress']
 		);
 
-		const expected: DataCell<SampleRow>[][] = [
-			[
-				{
-					key: 'firstName',
-					value: 'Adam',
-				},
-				{
-					key: 'lastName',
-					value: 'West',
-				},
-				{
-					key: 'progress',
-					value: 75,
-				},
-			],
-			[
-				{
-					key: 'firstName',
-					value: 'Becky',
-				},
-				{
-					key: 'lastName',
-					value: 'White',
-				},
-				{
-					key: 'progress',
-					value: 43,
-				},
-			],
+		const expected: DataRow<SampleRow>[] = [
+			{
+				cells: [
+					{
+						key: 'firstName',
+						value: 'Adam',
+					},
+					{
+						key: 'lastName',
+						value: 'West',
+					},
+					{
+						key: 'progress',
+						value: 75,
+					},
+				],
+			},
+			{
+				cells: [
+					{
+						key: 'firstName',
+						value: 'Becky',
+					},
+					{
+						key: 'lastName',
+						value: 'White',
+					},
+					{
+						key: 'progress',
+						value: 43,
+					},
+				],
+			},
 		];
 
 		expect(actual).toStrictEqual(expected);
