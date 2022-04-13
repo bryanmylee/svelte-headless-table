@@ -1,15 +1,19 @@
 <script lang="ts">
-	import Render from '$lib/components/Render.svelte';
-	import Table from '$lib/components/Table.svelte';
+	import {
+		Render,
+		Table,
+		createColumns,
+		createDataColumn,
+		createGroup,
+		getFooterProps,
+		getHeaderProps,
+		renderFooter,
+		renderHeader,
+		renderData,
+	} from '$lib';
 	import Italic from './_Italic.svelte';
 	import { sampleRows, type SampleRow } from '$lib/sampleRows';
-	import { createColumns, createDataColumn, createGroup } from '$lib/utils/createColumns';
-	import { getFooterProps } from '$lib/utils/getFooterProps';
-	import { getHeaderProps } from '$lib/utils/getHeaderProps';
 	import { mean, sum } from '$lib/utils/math';
-	import { renderFooter } from '$lib/utils/renderFooter';
-	import { renderHeader } from '$lib/utils/renderHeader';
-	import { renderData } from '$lib/utils/renderData';
 
 	const columns = createColumns<SampleRow>([
 		createGroup({
