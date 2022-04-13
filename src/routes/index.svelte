@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Render from '$lib/components/Render.svelte';
 	import Table from '$lib/components/Table.svelte';
+	import Italic from './_Italic.svelte';
 	import { sampleRows, type SampleRow } from '$lib/sampleRows';
 	import { createColumns, createDataColumn, createGroup } from '$lib/utils/createColumns';
 	import { getFooterProps } from '$lib/utils/getFooterProps';
@@ -39,7 +40,12 @@
 					key: 'visits',
 				}),
 				createDataColumn({
-					header: 'Status',
+					header: {
+						component: Italic,
+						props: {
+							text: 'Status',
+						},
+					},
 					key: 'status',
 				}),
 				createDataColumn({

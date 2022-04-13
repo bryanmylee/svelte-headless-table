@@ -1,7 +1,7 @@
 import type { SvelteComponent } from 'svelte';
 
 export type RenderPropsComponent = {
-	component: SvelteComponent;
+	component: typeof SvelteComponent;
 	props?: Record<string, unknown>;
 };
 

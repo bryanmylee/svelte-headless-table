@@ -2,7 +2,7 @@
 	import type { SvelteComponent } from 'svelte';
 
 	export let text: Maybe<string> = undefined;
-	export let component: Maybe<SvelteComponent> = undefined;
+	export let component: Maybe<typeof SvelteComponent> = undefined;
 	export let props: Maybe<Record<string, unknown>> = undefined;
 </script>
 
