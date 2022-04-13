@@ -97,7 +97,7 @@
 		<tfoot>
 			{#each footerRows as footerRow}
 				<tr>
-					{#each footerRow as cell}
+					{#each footerRow.cells as cell}
 						<td {...getFooterProps(cell)}>
 							<Render {...renderFooter(cell, { data })} />
 						</td>

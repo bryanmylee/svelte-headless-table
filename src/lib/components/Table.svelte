@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { writable } from 'svelte/store';
 	import type { Column } from '$lib/types/Column';
 	import { getDataColumns } from '$lib/utils/getDataColumns';
 	import { getDataRows } from '$lib/utils/getDataRows';
@@ -7,13 +8,21 @@
 
 	type Item = $$Generic<object>;
 
-	export let columns: Column<Item>[];
-	$: dataColumns = getDataColumns(columns);
-	$: headerRows = getHeaderRows(columns);
-	$: footerRows = getFooterRows(columns);
+	export { _columns as columns };
+	let _columns: Column<Item>[];
+	const columns = writable(_columns);
+	$: $columns = _columns;
 
-	export let data: Item[];
-	$: dataRows = getDataRows(data, dataColumns);
+	$: dataColumns = getDataColumns(_columns);
+	$: headerRows = getHeaderRows(_columns);
+	$: footerRows = getFooterRows(_columns);
+
+	export { _data as data };
+	let _data: Item[];
+	const data = writable(_data);
+	$: $data = _data;
+
+	$: dataRows = getDataRows(_data, dataColumns);
 </script>
 
-<slot {data} {dataColumns} {headerRows} {footerRows} {dataRows} />
+<slot data={$data} {dataColumns} {headerRows} {footerRows} {dataRows} />
