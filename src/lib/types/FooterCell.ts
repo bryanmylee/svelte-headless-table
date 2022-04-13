@@ -1,4 +1,4 @@
-import type { NBSP } from '$lib/constants';
+import { NBSP } from '$lib/constants';
 import type { Label } from './Label';
 
 export type FooterGroupCell<Item extends object> = {
@@ -18,6 +18,12 @@ export type FooterBlankCell = {
 	type: 'blank';
 	label: typeof NBSP;
 	colspan: 1;
+};
+
+export const FOOTER_BLANK: FooterBlankCell = {
+	type: 'blank',
+	label: NBSP,
+	colspan: 1,
 };
 
 export type FooterCell<Item extends object> =
