@@ -1,4 +1,4 @@
-import type { Column, DataColumn } from '$lib/models/Column';
+import { DataColumn, GroupColumn, type Column } from '$lib/models/Column';
 
 /**
  * Get the data keys in the order of column access. This is the same as the
@@ -11,9 +11,9 @@ export const getDataColumns = <Item extends object>(
 ): DataColumn<Item>[] => {
 	const dataColumns: DataColumn<Item>[] = [];
 	columns.forEach((column) => {
-		if (column.type === 'data') {
+		if (column instanceof DataColumn) {
 			dataColumns.push(column);
-		} else {
+		} else if (column instanceof GroupColumn) {
 			dataColumns.push(...getDataColumns(column.columns));
 		}
 	});

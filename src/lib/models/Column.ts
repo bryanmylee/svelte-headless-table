@@ -1,42 +1,41 @@
 import type { ColumnLabel } from '$lib/types/ColumnLabel';
 import type { DataCellLabel } from '$lib/types/DataCellLabel';
 
-export type GroupColumnData<Item extends object> = {
-	type: 'group';
+export interface ColumnInit<Item extends object> {
 	header: ColumnLabel<Item>;
 	footer?: ColumnLabel<Item>;
-	columns: ColumnData<Item>[];
-};
+}
 
-export class GroupColumn<Item extends object> implements GroupColumnData<Item> {
-	type = 'group' as const;
+export class Column<Item extends object> {
 	header!: ColumnLabel<Item>;
 	footer?: ColumnLabel<Item>;
-	columns!: ColumnData<Item>[];
-	constructor(props: Omit<GroupColumnData<Item>, 'type'>) {
-		Object.assign(this, props);
+	constructor({ header, footer }: ColumnInit<Item>) {
+		Object.assign(this, { header, footer });
 	}
 }
 
-export type DataColumnData<Item extends object> = {
-	type: 'data';
-	header: ColumnLabel<Item>;
-	footer?: ColumnLabel<Item>;
-	cell?: DataCellLabel<Item>;
+export type GroupColumnInit<Item extends object> = {
+	columns: Column<Item>[];
+};
+
+export class GroupColumn<Item extends object> extends Column<Item> {
+	columns!: Column<Item>[];
+	constructor({ header, footer, columns }: ColumnInit<Item> & GroupColumnInit<Item>) {
+		super({ header, footer });
+		Object.assign(this, { columns });
+	}
+}
+
+export type DataColumnInit<Item extends object> = {
 	key: keyof Item;
+	cell?: DataCellLabel<Item>;
 };
 
-export class DataColumn<Item extends object> implements DataColumnData<Item> {
-	type = 'data' as const;
-	header!: ColumnLabel<Item>;
-	footer?: ColumnLabel<Item>;
-	cell?: DataCellLabel<Item>;
+export class DataColumn<Item extends object> extends Column<Item> {
 	key!: keyof Item;
-	constructor(props: Omit<GroupColumnData<Item>, 'type'>) {
-		Object.assign(this, props);
+	cell?: DataCellLabel<Item>;
+	constructor({ header, footer, key, cell }: ColumnInit<Item> & DataColumnInit<Item>) {
+		super({ header, footer });
+		Object.assign(this, { key, cell });
 	}
 }
-
-export type ColumnData<Item extends object> = GroupColumnData<Item> | DataColumnData<Item>;
-
-export type Column<Item extends object> = GroupColumn<Item> | DataColumn<Item>;

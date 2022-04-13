@@ -1,5 +1,6 @@
-import type { Column } from '$lib/models/Column';
+import { DataColumn, GroupColumn, type Column } from '$lib/models/Column';
 import {
+	FooterBlankCell,
 	FooterDataCell,
 	FooterGroupCell,
 	FOOTER_BLANK,
@@ -14,7 +15,7 @@ export const getFooterRows = <Item extends object>(columns: Column<Item>[]): Foo
 	 * Remove rows with all blanks.
 	 */
 	const noBlanksRowsData = rowsData.filter((row) =>
-		row.cells.some((cell) => cell.type !== 'blank')
+		row.cells.some((cell) => !(cell instanceof FooterBlankCell))
 	);
 	return noBlanksRowsData.map((row) => new FooterRow(row));
 };
@@ -28,7 +29,7 @@ const _getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterRow
 	 * groups:  [[..] [..]]  [[..]]       [[..] [..] [..]]
 	 */
 	const columnGroups: FooterRow<Item>[][] = columns.map((column) => {
-		if (column.type === 'data') {
+		if (column instanceof DataColumn) {
 			if (column.footer === undefined) {
 				return [
 					{
@@ -46,7 +47,7 @@ const _getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterRow
 					],
 				},
 			];
-		} else {
+		} else if (column instanceof GroupColumn) {
 			/**
 			 * Get the rows representing this column.
 			 *
@@ -83,6 +84,8 @@ const _getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterRow
 				},
 				...rows,
 			];
+		} else {
+			throw new Error('invalid Column subclass');
 		}
 	});
 

@@ -1,12 +1,12 @@
 import type { DataCell } from './DataCell';
 
-export type DataRowData<Item extends object> = {
+export type DataRowInit<Item extends object> = {
 	cells: DataCell<Item>[];
 };
 
-export class DataRow<Item extends object> implements DataRowData<Item> {
+export class DataRow<Item extends object> implements DataRowInit<Item> {
 	cells!: DataCell<Item>[];
-	constructor(props: DataRowData<Item>) {
-		Object.assign(this, props);
+	constructor({ cells }: DataRowInit<Item>) {
+		Object.assign(this, { cells });
 	}
 }

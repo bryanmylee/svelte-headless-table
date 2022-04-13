@@ -1,5 +1,5 @@
 import type { SampleRow } from '$lib/sampleRows';
-import type { DataColumn } from '$lib/models/Column';
+import { DataColumn } from '$lib/models/Column';
 import { DataCell } from '$lib/models/DataCell';
 import { DataRow } from '$lib/models/DataRow';
 import { getDataRows } from './getDataRows';
@@ -25,21 +25,18 @@ describe('getDataRows', () => {
 	];
 
 	const columns: DataColumn<SampleRow>[] = [
-		{
-			type: 'data',
+		new DataColumn({
 			key: 'firstName',
 			header: 'First Name',
-		},
-		{
-			type: 'data',
+		}),
+		new DataColumn({
 			key: 'lastName',
 			header: 'Last Name',
-		},
-		{
-			type: 'data',
+		}),
+		new DataColumn({
 			key: 'progress',
 			header: 'Progress',
-		},
+		}),
 	];
 
 	describe('data shape', () => {

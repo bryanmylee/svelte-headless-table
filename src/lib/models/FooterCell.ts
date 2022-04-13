@@ -1,84 +1,68 @@
 import { NBSP } from '$lib/constants';
 import type { ColumnLabel } from '$lib/types/ColumnLabel';
+import type { RenderProps } from '$lib/types/RenderProps';
+import { isFunction } from '$lib/utils/isFunction';
 
-export type FooterCellProps = {
+export interface FooterCellAttrs {
 	colspan: number;
-};
-
-export interface FooterCellMethods<Item extends object> {
-	getProps: () => FooterCellProps;
 }
 
-export type FooterGroupCellData<Item extends object> = {
-	type: 'group';
+export interface FooterCellInit<Item extends object> {
 	colspan: number;
 	label: ColumnLabel<Item>;
-};
+}
 
-export class FooterGroupCell<Item extends object>
-	implements FooterGroupCellData<Item>, FooterCellMethods<Item>
-{
-	type = 'group' as const;
+export class FooterCell<Item extends object> implements FooterCellInit<Item> {
 	colspan!: number;
 	label!: ColumnLabel<Item>;
-	constructor(props: Omit<FooterGroupCellData<Item>, 'type'>) {
-		Object.assign(this, props);
+	constructor({ colspan, label }: FooterCellInit<Item>) {
+		Object.assign(this, { colspan, label });
 	}
-	getProps() {
+	getAttrs(): FooterCellAttrs {
 		return {
 			colspan: this.colspan,
 		};
 	}
+	render(): RenderProps {
+		if (typeof this.label === 'string') {
+			return { text: this.label };
+		}
+		if (typeof this.label === 'object') {
+			return this.label;
+		}
+		if (isFunction(this.label)) {
+			// const label = this.label({ data });
+			// if (typeof label === 'string') {
+			// 	return { text: label };
+			// }
+			// return label;
+		}
+		return {};
+	}
 }
 
-export type FooterDataCellData<Item extends object> = {
-	type: 'data';
-	colspan: 1;
-	label: ColumnLabel<Item>;
+export class FooterGroupCell<Item extends object> extends FooterCell<Item> {
+	constructor(init: FooterCellInit<Item>) {
+		super(init);
+	}
+}
+
+interface FooterDataCellInit<Item extends object> {
 	key: keyof Item;
-};
+}
 
-export class FooterDataCell<Item extends object>
-	implements FooterDataCellData<Item>, FooterCellMethods<Item>
-{
-	type = 'data' as const;
-	colspan = 1 as const;
-	label!: ColumnLabel<Item>;
+export class FooterDataCell<Item extends object> extends FooterCell<Item> {
 	key!: keyof Item;
-	constructor(props: Omit<FooterDataCellData<Item>, 'type' | 'colspan'>) {
-		Object.assign(this, props);
-	}
-	getProps() {
-		return {
-			colspan: this.colspan,
-		};
+	constructor({ key, label }: Omit<FooterCellInit<Item>, 'colspan'> & FooterDataCellInit<Item>) {
+		super({ label, colspan: 1 });
+		Object.assign(this, { key });
 	}
 }
 
-export type FooterBlankCellData = {
-	type: 'blank';
-	colspan: 1;
-	label: typeof NBSP;
-};
-class FooterBlankCell implements FooterBlankCellData, FooterCellMethods<object> {
-	type = 'blank' as const;
-	colspan = 1 as const;
-	label = NBSP as typeof NBSP;
-	getProps() {
-		return {
-			colspan: this.colspan,
-		};
+export class FooterBlankCell extends FooterCell<object> {
+	constructor() {
+		super({ colspan: 1, label: NBSP });
 	}
 }
 
 export const FOOTER_BLANK = new FooterBlankCell();
-
-export type FooterCellData<Item extends object> =
-	| FooterGroupCellData<Item>
-	| FooterDataCellData<Item>
-	| FooterBlankCellData;
-
-export type FooterCell<Item extends object> =
-	| FooterGroupCell<Item>
-	| FooterDataCell<Item>
-	| FooterBlankCell;

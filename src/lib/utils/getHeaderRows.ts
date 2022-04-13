@@ -5,7 +5,7 @@ import {
 	type HeaderCell,
 } from '$lib/models/HeaderCell';
 import { sum } from './math';
-import type { Column } from '$lib/models/Column';
+import { DataColumn, GroupColumn, type Column } from '$lib/models/Column';
 import { HeaderRow } from '$lib/models/HeaderRow';
 
 /**
@@ -28,7 +28,7 @@ const _getHeaderRowsData = <Item extends object>(columns: Column<Item>[]): Heade
 	 * groups:  [[..] [..]]  [[..]]       [[..] [..] [..]]
 	 */
 	const columnGroups: HeaderRow<Item>[][] = columns.map((column) => {
-		if (column.type === 'data') {
+		if (column instanceof DataColumn) {
 			return [
 				{
 					cells: [
@@ -39,7 +39,7 @@ const _getHeaderRowsData = <Item extends object>(columns: Column<Item>[]): Heade
 					],
 				},
 			];
-		} else {
+		} else if (column instanceof GroupColumn) {
 			/**
 			 * Get the rows representing this column.
 			 *
@@ -65,6 +65,8 @@ const _getHeaderRowsData = <Item extends object>(columns: Column<Item>[]): Heade
 				},
 				...rows,
 			];
+		} else {
+			throw new Error('invalid Column subclass');
 		}
 	});
 

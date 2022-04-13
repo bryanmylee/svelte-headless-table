@@ -6,7 +6,7 @@ export type HeaderRowData<Item extends object> = {
 
 export class HeaderRow<Item extends object> implements HeaderRowData<Item> {
 	cells!: HeaderCell<Item>[];
-	constructor(props: HeaderRowData<Item>) {
-		Object.assign(this, props);
+	constructor({ cells }: HeaderRowData<Item>) {
+		Object.assign(this, { cells });
 	}
 }

@@ -1,12 +1,12 @@
 import type { FooterCell } from './FooterCell';
 
-export type FooterRowData<Item extends object> = {
+export type FooterRowInit<Item extends object> = {
 	cells: FooterCell<Item>[];
 };
 
-export class FooterRow<Item extends object> implements FooterRowData<Item> {
+export class FooterRow<Item extends object> implements FooterRowInit<Item> {
 	cells!: FooterCell<Item>[];
-	constructor(props: FooterRowData<Item>) {
-		Object.assign(this, props);
+	constructor({ cells }: FooterRowInit<Item>) {
+		Object.assign(this, { cells });
 	}
 }
