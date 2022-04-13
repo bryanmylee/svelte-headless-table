@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
-	import type { Column } from '$lib/types/Column';
+	import type { Column } from '$lib/models/Column';
 	import { getDataColumns } from '$lib/utils/getDataColumns';
 	import { getDataRows } from '$lib/utils/getDataRows';
 	import { getFooterRows } from '$lib/utils/getFooterRows';

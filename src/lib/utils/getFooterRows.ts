@@ -1,4 +1,4 @@
-import type { Column } from '$lib/types/Column';
+import type { Column } from '$lib/models/Column';
 import {
 	FooterDataCell,
 	FooterGroupCell,

@@ -5,7 +5,7 @@ import {
 	type HeaderCell,
 } from '$lib/models/HeaderCell';
 import { sum } from './math';
-import type { Column } from '$lib/types/Column';
+import type { Column } from '$lib/models/Column';
 import { HeaderRow } from '$lib/models/HeaderRow';
 
 /**

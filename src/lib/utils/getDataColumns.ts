@@ -1,4 +1,4 @@
-import type { Column, ColumnData } from '$lib/types/Column';
+import type { Column, ColumnData } from '$lib/models/Column';
 
 /**
  * Get the data keys in the order of column access. This is the same as the

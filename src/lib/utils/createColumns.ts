@@ -1,4 +1,4 @@
-import type { Column, ColumnGroup, ColumnData } from '$lib/types/Column';
+import type { Column, ColumnGroup, ColumnData } from '$lib/models/Column';
 import type { ColumnGroupProps, ColumnDataProps } from '$lib/types/ColumnProps';
 
 export const createColumns = <Item extends object>(columns: Column<Item>[]): Column<Item>[] => {

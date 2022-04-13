@@ -1,5 +1,5 @@
-import type { ColumnLabel } from './ColumnLabel';
-import type { DataCellLabel } from './DataCellLabel';
+import type { ColumnLabel } from '$lib/types/ColumnLabel';
+import type { DataCellLabel } from '$lib/types/DataCellLabel';
 
 export type ColumnGroup<Item extends object> = {
 	type: 'group';

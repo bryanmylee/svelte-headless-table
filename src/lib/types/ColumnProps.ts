@@ -1,4 +1,4 @@
-import type { Column } from './Column';
+import type { Column } from '$lib/models/Column';
 import type { ColumnLabel } from './ColumnLabel';
 import type { DataCellLabel } from './DataCellLabel';
 

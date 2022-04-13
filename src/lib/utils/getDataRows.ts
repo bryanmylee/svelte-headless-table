@@ -1,4 +1,4 @@
-import type { ColumnData } from '$lib/types/Column';
+import type { ColumnData } from '$lib/models/Column';
 import { DataCell } from '$lib/models/DataCell';
 import { DataRow } from '$lib/models/DataRow';
 
