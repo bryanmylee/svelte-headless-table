@@ -1,7 +1,7 @@
 import { HEADER_BLANK, type HeaderCell } from '$lib/types/HeaderCell';
 import { sum } from './math';
 import type { Column } from '$lib/types/Column';
-import type { HeaderRow } from '$lib/types/HeaderRow';
+import { HeaderRow } from '$lib/types/HeaderRow';
 
 /**
  * Transform the column representation of the table headers into rows in the table head.
@@ -9,10 +9,12 @@ import type { HeaderRow } from '$lib/types/HeaderRow';
  * @returns A list of header groups representing rows in the table head.
  */
 export const getHeaderRows = <Item extends object>(columns: Column<Item>[]): HeaderRow<Item>[] => {
-	return _getHeaderRows(columns);
+	const rowsData = _getHeaderRowsData(columns);
+	const rows = rowsData.map((row) => new HeaderRow(row));
+	return rows;
 };
 
-const _getHeaderRows = <Item extends object>(columns: Column<Item>[]): HeaderRow<Item>[] => {
+const _getHeaderRowsData = <Item extends object>(columns: Column<Item>[]): HeaderRow<Item>[] => {
 	/**
 	 * Map each column to a list of header rows.
 	 * The number of rows depends on the depth of nested columns in each column.
@@ -41,7 +43,7 @@ const _getHeaderRows = <Item extends object>(columns: Column<Item>[]): HeaderRow
 			 * column: {...}
 			 * rows:   [[..] [..]]
 			 */
-			const rows = _getHeaderRows(column.columns);
+			const rows = _getHeaderRowsData(column.columns);
 			/**
 			 * The colspan of this group is the sum of colspans of the row directly below.
 			 */
