@@ -1,14 +1,14 @@
 <script lang="ts">
-	import type { ColumnDef } from '$lib/types/ColumnDef';
+	import type { Column } from '$lib/types/Column';
 	import { getDataRows } from '$lib/utils/getDataRows';
 	import { getHeaderRows } from '$lib/utils/getHeaderRows';
-	import { getLeafColumns } from '$lib/utils/getLeafColumns';
+	import { getDataColumns } from '$lib/utils/getDataColumns';
 
 	type Item = $$Generic<object>;
 
-	export let columns: ColumnDef<Item>[];
-	$: leafColumns = getLeafColumns(columns);
-	$: keys = leafColumns.map((column) => column.key);
+	export let columns: Column<Item>[];
+	$: dataColumns = getDataColumns(columns);
+	$: keys = dataColumns.map((column) => column.key);
 	$: headerRows = getHeaderRows(columns);
 
 	export let data: Item[];
@@ -20,5 +20,5 @@
 </script>
 
 <table class={className} {style}>
-	<slot {leafColumns} {headerRows} {dataRows} />
+	<slot {dataColumns} {headerRows} {dataRows} />
 </table>

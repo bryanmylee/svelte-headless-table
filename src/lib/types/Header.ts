@@ -7,7 +7,7 @@ export type HeaderGroup = {
 };
 
 export type HeaderLeaf<Item extends object> = {
-	type: 'leaf';
+	type: 'data';
 	header: string;
 	colspan: 1;
 	key: keyof Item;

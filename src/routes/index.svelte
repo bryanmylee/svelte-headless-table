@@ -1,44 +1,44 @@
 <script lang="ts">
 	import Table from '$lib/components/Table.svelte';
 	import { sampleRows, type SampleRow } from '$lib/sampleRows';
-	import type { ColumnDef } from '$lib/types/ColumnDef';
+	import { createColumns, createDataColumn, createGroup } from '$lib/utils/createColumns';
 
-	const columns: ColumnDef<SampleRow>[] = [
-		{
+	const columns = createColumns<SampleRow>([
+		createGroup({
 			header: 'Name',
 			columns: [
-				{
+				createDataColumn({
 					header: 'First Name',
 					key: 'firstName',
-				},
-				{
+				}),
+				createDataColumn({
 					header: 'Last Name',
 					key: 'lastName',
-				},
+				}),
 			],
-		},
-		{
+		}),
+		createGroup({
 			header: 'Info',
 			columns: [
-				{
+				createDataColumn({
 					header: 'Age',
 					key: 'age',
-				},
-				{
+				}),
+				createDataColumn({
 					header: 'Visits',
 					key: 'visits',
-				},
-				{
+				}),
+				createDataColumn({
 					header: 'Status',
 					key: 'status',
-				},
-				{
+				}),
+				createDataColumn({
 					header: 'Profile Progress',
 					key: 'progress',
-				},
+				}),
 			],
-		},
-	];
+		}),
+	]);
 </script>
 
 <h1>svelte-tables</h1>
