@@ -1,6 +1,6 @@
 import type { SampleRow } from '$lib/sampleRows';
-import type { FooterCell } from '$lib/types/FooterCell';
-import { NBSP } from '../constants';
+import { FooterDataCell, FooterGroupCell, FOOTER_BLANK } from '$lib/types/FooterCell';
+import { FooterRow } from '$lib/types/FooterRow';
 import { createColumns, createDataColumn, createGroup } from './createColumns';
 import { getFooterRows } from './getFooterRows';
 
@@ -23,7 +23,7 @@ describe('getFooterRows', () => {
 
 		const actual = getFooterRows(columns);
 
-		const expected: FooterCell<SampleRow>[][] = [];
+		const expected: FooterRow<SampleRow>[] = [];
 
 		expect(actual).toStrictEqual(expected);
 	});
@@ -54,27 +54,29 @@ describe('getFooterRows', () => {
 
 		const actual = getFooterRows(columns);
 
-		const expected: FooterCell<SampleRow>[][] = [
-			[
-				{
-					type: 'data',
-					label: 'First Name',
-					key: 'firstName',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Last Name',
-					key: 'lastName',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Age',
-					key: 'age',
-					colspan: 1,
-				},
-			],
+		const expected: FooterRow<SampleRow>[] = [
+			new FooterRow({
+				cells: [
+					new FooterDataCell({
+						type: 'data',
+						label: 'First Name',
+						key: 'firstName',
+						colspan: 1,
+					}),
+					new FooterDataCell({
+						type: 'data',
+						label: 'Last Name',
+						key: 'lastName',
+						colspan: 1,
+					}),
+					new FooterDataCell({
+						type: 'data',
+						label: 'Age',
+						key: 'age',
+						colspan: 1,
+					}),
+				],
+			}),
 		];
 
 		expect(actual).toStrictEqual(expected);
@@ -104,14 +106,16 @@ describe('getFooterRows', () => {
 
 		const actual = getFooterRows(columns);
 
-		const expected: FooterCell<SampleRow>[][] = [
-			[
-				{
-					type: 'group',
-					colspan: 3,
-					label: 'Info',
-				},
-			],
+		const expected: FooterRow<SampleRow>[] = [
+			new FooterRow({
+				cells: [
+					new FooterGroupCell({
+						type: 'group',
+						colspan: 3,
+						label: 'Info',
+					}),
+				],
+			}),
 		];
 
 		expect(actual).toStrictEqual(expected);
@@ -138,27 +142,29 @@ describe('getFooterRows', () => {
 
 		const actual = getFooterRows(columns);
 
-		const expected: FooterCell<SampleRow>[][] = [
-			[
-				{
-					type: 'data',
-					label: 'First Name',
-					key: 'firstName',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Last Name',
-					key: 'lastName',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Age',
-					key: 'age',
-					colspan: 1,
-				},
-			],
+		const expected: FooterRow<SampleRow>[] = [
+			new FooterRow({
+				cells: [
+					new FooterDataCell({
+						type: 'data',
+						label: 'First Name',
+						key: 'firstName',
+						colspan: 1,
+					}),
+					new FooterDataCell({
+						type: 'data',
+						label: 'Last Name',
+						key: 'lastName',
+						colspan: 1,
+					}),
+					new FooterDataCell({
+						type: 'data',
+						label: 'Age',
+						key: 'age',
+						colspan: 1,
+					}),
+				],
+			}),
 		];
 
 		expect(actual).toStrictEqual(expected);
@@ -191,34 +197,38 @@ describe('getFooterRows', () => {
 
 		const actual = getFooterRows(columns);
 
-		const expected: FooterCell<SampleRow>[][] = [
-			[
-				{
-					type: 'data',
-					label: 'First Name',
-					key: 'firstName',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Last Name',
-					key: 'lastName',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Age',
-					key: 'age',
-					colspan: 1,
-				},
-			],
-			[
-				{
-					type: 'group',
-					colspan: 3,
-					label: 'Info',
-				},
-			],
+		const expected: FooterRow<SampleRow>[] = [
+			new FooterRow({
+				cells: [
+					new FooterDataCell({
+						type: 'data',
+						label: 'First Name',
+						key: 'firstName',
+						colspan: 1,
+					}),
+					new FooterDataCell({
+						type: 'data',
+						label: 'Last Name',
+						key: 'lastName',
+						colspan: 1,
+					}),
+					new FooterDataCell({
+						type: 'data',
+						label: 'Age',
+						key: 'age',
+						colspan: 1,
+					}),
+				],
+			}),
+			new FooterRow({
+				cells: [
+					new FooterGroupCell({
+						type: 'group',
+						colspan: 3,
+						label: 'Info',
+					}),
+				],
+			}),
 		];
 
 		expect(actual).toStrictEqual(expected);
@@ -267,51 +277,55 @@ describe('getFooterRows', () => {
 
 		const actual = getFooterRows(columns);
 
-		const expected: FooterCell<SampleRow>[][] = [
-			[
-				{
-					type: 'data',
-					label: 'First Name',
-					key: 'firstName',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Last Name',
-					key: 'lastName',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Age',
-					key: 'age',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Status',
-					key: 'status',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Profile Progress',
-					key: 'progress',
-					colspan: 1,
-				},
-			],
-			[
-				{
-					type: 'group',
-					colspan: 2,
-					label: 'Name',
-				},
-				{
-					type: 'group',
-					colspan: 3,
-					label: 'Info',
-				},
-			],
+		const expected: FooterRow<SampleRow>[] = [
+			new FooterRow({
+				cells: [
+					new FooterDataCell({
+						type: 'data',
+						label: 'First Name',
+						key: 'firstName',
+						colspan: 1,
+					}),
+					new FooterDataCell({
+						type: 'data',
+						label: 'Last Name',
+						key: 'lastName',
+						colspan: 1,
+					}),
+					new FooterDataCell({
+						type: 'data',
+						label: 'Age',
+						key: 'age',
+						colspan: 1,
+					}),
+					new FooterDataCell({
+						type: 'data',
+						label: 'Status',
+						key: 'status',
+						colspan: 1,
+					}),
+					new FooterDataCell({
+						type: 'data',
+						label: 'Profile Progress',
+						key: 'progress',
+						colspan: 1,
+					}),
+				],
+			}),
+			new FooterRow({
+				cells: [
+					new FooterGroupCell({
+						type: 'group',
+						colspan: 2,
+						label: 'Name',
+					}),
+					new FooterGroupCell({
+						type: 'group',
+						colspan: 3,
+						label: 'Info',
+					}),
+				],
+			}),
 		];
 
 		expect(actual).toStrictEqual(expected);
@@ -354,61 +368,53 @@ describe('getFooterRows', () => {
 
 		const actual = getFooterRows(columns);
 
-		const expected: FooterCell<SampleRow>[][] = [
-			[
-				{
-					type: 'data',
-					label: 'First Name',
-					key: 'firstName',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Last Name',
-					key: 'lastName',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Age',
-					key: 'age',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Status',
-					key: 'status',
-					colspan: 1,
-				},
-				{
-					type: 'data',
-					label: 'Profile Progress',
-					key: 'progress',
-					colspan: 1,
-				},
-			],
-			[
-				{
-					type: 'group',
-					colspan: 2,
-					label: 'Name',
-				},
-				{
-					type: 'blank',
-					colspan: 1,
-					label: NBSP,
-				},
-				{
-					type: 'blank',
-					colspan: 1,
-					label: NBSP,
-				},
-				{
-					type: 'blank',
-					colspan: 1,
-					label: NBSP,
-				},
-			],
+		const expected: FooterRow<SampleRow>[] = [
+			new FooterRow({
+				cells: [
+					new FooterDataCell({
+						type: 'data',
+						label: 'First Name',
+						key: 'firstName',
+						colspan: 1,
+					}),
+					new FooterDataCell({
+						type: 'data',
+						label: 'Last Name',
+						key: 'lastName',
+						colspan: 1,
+					}),
+					new FooterDataCell({
+						type: 'data',
+						label: 'Age',
+						key: 'age',
+						colspan: 1,
+					}),
+					new FooterDataCell({
+						type: 'data',
+						label: 'Status',
+						key: 'status',
+						colspan: 1,
+					}),
+					new FooterDataCell({
+						type: 'data',
+						label: 'Profile Progress',
+						key: 'progress',
+						colspan: 1,
+					}),
+				],
+			}),
+			new FooterRow({
+				cells: [
+					new FooterGroupCell({
+						type: 'group',
+						colspan: 2,
+						label: 'Name',
+					}),
+					FOOTER_BLANK,
+					FOOTER_BLANK,
+					FOOTER_BLANK,
+				],
+			}),
 		];
 
 		expect(actual).toStrictEqual(expected);

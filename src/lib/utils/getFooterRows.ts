@@ -1,18 +1,25 @@
 import type { Column } from '$lib/types/Column';
-import { FOOTER_BLANK, type FooterCell } from '$lib/types/FooterCell';
+import {
+	FooterDataCell,
+	FooterGroupCell,
+	FOOTER_BLANK,
+	type FooterCell,
+} from '$lib/types/FooterCell';
+import { FooterRow } from '$lib/types/FooterRow';
 import { sum } from './math';
 
-export const getFooterRows = <Item extends object>(
-	columns: Column<Item>[]
-): FooterCell<Item>[][] => {
-	const rows = _getFooterRows(columns);
+export const getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterRow<Item>[] => {
+	const rowsData = _getFooterRows(columns);
 	/**
 	 * Remove rows with all blanks.
 	 */
-	return rows.filter((row) => row.some((cell) => cell.type !== 'blank'));
+	const noBlanksRowsData = rowsData.filter((row) =>
+		row.cells.some((cell) => cell.type !== 'blank')
+	);
+	return noBlanksRowsData.map((row) => new FooterRow(row));
 };
 
-const _getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterCell<Item>[][] => {
+const _getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterRow<Item>[] => {
 	/**
 	 * Map each column to a list of footer rows.
 	 * The number of rows depends on the depth of nested columns in each column.
@@ -20,20 +27,26 @@ const _getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterCel
 	 * columns: {...}        {...}        {...}
 	 * groups:  [[..] [..]]  [[..]]       [[..] [..] [..]]
 	 */
-	const columnGroups: FooterCell<Item>[][][] = columns.map((column) => {
+	const columnGroups: FooterRow<Item>[][] = columns.map((column) => {
 		if (column.type === 'data') {
 			if (column.footer === undefined) {
-				return [[FOOTER_BLANK]];
+				return [
+					{
+						cells: [FOOTER_BLANK],
+					},
+				];
 			}
 			return [
-				[
-					{
-						type: 'data',
-						colspan: 1,
-						key: column.key,
-						label: column.footer,
-					},
-				],
+				{
+					cells: [
+						new FooterDataCell({
+							type: 'data',
+							colspan: 1,
+							key: column.key,
+							label: column.footer,
+						}),
+					],
+				},
 			];
 		} else {
 			/**
@@ -47,23 +60,30 @@ const _getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterCel
 			/**
 			 * The colspan of this group is the sum of colspans of the row directly below.
 			 */
-			const colspan = sum(...rows[0].map((firstRowCell) => firstRowCell.colspan));
+			const colspan = sum(...rows[0].cells.map((firstRowCell) => firstRowCell.colspan));
 
 			/**
 			 * Add this group on top of child column rows.
 			 */
 
 			if (column.footer === undefined) {
-				return [Array(colspan).fill(FOOTER_BLANK), ...rows];
+				return [
+					{
+						cells: Array(colspan).fill(FOOTER_BLANK),
+					},
+					...rows,
+				];
 			}
 			return [
-				[
-					{
-						type: 'group',
-						colspan,
-						label: column.footer,
-					},
-				],
+				{
+					cells: [
+						new FooterGroupCell({
+							type: 'group',
+							colspan,
+							label: column.footer,
+						}),
+					],
+				},
 				...rows,
 			];
 		}
@@ -71,14 +91,17 @@ const _getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterCel
 
 	const height = Math.max(...columnGroups.map((rows) => rows.length));
 	const colspan = sum(
-		...columnGroups.map((rows) => sum(...rows[0].map((firstRowCell) => firstRowCell.colspan)))
+		...columnGroups.map((rows) => sum(...rows[0].cells.map((firstRowCell) => firstRowCell.colspan)))
 	);
 	/**
 	 * Create a grid of blank header cells.
 	 */
-	const resultRows: Maybe<FooterCell<Item>>[][] = [];
+	type FooterRowMaybeItem<Item extends object> =
+		| FooterRow<Item>
+		| { cells: Maybe<FooterCell<Item>>[] };
+	const resultRows: FooterRowMaybeItem<Item>[] = [];
 	for (let i = 0; i < height; i++) {
-		resultRows.push(Array(colspan).fill(FOOTER_BLANK));
+		resultRows.push({ cells: Array(colspan).fill(FOOTER_BLANK) });
 	}
 
 	/**
@@ -89,19 +112,19 @@ const _getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterCel
 		const numBlankRows = height - rows.length;
 		rows.forEach((row, rowIdx) => {
 			let columnOffset = 0;
-			row.forEach((cell) => {
-				resultRows[numBlankRows + rowIdx][groupColumnOffset + columnOffset] = cell;
+			row.cells.forEach((cell) => {
+				resultRows[numBlankRows + rowIdx].cells[groupColumnOffset + columnOffset] = cell;
 				/**
 				 * Set cells to be merged as undefined.
 				 */
 				for (let blankOffset = 1; blankOffset < cell.colspan; blankOffset++) {
-					resultRows[numBlankRows + rowIdx][groupColumnOffset + columnOffset + blankOffset] =
+					resultRows[numBlankRows + rowIdx].cells[groupColumnOffset + columnOffset + blankOffset] =
 						undefined;
 				}
 				columnOffset += cell.colspan;
 			});
 		});
-		groupColumnOffset += sum(...rows[0].map((firstRowCell) => firstRowCell.colspan));
+		groupColumnOffset += sum(...rows[0].cells.map((firstRowCell) => firstRowCell.colspan));
 	});
 
 	/**
@@ -112,9 +135,9 @@ const _getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterCel
 	/**
 	 * Remove undefined elements.
 	 */
-	const noUndefinedCells = resultRows.map((row) =>
-		row.filter((cell) => cell !== undefined)
-	) as FooterCell<Item>[][];
+	const noUndefinedCells = resultRows.map((row) => ({
+		cells: row.cells.filter((cell) => cell !== undefined),
+	})) as FooterRow<Item>[];
 
 	return noUndefinedCells;
 };

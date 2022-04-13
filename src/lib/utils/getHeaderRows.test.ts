@@ -309,5 +309,36 @@ describe('getHeaderRows', () => {
 				expect(row).toBeInstanceOf(HeaderRow);
 			});
 		});
+
+		it('creates instances of HeaderGroupCell and HeaderDataCell', () => {
+			const columns = createColumns<SampleRow>([
+				createGroup({
+					header: 'Info',
+					columns: [
+						createDataColumn({
+							header: 'First Name',
+							key: 'firstName',
+						}),
+						createDataColumn({
+							header: 'Last Name',
+							key: 'lastName',
+						}),
+						createDataColumn({
+							header: 'Age',
+							key: 'age',
+						}),
+					],
+				}),
+			]);
+
+			const actual = getHeaderRows(columns);
+
+			actual[0].cells.forEach((cell) => {
+				expect(cell).toBeInstanceOf(HeaderGroupCell);
+			});
+			actual[1].cells.forEach((cell) => {
+				expect(cell).toBeInstanceOf(HeaderDataCell);
+			});
+		});
 	});
 });

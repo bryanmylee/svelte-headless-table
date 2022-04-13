@@ -84,9 +84,7 @@ const _getHeaderRowsData = <Item extends object>(columns: Column<Item>[]): Heade
 		| { cells: Maybe<HeaderCell<Item>>[] };
 	const resultRows: HeaderRowMaybeItem<Item>[] = [];
 	for (let i = 0; i < height; i++) {
-		resultRows.push({
-			cells: Array(colspan).fill(HEADER_BLANK),
-		});
+		resultRows.push({ cells: Array(colspan).fill(HEADER_BLANK) });
 	}
 
 	/**
