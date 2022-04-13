@@ -6,7 +6,7 @@
 	import { createColumns, createDataColumn, createGroup } from '$lib/utils/createColumns';
 	import { getFooterProps } from '$lib/utils/getFooterProps';
 	import { getHeaderProps } from '$lib/utils/getHeaderProps';
-	import { sum } from '$lib/utils/math';
+	import { mean, sum } from '$lib/utils/math';
 	import { renderFooter } from '$lib/utils/renderFooter';
 	import { renderHeader } from '$lib/utils/renderHeader';
 	import { renderData } from '$lib/utils/renderData';
@@ -31,8 +31,7 @@
 			columns: [
 				createDataColumn({
 					header: 'Age',
-					footer: ({ data }) =>
-						`Average: ${sum(...data.map((d) => d['age'])) / Math.max(data.length, 1)}`,
+					footer: ({ data }) => `Average: ${mean(...data.map((d) => d['age']))}`,
 					key: 'age',
 				}),
 				createDataColumn({
@@ -57,8 +56,7 @@
 				}),
 				createDataColumn({
 					header: 'Profile Progress',
-					footer: ({ data }) =>
-						`Average: ${sum(...data.map((d) => d['progress'])) / Math.max(data.length, 1)}`,
+					footer: ({ data }) => `Average: ${mean(...data.map((d) => d['progress']))}`,
 					key: 'progress',
 				}),
 			],
