@@ -8,7 +8,7 @@ export { renderHeader } from '$lib/utils/renderHeader';
 export { renderData } from '$lib/utils/renderData';
 export type { Column, DataColumn, GroupColumn } from '$lib/models/Column';
 export type { ColumnLabel, ColumnLabelRenderProps } from '$lib/types/ColumnLabel';
-export type { ColumnDataProps, ColumnGroupProps } from '$lib/types/ColumnProps';
+export type { CreateDataColumnProps, CreateGroupProps } from '$lib/types/ColumnProps';
 export type { DataCell } from '$lib/models/DataCell';
 export type { DataCellLabel, DataCellLabelRenderProps } from '$lib/types/DataCellLabel';
 export type { DataRow } from '$lib/models/DataRow';

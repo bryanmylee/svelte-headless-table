@@ -1,12 +1,12 @@
 import type { Column, GroupColumn, DataColumn } from '$lib/models/Column';
-import type { ColumnGroupProps, ColumnDataProps } from '$lib/types/ColumnProps';
+import type { CreateGroupProps, CreateDataColumnProps } from '$lib/types/ColumnProps';
 
 export const createColumns = <Item extends object>(columns: Column<Item>[]): Column<Item>[] => {
 	return columns;
 };
 
 export const createGroup = <Item extends object>(
-	groupProps: ColumnGroupProps<Item>
+	groupProps: CreateGroupProps<Item>
 ): GroupColumn<Item> => {
 	return {
 		type: 'group',
@@ -15,7 +15,7 @@ export const createGroup = <Item extends object>(
 };
 
 export const createDataColumn = <Item extends object>(
-	columnProps: ColumnDataProps<Item>
+	columnProps: CreateDataColumnProps<Item>
 ): DataColumn<Item> => {
 	return {
 		type: 'data',

@@ -2,13 +2,13 @@ import type { Column } from '$lib/models/Column';
 import type { ColumnLabel } from './ColumnLabel';
 import type { DataCellLabel } from './DataCellLabel';
 
-export type ColumnGroupProps<Item extends object> = {
+export type CreateGroupProps<Item extends object> = {
 	header: ColumnLabel<Item>;
 	footer?: ColumnLabel<Item>;
 	columns: Column<Item>[];
 };
 
-export type ColumnDataProps<Item extends object> = {
+export type CreateDataColumnProps<Item extends object> = {
 	header: ColumnLabel<Item>;
 	footer?: ColumnLabel<Item>;
 	cell?: DataCellLabel<Item>;
