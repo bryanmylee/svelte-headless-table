@@ -9,6 +9,7 @@
 	import { sum } from '$lib/utils/math';
 	import { renderFooter } from '$lib/utils/renderFooter';
 	import { renderHeader } from '$lib/utils/renderHeader';
+	import { renderData } from '$lib/utils/renderData';
 
 	const columns = createColumns<SampleRow>([
 		createGroup({
@@ -77,7 +78,9 @@
 		{#each dataRows as dataRow}
 			<tr>
 				{#each dataRow.cells as cell}
-					<td>{cell.value}</td>
+					<td>
+						<Render {...renderData(cell)} />
+					</td>
 				{/each}
 			</tr>
 		{/each}

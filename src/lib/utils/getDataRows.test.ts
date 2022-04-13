@@ -4,7 +4,21 @@ import { getDataRows } from './getDataRows';
 
 describe('getDataRows', () => {
 	test('transforms empty data', () => {
-		const actual = getDataRows<SampleRow>([], ['firstName', 'lastName']);
+		const actual = getDataRows<SampleRow>(
+			[],
+			[
+				{
+					type: 'data',
+					key: 'firstName',
+					header: 'First Name',
+				},
+				{
+					type: 'data',
+					key: 'lastName',
+					header: 'Last Name',
+				},
+			]
+		);
 
 		const expected: DataRow<SampleRow>[] = [];
 
@@ -31,7 +45,23 @@ describe('getDataRows', () => {
 					visits: 10,
 				},
 			],
-			['firstName', 'lastName', 'progress']
+			[
+				{
+					type: 'data',
+					key: 'firstName',
+					header: 'First Name',
+				},
+				{
+					type: 'data',
+					key: 'lastName',
+					header: 'Last Name',
+				},
+				{
+					type: 'data',
+					key: 'progress',
+					header: 'Progress',
+				},
+			]
 		);
 
 		const expected: DataRow<SampleRow>[] = [
@@ -40,14 +70,17 @@ describe('getDataRows', () => {
 					{
 						key: 'firstName',
 						value: 'Adam',
+						label: undefined,
 					},
 					{
 						key: 'lastName',
 						value: 'West',
+						label: undefined,
 					},
 					{
 						key: 'progress',
 						value: 75,
+						label: undefined,
 					},
 				],
 			},
@@ -56,14 +89,17 @@ describe('getDataRows', () => {
 					{
 						key: 'firstName',
 						value: 'Becky',
+						label: undefined,
 					},
 					{
 						key: 'lastName',
 						value: 'White',
+						label: undefined,
 					},
 					{
 						key: 'progress',
 						value: 43,
+						label: undefined,
 					},
 				],
 			},

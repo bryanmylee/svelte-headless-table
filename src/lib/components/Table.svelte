@@ -9,12 +9,11 @@
 
 	export let columns: Column<Item>[];
 	$: dataColumns = getDataColumns(columns);
-	$: keys = dataColumns.map((column) => column.key);
 	$: headerRows = getHeaderRows(columns);
 	$: footerRows = getFooterRows(columns);
 
 	export let data: Item[];
-	$: dataRows = getDataRows(data, keys);
+	$: dataRows = getDataRows(data, dataColumns);
 
 	let className: Maybe<string> = undefined;
 	export { className as class };
