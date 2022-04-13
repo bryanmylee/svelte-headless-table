@@ -47,6 +47,12 @@
 							text: 'Status',
 						},
 					},
+					cell: ({ value }) => ({
+						component: Italic,
+						props: {
+							text: value,
+						},
+					}),
 					key: 'status',
 				}),
 				createDataColumn({
