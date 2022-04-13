@@ -5,7 +5,6 @@
 		createColumns,
 		createDataColumn,
 		createGroup,
-		getFooterProps,
 		renderFooter,
 		renderHeader,
 		renderData,
@@ -97,7 +96,7 @@
 			{#each footerRows as footerRow}
 				<tr>
 					{#each footerRow.cells as cell}
-						<td {...getFooterProps(cell)}>
+						<td {...cell.getProps()}>
 							<Render {...renderFooter(cell, { data })} />
 						</td>
 					{/each}
