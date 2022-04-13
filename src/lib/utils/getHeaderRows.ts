@@ -9,13 +9,10 @@ import type { HeaderRow } from '$lib/types/HeaderRow';
  * @returns A list of header groups representing rows in the table head.
  */
 export const getHeaderRows = <Item extends object>(columns: Column<Item>[]): HeaderRow<Item>[] => {
-	const cells = _getHeaderRows(columns);
-	return cells.map((rowCells) => ({
-		cells: rowCells,
-	}));
+	return _getHeaderRows(columns);
 };
 
-const _getHeaderRows = <Item extends object>(columns: Column<Item>[]): HeaderCell<Item>[][] => {
+const _getHeaderRows = <Item extends object>(columns: Column<Item>[]): HeaderRow<Item>[] => {
 	/**
 	 * Map each column to a list of header rows.
 	 * The number of rows depends on the depth of nested columns in each column.
@@ -23,17 +20,19 @@ const _getHeaderRows = <Item extends object>(columns: Column<Item>[]): HeaderCel
 	 * columns: {...}        {...}        {...}
 	 * groups:  [[..] [..]]  [[..]]       [[..] [..] [..]]
 	 */
-	const columnGroups: HeaderCell<Item>[][][] = columns.map((column) => {
+	const columnGroups: HeaderRow<Item>[][] = columns.map((column) => {
 		if (column.type === 'data') {
 			return [
-				[
-					{
-						type: 'data',
-						colspan: 1,
-						key: column.key,
-						label: column.header,
-					},
-				],
+				{
+					cells: [
+						{
+							type: 'data',
+							colspan: 1,
+							key: column.key,
+							label: column.header,
+						},
+					],
+				},
 			];
 		} else {
 			/**
@@ -46,18 +45,20 @@ const _getHeaderRows = <Item extends object>(columns: Column<Item>[]): HeaderCel
 			/**
 			 * The colspan of this group is the sum of colspans of the row directly below.
 			 */
-			const colspan = sum(...rows[0].map((firstRowCell) => firstRowCell.colspan));
+			const colspan = sum(...rows[0].cells.map((firstRowCell) => firstRowCell.colspan));
 			/**
 			 * Add this group on top of child column rows.
 			 */
 			return [
-				[
-					{
-						type: 'group',
-						colspan,
-						label: column.header,
-					},
-				],
+				{
+					cells: [
+						{
+							type: 'group',
+							colspan,
+							label: column.header,
+						},
+					],
+				},
 				...rows,
 			];
 		}
@@ -65,14 +66,20 @@ const _getHeaderRows = <Item extends object>(columns: Column<Item>[]): HeaderCel
 
 	const height = Math.max(...columnGroups.map((rows) => rows.length));
 	const colspan = sum(
-		...columnGroups.map((rows) => sum(...rows[0].map((firstRowCell) => firstRowCell.colspan)))
+		...columnGroups.map((rows) => sum(...rows[0].cells.map((firstRowCell) => firstRowCell.colspan)))
 	);
+
 	/**
 	 * Create a grid of blank header cells.
 	 */
-	const resultRows: Maybe<HeaderCell<Item>>[][] = [];
+	type HeaderRowMaybeItem<Item extends object> =
+		| HeaderRow<Item>
+		| { cells: Maybe<HeaderCell<Item>>[] };
+	const resultRows: HeaderRowMaybeItem<Item>[] = [];
 	for (let i = 0; i < height; i++) {
-		resultRows.push(Array(colspan).fill(HEADER_BLANK));
+		resultRows.push({
+			cells: Array(colspan).fill(HEADER_BLANK),
+		});
 	}
 
 	/**
@@ -83,27 +90,27 @@ const _getHeaderRows = <Item extends object>(columns: Column<Item>[]): HeaderCel
 		const numBlankRows = height - rows.length;
 		rows.forEach((row, rowIdx) => {
 			let columnOffset = 0;
-			row.forEach((cell) => {
-				resultRows[numBlankRows + rowIdx][groupColumnOffset + columnOffset] = cell;
+			row.cells.forEach((cell) => {
+				resultRows[numBlankRows + rowIdx].cells[groupColumnOffset + columnOffset] = cell;
 				/**
 				 * Set cells to be merged as undefined.
 				 */
 				for (let blankOffset = 1; blankOffset < cell.colspan; blankOffset++) {
-					resultRows[numBlankRows + rowIdx][groupColumnOffset + columnOffset + blankOffset] =
+					resultRows[numBlankRows + rowIdx].cells[groupColumnOffset + columnOffset + blankOffset] =
 						undefined;
 				}
 				columnOffset += cell.colspan;
 			});
 		});
-		groupColumnOffset += sum(...rows[0].map((firstRowCell) => firstRowCell.colspan));
+		groupColumnOffset += sum(...rows[0].cells.map((firstRowCell) => firstRowCell.colspan));
 	});
 
 	/**
 	 * Remove undefined elements.
 	 */
-	const noUndefinedCells = resultRows.map((row) =>
-		row.filter((cell) => cell !== undefined)
-	) as HeaderCell<Item>[][];
+	const noUndefinedCells = resultRows.map((row) => ({
+		cells: row.cells.filter((cell) => cell !== undefined),
+	})) as HeaderRow<Item>[];
 
 	return noUndefinedCells;
 };
