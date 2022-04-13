@@ -16,6 +16,7 @@ export class HeaderCell<Item extends object> implements HeaderCellInit<Item> {
 	colspan!: number;
 	label!: ColumnLabel<Item>;
 	constructor({ colspan, label }: HeaderCellInit<Item>) {
+		console.log('init HeaderCell');
 		Object.assign(this, { colspan, label });
 	}
 	getAttrs(): HeaderCellAttrs {

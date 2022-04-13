@@ -11,6 +11,7 @@ export class DataCell<Item extends object> implements DataCellInit<Item> {
 	value!: Item[keyof Item];
 	label?: DataCellLabel<Item>;
 	constructor({ key, value, label }: DataCellInit<Item>) {
+		console.log('init DataCell');
 		Object.assign(this, { key, value, label });
 	}
 }
