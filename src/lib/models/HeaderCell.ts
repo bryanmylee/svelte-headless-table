@@ -3,56 +3,49 @@ import type { ColumnLabel } from '$lib/types/ColumnLabel';
 
 export type HeaderGroupCellData<Item extends object> = {
 	type: 'group';
-	label: ColumnLabel<Item>;
 	colspan: number;
+	label: ColumnLabel<Item>;
 };
 
 export class HeaderGroupCell<Item extends object> implements HeaderGroupCellData<Item> {
-	type!: 'group';
-	label!: ColumnLabel<Item>;
+	type = 'group' as const;
 	colspan!: number;
-	constructor(props: HeaderGroupCellData<Item>) {
+	label!: ColumnLabel<Item>;
+	constructor(props: Omit<HeaderGroupCellData<Item>, 'type'>) {
 		Object.assign(this, props);
 	}
 }
 
 export type HeaderDataCellData<Item extends object> = {
 	type: 'data';
-	label: ColumnLabel<Item>;
 	colspan: 1;
+	label: ColumnLabel<Item>;
 	key: keyof Item;
 };
 
 export class HeaderDataCell<Item extends object> implements HeaderDataCellData<Item> {
-	type!: 'data';
+	type = 'data' as const;
+	colspan = 1 as const;
 	label!: ColumnLabel<Item>;
-	colspan!: 1;
 	key!: keyof Item;
-	constructor(props: HeaderDataCellData<Item>) {
+	constructor(props: Omit<HeaderDataCellData<Item>, 'type' | 'colspan'>) {
 		Object.assign(this, props);
 	}
 }
 
 export type HeaderBlankCellData = {
 	type: 'blank';
-	label: typeof NBSP;
 	colspan: 1;
+	label: typeof NBSP;
 };
 
 class HeaderBlankCell implements HeaderBlankCellData {
-	type!: 'blank';
-	label!: typeof NBSP;
-	colspan!: 1;
-	constructor(props: HeaderBlankCellData) {
-		Object.assign(this, props);
-	}
+	type = 'blank' as const;
+	colspan = 1 as const;
+	label = NBSP as typeof NBSP;
 }
 
-export const HEADER_BLANK = new HeaderBlankCell({
-	type: 'blank',
-	label: NBSP,
-	colspan: 1,
-});
+export const HEADER_BLANK = new HeaderBlankCell();
 
 export type HeaderCellData<Item extends object> =
 	| HeaderGroupCellData<Item>

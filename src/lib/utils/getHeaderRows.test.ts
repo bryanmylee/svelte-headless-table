@@ -28,22 +28,16 @@ describe('getHeaderRows', () => {
 				new HeaderRow({
 					cells: [
 						new HeaderDataCell({
-							type: 'data',
 							label: 'First Name',
 							key: 'firstName',
-							colspan: 1,
 						}),
 						new HeaderDataCell({
-							type: 'data',
 							label: 'Last Name',
 							key: 'lastName',
-							colspan: 1,
 						}),
 						new HeaderDataCell({
-							type: 'data',
 							label: 'Age',
 							key: 'age',
-							colspan: 1,
 						}),
 					],
 				}),
@@ -79,7 +73,6 @@ describe('getHeaderRows', () => {
 				new HeaderRow({
 					cells: [
 						new HeaderGroupCell({
-							type: 'group',
 							colspan: 3,
 							label: 'Info',
 						}),
@@ -88,22 +81,16 @@ describe('getHeaderRows', () => {
 				new HeaderRow({
 					cells: [
 						new HeaderDataCell({
-							type: 'data',
 							label: 'First Name',
 							key: 'firstName',
-							colspan: 1,
 						}),
 						new HeaderDataCell({
-							type: 'data',
 							label: 'Last Name',
 							key: 'lastName',
-							colspan: 1,
 						}),
 						new HeaderDataCell({
-							type: 'data',
 							label: 'Age',
 							key: 'age',
-							colspan: 1,
 						}),
 					],
 				}),
@@ -152,12 +139,10 @@ describe('getHeaderRows', () => {
 				new HeaderRow({
 					cells: [
 						new HeaderGroupCell({
-							type: 'group',
 							colspan: 2,
 							label: 'Name',
 						}),
 						new HeaderGroupCell({
-							type: 'group',
 							colspan: 3,
 							label: 'Info',
 						}),
@@ -166,34 +151,24 @@ describe('getHeaderRows', () => {
 				new HeaderRow({
 					cells: [
 						new HeaderDataCell({
-							type: 'data',
 							label: 'First Name',
 							key: 'firstName',
-							colspan: 1,
 						}),
 						new HeaderDataCell({
-							type: 'data',
 							label: 'Last Name',
 							key: 'lastName',
-							colspan: 1,
 						}),
 						new HeaderDataCell({
-							type: 'data',
 							label: 'Age',
 							key: 'age',
-							colspan: 1,
 						}),
 						new HeaderDataCell({
-							type: 'data',
 							label: 'Status',
 							key: 'status',
-							colspan: 1,
 						}),
 						new HeaderDataCell({
-							type: 'data',
 							label: 'Profile Progress',
 							key: 'progress',
-							colspan: 1,
 						}),
 					],
 				}),
@@ -237,7 +212,6 @@ describe('getHeaderRows', () => {
 				new HeaderRow({
 					cells: [
 						new HeaderGroupCell({
-							type: 'group',
 							colspan: 2,
 							label: 'Name',
 						}),
@@ -249,34 +223,24 @@ describe('getHeaderRows', () => {
 				new HeaderRow({
 					cells: [
 						new HeaderDataCell({
-							type: 'data',
 							label: 'First Name',
 							key: 'firstName',
-							colspan: 1,
 						}),
 						new HeaderDataCell({
-							type: 'data',
 							label: 'Last Name',
 							key: 'lastName',
-							colspan: 1,
 						}),
 						new HeaderDataCell({
-							type: 'data',
 							label: 'Age',
 							key: 'age',
-							colspan: 1,
 						}),
 						new HeaderDataCell({
-							type: 'data',
 							label: 'Status',
 							key: 'status',
-							colspan: 1,
 						}),
 						new HeaderDataCell({
-							type: 'data',
 							label: 'Profile Progress',
 							key: 'progress',
-							colspan: 1,
 						}),
 					],
 				}),

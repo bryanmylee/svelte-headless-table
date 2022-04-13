@@ -33,8 +33,6 @@ const _getHeaderRowsData = <Item extends object>(columns: Column<Item>[]): Heade
 				{
 					cells: [
 						new HeaderDataCell({
-							type: 'data',
-							colspan: 1,
 							key: column.key,
 							label: column.header,
 						}),
@@ -60,7 +58,6 @@ const _getHeaderRowsData = <Item extends object>(columns: Column<Item>[]): Heade
 				{
 					cells: [
 						new HeaderGroupCell({
-							type: 'group',
 							colspan,
 							label: column.header,
 						}),
