@@ -3,8 +3,10 @@
 	import Table from '$lib/components/Table.svelte';
 	import { sampleRows, type SampleRow } from '$lib/sampleRows';
 	import { createColumns, createDataColumn, createGroup } from '$lib/utils/createColumns';
+	import { getFooterProps } from '$lib/utils/getFooterProps';
 	import { getHeaderProps } from '$lib/utils/getHeaderProps';
 	import { sum } from '$lib/utils/math';
+	import { renderFooter } from '$lib/utils/renderFooter';
 	import { renderHeader } from '$lib/utils/renderHeader';
 
 	const columns = createColumns<SampleRow>([
@@ -47,7 +49,7 @@
 
 <h1>svelte-tables</h1>
 
-<Table data={sampleRows} {columns} let:data let:headerRows let:dataRows>
+<Table data={sampleRows} {columns} let:data let:headerRows let:dataRows let:footerRows>
 	<thead>
 		{#each headerRows as headerRow}
 			<tr>
@@ -68,6 +70,17 @@
 			</tr>
 		{/each}
 	</tbody>
+	<tfoot>
+		{#each footerRows as footerRow}
+			<tr>
+				{#each footerRow as cell}
+					<td {...getFooterProps(cell)}>
+						<Render {...renderFooter(cell, { data })} />
+					</td>
+				{/each}
+			</tr>
+		{/each}
+	</tfoot>
 </Table>
 
 <style global>

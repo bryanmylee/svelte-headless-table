@@ -1,8 +1,9 @@
 <script lang="ts">
 	import type { Column } from '$lib/types/Column';
-	import { getDataRows } from '$lib/utils/getDataRows';
-	import { getHeaderRows } from '$lib/utils/getHeaderRows';
 	import { getDataColumns } from '$lib/utils/getDataColumns';
+	import { getDataRows } from '$lib/utils/getDataRows';
+	import { getFooterRows } from '$lib/utils/getFooterRows';
+	import { getHeaderRows } from '$lib/utils/getHeaderRows';
 
 	type Item = $$Generic<object>;
 
@@ -10,6 +11,7 @@
 	$: dataColumns = getDataColumns(columns);
 	$: keys = dataColumns.map((column) => column.key);
 	$: headerRows = getHeaderRows(columns);
+	$: footerRows = getFooterRows(columns);
 
 	export let data: Item[];
 	$: dataRows = getDataRows(data, keys);
@@ -20,5 +22,5 @@
 </script>
 
 <table class={className} {style}>
-	<slot {data} {dataColumns} {headerRows} {dataRows} />
+	<slot {data} {dataColumns} {headerRows} {footerRows} {dataRows} />
 </table>
