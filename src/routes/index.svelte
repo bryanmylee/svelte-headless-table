@@ -1,7 +1,10 @@
 <script lang="ts">
+	import Render from '$lib/components/Render.svelte';
 	import Table from '$lib/components/Table.svelte';
 	import { sampleRows, type SampleRow } from '$lib/sampleRows';
 	import { createColumns, createDataColumn, createGroup } from '$lib/utils/createColumns';
+	import { getHeaderProps } from '$lib/utils/getHeaderProps';
+	import { renderHeader } from '$lib/utils/renderHeader';
 
 	const columns = createColumns<SampleRow>([
 		createGroup({
@@ -47,8 +50,10 @@
 	<thead>
 		{#each headerRows as headerRow}
 			<tr>
-				{#each headerRow as { colspan, label }}
-					<th {colspan}>{label}</th>
+				{#each headerRow as cell}
+					<th {...getHeaderProps(cell)}>
+						<Render {...renderHeader(cell)} />
+					</th>
 				{/each}
 			</tr>
 		{/each}
