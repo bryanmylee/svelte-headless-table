@@ -99,7 +99,7 @@
 				<tr>
 					{#each footerRow.cells as cell}
 						<td {...cell.getAttrs()}>
-							<Render {...renderFooter(cell, { data })} />
+							<Render {...cell.render()} />
 						</td>
 					{/each}
 				</tr>

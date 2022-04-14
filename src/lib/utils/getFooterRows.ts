@@ -3,14 +3,17 @@ import {
 	FooterBlankCell,
 	FooterDataCell,
 	FooterGroupCell,
-	FOOTER_BLANK,
 	type FooterCell,
 } from '$lib/models/FooterCell';
 import { FooterRow } from '$lib/models/FooterRow';
+import type { TableInstance } from '$lib/models/TableInstance';
 import { sum } from './math';
 
-export const getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterRow<Item>[] => {
-	const rowsData = _getFooterRows(columns);
+export const getFooterRows = <Item extends object>(
+	table: TableInstance<Item>,
+	columns: Column<Item>[]
+): FooterRow<Item>[] => {
+	const rowsData = _getFooterRows(table, columns);
 	/**
 	 * Remove rows with all blanks.
 	 */
@@ -20,7 +23,10 @@ export const getFooterRows = <Item extends object>(columns: Column<Item>[]): Foo
 	return noBlanksRowsData.map((row) => new FooterRow(row));
 };
 
-const _getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterRow<Item>[] => {
+const _getFooterRows = <Item extends object>(
+	table: TableInstance<Item>,
+	columns: Column<Item>[]
+): FooterRow<Item>[] => {
 	/**
 	 * Map each column to a list of footer rows.
 	 * The number of rows depends on the depth of nested columns in each column.
@@ -33,7 +39,7 @@ const _getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterRow
 			if (column.footer === undefined) {
 				return [
 					{
-						cells: [FOOTER_BLANK],
+						cells: [new FooterBlankCell({ table })],
 					},
 				];
 			}
@@ -41,7 +47,8 @@ const _getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterRow
 				{
 					cells: [
 						new FooterDataCell({
-							key: column.key,
+							table,
+							key: (column as DataColumn<Item>).key,
 							label: column.footer,
 						}),
 					],
@@ -54,7 +61,7 @@ const _getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterRow
 			 * column: {...}
 			 * rows:   [[..] [..]]
 			 */
-			const rows = _getFooterRows(column.columns);
+			const rows = _getFooterRows(table, column.columns);
 
 			/**
 			 * The colspan of this group is the sum of colspans of the row directly below.
@@ -68,7 +75,7 @@ const _getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterRow
 			if (column.footer === undefined) {
 				return [
 					{
-						cells: Array(colspan).fill(FOOTER_BLANK),
+						cells: Array(colspan).fill(new FooterBlankCell({ table })),
 					},
 					...rows,
 				];
@@ -77,6 +84,7 @@ const _getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterRow
 				{
 					cells: [
 						new FooterGroupCell({
+							table,
 							colspan,
 							label: column.footer,
 						}),
@@ -101,7 +109,7 @@ const _getFooterRows = <Item extends object>(columns: Column<Item>[]): FooterRow
 		| { cells: Maybe<FooterCell<Item>>[] };
 	const resultRows: FooterRowMaybeItem<Item>[] = [];
 	for (let i = 0; i < height; i++) {
-		resultRows.push({ cells: Array(colspan).fill(FOOTER_BLANK) });
+		resultRows.push({ cells: Array(colspan).fill(new FooterBlankCell({ table })) });
 	}
 
 	/**

@@ -1,10 +1,12 @@
 import type { SampleRow } from '$lib/sampleRows';
-import { FooterDataCell, FooterGroupCell, FOOTER_BLANK } from '$lib/models/FooterCell';
+import { FooterDataCell, FooterGroupCell, FooterBlankCell } from '$lib/models/FooterCell';
 import { FooterRow } from '$lib/models/FooterRow';
 import { createColumns, createDataColumn, createGroup } from './createColumns';
 import { getFooterRows } from './getFooterRows';
+import type { TableInstance } from '$lib/models/TableInstance';
 
 describe('getFooterRows', () => {
+	const table = {} as TableInstance<SampleRow>;
 	describe('data shape', () => {
 		test('no footers', () => {
 			const columns = createColumns<SampleRow>([
@@ -22,7 +24,7 @@ describe('getFooterRows', () => {
 				}),
 			]);
 
-			const actual = getFooterRows(columns);
+			const actual = getFooterRows(table, columns);
 
 			const expected: FooterRow<SampleRow>[] = [];
 
@@ -53,20 +55,23 @@ describe('getFooterRows', () => {
 				}),
 			]);
 
-			const actual = getFooterRows(columns);
+			const actual = getFooterRows(table, columns);
 
 			const expected: FooterRow<SampleRow>[] = [
 				new FooterRow({
 					cells: [
 						new FooterDataCell({
+							table,
 							label: 'First Name',
 							key: 'firstName',
 						}),
 						new FooterDataCell({
+							table,
 							label: 'Last Name',
 							key: 'lastName',
 						}),
 						new FooterDataCell({
+							table,
 							label: 'Age',
 							key: 'age',
 						}),
@@ -99,12 +104,13 @@ describe('getFooterRows', () => {
 				}),
 			]);
 
-			const actual = getFooterRows(columns);
+			const actual = getFooterRows(table, columns);
 
 			const expected: FooterRow<SampleRow>[] = [
 				new FooterRow({
 					cells: [
 						new FooterGroupCell({
+							table,
 							colspan: 3,
 							label: 'Info',
 						}),
@@ -134,20 +140,23 @@ describe('getFooterRows', () => {
 				}),
 			]);
 
-			const actual = getFooterRows(columns);
+			const actual = getFooterRows(table, columns);
 
 			const expected: FooterRow<SampleRow>[] = [
 				new FooterRow({
 					cells: [
 						new FooterDataCell({
+							table,
 							label: 'First Name',
 							key: 'firstName',
 						}),
 						new FooterDataCell({
+							table,
 							label: 'Last Name',
 							key: 'lastName',
 						}),
 						new FooterDataCell({
+							table,
 							label: 'Age',
 							key: 'age',
 						}),
@@ -183,20 +192,23 @@ describe('getFooterRows', () => {
 				}),
 			]);
 
-			const actual = getFooterRows(columns);
+			const actual = getFooterRows(table, columns);
 
 			const expected: FooterRow<SampleRow>[] = [
 				new FooterRow({
 					cells: [
 						new FooterDataCell({
+							table,
 							label: 'First Name',
 							key: 'firstName',
 						}),
 						new FooterDataCell({
+							table,
 							label: 'Last Name',
 							key: 'lastName',
 						}),
 						new FooterDataCell({
+							table,
 							label: 'Age',
 							key: 'age',
 						}),
@@ -205,6 +217,7 @@ describe('getFooterRows', () => {
 				new FooterRow({
 					cells: [
 						new FooterGroupCell({
+							table,
 							colspan: 3,
 							label: 'Info',
 						}),
@@ -256,28 +269,33 @@ describe('getFooterRows', () => {
 				}),
 			]);
 
-			const actual = getFooterRows(columns);
+			const actual = getFooterRows(table, columns);
 
 			const expected: FooterRow<SampleRow>[] = [
 				new FooterRow({
 					cells: [
 						new FooterDataCell({
+							table,
 							label: 'First Name',
 							key: 'firstName',
 						}),
 						new FooterDataCell({
+							table,
 							label: 'Last Name',
 							key: 'lastName',
 						}),
 						new FooterDataCell({
+							table,
 							label: 'Age',
 							key: 'age',
 						}),
 						new FooterDataCell({
+							table,
 							label: 'Status',
 							key: 'status',
 						}),
 						new FooterDataCell({
+							table,
 							label: 'Profile Progress',
 							key: 'progress',
 						}),
@@ -286,10 +304,12 @@ describe('getFooterRows', () => {
 				new FooterRow({
 					cells: [
 						new FooterGroupCell({
+							table,
 							colspan: 2,
 							label: 'Name',
 						}),
 						new FooterGroupCell({
+							table,
 							colspan: 3,
 							label: 'Info',
 						}),
@@ -335,28 +355,33 @@ describe('getFooterRows', () => {
 				}),
 			]);
 
-			const actual = getFooterRows(columns);
+			const actual = getFooterRows(table, columns);
 
 			const expected: FooterRow<SampleRow>[] = [
 				new FooterRow({
 					cells: [
 						new FooterDataCell({
+							table,
 							label: 'First Name',
 							key: 'firstName',
 						}),
 						new FooterDataCell({
+							table,
 							label: 'Last Name',
 							key: 'lastName',
 						}),
 						new FooterDataCell({
+							table,
 							label: 'Age',
 							key: 'age',
 						}),
 						new FooterDataCell({
+							table,
 							label: 'Status',
 							key: 'status',
 						}),
 						new FooterDataCell({
+							table,
 							label: 'Profile Progress',
 							key: 'progress',
 						}),
@@ -365,12 +390,13 @@ describe('getFooterRows', () => {
 				new FooterRow({
 					cells: [
 						new FooterGroupCell({
+							table,
 							colspan: 2,
 							label: 'Name',
 						}),
-						FOOTER_BLANK,
-						FOOTER_BLANK,
-						FOOTER_BLANK,
+						new FooterBlankCell({ table }),
+						new FooterBlankCell({ table }),
+						new FooterBlankCell({ table }),
 					],
 				}),
 			];
@@ -399,7 +425,7 @@ describe('getFooterRows', () => {
 				}),
 			]);
 
-			const actual = getFooterRows(columns);
+			const actual = getFooterRows(table, columns);
 
 			actual.forEach((row) => {
 				expect(row).toBeInstanceOf(FooterRow);
@@ -431,7 +457,7 @@ describe('getFooterRows', () => {
 				}),
 			]);
 
-			const actual = getFooterRows(columns);
+			const actual = getFooterRows(table, columns);
 
 			actual[0].cells.forEach((cell) => {
 				expect(cell).toBeInstanceOf(FooterDataCell);

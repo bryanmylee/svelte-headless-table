@@ -2,21 +2,24 @@ import { NBSP } from '$lib/constants';
 import type { ColumnLabel } from '$lib/types/ColumnLabel';
 import type { RenderProps } from '$lib/types/RenderProps';
 import { isFunction } from '$lib/utils/isFunction';
+import type { TableInstance } from './TableInstance';
 
 export interface FooterCellAttrs {
 	colspan: number;
 }
 
 export interface FooterCellInit<Item extends object> {
+	table: TableInstance<Item>;
 	colspan: number;
 	label: ColumnLabel<Item>;
 }
 
 export class FooterCell<Item extends object> implements FooterCellInit<Item> {
+	table!: TableInstance<Item>;
 	colspan!: number;
 	label!: ColumnLabel<Item>;
-	constructor({ colspan, label }: FooterCellInit<Item>) {
-		Object.assign(this, { colspan, label });
+	constructor({ table, colspan, label }: FooterCellInit<Item>) {
+		Object.assign(this, { table, colspan, label });
 	}
 	getAttrs(): FooterCellAttrs {
 		return {
@@ -31,11 +34,11 @@ export class FooterCell<Item extends object> implements FooterCellInit<Item> {
 			return this.label;
 		}
 		if (isFunction(this.label)) {
-			// const label = this.label({ data });
-			// if (typeof label === 'string') {
-			// 	return { text: label };
-			// }
-			// return label;
+			const label = this.label(this.table);
+			if (typeof label === 'string') {
+				return { text: label };
+			}
+			return label;
 		}
 		return {};
 	}
@@ -53,16 +56,18 @@ interface FooterDataCellInit<Item extends object> {
 
 export class FooterDataCell<Item extends object> extends FooterCell<Item> {
 	key!: keyof Item;
-	constructor({ key, label }: Omit<FooterCellInit<Item>, 'colspan'> & FooterDataCellInit<Item>) {
-		super({ label, colspan: 1 });
+	constructor({
+		table,
+		key,
+		label,
+	}: Omit<FooterCellInit<Item>, 'colspan'> & FooterDataCellInit<Item>) {
+		super({ table, label, colspan: 1 });
 		Object.assign(this, { key });
 	}
 }
 
-export class FooterBlankCell extends FooterCell<object> {
-	constructor() {
-		super({ colspan: 1, label: NBSP });
+export class FooterBlankCell<Item extends object> extends FooterCell<Item> {
+	constructor({ table }: Omit<FooterCellInit<Item>, 'colspan' | 'label'>) {
+		super({ table, colspan: 1, label: NBSP });
 	}
 }
-
-export const FOOTER_BLANK = new FooterBlankCell();
