@@ -1,11 +1,8 @@
 export { default as Table } from '$lib/components/Table.svelte';
 export { default as Render } from '$lib/components/Render.svelte';
 export { createColumns, createDataColumn, createGroup } from '$lib/utils/createColumns';
-export { renderFooter } from '$lib/utils/renderFooter';
-export { renderHeader } from '$lib/utils/renderHeader';
-export { renderData } from '$lib/utils/renderData';
 export type { Column, DataColumn, GroupColumn } from '$lib/models/Column';
-export type { ColumnLabel, ColumnLabelRenderProps } from '$lib/types/ColumnLabel';
+export type { ColumnLabel } from '$lib/types/ColumnLabel';
 export type { DataColumnDef, GroupColumnDef } from '$lib/types/ColumnDef';
 export type { DataCell } from '$lib/models/DataCell';
 export type { DataCellLabel, DataCellLabelRenderProps } from '$lib/types/DataCellLabel';
