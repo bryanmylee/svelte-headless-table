@@ -77,7 +77,7 @@
 				<tr>
 					{#each headerRow.cells as cell}
 						<th {...cell.getAttrs()}>
-							<Render {...renderHeader(cell, { data })} />
+							<Render {...cell.render()} />
 						</th>
 					{/each}
 				</tr>

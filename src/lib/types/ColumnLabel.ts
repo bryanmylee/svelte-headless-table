@@ -1,11 +1,8 @@
+import type { TableInstance } from '$lib/models/TableInstance';
 import type { RenderPropsComponent } from './RenderProps';
-
-export type ColumnLabelRenderProps<Item extends object> = {
-	data: Item[];
-};
 
 export type ColumnLabel<Item extends object> =
 	| string
 	| RenderPropsComponent
-	| ((props: ColumnLabelRenderProps<Item>) => string)
-	| ((props: ColumnLabelRenderProps<Item>) => RenderPropsComponent);
+	| ((props: TableInstance<Item>) => string)
+	| ((props: TableInstance<Item>) => RenderPropsComponent);

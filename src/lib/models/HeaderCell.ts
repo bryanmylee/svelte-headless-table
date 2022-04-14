@@ -35,11 +35,11 @@ export class HeaderCell<Item extends object> implements HeaderCellInit<Item> {
 			return this.label;
 		}
 		if (isFunction(this.label)) {
-			// const label = this.label({ data });
-			// if (typeof label === 'string') {
-			// 	return { text: label };
-			// }
-			// return label;
+			const label = this.label(this.table);
+			if (typeof label === 'string') {
+				return { text: label };
+			}
+			return label;
 		}
 		return {};
 	}
