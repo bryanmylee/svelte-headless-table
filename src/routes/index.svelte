@@ -13,16 +13,6 @@
 	import { sampleRows, type SampleRow } from '$lib/sampleRows';
 	import { mean, sum } from '$lib/utils/math';
 
-	function shuffled<T>(arr: T[]): T[] {
-		arr = [...arr];
-		const shuffled = [];
-		while (arr.length) {
-			const rand = Math.floor(Math.random() * arr.length);
-			shuffled.push(arr.splice(rand, 1)[0]);
-		}
-		return shuffled;
-	}
-
 	let columns = createColumns<SampleRow>([
 		createGroup({
 			header: 'Name',
@@ -79,8 +69,6 @@
 </script>
 
 <h1>svelte-tables</h1>
-<button on:click={() => (columns = shuffled(columns))}>Shuffle columns</button>
-<button on:click={() => (data = shuffled(data))}>Shuffle data</button>
 
 <Table {data} {columns} let:data let:headerRows let:dataRows let:footerRows>
 	<table>
