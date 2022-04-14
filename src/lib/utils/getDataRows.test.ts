@@ -3,8 +3,10 @@ import { DataColumn } from '$lib/models/Column';
 import { DataCell } from '$lib/models/DataCell';
 import { DataRow } from '$lib/models/DataRow';
 import { getDataRows } from './getDataRows';
+import type { TableInstance } from '$lib/models/TableInstance';
 
 describe('getDataRows', () => {
+	const table = {} as TableInstance<SampleRow>;
 	const data: SampleRow[] = [
 		{
 			firstName: 'Adam',
@@ -41,7 +43,7 @@ describe('getDataRows', () => {
 
 	describe('data shape', () => {
 		test('transforms empty data', () => {
-			const actual = getDataRows([], columns);
+			const actual = getDataRows(table, [], columns);
 
 			const expected: DataRow<SampleRow>[] = [];
 
@@ -49,22 +51,25 @@ describe('getDataRows', () => {
 		});
 
 		test('transforms data', () => {
-			const actual = getDataRows(data, columns);
+			const actual = getDataRows(table, data, columns);
 
 			const expected: DataRow<SampleRow>[] = [
 				new DataRow({
 					cells: [
 						new DataCell({
+							table,
 							key: 'firstName',
 							value: 'Adam',
 							label: undefined,
 						}),
 						new DataCell({
+							table,
 							key: 'lastName',
 							value: 'West',
 							label: undefined,
 						}),
 						new DataCell({
+							table,
 							key: 'progress',
 							value: 75,
 							label: undefined,
@@ -74,16 +79,19 @@ describe('getDataRows', () => {
 				new DataRow({
 					cells: [
 						new DataCell({
+							table,
 							key: 'firstName',
 							value: 'Becky',
 							label: undefined,
 						}),
 						new DataCell({
+							table,
 							key: 'lastName',
 							value: 'White',
 							label: undefined,
 						}),
 						new DataCell({
+							table,
 							key: 'progress',
 							value: 43,
 							label: undefined,
@@ -98,7 +106,7 @@ describe('getDataRows', () => {
 
 	describe('data prototype', () => {
 		it('creates instances of DataRow and DataCell', () => {
-			const actual = getDataRows(data, columns);
+			const actual = getDataRows(table, data, columns);
 
 			actual.forEach((row) => {
 				expect(row).toBeInstanceOf(DataRow);

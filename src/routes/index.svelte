@@ -1,14 +1,5 @@
 <script lang="ts">
-	import {
-		Render,
-		Table,
-		createColumns,
-		createDataColumn,
-		createGroup,
-		renderFooter,
-		renderHeader,
-		renderData,
-	} from '$lib';
+	import { Render, Table, createColumns, createDataColumn, createGroup } from '$lib';
 	import Italic from './_Italic.svelte';
 	import { sampleRows, type SampleRow } from '$lib/sampleRows';
 	import { mean, sum } from '$lib/utils/math';
@@ -70,7 +61,7 @@
 
 <h1>svelte-tables</h1>
 
-<Table {data} {columns} let:data let:headerRows let:dataRows let:footerRows>
+<Table {data} {columns} let:headerRows let:dataRows let:footerRows>
 	<table>
 		<thead>
 			{#each headerRows as headerRow}
@@ -88,7 +79,7 @@
 				<tr>
 					{#each dataRow.cells as cell}
 						<td>
-							<Render {...renderData(cell)} />
+							<Render {...cell.render()} />
 						</td>
 					{/each}
 				</tr>
