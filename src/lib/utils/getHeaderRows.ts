@@ -1,25 +1,32 @@
 import {
 	HeaderDataCell,
 	HeaderGroupCell,
-	HEADER_BLANK,
+	HeaderBlankCell,
 	type HeaderCell,
 } from '$lib/models/HeaderCell';
 import { sum } from './math';
 import { DataColumn, GroupColumn, type Column } from '$lib/models/Column';
 import { HeaderRow } from '$lib/models/HeaderRow';
+import type { TableInstance } from '$lib/models/TableInstance';
 
 /**
  * Transform the column representation of the table headers into rows in the table head.
  * @param columns The column structure grouped by columns.
  * @returns A list of header groups representing rows in the table head.
  */
-export const getHeaderRows = <Item extends object>(columns: Column<Item>[]): HeaderRow<Item>[] => {
-	const rowsData = _getHeaderRowsData(columns);
+export const getHeaderRows = <Item extends object>(
+	table: TableInstance<Item>,
+	columns: Column<Item>[]
+): HeaderRow<Item>[] => {
+	const rowsData = _getHeaderRowsData(table, columns);
 	const rows = rowsData.map((row) => new HeaderRow(row));
 	return rows;
 };
 
-const _getHeaderRowsData = <Item extends object>(columns: Column<Item>[]): HeaderRow<Item>[] => {
+const _getHeaderRowsData = <Item extends object>(
+	table: TableInstance<Item>,
+	columns: Column<Item>[]
+): HeaderRow<Item>[] => {
 	/**
 	 * Map each column to a list of header rows.
 	 * The number of rows depends on the depth of nested columns in each column.
@@ -33,7 +40,8 @@ const _getHeaderRowsData = <Item extends object>(columns: Column<Item>[]): Heade
 				{
 					cells: [
 						new HeaderDataCell({
-							key: column.key,
+							table,
+							key: (column as DataColumn<Item>).key,
 							label: column.header,
 						}),
 					],
@@ -46,7 +54,7 @@ const _getHeaderRowsData = <Item extends object>(columns: Column<Item>[]): Heade
 			 * column: {...}
 			 * rows:   [[..] [..]]
 			 */
-			const rows = _getHeaderRowsData(column.columns);
+			const rows = _getHeaderRowsData(table, column.columns);
 			/**
 			 * The colspan of this group is the sum of colspans of the row directly below.
 			 */
@@ -58,6 +66,7 @@ const _getHeaderRowsData = <Item extends object>(columns: Column<Item>[]): Heade
 				{
 					cells: [
 						new HeaderGroupCell({
+							table,
 							colspan,
 							label: column.header,
 						}),
@@ -83,7 +92,7 @@ const _getHeaderRowsData = <Item extends object>(columns: Column<Item>[]): Heade
 		| { cells: Maybe<HeaderCell<Item>>[] };
 	const resultRows: HeaderRowMaybeItem<Item>[] = [];
 	for (let i = 0; i < height; i++) {
-		resultRows.push({ cells: Array(colspan).fill(HEADER_BLANK) });
+		resultRows.push({ cells: Array(colspan).fill(new HeaderBlankCell({ table })) });
 	}
 
 	/**

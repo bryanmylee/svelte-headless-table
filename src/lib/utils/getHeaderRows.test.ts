@@ -2,9 +2,11 @@ import type { SampleRow } from '$lib/sampleRows';
 import { getHeaderRows } from './getHeaderRows';
 import { createColumns, createDataColumn, createGroup } from './createColumns';
 import { HeaderRow } from '$lib/models/HeaderRow';
-import { HeaderDataCell, HeaderGroupCell, HEADER_BLANK } from '$lib/models/HeaderCell';
+import { HeaderDataCell, HeaderGroupCell, HeaderBlankCell } from '$lib/models/HeaderCell';
+import type { TableInstance } from '$lib/models/TableInstance';
 
 describe('getHeaderRows', () => {
+	const table = {} as TableInstance<SampleRow>;
 	describe('data shape', () => {
 		test('3 columns', () => {
 			const columns = createColumns<SampleRow>([
@@ -22,20 +24,23 @@ describe('getHeaderRows', () => {
 				}),
 			]);
 
-			const actual = getHeaderRows(columns);
+			const actual = getHeaderRows(table, columns);
 
 			const expected: HeaderRow<SampleRow>[] = [
 				new HeaderRow({
 					cells: [
 						new HeaderDataCell({
+							table,
 							label: 'First Name',
 							key: 'firstName',
 						}),
 						new HeaderDataCell({
+							table,
 							label: 'Last Name',
 							key: 'lastName',
 						}),
 						new HeaderDataCell({
+							table,
 							label: 'Age',
 							key: 'age',
 						}),
@@ -67,12 +72,13 @@ describe('getHeaderRows', () => {
 				}),
 			]);
 
-			const actual = getHeaderRows(columns);
+			const actual = getHeaderRows(table, columns);
 
 			const expected: HeaderRow<SampleRow>[] = [
 				new HeaderRow({
 					cells: [
 						new HeaderGroupCell({
+							table,
 							colspan: 3,
 							label: 'Info',
 						}),
@@ -81,14 +87,17 @@ describe('getHeaderRows', () => {
 				new HeaderRow({
 					cells: [
 						new HeaderDataCell({
+							table,
 							label: 'First Name',
 							key: 'firstName',
 						}),
 						new HeaderDataCell({
+							table,
 							label: 'Last Name',
 							key: 'lastName',
 						}),
 						new HeaderDataCell({
+							table,
 							label: 'Age',
 							key: 'age',
 						}),
@@ -133,16 +142,18 @@ describe('getHeaderRows', () => {
 				}),
 			]);
 
-			const actual = getHeaderRows(columns);
+			const actual = getHeaderRows(table, columns);
 
 			const expected: HeaderRow<SampleRow>[] = [
 				new HeaderRow({
 					cells: [
 						new HeaderGroupCell({
+							table,
 							colspan: 2,
 							label: 'Name',
 						}),
 						new HeaderGroupCell({
+							table,
 							colspan: 3,
 							label: 'Info',
 						}),
@@ -151,22 +162,27 @@ describe('getHeaderRows', () => {
 				new HeaderRow({
 					cells: [
 						new HeaderDataCell({
+							table,
 							label: 'First Name',
 							key: 'firstName',
 						}),
 						new HeaderDataCell({
+							table,
 							label: 'Last Name',
 							key: 'lastName',
 						}),
 						new HeaderDataCell({
+							table,
 							label: 'Age',
 							key: 'age',
 						}),
 						new HeaderDataCell({
+							table,
 							label: 'Status',
 							key: 'status',
 						}),
 						new HeaderDataCell({
+							table,
 							label: 'Profile Progress',
 							key: 'progress',
 						}),
@@ -206,39 +222,45 @@ describe('getHeaderRows', () => {
 				}),
 			]);
 
-			const actual = getHeaderRows(columns);
+			const actual = getHeaderRows(table, columns);
 
 			const expected: HeaderRow<SampleRow>[] = [
 				new HeaderRow({
 					cells: [
 						new HeaderGroupCell({
+							table,
 							colspan: 2,
 							label: 'Name',
 						}),
-						HEADER_BLANK,
-						HEADER_BLANK,
-						HEADER_BLANK,
+						new HeaderBlankCell({ table }),
+						new HeaderBlankCell({ table }),
+						new HeaderBlankCell({ table }),
 					],
 				}),
 				new HeaderRow({
 					cells: [
 						new HeaderDataCell({
+							table,
 							label: 'First Name',
 							key: 'firstName',
 						}),
 						new HeaderDataCell({
+							table,
 							label: 'Last Name',
 							key: 'lastName',
 						}),
 						new HeaderDataCell({
+							table,
 							label: 'Age',
 							key: 'age',
 						}),
 						new HeaderDataCell({
+							table,
 							label: 'Status',
 							key: 'status',
 						}),
 						new HeaderDataCell({
+							table,
 							label: 'Profile Progress',
 							key: 'progress',
 						}),
@@ -267,7 +289,7 @@ describe('getHeaderRows', () => {
 				}),
 			]);
 
-			const actual = getHeaderRows(columns);
+			const actual = getHeaderRows(table, columns);
 
 			actual.forEach((row) => {
 				expect(row).toBeInstanceOf(HeaderRow);
@@ -295,7 +317,7 @@ describe('getHeaderRows', () => {
 				}),
 			]);
 
-			const actual = getHeaderRows(columns);
+			const actual = getHeaderRows(table, columns);
 
 			actual[0].cells.forEach((cell) => {
 				expect(cell).toBeInstanceOf(HeaderGroupCell);

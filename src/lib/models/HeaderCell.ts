@@ -2,22 +2,25 @@ import { NBSP } from '$lib/constants';
 import type { ColumnLabel } from '$lib/types/ColumnLabel';
 import type { RenderProps } from '$lib/types/RenderProps';
 import { isFunction } from '$lib/utils/isFunction';
+import type { TableInstance } from './TableInstance';
 
 export interface HeaderCellAttrs {
 	colspan: number;
 }
 
 export interface HeaderCellInit<Item extends object> {
+	table: TableInstance<Item>;
 	colspan: number;
 	label: ColumnLabel<Item>;
 }
 
 export class HeaderCell<Item extends object> implements HeaderCellInit<Item> {
+	table!: TableInstance<Item>;
 	colspan!: number;
 	label!: ColumnLabel<Item>;
-	constructor({ colspan, label }: HeaderCellInit<Item>) {
+	constructor({ table, colspan, label }: HeaderCellInit<Item>) {
 		console.log('init HeaderCell');
-		Object.assign(this, { colspan, label });
+		Object.assign(this, { table, colspan, label });
 	}
 	getAttrs(): HeaderCellAttrs {
 		return {
@@ -54,16 +57,18 @@ interface HeaderDataCellInit<Item extends object> {
 
 export class HeaderDataCell<Item extends object> extends HeaderCell<Item> {
 	key!: keyof Item;
-	constructor({ key, label }: Omit<HeaderCellInit<Item>, 'colspan'> & HeaderDataCellInit<Item>) {
-		super({ label, colspan: 1 });
+	constructor({
+		table,
+		key,
+		label,
+	}: Omit<HeaderCellInit<Item>, 'colspan'> & HeaderDataCellInit<Item>) {
+		super({ table, label, colspan: 1 });
 		Object.assign(this, { key });
 	}
 }
 
-export class HeaderBlankCell extends HeaderCell<object> {
-	constructor() {
-		super({ colspan: 1, label: NBSP });
+export class HeaderBlankCell<Item extends object> extends HeaderCell<Item> {
+	constructor({ table }: Omit<HeaderCellInit<Item>, 'colspan' | 'label'>) {
+		super({ table, colspan: 1, label: NBSP });
 	}
 }
-
-export const HEADER_BLANK = new HeaderBlankCell();
