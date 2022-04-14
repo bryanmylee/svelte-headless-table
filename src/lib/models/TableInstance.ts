@@ -23,7 +23,7 @@ export class TableInstance<Item extends object> implements TableInstanceInit<Ite
 		Object.assign(this, { columns, data });
 		this.dataColumns = getDataColumns(columns);
 		this.headerRows = getHeaderRows(this, columns);
-		this.footerRows = getFooterRows(columns);
-		this.dataRows = getDataRows(data, this.dataColumns);
+		this.footerRows = getFooterRows(this, columns);
+		this.dataRows = getDataRows(this, data, this.dataColumns);
 	}
 }
