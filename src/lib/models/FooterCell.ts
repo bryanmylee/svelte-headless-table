@@ -4,7 +4,7 @@ import type { RenderProps } from '$lib/types/RenderProps';
 import { isFunction } from '$lib/utils/isFunction';
 import type { TableInstance } from './TableInstance';
 
-export interface FooterCellAttrs {
+export interface FooterCellAttributes {
 	colspan: number;
 }
 
@@ -21,7 +21,7 @@ export class FooterCell<Item extends object> implements FooterCellInit<Item> {
 	constructor({ table, colspan, label }: FooterCellInit<Item>) {
 		Object.assign(this, { table, colspan, label });
 	}
-	getAttrs(): FooterCellAttrs {
+	attrs(): FooterCellAttributes {
 		return {
 			colspan: this.colspan,
 		};

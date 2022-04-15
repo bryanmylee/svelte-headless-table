@@ -66,7 +66,7 @@
 		{#each $headerRows as headerRow}
 			<tr>
 				{#each headerRow.cells as cell}
-					<th {...cell.getAttrs()}>
+					<th {...cell.attrs()}>
 						<Render {...cell.render()} />
 					</th>
 				{/each}
@@ -88,7 +88,7 @@
 		{#each $footerRows as footerRow}
 			<tr>
 				{#each footerRow.cells as cell}
-					<td {...cell.getAttrs()}>
+					<td {...cell.attrs()}>
 						<Render {...cell.render()} />
 					</td>
 				{/each}

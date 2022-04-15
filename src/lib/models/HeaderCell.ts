@@ -4,7 +4,7 @@ import type { RenderProps } from '$lib/types/RenderProps';
 import { isFunction } from '$lib/utils/isFunction';
 import type { TableInstance } from './TableInstance';
 
-export interface HeaderCellAttrs {
+export interface HeaderCellAttributes {
 	colspan: number;
 }
 
@@ -22,7 +22,7 @@ export class HeaderCell<Item extends object> implements HeaderCellInit<Item> {
 		console.log('init HeaderCell');
 		Object.assign(this, { table, colspan, label });
 	}
-	getAttrs(): HeaderCellAttrs {
+	attrs(): HeaderCellAttributes {
 		return {
 			colspan: this.colspan,
 		};
