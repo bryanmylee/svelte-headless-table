@@ -1,10 +1,7 @@
-import { writable, type Writable } from 'svelte/store';
+import { writable } from 'svelte/store';
 import { keyed } from 'svelte-keyed';
 import type { Column } from './models/Column';
-import { TableInstance } from './models/TableInstance';
-import type { HeaderRow } from './models/HeaderRow';
-import type { DataRow } from './models/DataRow';
-import type { FooterRow } from './models/FooterRow';
+import { TableInstance, type TableInstanceInit } from './models/TableInstance';
 import type { WritableKeys } from './types/WritableKeys';
 
 export interface UseTableProps<Item extends object> {
@@ -12,16 +9,15 @@ export interface UseTableProps<Item extends object> {
 	data: Item[];
 }
 
-export interface UseTable<Item extends object> {
-	headerRows: Writable<HeaderRow<Item>[]>;
-	dataRows: Writable<DataRow<Item>[]>;
-	footerRows: Writable<FooterRow<Item>[]>;
-}
+export type UseTable<Item extends object> = Omit<
+	WritableKeys<TableInstance<Item>>,
+	keyof TableInstanceInit<Item>
+>;
 
 export const useTable = <Item extends object>({
 	data,
 	columns,
-}: UseTableProps<Item>): Omit<WritableKeys<TableInstance<Item>>, 'data' | 'columns'> => {
+}: UseTableProps<Item>): UseTable<Item> => {
 	const instance = writable(new TableInstance({ data, columns }));
 	const dataColumns = keyed(instance, 'dataColumns');
 	const headerRows = keyed(instance, 'headerRows');
