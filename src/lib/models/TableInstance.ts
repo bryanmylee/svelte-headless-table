@@ -8,19 +8,19 @@ import type { FooterRow } from './FooterRow';
 import type { HeaderRow } from './HeaderRow';
 
 export interface TableInstanceInit<Item extends object> {
-	columns: Column<Item>[];
 	data: Item[];
+	columns: Column<Item>[];
 }
 
 export class TableInstance<Item extends object> implements TableInstanceInit<Item> {
-	columns!: Column<Item>[];
 	data!: Item[];
+	columns!: Column<Item>[];
 	dataColumns: DataColumn<Item>[];
 	headerRows: HeaderRow<Item>[];
 	footerRows: FooterRow<Item>[];
 	dataRows: DataRow<Item>[];
-	constructor({ columns, data }: TableInstanceInit<Item>) {
-		Object.assign(this, { columns, data });
+	constructor({ data, columns }: TableInstanceInit<Item>) {
+		Object.assign(this, { data, columns });
 		this.dataColumns = getDataColumns(columns);
 		this.headerRows = getHeaderRows(this, columns);
 		this.footerRows = getFooterRows(this, columns);

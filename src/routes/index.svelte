@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Render, Table, createColumns, createDataColumn, createGroup } from '$lib';
+	import { useTable, Render, createColumns, createDataColumn, createGroup } from '$lib';
 	import Italic from './_Italic.svelte';
 	import { sampleRows, type SampleRow } from '$lib/sampleRows';
 	import { mean, sum } from '$lib/utils/math';
@@ -56,48 +56,46 @@
 		}),
 	]);
 
-	let data = sampleRows;
+	const { headerRows, dataRows, footerRows } = useTable({ data: sampleRows, columns });
 </script>
 
 <h1>svelte-tables</h1>
 
-<Table {data} {columns} let:headerRows let:dataRows let:footerRows>
-	<table>
-		<thead>
-			{#each headerRows as headerRow}
-				<tr>
-					{#each headerRow.cells as cell}
-						<th {...cell.getAttrs()}>
-							<Render {...cell.render()} />
-						</th>
-					{/each}
-				</tr>
-			{/each}
-		</thead>
-		<tbody>
-			{#each dataRows as dataRow}
-				<tr>
-					{#each dataRow.cells as cell}
-						<td>
-							<Render {...cell.render()} />
-						</td>
-					{/each}
-				</tr>
-			{/each}
-		</tbody>
-		<tfoot>
-			{#each footerRows as footerRow}
-				<tr>
-					{#each footerRow.cells as cell}
-						<td {...cell.getAttrs()}>
-							<Render {...cell.render()} />
-						</td>
-					{/each}
-				</tr>
-			{/each}
-		</tfoot>
-	</table>
-</Table>
+<table>
+	<thead>
+		{#each $headerRows as headerRow}
+			<tr>
+				{#each headerRow.cells as cell}
+					<th {...cell.getAttrs()}>
+						<Render {...cell.render()} />
+					</th>
+				{/each}
+			</tr>
+		{/each}
+	</thead>
+	<tbody>
+		{#each $dataRows as dataRow}
+			<tr>
+				{#each dataRow.cells as cell}
+					<td>
+						<Render {...cell.render()} />
+					</td>
+				{/each}
+			</tr>
+		{/each}
+	</tbody>
+	<tfoot>
+		{#each $footerRows as footerRow}
+			<tr>
+				{#each footerRow.cells as cell}
+					<td {...cell.getAttrs()}>
+						<Render {...cell.render()} />
+					</td>
+				{/each}
+			</tr>
+		{/each}
+	</tfoot>
+</table>
 
 <style global>
 	* {

@@ -1,4 +1,4 @@
-export { default as Table } from '$lib/components/Table.svelte';
+export { useTable } from '$lib/useTable';
 export { default as Render } from '$lib/components/Render.svelte';
 export { createColumns, createDataColumn, createGroup } from '$lib/utils/createColumns';
 export type { Column, DataColumn, GroupColumn } from '$lib/models/Column';
