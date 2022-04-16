@@ -58,7 +58,11 @@ const _getHeaderRowsData = <Item extends object>(
 			/**
 			 * The colspan of this group is the sum of colspans of the row directly below.
 			 */
-			const colspan = sum(...rows[0].cells.map((firstRowCell) => firstRowCell.colspan));
+			const colspan = sum(...rows[0].cells.map(({ colspan }) => colspan));
+			/**
+			 * The key of this group is the set of keys of the row directly below.
+			 */
+			const key = rows[0].cells.flatMap(({ key }) => (Array.isArray(key) ? key : [key]));
 			/**
 			 * Add this group on top of child column rows.
 			 */
@@ -69,6 +73,7 @@ const _getHeaderRowsData = <Item extends object>(
 							table,
 							colspan,
 							label: column.header,
+							key,
 						}),
 					],
 				},

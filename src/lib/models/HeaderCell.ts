@@ -12,15 +12,17 @@ export interface HeaderCellInit<Item extends object> {
 	table: TableInstance<Item>;
 	colspan: number;
 	label: ColumnLabel<Item>;
+	key: keyof Item | (keyof Item)[];
 }
 
 export class HeaderCell<Item extends object> implements HeaderCellInit<Item> {
 	table!: TableInstance<Item>;
 	colspan!: number;
 	label!: ColumnLabel<Item>;
-	constructor({ table, colspan, label }: HeaderCellInit<Item>) {
+	key!: keyof Item | (keyof Item)[];
+	constructor({ table, colspan, label, key }: HeaderCellInit<Item>) {
 		console.log('init HeaderCell');
-		Object.assign(this, { table, colspan, label });
+		Object.assign(this, { table, colspan, label, key });
 	}
 	attrs(): HeaderCellAttributes {
 		return {
@@ -62,13 +64,12 @@ export class HeaderDataCell<Item extends object> extends HeaderCell<Item> {
 		key,
 		label,
 	}: Omit<HeaderCellInit<Item>, 'colspan'> & HeaderDataCellInit<Item>) {
-		super({ table, label, colspan: 1 });
-		Object.assign(this, { key });
+		super({ table, colspan: 1, label, key });
 	}
 }
 
 export class HeaderBlankCell<Item extends object> extends HeaderCell<Item> {
-	constructor({ table }: Omit<HeaderCellInit<Item>, 'colspan' | 'label'>) {
-		super({ table, colspan: 1, label: NBSP });
+	constructor({ table }: Omit<HeaderCellInit<Item>, 'colspan' | 'label' | 'key'>) {
+		super({ table, colspan: 1, label: NBSP, key: [] });
 	}
 }
