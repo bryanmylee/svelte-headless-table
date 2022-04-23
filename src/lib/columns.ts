@@ -1,29 +1,36 @@
+import type { AggregateLabel } from './types/AggregateLabel';
 import type { KeyPath } from './types/KeyPath';
+import { max, sum } from './utils/math';
 
 export interface ColumnInit<Item> {
-	header: string;
-	footer?: string;
+	header: AggregateLabel<Item>;
+	footer?: AggregateLabel<Item>;
+	colspan: number;
+	height: number;
 }
 
 export class Column<Item> {
-	header: string;
-	footer?: string;
-	constructor({ header, footer }: ColumnInit<Item>) {
+	header: AggregateLabel<Item>;
+	footer?: AggregateLabel<Item>;
+	colspan: number;
+	height: number;
+	constructor({ header, footer, colspan, height }: ColumnInit<Item>) {
 		this.header = header;
 		this.footer = footer;
+		this.colspan = colspan;
+		this.height = height;
 	}
 }
 
-export interface DataColumnInit<Item> extends ColumnInit<Item> {
+export interface DataColumnInit<Item> extends Omit<ColumnInit<Item>, 'colspan' | 'height'> {
 	accessor: string | KeyPath<Item> | ((item: Item) => unknown);
-	accessorFn?: (item: Item) => unknown;
 }
 
 export class DataColumn<Item> extends Column<Item> {
 	accessorKey?: string | KeyPath<Item>;
 	accessorFn?: (item: Item) => unknown;
 	constructor({ header, footer, accessor }: DataColumnInit<Item>) {
-		super({ header, footer });
+		super({ header, footer, colspan: 1, height: 1 });
 		if (accessor instanceof Function) {
 			this.accessorFn = accessor;
 		} else {
@@ -32,18 +39,22 @@ export class DataColumn<Item> extends Column<Item> {
 	}
 }
 
-export const column = <Item>(def: DataColumnInit<Item>): DataColumn<Item> => new DataColumn(def);
-
-export interface GroupColumnInit<Item> extends ColumnInit<Item> {
-	columns: Column<Item>;
+export interface GroupColumnInit<Item> extends Omit<ColumnInit<Item>, 'colspan' | 'height'> {
+	columns: Array<Column<Item>>;
 }
 
 export class GroupColumn<Item> extends Column<Item> {
-	columns!: Column<Item>;
+	columns: Array<Column<Item>>;
 	constructor({ header, footer, columns }: GroupColumnInit<Item>) {
-		super({ header, footer });
+		const colspan = sum(columns.map((c) => c.colspan));
+		const height = max(columns.map((c) => c.height)) + 1;
+		super({ header, footer, colspan, height });
 		this.columns = columns;
 	}
 }
 
-export const group = <Item>(def: DataColumnInit<Item>): DataColumn<Item> => new DataColumn(def);
+export const column = <Item>(def: DataColumnInit<Item>): Column<Item> => new DataColumn(def);
+
+export const group = <Item>(def: GroupColumnInit<Item>): Column<Item> => new GroupColumn(def);
+
+export const createColumns = <Item>(columns: Column<Item>[]): Column<Item>[] => columns;
