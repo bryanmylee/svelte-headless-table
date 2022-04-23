@@ -56,14 +56,14 @@
 		}),
 	]);
 
-	const { headerRows, dataRows, footerRows } = useTable({ data: sampleRows, columns });
+	const table = useTable({ data: sampleRows, columns });
 </script>
 
 <h1>svelte-tables</h1>
 
 <table>
 	<thead>
-		{#each $headerRows as headerRow}
+		{#each $table.headerRows as headerRow}
 			<tr>
 				{#each headerRow.cells as cell}
 					<th {...cell.attrs()}>
@@ -74,7 +74,7 @@
 		{/each}
 	</thead>
 	<tbody>
-		{#each $dataRows as dataRow}
+		{#each $table.dataRows as dataRow}
 			<tr>
 				{#each dataRow.cells as cell}
 					<td>
@@ -85,7 +85,7 @@
 		{/each}
 	</tbody>
 	<tfoot>
-		{#each $footerRows as footerRow}
+		{#each $table.footerRows as footerRow}
 			<tr>
 				{#each footerRow.cells as cell}
 					<td {...cell.attrs()}>
