@@ -3,6 +3,7 @@
 	import Italic from './_Italic.svelte';
 	import { sampleRows, type SampleRow } from '$lib/sampleRows';
 	import { mean, sum } from '$lib/utils/math';
+	import { sortBy } from '$lib/plugins/sortBy';
 
 	let columns = createColumns<SampleRow>([
 		createGroup({
@@ -56,7 +57,7 @@
 		}),
 	]);
 
-	const table = useTable({ data: sampleRows, columns });
+	const [table, { sortKeys }] = useTable({ data: sampleRows, columns }, sortBy());
 </script>
 
 <h1>svelte-tables</h1>
