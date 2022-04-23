@@ -1,6 +1,6 @@
 export type KeyPath<T, D extends number = 3> = KeyPath_<T, D, []>;
 
-type KeyPath_<T, D extends number, S extends unknown[]> = D extends S['length']
+type KeyPath_<T, D extends number, S extends Array<unknown>> = D extends S['length']
 	? never
 	: T extends object
 	? {
