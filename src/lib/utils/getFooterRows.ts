@@ -106,7 +106,7 @@ const _getFooterRows = <Item extends object>(
 	 */
 	type FooterRowMaybeItem<Item extends object> =
 		| FooterRow<Item>
-		| { cells: Maybe<FooterCell<Item>>[] };
+		| { cells: (FooterCell<Item> | undefined)[] };
 	const resultRows: FooterRowMaybeItem<Item>[] = [];
 	for (let i = 0; i < height; i++) {
 		resultRows.push({ cells: Array(colspan).fill(new FooterBlankCell({ table })) });

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { SvelteComponent } from 'svelte';
 
-	export let text: Maybe<string> = undefined;
-	export let component: Maybe<typeof SvelteComponent> = undefined;
-	export let props: Maybe<Record<string, unknown>> = undefined;
+	export let text: string | undefined = undefined;
+	export let component: typeof SvelteComponent | undefined = undefined;
+	export let props: Record<string, unknown> | undefined = undefined;
 </script>
 
 {#if text !== undefined}

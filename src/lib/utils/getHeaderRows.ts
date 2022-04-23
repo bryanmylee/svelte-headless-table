@@ -94,7 +94,7 @@ const _getHeaderRowsData = <Item extends object>(
 	 */
 	type HeaderRowMaybeItem<Item extends object> =
 		| HeaderRow<Item>
-		| { cells: Maybe<HeaderCell<Item>>[] };
+		| { cells: (HeaderCell<Item> | undefined)[] };
 	const resultRows: HeaderRowMaybeItem<Item>[] = [];
 	for (let i = 0; i < height; i++) {
 		resultRows.push({ cells: Array(colspan).fill(new HeaderBlankCell({ table })) });
