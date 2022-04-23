@@ -1,5 +1,4 @@
 import type { AggregateLabel } from './types/AggregateLabel';
-import type { KeyPath } from './types/KeyPath';
 import { max, sum } from './utils/math';
 
 export interface ColumnInit<Item> {
@@ -23,11 +22,11 @@ export class Column<Item> {
 }
 
 export interface DataColumnInit<Item> extends Omit<ColumnInit<Item>, 'colspan' | 'height'> {
-	accessor: string | KeyPath<Item> | ((item: Item) => unknown);
+	accessor: keyof Item | ((item: Item) => unknown);
 }
 
 export class DataColumn<Item> extends Column<Item> {
-	accessorKey?: string | KeyPath<Item>;
+	accessorKey?: keyof Item;
 	accessorFn?: (item: Item) => unknown;
 	constructor({ header, footer, accessor }: DataColumnInit<Item>) {
 		super({ header, footer, colspan: 1, height: 1 });
