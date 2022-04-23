@@ -1,4 +1,5 @@
 import type { AggregateLabel } from './types/AggregateLabel';
+import type { Label } from './types/Label';
 import { max, sum } from './utils/math';
 
 export interface ColumnInit<Item> {
@@ -22,6 +23,7 @@ export class Column<Item> {
 }
 
 export interface DataColumnInit<Item> extends Omit<ColumnInit<Item>, 'colspan' | 'height'> {
+	cell?: Label<Item>;
 	accessor: keyof Item | ((item: Item) => unknown);
 }
 
@@ -52,8 +54,8 @@ export class GroupColumn<Item> extends Column<Item> {
 	}
 }
 
-export const column = <Item>(def: DataColumnInit<Item>): Column<Item> => new DataColumn(def);
+export const column = <Item>(def: DataColumnInit<Item>): DataColumn<Item> => new DataColumn(def);
 
-export const group = <Item>(def: GroupColumnInit<Item>): Column<Item> => new GroupColumn(def);
+export const group = <Item>(def: GroupColumnInit<Item>): GroupColumn<Item> => new GroupColumn(def);
 
 export const createColumns = <Item>(columns: Column<Item>[]): Column<Item>[] => columns;
