@@ -24,12 +24,12 @@
 			columns: [
 				createDataColumn({
 					header: 'Age',
-					footer: ({ data }) => `Average: ${mean(...data.map((d) => d['age']))}`,
+					footer: ({ data }) => `Average: ${mean(...data.map((d) => d.age))}`,
 					key: 'age',
 				}),
 				createDataColumn({
 					header: 'Visits',
-					footer: ({ data }) => `Total: ${sum(...data.map((d) => d['visits']))}`,
+					footer: ({ data }) => `Total: ${sum(...data.map((d) => d.visits))}`,
 					key: 'visits',
 				}),
 				createDataColumn({
@@ -49,7 +49,7 @@
 				}),
 				createDataColumn({
 					header: 'Profile Progress',
-					footer: ({ data }) => `Average: ${mean(...data.map((d) => d['progress']))}`,
+					footer: ({ data }) => `Average: ${mean(...data.map((d) => d.progress))}`,
 					key: 'progress',
 				}),
 			],
