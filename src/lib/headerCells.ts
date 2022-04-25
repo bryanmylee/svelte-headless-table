@@ -16,7 +16,7 @@ export class HeaderCell<Item> {
 }
 
 /**
- * HeaderDataCellInit should match non-inherited DataColumn class properties.
+ * `HeaderDataCellInit` should match non-inherited `DataColumn` class properties.
  */
 export interface HeaderDataCellInit<Item> extends Omit<HeaderCellInit<Item>, 'colspan'> {
 	accessorKey?: keyof Item;
@@ -37,7 +37,7 @@ export class HeaderDataCell<Item> extends HeaderCell<Item> {
 }
 
 /**
- * HeaderGroupCellInit should match non-inherited GroupColumn class properties
+ * `HeaderGroupCellInit` should match non-inherited `GroupColumn` class properties
  * except columns.
  */
 export interface HeaderGroupCellInit<Item> extends HeaderCellInit<Item> {

@@ -1,29 +1,26 @@
 import type { AggregateLabel } from './types/AggregateLabel';
 import type { Label } from './types/Label';
 import { getDuplicates } from './utils/array';
-import { max, sum } from './utils/math';
+import { max } from './utils/math';
 
 export interface ColumnInit<Item> {
 	header: AggregateLabel<Item>;
 	footer?: AggregateLabel<Item>;
-	colspan: number;
 	height: number;
 }
 
 export class Column<Item> {
 	header: AggregateLabel<Item>;
 	footer?: AggregateLabel<Item>;
-	colspan: number;
 	height: number;
-	constructor({ header, footer, colspan, height }: ColumnInit<Item>) {
+	constructor({ header, footer, height }: ColumnInit<Item>) {
 		this.header = header;
 		this.footer = footer;
-		this.colspan = colspan;
 		this.height = height;
 	}
 }
 
-export interface DataColumnInit<Item> extends Omit<ColumnInit<Item>, 'colspan' | 'height'> {
+export interface DataColumnInit<Item> extends Omit<ColumnInit<Item>, 'height'> {
 	cell?: Label<Item>;
 	accessor: keyof Item | ((item: Item) => unknown);
 	id?: string;
@@ -34,7 +31,7 @@ export class DataColumn<Item> extends Column<Item> {
 	accessorFn?: (item: Item) => unknown;
 	id: string;
 	constructor({ header, footer, accessor, id }: DataColumnInit<Item>) {
-		super({ header, footer, colspan: 1, height: 1 });
+		super({ header, footer, height: 1 });
 		if (accessor instanceof Function) {
 			this.accessorFn = accessor;
 		} else {
@@ -47,7 +44,7 @@ export class DataColumn<Item> extends Column<Item> {
 	}
 }
 
-export interface GroupColumnInit<Item> extends Omit<ColumnInit<Item>, 'colspan' | 'height'> {
+export interface GroupColumnInit<Item> extends Omit<ColumnInit<Item>, 'height'> {
 	columns: Array<Column<Item>>;
 }
 
@@ -58,11 +55,13 @@ const getFlatColumnIds = <Item>(columns: Array<Column<Item>>): Array<string> =>
 
 export class GroupColumn<Item> extends Column<Item> {
 	columns: Array<Column<Item>>;
+	/**
+	 * A flatlist of the ids of `DataColumn`s under this group.
+	 */
 	ids: Array<string>;
 	constructor({ header, footer, columns }: GroupColumnInit<Item>) {
-		const colspan = sum(columns.map((c) => c.colspan));
 		const height = max(columns.map((c) => c.height)) + 1;
-		super({ header, footer, colspan, height });
+		super({ header, footer, height });
 		this.columns = columns;
 		this.ids = getFlatColumnIds(columns);
 	}
