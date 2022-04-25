@@ -36,14 +36,17 @@ describe('getHeaderRows', () => {
 					new HeaderDataCell({
 						label: 'First Name',
 						accessorKey: 'firstName',
+						id: 'firstName',
 					}),
 					new HeaderDataCell({
 						label: 'Last Name',
 						accessorKey: 'lastName',
+						id: 'lastName',
 					}),
 					new HeaderDataCell({
 						label: 'Age',
 						accessorKey: 'age',
+						id: 'age',
 					}),
 				],
 			}),
@@ -81,6 +84,7 @@ describe('getHeaderRows', () => {
 					new HeaderGroupCell({
 						colspan: 3,
 						label: 'Info',
+						ids: ['firstName', 'lastName', 'age'],
 					}),
 				],
 			}),
@@ -89,14 +93,17 @@ describe('getHeaderRows', () => {
 					new HeaderDataCell({
 						label: 'First Name',
 						accessorKey: 'firstName',
+						id: 'firstName',
 					}),
 					new HeaderDataCell({
 						label: 'Last Name',
 						accessorKey: 'lastName',
+						id: 'lastName',
 					}),
 					new HeaderDataCell({
 						label: 'Age',
 						accessorKey: 'age',
+						id: 'age',
 					}),
 				],
 			}),
@@ -147,10 +154,12 @@ describe('getHeaderRows', () => {
 					new HeaderGroupCell({
 						colspan: 2,
 						label: 'Name',
+						ids: ['firstName', 'lastName'],
 					}),
 					new HeaderGroupCell({
 						colspan: 3,
 						label: 'Info',
+						ids: ['age', 'status', 'progress'],
 					}),
 				],
 			}),
@@ -159,22 +168,27 @@ describe('getHeaderRows', () => {
 					new HeaderDataCell({
 						label: 'First Name',
 						accessorKey: 'firstName',
+						id: 'firstName',
 					}),
 					new HeaderDataCell({
 						label: 'Last Name',
 						accessorKey: 'lastName',
+						id: 'lastName',
 					}),
 					new HeaderDataCell({
 						label: 'Age',
 						accessorKey: 'age',
+						id: 'age',
 					}),
 					new HeaderDataCell({
 						label: 'Status',
 						accessorKey: 'status',
+						id: 'status',
 					}),
 					new HeaderDataCell({
 						label: 'Profile Progress',
 						accessorKey: 'progress',
+						id: 'progress',
 					}),
 				],
 			}),
@@ -220,6 +234,7 @@ describe('getHeaderRows', () => {
 					new HeaderGroupCell({
 						colspan: 2,
 						label: 'Name',
+						ids: ['firstName', 'lastName'],
 					}),
 					new HeaderDisplayCell(),
 					new HeaderDisplayCell(),
@@ -231,22 +246,27 @@ describe('getHeaderRows', () => {
 					new HeaderDataCell({
 						label: 'First Name',
 						accessorKey: 'firstName',
+						id: 'firstName',
 					}),
 					new HeaderDataCell({
 						label: 'Last Name',
 						accessorKey: 'lastName',
+						id: 'lastName',
 					}),
 					new HeaderDataCell({
 						label: 'Age',
 						accessorKey: 'age',
+						id: 'age',
 					}),
 					new HeaderDataCell({
 						label: 'Status',
 						accessorKey: 'status',
+						id: 'status',
 					}),
 					new HeaderDataCell({
 						label: 'Profile Progress',
 						accessorKey: 'progress',
+						id: 'progress',
 					}),
 				],
 			}),
@@ -285,6 +305,7 @@ describe('getHeaderRows', () => {
 					new HeaderGroupCell({
 						colspan: 2,
 						label: 'ID',
+						ids: ['firstName', 'progress'],
 					}),
 				],
 			}),
@@ -293,6 +314,7 @@ describe('getHeaderRows', () => {
 					new HeaderGroupCell({
 						colspan: 1,
 						label: 'Name',
+						ids: ['firstName'],
 					}),
 					new HeaderDisplayCell(),
 				],
@@ -302,10 +324,12 @@ describe('getHeaderRows', () => {
 					new HeaderDataCell({
 						label: 'First Name',
 						accessorKey: 'firstName',
+						id: 'firstName',
 					}),
 					new HeaderDataCell({
 						label: 'Profile Progress',
 						accessorKey: 'progress',
+						id: 'progress',
 					}),
 				],
 			}),
@@ -349,6 +373,7 @@ describe('getHeaderRows', () => {
 					new HeaderGroupCell({
 						colspan: 1,
 						label: 'ID',
+						ids: ['firstName'],
 					}),
 					new HeaderDisplayCell(),
 				],
@@ -358,10 +383,12 @@ describe('getHeaderRows', () => {
 					new HeaderGroupCell({
 						colspan: 1,
 						label: 'Name',
+						ids: ['firstName'],
 					}),
 					new HeaderGroupCell({
 						colspan: 1,
 						label: 'Info',
+						ids: ['progress'],
 					}),
 				],
 			}),
@@ -370,10 +397,12 @@ describe('getHeaderRows', () => {
 					new HeaderDataCell({
 						label: 'First Name',
 						accessorKey: 'firstName',
+						id: 'firstName',
 					}),
 					new HeaderDataCell({
 						label: 'Profile Progress',
 						accessorKey: 'progress',
+						id: 'progress',
 					}),
 				],
 			}),
@@ -386,67 +415,75 @@ describe('getHeaderRows', () => {
 describe('getMergedCells', () => {
 	it('does not merge different cells', () => {
 		const cells = [
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName' }),
-			new HeaderDataCell<User>({ label: 'Last Name', accessorKey: 'lastName' }),
-			new HeaderGroupCell<User>({ label: 'Info', colspan: 4 }),
+			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new HeaderDataCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+			new HeaderGroupCell<User>({ label: 'Info', colspan: 2, ids: ['age', 'status'] }),
 		];
 
 		const actual = getMergedCells(cells);
 
 		const expected = [
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName' }),
-			new HeaderDataCell<User>({ label: 'Last Name', accessorKey: 'lastName' }),
-			new HeaderGroupCell<User>({ label: 'Info', colspan: 4 }),
+			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new HeaderDataCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+			new HeaderGroupCell<User>({ label: 'Info', colspan: 2, ids: ['age', 'status'] }),
 		];
 
 		expect(actual).toStrictEqual(expected);
 	});
 
-	it('does not merge different instances of the same cell', () => {
+	it('does not merge different instances of a cell', () => {
 		const cells = [
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName' }),
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName' }),
-			new HeaderGroupCell<User>({ label: 'Info', colspan: 4 }),
+			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new HeaderGroupCell<User>({ label: 'Info', colspan: 2, ids: ['age', 'status'] }),
 		];
 
 		const actual = getMergedCells(cells);
 
 		const expected = [
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName' }),
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName' }),
-			new HeaderGroupCell<User>({ label: 'Info', colspan: 4 }),
+			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new HeaderGroupCell<User>({ label: 'Info', colspan: 2, ids: ['age', 'status'] }),
 		];
 
 		expect(actual).toStrictEqual(expected);
 	});
 
 	it('merges the same instance of a cell in front', () => {
-		const infoGroup = new HeaderGroupCell<User>({ label: 'Info', colspan: 4 });
+		const infoGroup = new HeaderGroupCell<User>({
+			label: 'Info',
+			colspan: 2,
+			ids: ['age', 'status'],
+		});
 		const cells = [
 			infoGroup,
 			infoGroup,
 			infoGroup,
 			infoGroup,
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName' }),
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName' }),
+			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new HeaderDataCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
 		];
 
 		const actual = getMergedCells(cells);
 
 		const expected = [
 			infoGroup,
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName' }),
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName' }),
+			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new HeaderDataCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
 		];
 
 		expect(actual).toStrictEqual(expected);
 	});
 
 	it('merges the same instance of a cell behind', () => {
-		const infoGroup = new HeaderGroupCell<User>({ label: 'Info', colspan: 4 });
+		const infoGroup = new HeaderGroupCell<User>({
+			label: 'Info',
+			colspan: 2,
+			ids: ['age', 'status'],
+		});
 		const cells = [
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName' }),
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName' }),
+			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new HeaderDataCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
 			infoGroup,
 			infoGroup,
 			infoGroup,
@@ -456,8 +493,35 @@ describe('getMergedCells', () => {
 		const actual = getMergedCells(cells);
 
 		const expected = [
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName' }),
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName' }),
+			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new HeaderDataCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+			infoGroup,
+		];
+
+		expect(actual).toStrictEqual(expected);
+	});
+
+	it('does not merge non-adjacent same instances of a cell', () => {
+		const infoGroup = new HeaderGroupCell<User>({
+			label: 'Info',
+			colspan: 2,
+			ids: ['age', 'status'],
+		});
+		const cells = [
+			infoGroup,
+			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new HeaderDataCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+			infoGroup,
+			infoGroup,
+			infoGroup,
+		];
+
+		const actual = getMergedCells(cells);
+
+		const expected = [
+			infoGroup,
+			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new HeaderDataCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
 			infoGroup,
 		];
 
@@ -465,8 +529,16 @@ describe('getMergedCells', () => {
 	});
 
 	it('merges two sets of the same instance of a cell', () => {
-		const nameGroup = new HeaderGroupCell<User>({ label: 'Name', colspan: 2 });
-		const infoGroup = new HeaderGroupCell<User>({ label: 'Info', colspan: 4 });
+		const nameGroup = new HeaderGroupCell<User>({
+			label: 'Name',
+			colspan: 2,
+			ids: ['firstName', 'lastName'],
+		});
+		const infoGroup = new HeaderGroupCell<User>({
+			label: 'Info',
+			colspan: 2,
+			ids: ['age', 'status'],
+		});
 		const cells = [nameGroup, nameGroup, infoGroup, infoGroup, infoGroup, infoGroup];
 
 		const actual = getMergedCells(cells);
