@@ -51,6 +51,11 @@ export interface GroupColumnInit<Item> extends Omit<ColumnInit<Item>, 'colspan' 
 	columns: Array<Column<Item>>;
 }
 
+const getFlatColumnIds = <Item>(columns: Array<Column<Item>>): Array<string> =>
+	columns.flatMap((c) =>
+		c instanceof DataColumn ? [c.id] : c instanceof GroupColumn ? c.ids : []
+	);
+
 export class GroupColumn<Item> extends Column<Item> {
 	columns: Array<Column<Item>>;
 	ids: Array<string>;
@@ -59,9 +64,7 @@ export class GroupColumn<Item> extends Column<Item> {
 		const height = max(columns.map((c) => c.height)) + 1;
 		super({ header, footer, colspan, height });
 		this.columns = columns;
-		this.ids = columns.flatMap((c) =>
-			c instanceof DataColumn ? [c.id] : c instanceof GroupColumn ? c.ids : []
-		);
+		this.ids = getFlatColumnIds(columns);
 	}
 }
 
@@ -70,9 +73,7 @@ export const column = <Item>(def: DataColumnInit<Item>): DataColumn<Item> => new
 export const group = <Item>(def: GroupColumnInit<Item>): GroupColumn<Item> => new GroupColumn(def);
 
 export const createColumns = <Item>(columns: Column<Item>[]): Column<Item>[] => {
-	const ids = columns.flatMap((c) =>
-		c instanceof DataColumn ? [c.id] : c instanceof GroupColumn ? c.ids : []
-	);
+	const ids = getFlatColumnIds(columns);
 	const duplicateIds = duplicates(ids);
 	if (duplicateIds.length !== 0) {
 		throw new Error(`Duplicate column ids not allowed: "${duplicateIds.join('", "')}"`);
