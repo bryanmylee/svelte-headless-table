@@ -45,20 +45,6 @@ export const getHeaderCellMatrix = <Item>(
 		loadHeaderCellMatrix(cellMatrix, c, heightOffset, cellOffset);
 		cellOffset += c instanceof GroupColumn ? c.ids.length : 1;
 	});
-	// Fill multi-colspan cells.
-	cellMatrix.forEach((cells) => {
-		for (let i = 0; i < cells.length; ) {
-			const cell = cells[i];
-			if (cell === null) {
-				i++;
-				continue;
-			}
-			for (let j = 1; j < cell.colspan; j++) {
-				cells[i + j] = cell;
-			}
-			i += cell.colspan;
-		}
-	});
 	// Replace null cells with blank display cells.
 	return cellMatrix.map((cells) => cells.map((cell) => cell ?? new HeaderDisplayCell()));
 };
@@ -80,15 +66,19 @@ const loadHeaderCellMatrix = <Item>(
 		return;
 	}
 	if (column instanceof GroupColumn) {
-		cellMatrix[rowOffset][cellOffset] = new HeaderGroupCell({
+		const groupCell = new HeaderGroupCell({
 			label: column.header,
 			colspan: 1,
 			ids: column.ids,
 		});
-		let subcellOffset = 0;
+		// Fill multi-colspan cells.
+		for (let i = 0; i < column.ids.length; i++) {
+			cellMatrix[rowOffset][cellOffset + i] = groupCell;
+		}
+		let childCellOffset = 0;
 		column.columns.forEach((c) => {
-			loadHeaderCellMatrix(cellMatrix, c, rowOffset + 1, cellOffset + subcellOffset);
-			subcellOffset += c instanceof GroupColumn ? c.ids.length : 1;
+			loadHeaderCellMatrix(cellMatrix, c, rowOffset + 1, cellOffset + childCellOffset);
+			childCellOffset += c instanceof GroupColumn ? c.ids.length : 1;
 		});
 		return;
 	}
