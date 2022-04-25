@@ -63,7 +63,8 @@ const loadHeaderCellMatrix = <Item>(
 	cellOffset: number
 ) => {
 	if (column instanceof DataColumn) {
-		cellMatrix[rowOffset][cellOffset] = new HeaderDataCell({
+		// HeaderDataCell should always be in the last row.
+		cellMatrix[cellMatrix.length - 1][cellOffset] = new HeaderDataCell({
 			label: column.header,
 			accessorFn: column.accessorFn,
 			accessorKey: column.accessorKey,
