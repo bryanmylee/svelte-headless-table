@@ -1,6 +1,7 @@
 import { DataColumn, GroupColumn, type Column } from './columns';
 import { HeaderDataCell, HeaderDisplayCell, HeaderGroupCell, type HeaderCell } from './headerCells';
 import type { Matrix } from './types/Matrix';
+import { getCloned } from './utils/clone';
 import { max, sum } from './utils/math';
 import { getNullMatrix, getTransposed } from './utils/matrix';
 
@@ -126,13 +127,22 @@ export const getMergedCells = <Item>(cells: Array<HeaderCell<Item>>): Array<Head
 	if (cells.length === 0) {
 		return cells;
 	}
-	let currentCell = cells[0];
-	const mergedCells: Array<HeaderCell<Item>> = [currentCell];
-	for (let i = 1; i < cells.length; i++) {
-		if (cells[i] !== currentCell) {
-			mergedCells.push(cells[i]);
+	const mergedCells: Array<HeaderCell<Item>> = [];
+	let startIdx = 0;
+	let endIdx = 1;
+	while (startIdx < cells.length) {
+		// The comparison works because each cell is a reference to the same instance.
+		while (endIdx <= cells.length && cells[endIdx] === cells[startIdx]) {
+			endIdx++;
 		}
-		currentCell = cells[i];
+		let cell = cells[startIdx];
+		if (cell instanceof HeaderGroupCell) {
+			cell = getCloned(cell);
+			cell.colspan = endIdx - startIdx;
+		}
+		mergedCells.push(cell);
+		startIdx = endIdx;
+		endIdx = startIdx + 1;
 	}
 	return mergedCells;
 };
