@@ -32,6 +32,9 @@ export const getHeaderRows = <Item>(
 	if (columnOrder !== undefined) {
 		columnMatrix = getOrderedColumnMatrix(columnMatrix, columnOrder);
 	}
+	if (hiddenColumns !== undefined) {
+		columnMatrix = getFilteredColumnMatrix(columnMatrix, hiddenColumns);
+	}
 	return rowMatrixToHeaderRows(getTransposed(columnMatrix));
 };
 
@@ -106,6 +109,21 @@ export const getOrderedColumnMatrix = <Item>(
 		}
 	});
 	return orderedColumnMatrix;
+};
+
+export const getFilteredColumnMatrix = <Item>(
+	columnMatrix: Matrix<HeaderCell<Item>>,
+	hiddenColumns: Array<string>
+): Matrix<HeaderCell<Item>> => {
+	// Each row of the transposed matrix represents a column.
+	// The `DataHeaderCell` is the last cell of each column.
+	return columnMatrix.filter((column) => {
+		const lastCell = column[column.length - 1];
+		if (!(lastCell instanceof DataHeaderCell)) {
+			return true;
+		}
+		return !hiddenColumns.includes(lastCell.id);
+	});
 };
 
 export const rowMatrixToHeaderRows = <Item>(

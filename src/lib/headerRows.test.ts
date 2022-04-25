@@ -1,6 +1,12 @@
 import { column, createColumns, group } from './columns';
 import { HeaderCell, DataHeaderCell, DisplayHeaderCell, GroupHeaderCell } from './headerCells';
-import { getHeaderRows, getMergedRow, getOrderedColumnMatrix, HeaderRow } from './headerRows';
+import {
+	getFilteredColumnMatrix,
+	getHeaderRows,
+	getMergedRow,
+	getOrderedColumnMatrix,
+	HeaderRow,
+} from './headerRows';
 import type { Matrix } from './types/Matrix';
 
 interface User {
@@ -464,7 +470,43 @@ describe('getOrderedColumnMatrix', () => {
 	});
 });
 
-// describe('getHiddenCellMatrix', () => {});
+describe('getFilteredColumnMatrix', () => {
+	it('orders the matrix columns', () => {
+		const columnMatrix: Matrix<HeaderCell<User>> = [
+			[
+				new GroupHeaderCell({ label: 'Name', colspan: 1, ids: ['firstName', 'lastName'] }),
+				new DataHeaderCell({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			],
+			[
+				new GroupHeaderCell({ label: 'Name', colspan: 1, ids: ['firstName', 'lastName'] }),
+				new DataHeaderCell({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+			],
+			[
+				new GroupHeaderCell({ label: 'Info', colspan: 1, ids: ['age', 'progress'] }),
+				new DataHeaderCell({ label: 'Age', accessorKey: 'age', id: 'age' }),
+			],
+			[
+				new GroupHeaderCell({ label: 'Info', colspan: 1, ids: ['age', 'progress'] }),
+				new DataHeaderCell({ label: 'Progress', accessorKey: 'progress', id: 'progress' }),
+			],
+		];
+
+		const actual = getFilteredColumnMatrix(columnMatrix, ['firstName', 'progress']);
+
+		const expected: Matrix<HeaderCell<User>> = [
+			[
+				new GroupHeaderCell({ label: 'Name', colspan: 1, ids: ['firstName', 'lastName'] }),
+				new DataHeaderCell({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+			],
+			[
+				new GroupHeaderCell({ label: 'Info', colspan: 1, ids: ['age', 'progress'] }),
+				new DataHeaderCell({ label: 'Age', accessorKey: 'age', id: 'age' }),
+			],
+		];
+
+		expect(actual).toStrictEqual(expected);
+	});
+});
 
 describe('getMergedRow', () => {
 	it('does not merge different cells', () => {
