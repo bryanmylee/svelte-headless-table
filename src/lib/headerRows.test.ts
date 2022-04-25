@@ -313,6 +313,74 @@ describe('getHeaderRows', () => {
 
 		expect(actual).toStrictEqual(expected);
 	});
+
+	test('group on lowest row\n[]\n[][]\n[][]', () => {
+		const columns = createColumns<User>([
+			group({
+				header: 'ID',
+				columns: [
+					group({
+						header: 'Name',
+						columns: [
+							column({
+								header: 'First Name',
+								accessor: 'firstName',
+							}),
+						],
+					}),
+				],
+			}),
+			group({
+				header: 'Info',
+				columns: [
+					column({
+						header: 'Profile Progress',
+						accessor: 'progress',
+					}),
+				],
+			}),
+		]);
+
+		const actual = getHeaderRows(columns);
+
+		const expected: Array<HeaderRow<User>> = [
+			new HeaderRow({
+				cells: [
+					new HeaderGroupCell({
+						colspan: 1,
+						label: 'ID',
+					}),
+					new HeaderDisplayCell(),
+				],
+			}),
+			new HeaderRow({
+				cells: [
+					new HeaderGroupCell({
+						colspan: 1,
+						label: 'Name',
+					}),
+					new HeaderGroupCell({
+						colspan: 1,
+						label: 'Info',
+					}),
+				],
+			}),
+			new HeaderRow({
+				cells: [
+					new HeaderDataCell({
+						label: 'First Name',
+						accessorKey: 'firstName',
+					}),
+					new HeaderDataCell({
+						label: 'Profile Progress',
+						accessorKey: 'progress',
+					}),
+				],
+			}),
+		];
+
+		expect(actual).toStrictEqual(expected);
+	});
 });
 
 describe('getMergedCells', () => {
