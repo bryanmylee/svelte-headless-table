@@ -23,16 +23,19 @@ export interface GetHeaderRowsConfig<Item> {
 
 export const getHeaderRows = <Item>(
 	columns: Array<Column<Item>>,
-	{ columnOrder }: GetHeaderRowsConfig<Item> = {}
+	{ columnOrder, hiddenColumns }: GetHeaderRowsConfig<Item> = {}
 ): Array<HeaderRow<Item>> => {
-	let cellMatrix = getHeaderCellMatrix(columns);
+	const rowMatrix = getHeaderRowMatrix(columns);
+	// Perform all column operations on the transposed columnMatrix. This helps
+	// to reduce the number of expensive transpose operations required.
+	let columnMatrix = getTransposed(rowMatrix);
 	if (columnOrder !== undefined) {
-		cellMatrix = getOrderedCellMatrix(cellMatrix, columnOrder);
+		columnMatrix = getOrderedColumnMatrix(columnMatrix, columnOrder);
 	}
-	return matrixToHeaderRows(cellMatrix);
+	return rowMatrixToHeaderRows(getTransposed(columnMatrix));
 };
 
-export const getHeaderCellMatrix = <Item>(
+export const getHeaderRowMatrix = <Item>(
 	columns: Array<Column<Item>>
 ): Matrix<HeaderCell<Item>> => {
 	const maxColspan = sum(columns.map((c) => (c instanceof GroupColumn ? c.ids.length : 1)));
@@ -41,14 +44,14 @@ export const getHeaderCellMatrix = <Item>(
 	let cellOffset = 0;
 	columns.forEach((c) => {
 		const heightOffset = maxHeight - c.height;
-		loadHeaderCellMatrix(cellMatrix, c, heightOffset, cellOffset);
+		loadHeaderRowMatrix(cellMatrix, c, heightOffset, cellOffset);
 		cellOffset += c instanceof GroupColumn ? c.ids.length : 1;
 	});
 	// Replace null cells with blank display cells.
 	return cellMatrix.map((cells) => cells.map((cell) => cell ?? new DisplayHeaderCell()));
 };
 
-const loadHeaderCellMatrix = <Item>(
+const loadHeaderRowMatrix = <Item>(
 	cellMatrix: Matrix<HeaderCell<Item> | undefined | null>,
 	column: Column<Item>,
 	rowOffset: number,
@@ -76,23 +79,22 @@ const loadHeaderCellMatrix = <Item>(
 		}
 		let childCellOffset = 0;
 		column.columns.forEach((c) => {
-			loadHeaderCellMatrix(cellMatrix, c, rowOffset + 1, cellOffset + childCellOffset);
+			loadHeaderRowMatrix(cellMatrix, c, rowOffset + 1, cellOffset + childCellOffset);
 			childCellOffset += c instanceof GroupColumn ? c.ids.length : 1;
 		});
 		return;
 	}
 };
 
-export const getOrderedCellMatrix = <Item>(
-	cellMatrix: Matrix<HeaderCell<Item>>,
+export const getOrderedColumnMatrix = <Item>(
+	columnMatrix: Matrix<HeaderCell<Item>>,
 	columnOrder: Array<string>
 ): Matrix<HeaderCell<Item>> => {
+	const orderedColumnMatrix: Matrix<HeaderCell<Item>> = [];
 	// Each row of the transposed matrix represents a column.
 	// The `DataHeaderCell` is the last cell of each column.
-	const columns = getTransposed(cellMatrix);
-	const orderedColumns: Matrix<HeaderCell<Item>> = [];
 	columnOrder.forEach((key) => {
-		const nextColumn = columns.find((cells) => {
+		const nextColumn = columnMatrix.find((cells) => {
 			const lastCell = cells[cells.length - 1];
 			if (!(lastCell instanceof DataHeaderCell)) {
 				return false;
@@ -100,17 +102,17 @@ export const getOrderedCellMatrix = <Item>(
 			return lastCell.id === key;
 		});
 		if (nextColumn !== undefined) {
-			orderedColumns.push(nextColumn);
+			orderedColumnMatrix.push(nextColumn);
 		}
 	});
-	return getTransposed(orderedColumns);
+	return orderedColumnMatrix;
 };
 
-export const matrixToHeaderRows = <Item>(
-	cellMatrix: Matrix<HeaderCell<Item>>
+export const rowMatrixToHeaderRows = <Item>(
+	rowMatrix: Matrix<HeaderCell<Item>>
 ): Array<HeaderRow<Item>> => {
-	return cellMatrix.map((cells) => {
-		return new HeaderRow({ cells: getMergedCells(cells) });
+	return rowMatrix.map((cells) => {
+		return new HeaderRow({ cells: getMergedRow(cells) });
 	});
 };
 
@@ -120,7 +122,7 @@ export const matrixToHeaderRows = <Item>(
  * @param cells An array of cells.
  * @returns An array of cells with no duplicate consecutive cells.
  */
-export const getMergedCells = <Item>(cells: Array<HeaderCell<Item>>): Array<HeaderCell<Item>> => {
+export const getMergedRow = <Item>(cells: Array<HeaderCell<Item>>): Array<HeaderCell<Item>> => {
 	if (cells.length === 0) {
 		return cells;
 	}
