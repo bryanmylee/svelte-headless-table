@@ -1,5 +1,6 @@
 import type { AggregateLabel } from './types/AggregateLabel';
 import type { Label } from './types/Label';
+import { duplicates } from './utils/array';
 import { max, sum } from './utils/math';
 
 export interface ColumnInit<Item> {
@@ -40,7 +41,7 @@ export class DataColumn<Item> extends Column<Item> {
 			this.accessorKey = accessor;
 		}
 		if (id === undefined && this.accessorKey === undefined) {
-			throw new Error('A column ID or string accessor is required');
+			throw new Error('A column id or string accessor is required');
 		}
 		this.id = id ?? `${this.accessorKey}`;
 	}
@@ -52,11 +53,15 @@ export interface GroupColumnInit<Item> extends Omit<ColumnInit<Item>, 'colspan' 
 
 export class GroupColumn<Item> extends Column<Item> {
 	columns: Array<Column<Item>>;
+	ids: Array<string>;
 	constructor({ header, footer, columns }: GroupColumnInit<Item>) {
 		const colspan = sum(columns.map((c) => c.colspan));
 		const height = max(columns.map((c) => c.height)) + 1;
 		super({ header, footer, colspan, height });
 		this.columns = columns;
+		this.ids = columns.flatMap((c) =>
+			c instanceof DataColumn ? [c.id] : c instanceof GroupColumn ? c.ids : []
+		);
 	}
 }
 
@@ -64,4 +69,13 @@ export const column = <Item>(def: DataColumnInit<Item>): DataColumn<Item> => new
 
 export const group = <Item>(def: GroupColumnInit<Item>): GroupColumn<Item> => new GroupColumn(def);
 
-export const createColumns = <Item>(columns: Column<Item>[]): Column<Item>[] => columns;
+export const createColumns = <Item>(columns: Column<Item>[]): Column<Item>[] => {
+	const ids = columns.flatMap((c) =>
+		c instanceof DataColumn ? [c.id] : c instanceof GroupColumn ? c.ids : []
+	);
+	const duplicateIds = duplicates(ids);
+	if (duplicateIds.length !== 0) {
+		throw new Error(`Duplicate column ids not allowed: "${duplicateIds.join('", "')}"`);
+	}
+	return columns;
+};

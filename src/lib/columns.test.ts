@@ -1,4 +1,4 @@
-import { DataColumn } from './columns';
+import { column, createColumns, DataColumn } from './columns';
 
 interface User {
 	firstName: string;
@@ -9,7 +9,7 @@ interface User {
 	status: string;
 }
 
-describe('instantiating DataColumn', () => {
+describe('new DataColumn', () => {
 	it('prioritizes a provided id', () => {
 		const actual = new DataColumn<User>({
 			header: 'First Name',
@@ -35,6 +35,38 @@ describe('instantiating DataColumn', () => {
 				header: 'First Name',
 				accessor: (u) => u.firstName,
 			});
-		}).toThrowError('A column ID or string accessor is required');
+		}).toThrowError('A column id or string accessor is required');
+	});
+});
+
+describe('createColumns', () => {
+	it('passes if no duplicate columns', () => {
+		expect(() => {
+			createColumns<User>([
+				column({
+					header: 'First Name',
+					accessor: 'firstName',
+				}),
+				column({
+					header: 'Age',
+					accessor: 'age',
+				}),
+			]);
+		}).not.toThrow();
+	});
+
+	it('throws if two columns have the same id', () => {
+		expect(() => {
+			createColumns<User>([
+				column({
+					header: 'First Name',
+					accessor: 'firstName',
+				}),
+				column({
+					header: 'Age',
+					accessor: 'firstName',
+				}),
+			]);
+		}).toThrowError('Duplicate column ids not allowed: "firstName"');
 	});
 });
