@@ -25,18 +25,24 @@ export class Column<Item> {
 export interface DataColumnInit<Item> extends Omit<ColumnInit<Item>, 'colspan' | 'height'> {
 	cell?: Label<Item>;
 	accessor: keyof Item | ((item: Item) => unknown);
+	id?: string;
 }
 
 export class DataColumn<Item> extends Column<Item> {
 	accessorKey?: keyof Item;
 	accessorFn?: (item: Item) => unknown;
-	constructor({ header, footer, accessor }: DataColumnInit<Item>) {
+	id: string;
+	constructor({ header, footer, accessor, id }: DataColumnInit<Item>) {
 		super({ header, footer, colspan: 1, height: 1 });
 		if (accessor instanceof Function) {
 			this.accessorFn = accessor;
 		} else {
 			this.accessorKey = accessor;
 		}
+		if (id === undefined && this.accessorKey === undefined) {
+			throw new Error('A column ID or string accessor is required');
+		}
+		this.id = id ?? `${this.accessorKey}`;
 	}
 }
 
