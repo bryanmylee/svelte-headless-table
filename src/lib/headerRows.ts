@@ -17,7 +17,6 @@ export class HeaderRow<Item> {
 export const getHeaderRows = <Item>(columns: Array<Column<Item>>): Array<HeaderRow<Item>> => {
 	const cellMatrix = getHeaderCellMatrix(columns);
 	return cellMatrix.map((cells) => {
-		console.log(cells);
 		return new HeaderRow({ cells: getMergedCells(cells) });
 	});
 };

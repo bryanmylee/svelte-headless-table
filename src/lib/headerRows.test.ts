@@ -12,7 +12,7 @@ interface User {
 }
 
 describe('getHeaderRows', () => {
-	test('3 columns', () => {
+	test('flat columns\n[][][]', () => {
 		const columns = createColumns<User>([
 			column({
 				header: 'First Name',
@@ -52,7 +52,7 @@ describe('getHeaderRows', () => {
 		expect(actual).toStrictEqual(expected);
 	});
 
-	test('1 group column over 3 columns', () => {
+	test('one group\n[    ]\n[][][]', () => {
 		const columns = createColumns<User>([
 			group({
 				header: 'Info',
@@ -105,7 +105,7 @@ describe('getHeaderRows', () => {
 		expect(actual).toStrictEqual(expected);
 	});
 
-	test('1 group column over 2 columns, 1 group column over 3 columns', () => {
+	test('two groups\n[  ][    ]\n[][][][][]', () => {
 		const columns = createColumns<User>([
 			group({
 				header: 'Name',
@@ -140,7 +140,6 @@ describe('getHeaderRows', () => {
 		]);
 
 		const actual = getHeaderRows(columns);
-		console.log(actual);
 
 		const expected: Array<HeaderRow<User>> = [
 			new HeaderRow({
@@ -184,7 +183,7 @@ describe('getHeaderRows', () => {
 		expect(actual).toStrictEqual(expected);
 	});
 
-	test('1 group column over 2 columns, 3 columns', () => {
+	test('one group and extra\n[  ]      \n[][][][][]', () => {
 		const columns = createColumns<User>([
 			group({
 				header: 'Name',
@@ -256,7 +255,7 @@ describe('getHeaderRows', () => {
 		expect(actual).toStrictEqual(expected);
 	});
 
-	test('1 group column over 1 column and 1 group column over 1 column', () => {
+	test('data cell on last row\n[  ]\n[]  \n[][]', () => {
 		const columns = createColumns<User>([
 			group({
 				header: 'ID',
