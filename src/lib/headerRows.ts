@@ -18,6 +18,7 @@ export class HeaderRow<Item> {
 
 export interface GetHeaderRowsConfig<Item> {
 	columnOrder?: Array<string>;
+	hiddenColumns?: Array<string>;
 }
 
 export const getHeaderRows = <Item>(
@@ -28,9 +29,7 @@ export const getHeaderRows = <Item>(
 	if (columnOrder !== undefined) {
 		cellMatrix = getOrderedCellMatrix(cellMatrix, columnOrder);
 	}
-	return cellMatrix.map((cells) => {
-		return new HeaderRow({ cells: getMergedCells(cells) });
-	});
+	return matrixToHeaderRows(cellMatrix);
 };
 
 export const getHeaderCellMatrix = <Item>(
@@ -105,6 +104,14 @@ export const getOrderedCellMatrix = <Item>(
 		}
 	});
 	return getTransposed(orderedColumns);
+};
+
+export const matrixToHeaderRows = <Item>(
+	cellMatrix: Matrix<HeaderCell<Item>>
+): Array<HeaderRow<Item>> => {
+	return cellMatrix.map((cells) => {
+		return new HeaderRow({ cells: getMergedCells(cells) });
+	});
 };
 
 /**
