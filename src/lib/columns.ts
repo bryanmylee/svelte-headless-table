@@ -1,6 +1,6 @@
 import type { AggregateLabel } from './types/AggregateLabel';
 import type { Label } from './types/Label';
-import { duplicates } from './utils/array';
+import { getDuplicates } from './utils/array';
 import { max, sum } from './utils/math';
 
 export interface ColumnInit<Item> {
@@ -74,7 +74,7 @@ export const group = <Item>(def: GroupColumnInit<Item>): GroupColumn<Item> => ne
 
 export const createColumns = <Item>(columns: Column<Item>[]): Column<Item>[] => {
 	const ids = getFlatColumnIds(columns);
-	const duplicateIds = duplicates(ids);
+	const duplicateIds = getDuplicates(ids);
 	if (duplicateIds.length !== 0) {
 		throw new Error(`Duplicate column ids not allowed: "${duplicateIds.join('", "')}"`);
 	}
