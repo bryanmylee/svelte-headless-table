@@ -16,8 +16,8 @@ export const getTransposed = <T>(matrix: Matrix<T>): Matrix<T> => {
 	}
 	const width = matrix[0].length;
 	const result: Matrix<T | null> = getNullMatrix(height, width);
-	for (let i = 0; i < height; i++) {
-		for (let j = 0; j < width; j++) {
+	for (let i = 0; i < width; i++) {
+		for (let j = 0; j < height; j++) {
 			result[i][j] = matrix[j][i];
 		}
 	}

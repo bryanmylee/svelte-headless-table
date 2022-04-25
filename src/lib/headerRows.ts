@@ -2,6 +2,7 @@ import { DataColumn, GroupColumn, type Column } from './columns';
 import { HeaderDataCell, HeaderDisplayCell, HeaderGroupCell, type HeaderCell } from './headerCells';
 import type { Matrix } from './types/Matrix';
 import { max, sum } from './utils/math';
+import { getTransposed } from './utils/matrix';
 
 export interface HeaderRowInit<Item> {
 	cells: Array<HeaderCell<Item>>;
@@ -14,8 +15,18 @@ export class HeaderRow<Item> {
 	}
 }
 
-export const getHeaderRows = <Item>(columns: Array<Column<Item>>): Array<HeaderRow<Item>> => {
-	const cellMatrix = getHeaderCellMatrix(columns);
+export interface GetHeaderRowsConfig<Item> {
+	columnOrder?: Array<string>;
+}
+
+export const getHeaderRows = <Item>(
+	columns: Array<Column<Item>>,
+	{ columnOrder }: GetHeaderRowsConfig<Item> = {}
+): Array<HeaderRow<Item>> => {
+	let cellMatrix = getHeaderCellMatrix(columns);
+	if (columnOrder !== undefined) {
+		cellMatrix = getOrderedCellMatrix(cellMatrix, columnOrder);
+	}
 	return cellMatrix.map((cells) => {
 		return new HeaderRow({ cells: getMergedCells(cells) });
 	});
@@ -67,6 +78,7 @@ const loadHeaderCellMatrix = <Item>(
 			label: column.header,
 			accessorFn: column.accessorFn,
 			accessorKey: column.accessorKey,
+			id: column.id,
 		});
 		return;
 	}
@@ -74,6 +86,7 @@ const loadHeaderCellMatrix = <Item>(
 		cellMatrix[rowOffset][cellOffset] = new HeaderGroupCell({
 			label: column.header,
 			colspan: column.colspan,
+			ids: column.ids,
 		});
 		let subcellOffset = 0;
 		column.columns.forEach((c) => {
@@ -82,6 +95,29 @@ const loadHeaderCellMatrix = <Item>(
 		});
 		return;
 	}
+};
+
+export const getOrderedCellMatrix = <Item>(
+	cellMatrix: Matrix<HeaderCell<Item>>,
+	columnOrder: Array<string>
+): Matrix<HeaderCell<Item>> => {
+	// Each row of the transposed matrix represents a column.
+	// The HeaderDataCell is the last cell of each column.
+	const columns = getTransposed(cellMatrix);
+	const orderedColumns: Matrix<HeaderCell<Item>> = [];
+	columnOrder.forEach((key) => {
+		const nextColumn = columns.find((cells) => {
+			const lastCell = cells[cells.length - 1];
+			if (!(lastCell instanceof HeaderDataCell)) {
+				return false;
+			}
+			return lastCell.id === key;
+		});
+		if (nextColumn !== undefined) {
+			orderedColumns.push(nextColumn);
+		}
+	});
+	return getTransposed(orderedColumns);
 };
 
 /**

@@ -1,6 +1,7 @@
 import { column, createColumns, group } from './columns';
-import { HeaderDataCell, HeaderDisplayCell, HeaderGroupCell } from './headerCells';
-import { getHeaderRows, getMergedCells, HeaderRow } from './headerRows';
+import { HeaderCell, HeaderDataCell, HeaderDisplayCell, HeaderGroupCell } from './headerCells';
+import { getHeaderRows, getMergedCells, getOrderedCellMatrix, HeaderRow } from './headerRows';
+import type { Matrix } from './types/Matrix';
 
 interface User {
 	firstName: string;
@@ -406,6 +407,44 @@ describe('getHeaderRows', () => {
 					}),
 				],
 			}),
+		];
+
+		expect(actual).toStrictEqual(expected);
+	});
+});
+
+describe('getOrderedCellMatrix', () => {
+	it('orders the matrix columns', () => {
+		const matrix: Matrix<HeaderCell<User>> = [
+			[
+				new HeaderGroupCell({ label: 'Name', colspan: 2, ids: ['firstName', 'lastName'] }),
+				new HeaderGroupCell({ label: 'Name', colspan: 2, ids: ['firstName', 'lastName'] }),
+				new HeaderGroupCell({ label: 'Info', colspan: 2, ids: ['age', 'progress'] }),
+				new HeaderGroupCell({ label: 'Info', colspan: 2, ids: ['age', 'progress'] }),
+			],
+			[
+				new HeaderDataCell({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+				new HeaderDataCell({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+				new HeaderDataCell({ label: 'Age', accessorKey: 'age', id: 'age' }),
+				new HeaderDataCell({ label: 'Progress', accessorKey: 'progress', id: 'progress' }),
+			],
+		];
+
+		const actual = getOrderedCellMatrix(matrix, ['firstName', 'age', 'lastName', 'progress']);
+
+		const expected: Matrix<HeaderCell<User>> = [
+			[
+				new HeaderGroupCell({ label: 'Name', colspan: 2, ids: ['firstName', 'lastName'] }),
+				new HeaderGroupCell({ label: 'Info', colspan: 2, ids: ['age', 'progress'] }),
+				new HeaderGroupCell({ label: 'Name', colspan: 2, ids: ['firstName', 'lastName'] }),
+				new HeaderGroupCell({ label: 'Info', colspan: 2, ids: ['age', 'progress'] }),
+			],
+			[
+				new HeaderDataCell({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+				new HeaderDataCell({ label: 'Age', accessorKey: 'age', id: 'age' }),
+				new HeaderDataCell({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+				new HeaderDataCell({ label: 'Progress', accessorKey: 'progress', id: 'progress' }),
+			],
 		];
 
 		expect(actual).toStrictEqual(expected);
