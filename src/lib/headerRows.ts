@@ -1,5 +1,5 @@
 import { DataColumn, GroupColumn, type Column } from './columns';
-import { HeaderDataCell, HeaderDisplayCell, HeaderGroupCell, type HeaderCell } from './headerCells';
+import { DataHeaderCell, DisplayHeaderCell, GroupHeaderCell, type HeaderCell } from './headerCells';
 import type { Matrix } from './types/Matrix';
 import { getCloned } from './utils/clone';
 import { max, sum } from './utils/math';
@@ -46,7 +46,7 @@ export const getHeaderCellMatrix = <Item>(
 		cellOffset += c instanceof GroupColumn ? c.ids.length : 1;
 	});
 	// Replace null cells with blank display cells.
-	return cellMatrix.map((cells) => cells.map((cell) => cell ?? new HeaderDisplayCell()));
+	return cellMatrix.map((cells) => cells.map((cell) => cell ?? new DisplayHeaderCell()));
 };
 
 const loadHeaderCellMatrix = <Item>(
@@ -56,8 +56,8 @@ const loadHeaderCellMatrix = <Item>(
 	cellOffset: number
 ) => {
 	if (column instanceof DataColumn) {
-		// `HeaderDataCell` should always be in the last row.
-		cellMatrix[cellMatrix.length - 1][cellOffset] = new HeaderDataCell({
+		// `DataHeaderCell` should always be in the last row.
+		cellMatrix[cellMatrix.length - 1][cellOffset] = new DataHeaderCell({
 			label: column.header,
 			accessorFn: column.accessorFn,
 			accessorKey: column.accessorKey,
@@ -66,7 +66,7 @@ const loadHeaderCellMatrix = <Item>(
 		return;
 	}
 	if (column instanceof GroupColumn) {
-		const groupCell = new HeaderGroupCell({
+		const groupCell = new GroupHeaderCell({
 			label: column.header,
 			colspan: 1,
 			ids: column.ids,
@@ -89,13 +89,13 @@ export const getOrderedCellMatrix = <Item>(
 	columnOrder: Array<string>
 ): Matrix<HeaderCell<Item>> => {
 	// Each row of the transposed matrix represents a column.
-	// The `HeaderDataCell` is the last cell of each column.
+	// The `DataHeaderCell` is the last cell of each column.
 	const columns = getTransposed(cellMatrix);
 	const orderedColumns: Matrix<HeaderCell<Item>> = [];
 	columnOrder.forEach((key) => {
 		const nextColumn = columns.find((cells) => {
 			const lastCell = cells[cells.length - 1];
-			if (!(lastCell instanceof HeaderDataCell)) {
+			if (!(lastCell instanceof DataHeaderCell)) {
 				return false;
 			}
 			return lastCell.id === key;
@@ -126,7 +126,7 @@ export const getMergedCells = <Item>(cells: Array<HeaderCell<Item>>): Array<Head
 			endIdx++;
 		}
 		let cell = cells[startIdx];
-		if (cell instanceof HeaderGroupCell) {
+		if (cell instanceof GroupHeaderCell) {
 			cell = getCloned(cell);
 			cell.colspan = endIdx - startIdx;
 		}

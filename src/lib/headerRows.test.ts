@@ -1,5 +1,5 @@
 import { column, createColumns, group } from './columns';
-import { HeaderCell, HeaderDataCell, HeaderDisplayCell, HeaderGroupCell } from './headerCells';
+import { HeaderCell, DataHeaderCell, DisplayHeaderCell, GroupHeaderCell } from './headerCells';
 import { getHeaderRows, getMergedCells, getOrderedCellMatrix, HeaderRow } from './headerRows';
 import type { Matrix } from './types/Matrix';
 
@@ -34,17 +34,17 @@ describe('getHeaderRows', () => {
 		const expected: Array<HeaderRow<User>> = [
 			new HeaderRow({
 				cells: [
-					new HeaderDataCell({
+					new DataHeaderCell({
 						label: 'First Name',
 						accessorKey: 'firstName',
 						id: 'firstName',
 					}),
-					new HeaderDataCell({
+					new DataHeaderCell({
 						label: 'Last Name',
 						accessorKey: 'lastName',
 						id: 'lastName',
 					}),
-					new HeaderDataCell({
+					new DataHeaderCell({
 						label: 'Age',
 						accessorKey: 'age',
 						id: 'age',
@@ -82,7 +82,7 @@ describe('getHeaderRows', () => {
 		const expected: Array<HeaderRow<User>> = [
 			new HeaderRow({
 				cells: [
-					new HeaderGroupCell({
+					new GroupHeaderCell({
 						colspan: 3,
 						label: 'Info',
 						ids: ['firstName', 'lastName', 'age'],
@@ -91,17 +91,17 @@ describe('getHeaderRows', () => {
 			}),
 			new HeaderRow({
 				cells: [
-					new HeaderDataCell({
+					new DataHeaderCell({
 						label: 'First Name',
 						accessorKey: 'firstName',
 						id: 'firstName',
 					}),
-					new HeaderDataCell({
+					new DataHeaderCell({
 						label: 'Last Name',
 						accessorKey: 'lastName',
 						id: 'lastName',
 					}),
-					new HeaderDataCell({
+					new DataHeaderCell({
 						label: 'Age',
 						accessorKey: 'age',
 						id: 'age',
@@ -152,12 +152,12 @@ describe('getHeaderRows', () => {
 		const expected: Array<HeaderRow<User>> = [
 			new HeaderRow({
 				cells: [
-					new HeaderGroupCell({
+					new GroupHeaderCell({
 						colspan: 2,
 						label: 'Name',
 						ids: ['firstName', 'lastName'],
 					}),
-					new HeaderGroupCell({
+					new GroupHeaderCell({
 						colspan: 3,
 						label: 'Info',
 						ids: ['age', 'status', 'progress'],
@@ -166,27 +166,27 @@ describe('getHeaderRows', () => {
 			}),
 			new HeaderRow({
 				cells: [
-					new HeaderDataCell({
+					new DataHeaderCell({
 						label: 'First Name',
 						accessorKey: 'firstName',
 						id: 'firstName',
 					}),
-					new HeaderDataCell({
+					new DataHeaderCell({
 						label: 'Last Name',
 						accessorKey: 'lastName',
 						id: 'lastName',
 					}),
-					new HeaderDataCell({
+					new DataHeaderCell({
 						label: 'Age',
 						accessorKey: 'age',
 						id: 'age',
 					}),
-					new HeaderDataCell({
+					new DataHeaderCell({
 						label: 'Status',
 						accessorKey: 'status',
 						id: 'status',
 					}),
-					new HeaderDataCell({
+					new DataHeaderCell({
 						label: 'Profile Progress',
 						accessorKey: 'progress',
 						id: 'progress',
@@ -232,39 +232,39 @@ describe('getHeaderRows', () => {
 		const expected: Array<HeaderRow<User>> = [
 			new HeaderRow({
 				cells: [
-					new HeaderGroupCell({
+					new GroupHeaderCell({
 						colspan: 2,
 						label: 'Name',
 						ids: ['firstName', 'lastName'],
 					}),
-					new HeaderDisplayCell(),
-					new HeaderDisplayCell(),
-					new HeaderDisplayCell(),
+					new DisplayHeaderCell(),
+					new DisplayHeaderCell(),
+					new DisplayHeaderCell(),
 				],
 			}),
 			new HeaderRow({
 				cells: [
-					new HeaderDataCell({
+					new DataHeaderCell({
 						label: 'First Name',
 						accessorKey: 'firstName',
 						id: 'firstName',
 					}),
-					new HeaderDataCell({
+					new DataHeaderCell({
 						label: 'Last Name',
 						accessorKey: 'lastName',
 						id: 'lastName',
 					}),
-					new HeaderDataCell({
+					new DataHeaderCell({
 						label: 'Age',
 						accessorKey: 'age',
 						id: 'age',
 					}),
-					new HeaderDataCell({
+					new DataHeaderCell({
 						label: 'Status',
 						accessorKey: 'status',
 						id: 'status',
 					}),
-					new HeaderDataCell({
+					new DataHeaderCell({
 						label: 'Profile Progress',
 						accessorKey: 'progress',
 						id: 'progress',
@@ -303,7 +303,7 @@ describe('getHeaderRows', () => {
 		const expected: Array<HeaderRow<User>> = [
 			new HeaderRow({
 				cells: [
-					new HeaderGroupCell({
+					new GroupHeaderCell({
 						colspan: 2,
 						label: 'ID',
 						ids: ['firstName', 'progress'],
@@ -312,22 +312,22 @@ describe('getHeaderRows', () => {
 			}),
 			new HeaderRow({
 				cells: [
-					new HeaderGroupCell({
+					new GroupHeaderCell({
 						colspan: 1,
 						label: 'Name',
 						ids: ['firstName'],
 					}),
-					new HeaderDisplayCell(),
+					new DisplayHeaderCell(),
 				],
 			}),
 			new HeaderRow({
 				cells: [
-					new HeaderDataCell({
+					new DataHeaderCell({
 						label: 'First Name',
 						accessorKey: 'firstName',
 						id: 'firstName',
 					}),
-					new HeaderDataCell({
+					new DataHeaderCell({
 						label: 'Profile Progress',
 						accessorKey: 'progress',
 						id: 'progress',
@@ -371,22 +371,22 @@ describe('getHeaderRows', () => {
 		const expected: Array<HeaderRow<User>> = [
 			new HeaderRow({
 				cells: [
-					new HeaderGroupCell({
+					new GroupHeaderCell({
 						colspan: 1,
 						label: 'ID',
 						ids: ['firstName'],
 					}),
-					new HeaderDisplayCell(),
+					new DisplayHeaderCell(),
 				],
 			}),
 			new HeaderRow({
 				cells: [
-					new HeaderGroupCell({
+					new GroupHeaderCell({
 						colspan: 1,
 						label: 'Name',
 						ids: ['firstName'],
 					}),
-					new HeaderGroupCell({
+					new GroupHeaderCell({
 						colspan: 1,
 						label: 'Info',
 						ids: ['progress'],
@@ -395,12 +395,12 @@ describe('getHeaderRows', () => {
 			}),
 			new HeaderRow({
 				cells: [
-					new HeaderDataCell({
+					new DataHeaderCell({
 						label: 'First Name',
 						accessorKey: 'firstName',
 						id: 'firstName',
 					}),
-					new HeaderDataCell({
+					new DataHeaderCell({
 						label: 'Profile Progress',
 						accessorKey: 'progress',
 						id: 'progress',
@@ -417,16 +417,16 @@ describe('getOrderedCellMatrix', () => {
 	it('orders the matrix columns', () => {
 		const matrix: Matrix<HeaderCell<User>> = [
 			[
-				new HeaderGroupCell({ label: 'Name', colspan: 1, ids: ['firstName', 'lastName'] }),
-				new HeaderGroupCell({ label: 'Name', colspan: 1, ids: ['firstName', 'lastName'] }),
-				new HeaderGroupCell({ label: 'Info', colspan: 1, ids: ['age', 'progress'] }),
-				new HeaderGroupCell({ label: 'Info', colspan: 1, ids: ['age', 'progress'] }),
+				new GroupHeaderCell({ label: 'Name', colspan: 1, ids: ['firstName', 'lastName'] }),
+				new GroupHeaderCell({ label: 'Name', colspan: 1, ids: ['firstName', 'lastName'] }),
+				new GroupHeaderCell({ label: 'Info', colspan: 1, ids: ['age', 'progress'] }),
+				new GroupHeaderCell({ label: 'Info', colspan: 1, ids: ['age', 'progress'] }),
 			],
 			[
-				new HeaderDataCell({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
-				new HeaderDataCell({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
-				new HeaderDataCell({ label: 'Age', accessorKey: 'age', id: 'age' }),
-				new HeaderDataCell({ label: 'Progress', accessorKey: 'progress', id: 'progress' }),
+				new DataHeaderCell({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+				new DataHeaderCell({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+				new DataHeaderCell({ label: 'Age', accessorKey: 'age', id: 'age' }),
+				new DataHeaderCell({ label: 'Progress', accessorKey: 'progress', id: 'progress' }),
 			],
 		];
 
@@ -434,16 +434,16 @@ describe('getOrderedCellMatrix', () => {
 
 		const expected: Matrix<HeaderCell<User>> = [
 			[
-				new HeaderGroupCell({ label: 'Name', colspan: 1, ids: ['firstName', 'lastName'] }),
-				new HeaderGroupCell({ label: 'Info', colspan: 1, ids: ['age', 'progress'] }),
-				new HeaderGroupCell({ label: 'Name', colspan: 1, ids: ['firstName', 'lastName'] }),
-				new HeaderGroupCell({ label: 'Info', colspan: 1, ids: ['age', 'progress'] }),
+				new GroupHeaderCell({ label: 'Name', colspan: 1, ids: ['firstName', 'lastName'] }),
+				new GroupHeaderCell({ label: 'Info', colspan: 1, ids: ['age', 'progress'] }),
+				new GroupHeaderCell({ label: 'Name', colspan: 1, ids: ['firstName', 'lastName'] }),
+				new GroupHeaderCell({ label: 'Info', colspan: 1, ids: ['age', 'progress'] }),
 			],
 			[
-				new HeaderDataCell({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
-				new HeaderDataCell({ label: 'Age', accessorKey: 'age', id: 'age' }),
-				new HeaderDataCell({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
-				new HeaderDataCell({ label: 'Progress', accessorKey: 'progress', id: 'progress' }),
+				new DataHeaderCell({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+				new DataHeaderCell({ label: 'Age', accessorKey: 'age', id: 'age' }),
+				new DataHeaderCell({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+				new DataHeaderCell({ label: 'Progress', accessorKey: 'progress', id: 'progress' }),
 			],
 		];
 
@@ -454,17 +454,17 @@ describe('getOrderedCellMatrix', () => {
 describe('getMergedCells', () => {
 	it('does not merge different cells', () => {
 		const cells = [
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
-			new HeaderDataCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
-			new HeaderGroupCell<User>({ label: 'Info', colspan: 1, ids: ['age', 'status'] }),
+			new DataHeaderCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new DataHeaderCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+			new GroupHeaderCell<User>({ label: 'Info', colspan: 1, ids: ['age', 'status'] }),
 		];
 
 		const actual = getMergedCells(cells);
 
 		const expected = [
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
-			new HeaderDataCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
-			new HeaderGroupCell<User>({ label: 'Info', colspan: 1, ids: ['age', 'status'] }),
+			new DataHeaderCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new DataHeaderCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+			new GroupHeaderCell<User>({ label: 'Info', colspan: 1, ids: ['age', 'status'] }),
 		];
 
 		expect(actual).toStrictEqual(expected);
@@ -472,24 +472,24 @@ describe('getMergedCells', () => {
 
 	it('does not merge different instances of a cell', () => {
 		const cells = [
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
-			new HeaderGroupCell<User>({ label: 'Info', colspan: 1, ids: ['age', 'status'] }),
+			new DataHeaderCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new DataHeaderCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new GroupHeaderCell<User>({ label: 'Info', colspan: 1, ids: ['age', 'status'] }),
 		];
 
 		const actual = getMergedCells(cells);
 
 		const expected = [
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
-			new HeaderGroupCell<User>({ label: 'Info', colspan: 1, ids: ['age', 'status'] }),
+			new DataHeaderCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new DataHeaderCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new GroupHeaderCell<User>({ label: 'Info', colspan: 1, ids: ['age', 'status'] }),
 		];
 
 		expect(actual).toStrictEqual(expected);
 	});
 
 	it('merges the same instance of a cell in front', () => {
-		const infoGroup = new HeaderGroupCell<User>({
+		const infoGroup = new GroupHeaderCell<User>({
 			label: 'Info',
 			colspan: 1,
 			ids: ['age', 'status'],
@@ -499,30 +499,30 @@ describe('getMergedCells', () => {
 			infoGroup,
 			infoGroup,
 			infoGroup,
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
-			new HeaderDataCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+			new DataHeaderCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new DataHeaderCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
 		];
 
 		const actual = getMergedCells(cells);
 
 		const expected = [
-			new HeaderGroupCell<User>({ label: 'Info', colspan: 4, ids: ['age', 'status'] }),
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
-			new HeaderDataCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+			new GroupHeaderCell<User>({ label: 'Info', colspan: 4, ids: ['age', 'status'] }),
+			new DataHeaderCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new DataHeaderCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
 		];
 
 		expect(actual).toStrictEqual(expected);
 	});
 
 	it('merges the same instance of a cell behind', () => {
-		const infoGroup = new HeaderGroupCell<User>({
+		const infoGroup = new GroupHeaderCell<User>({
 			label: 'Info',
 			colspan: 1,
 			ids: ['age', 'status'],
 		});
 		const cells = [
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
-			new HeaderDataCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+			new DataHeaderCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new DataHeaderCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
 			infoGroup,
 			infoGroup,
 			infoGroup,
@@ -532,24 +532,24 @@ describe('getMergedCells', () => {
 		const actual = getMergedCells(cells);
 
 		const expected = [
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
-			new HeaderDataCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
-			new HeaderGroupCell<User>({ label: 'Info', colspan: 4, ids: ['age', 'status'] }),
+			new DataHeaderCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new DataHeaderCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+			new GroupHeaderCell<User>({ label: 'Info', colspan: 4, ids: ['age', 'status'] }),
 		];
 
 		expect(actual).toStrictEqual(expected);
 	});
 
 	it('does not merge non-adjacent same instances of a cell', () => {
-		const infoGroup = new HeaderGroupCell<User>({
+		const infoGroup = new GroupHeaderCell<User>({
 			label: 'Info',
 			colspan: 1,
 			ids: ['age', 'status'],
 		});
 		const cells = [
 			infoGroup,
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
-			new HeaderDataCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+			new DataHeaderCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new DataHeaderCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
 			infoGroup,
 			infoGroup,
 			infoGroup,
@@ -558,14 +558,14 @@ describe('getMergedCells', () => {
 		const actual = getMergedCells(cells);
 
 		const expected = [
-			new HeaderGroupCell<User>({
+			new GroupHeaderCell<User>({
 				label: 'Info',
 				colspan: 1,
 				ids: ['age', 'status'],
 			}),
-			new HeaderDataCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
-			new HeaderDataCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
-			new HeaderGroupCell<User>({
+			new DataHeaderCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new DataHeaderCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+			new GroupHeaderCell<User>({
 				label: 'Info',
 				colspan: 3,
 				ids: ['age', 'status'],
@@ -576,12 +576,12 @@ describe('getMergedCells', () => {
 	});
 
 	it('merges two sets of the same instance of a cell', () => {
-		const nameGroup = new HeaderGroupCell<User>({
+		const nameGroup = new GroupHeaderCell<User>({
 			label: 'Name',
 			colspan: 1,
 			ids: ['firstName', 'lastName'],
 		});
-		const infoGroup = new HeaderGroupCell<User>({
+		const infoGroup = new GroupHeaderCell<User>({
 			label: 'Info',
 			colspan: 1,
 			ids: ['age', 'status'],
@@ -591,12 +591,12 @@ describe('getMergedCells', () => {
 		const actual = getMergedCells(cells);
 
 		const expected = [
-			new HeaderGroupCell<User>({
+			new GroupHeaderCell<User>({
 				label: 'Name',
 				colspan: 2,
 				ids: ['firstName', 'lastName'],
 			}),
-			new HeaderGroupCell<User>({
+			new GroupHeaderCell<User>({
 				label: 'Info',
 				colspan: 4,
 				ids: ['age', 'status'],

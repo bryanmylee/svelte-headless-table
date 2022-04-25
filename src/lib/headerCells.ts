@@ -16,19 +16,19 @@ export class HeaderCell<Item> {
 }
 
 /**
- * `HeaderDataCellInit` should match non-inherited `DataColumn` class properties.
+ * `DataHeaderCellInit` should match non-inherited `DataColumn` class properties.
  */
-export interface HeaderDataCellInit<Item> extends Omit<HeaderCellInit<Item>, 'colspan'> {
+export interface DataHeaderCellInit<Item> extends Omit<HeaderCellInit<Item>, 'colspan'> {
 	accessorKey?: keyof Item;
 	accessorFn?: (item: Item) => unknown;
 	id: string;
 }
 
-export class HeaderDataCell<Item> extends HeaderCell<Item> {
+export class DataHeaderCell<Item> extends HeaderCell<Item> {
 	accessorKey?: keyof Item;
 	accessorFn?: (item: Item) => unknown;
 	id: string;
-	constructor({ label, accessorKey, accessorFn, id }: HeaderDataCellInit<Item>) {
+	constructor({ label, accessorKey, accessorFn, id }: DataHeaderCellInit<Item>) {
 		super({ label, colspan: 1 });
 		this.accessorKey = accessorKey;
 		this.accessorFn = accessorFn;
@@ -37,26 +37,26 @@ export class HeaderDataCell<Item> extends HeaderCell<Item> {
 }
 
 /**
- * `HeaderGroupCellInit` should match non-inherited `GroupColumn` class properties
+ * `GroupHeaderCellInit` should match non-inherited `GroupColumn` class properties
  * except columns.
  */
-export interface HeaderGroupCellInit<Item> extends HeaderCellInit<Item> {
+export interface GroupHeaderCellInit<Item> extends HeaderCellInit<Item> {
 	ids: Array<string>;
 }
 
-export class HeaderGroupCell<Item> extends HeaderCell<Item> {
+export class GroupHeaderCell<Item> extends HeaderCell<Item> {
 	ids: Array<string>;
-	constructor({ label, colspan, ids }: HeaderGroupCellInit<Item>) {
+	constructor({ label, colspan, ids }: GroupHeaderCellInit<Item>) {
 		super({ label, colspan });
 		this.ids = ids;
 	}
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface HeaderDisplayCellInit<Item> extends Partial<HeaderCellInit<Item>> {}
+export interface DisplayHeaderCellInit<Item> extends Partial<HeaderCellInit<Item>> {}
 
-export class HeaderDisplayCell<Item> extends HeaderCell<Item> {
-	constructor({ label = NBSP, colspan = 1 }: HeaderDisplayCellInit<Item> = {}) {
+export class DisplayHeaderCell<Item> extends HeaderCell<Item> {
+	constructor({ label = NBSP, colspan = 1 }: DisplayHeaderCellInit<Item> = {}) {
 		super({ label, colspan });
 	}
 }
