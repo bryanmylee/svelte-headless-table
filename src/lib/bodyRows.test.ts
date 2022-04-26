@@ -57,48 +57,45 @@ describe('getBodyRows', () => {
 
 		const actual = getBodyRows(data, columns);
 
-		const expected: Array<BodyRow<User>> = [
-			new BodyRow({
-				id: '0',
-				cells: [
-					new BodyCell<User>({
-						rowId: '0',
-						columnId: 'firstName',
-						value: 'Adam',
-					}),
-					new BodyCell<User>({
-						rowId: '0',
-						columnId: 'lastName',
-						value: 'West',
-					}),
-					new BodyCell<User>({
-						rowId: '0',
-						columnId: 'progress',
-						value: 75,
-					}),
-				],
+		const row0 = new BodyRow<User>({ id: '0', cells: [] });
+		const cells0 = [
+			new BodyCell<User>({
+				row: row0,
+				column: columns[0],
+				value: 'Adam',
 			}),
-			new BodyRow({
-				id: '1',
-				cells: [
-					new BodyCell<User>({
-						rowId: '1',
-						columnId: 'firstName',
-						value: 'Becky',
-					}),
-					new BodyCell<User>({
-						rowId: '1',
-						columnId: 'lastName',
-						value: 'White',
-					}),
-					new BodyCell<User>({
-						rowId: '1',
-						columnId: 'progress',
-						value: 43,
-					}),
-				],
+			new BodyCell<User>({
+				row: row0,
+				column: columns[1],
+				value: 'West',
+			}),
+			new BodyCell<User>({
+				row: row0,
+				column: columns[2],
+				value: 75,
 			}),
 		];
+		row0.cells = cells0;
+		const row1 = new BodyRow<User>({ id: '1', cells: [] });
+		const cells1 = [
+			new BodyCell<User>({
+				row: row1,
+				column: columns[0],
+				value: 'Becky',
+			}),
+			new BodyCell<User>({
+				row: row1,
+				column: columns[1],
+				value: 'White',
+			}),
+			new BodyCell<User>({
+				row: row1,
+				column: columns[2],
+				value: 43,
+			}),
+		];
+		row1.cells = cells1;
+		const expected: Array<BodyRow<User>> = [row0, row1];
 
 		expect(actual).toStrictEqual(expected);
 	});
