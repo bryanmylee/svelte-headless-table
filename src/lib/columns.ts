@@ -48,11 +48,6 @@ export interface GroupColumnInit<Item> extends Omit<ColumnInit<Item>, 'height'> 
 	columns: Array<Column<Item>>;
 }
 
-const getFlatColumnIds = <Item>(columns: Array<Column<Item>>): Array<string> =>
-	columns.flatMap((c) =>
-		c instanceof DataColumn ? [c.id] : c instanceof GroupColumn ? c.ids : []
-	);
-
 export class GroupColumn<Item> extends Column<Item> {
 	columns: Array<Column<Item>>;
 	/**
@@ -79,3 +74,13 @@ export const createColumns = <Item>(columns: Column<Item>[]): Column<Item>[] => 
 	}
 	return columns;
 };
+
+const getFlatColumnIds = <Item>(columns: Array<Column<Item>>): Array<string> =>
+	columns.flatMap((c) =>
+		c instanceof DataColumn ? [c.id] : c instanceof GroupColumn ? c.ids : []
+	);
+
+export const getFlatColumns = <Item>(columns: Array<Column<Item>>): Array<Column<Item>> =>
+	columns.flatMap((c) =>
+		c instanceof DataColumn ? [c] : c instanceof GroupColumn ? getFlatColumns(c.columns) : []
+	);
