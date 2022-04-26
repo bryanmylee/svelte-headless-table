@@ -93,6 +93,9 @@ export const getOrderedColumnMatrix = <Item>(
 	columnMatrix: Matrix<HeaderCell<Item>>,
 	columnOrder: Array<string>
 ): Matrix<HeaderCell<Item>> => {
+	if (columnOrder.length === 0) {
+		return columnMatrix;
+	}
 	const orderedColumnMatrix: Matrix<HeaderCell<Item>> = [];
 	// Each row of the transposed matrix represents a column.
 	// The `DataHeaderCell` is the last cell of each column.
