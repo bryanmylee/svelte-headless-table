@@ -16,6 +16,7 @@ export class HeaderRow<Item> {
 	}
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface GetHeaderRowsConfig<Item> {
 	columnOrder?: Array<string>;
 	hiddenColumns?: Array<string>;
