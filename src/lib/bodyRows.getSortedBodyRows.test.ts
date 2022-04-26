@@ -68,92 +68,90 @@ const columns: Array<DataColumn<User>> = [
 
 const bodyRows = getBodyRows(data, columns);
 
-describe('getSortedBodyRows', () => {
-	it('ignores unexpected sort keys', () => {
-		const actual = getSortedBodyRows(bodyRows, [
-			{
-				id: 'age',
-				order: 'asc',
-			},
-		]);
+it('ignores unexpected sort keys', () => {
+	const actual = getSortedBodyRows(bodyRows, [
+		{
+			id: 'age',
+			order: 'asc',
+		},
+	]);
 
-		const sortedIds = actual.map((row) => row.id);
-		const expected = ['0', '1', '2'];
+	const sortedIds = actual.map((row) => row.id);
+	const expected = ['0', '1', '2'];
 
-		expect(sortedIds).toStrictEqual(expected);
-	});
+	expect(sortedIds).toStrictEqual(expected);
+});
 
-	it('sorts on string value', () => {
-		const actual = getSortedBodyRows(bodyRows, [
-			{
-				id: 'status',
-				order: 'asc',
-			},
-		]);
+it('sorts on string value', () => {
+	const actual = getSortedBodyRows(bodyRows, [
+		{
+			id: 'status',
+			order: 'asc',
+		},
+	]);
 
-		const sortedIds = actual.map((row) => row.id);
-		const expected = ['0', '2', '1'];
+	const sortedIds = actual.map((row) => row.id);
+	const expected = ['0', '2', '1'];
 
-		expect(sortedIds).toStrictEqual(expected);
-	});
+	expect(sortedIds).toStrictEqual(expected);
+});
 
-	it('desc sorts on string value', () => {
-		const actual = getSortedBodyRows(bodyRows, [
-			{
-				id: 'status',
-				order: 'desc',
-			},
-		]);
+it('desc sorts on string value', () => {
+	const actual = getSortedBodyRows(bodyRows, [
+		{
+			id: 'status',
+			order: 'desc',
+		},
+	]);
 
-		const sortedIds = actual.map((row) => row.id);
-		const expected = ['1', '2', '0'];
+	const sortedIds = actual.map((row) => row.id);
+	const expected = ['1', '2', '0'];
 
-		expect(sortedIds).toStrictEqual(expected);
-	});
+	expect(sortedIds).toStrictEqual(expected);
+});
 
-	it('sorts on number value', () => {
-		const actual = getSortedBodyRows(bodyRows, [
-			{
-				id: 'progress',
-				order: 'asc',
-			},
-		]);
+it('sorts on number value', () => {
+	const actual = getSortedBodyRows(bodyRows, [
+		{
+			id: 'progress',
+			order: 'asc',
+		},
+	]);
 
-		const sortedIds = actual.map((row) => row.id);
-		const expected = ['2', '0', '1'];
+	const sortedIds = actual.map((row) => row.id);
+	const expected = ['2', '0', '1'];
 
-		expect(sortedIds).toStrictEqual(expected);
-	});
+	expect(sortedIds).toStrictEqual(expected);
+});
 
-	it('sorts on object with sortKey', () => {
-		const actual = getSortedBodyRows(bodyRows, [
-			{
-				id: 'name',
-				order: 'asc',
-			},
-		]);
+it('sorts on object with sortKey', () => {
+	const actual = getSortedBodyRows(bodyRows, [
+		{
+			id: 'name',
+			order: 'asc',
+		},
+	]);
 
-		const sortedIds = actual.map((row) => row.id);
-		const expected = ['2', '1', '0'];
+	const sortedIds = actual.map((row) => row.id);
+	const expected = ['2', '1', '0'];
 
-		expect(sortedIds).toStrictEqual(expected);
-	});
+	expect(sortedIds).toStrictEqual(expected);
+});
 
-	it('sorts on multiple values', () => {
-		const actual = getSortedBodyRows(bodyRows, [
-			{
-				id: 'visits',
-				order: 'desc',
-			},
-			{
-				id: 'name',
-				order: 'desc',
-			},
-		]);
+it('sorts on multiple values', () => {
+	const actual = getSortedBodyRows(bodyRows, [
+		{
+			id: 'visits',
+			order: 'desc',
+		},
+		{
+			id: 'name',
+			order: 'desc',
+		},
+	]);
 
-		const sortedIds = actual.map((row) => row.id);
-		const expected = ['0', '2', '1'];
+	const sortedIds = actual.map((row) => row.id);
+	const expected = ['0', '2', '1'];
 
-		expect(sortedIds).toStrictEqual(expected);
-	});
+	expect(sortedIds).toStrictEqual(expected);
 });
