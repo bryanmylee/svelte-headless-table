@@ -9,7 +9,8 @@
 	const columnOrder = writable<Array<string>>([]);
 	const hiddenColumns = writable<Array<string>>([]);
 
-	const { headerRows } = useTable<SampleRow>({
+	const { headerRows, bodyRows } = useTable<SampleRow>({
+		data,
 		columns: createColumns([
 			group({
 				header: 'Name',
@@ -75,15 +76,15 @@
 		{/each}
 	</thead>
 	<tbody>
-		<!-- {#each $table.dataRows as dataRow} -->
-		<tr>
-			<!-- {#each dataRow.cells as cell} -->
-			<td>
-				<!-- <Render {...cell.render()} /> -->
-			</td>
-			<!-- {/each} -->
-		</tr>
-		<!-- {/each} -->
+		{#each $bodyRows as bodyRow}
+			<tr>
+				{#each bodyRow.cells as cell}
+					<td>
+						<Render {...cell.render()} />
+					</td>
+				{/each}
+			</tr>
+		{/each}
 	</tbody>
 	<tfoot>
 		<!-- {#each $table.footerRows as footerRow} -->

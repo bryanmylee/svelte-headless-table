@@ -1,16 +1,21 @@
 import { derived, readable, type Readable } from 'svelte/store';
+import { getBodyRows } from './bodyRows';
 import { getFlatColumns, type Column } from './columns';
 import { getHeaderRows } from './headerRows';
+import type { ColumnFilter, ColumnOrder } from './types/config';
+import type { ReadableKeys } from './types/ReadableKeys';
 
-export interface UseTableProps<Item> {
+export type UseTableConfig<Item> = ColumnOrder<Item> & ColumnFilter<Item>;
+
+export type UseTableProps<Item> = {
+	data: Readable<Array<Item>>;
 	columns: Array<Column<Item>>;
-	columnOrder?: Readable<Array<string> | undefined>;
-	hiddenColumns?: Readable<Array<string> | undefined>;
-}
+} & ReadableKeys<UseTableConfig<Item>>;
 
 const Undefined = readable(undefined);
 
 export const useTable = <Item>({
+	data,
 	columns: rawColumns,
 	columnOrder = Undefined,
 	hiddenColumns = Undefined,
@@ -24,8 +29,12 @@ export const useTable = <Item>({
 			hiddenColumns: $hiddenColumns,
 		});
 	});
+	const bodyRows = derived([data, flatColumns], ([$data, $flatColumns]) => {
+		return getBodyRows($data, $flatColumns);
+	});
 	return {
 		flatColumns,
 		headerRows,
+		bodyRows,
 	};
 };
