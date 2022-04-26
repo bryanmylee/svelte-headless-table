@@ -1,5 +1,5 @@
 import { derived, readable, type Readable } from 'svelte/store';
-import type { Column } from './columns';
+import { getFlatColumns, type Column } from './columns';
 import { getHeaderRows } from './headerRows';
 
 export interface UseTableProps<Item> {
@@ -11,17 +11,21 @@ export interface UseTableProps<Item> {
 const Undefined = readable(undefined);
 
 export const useTable = <Item>({
-	columns,
+	columns: rawColumns,
 	columnOrder = Undefined,
 	hiddenColumns = Undefined,
 }: UseTableProps<Item>) => {
+	const flatColumns = derived([columnOrder, hiddenColumns], ([$columnOrder, $hiddenColumns]) => {
+		return getFlatColumns(rawColumns, { columnOrder: $columnOrder, hiddenColumns: $hiddenColumns });
+	});
 	const headerRows = derived([columnOrder, hiddenColumns], ([$columnOrder, $hiddenColumns]) => {
-		return getHeaderRows(columns, {
+		return getHeaderRows(rawColumns, {
 			columnOrder: $columnOrder,
 			hiddenColumns: $hiddenColumns,
 		});
 	});
 	return {
+		flatColumns,
 		headerRows,
 	};
 };

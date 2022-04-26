@@ -48,7 +48,6 @@
 		columnOrder,
 		hiddenColumns,
 	});
-	$: console.log($headerRows);
 </script>
 
 <h1>svelte-tables</h1>

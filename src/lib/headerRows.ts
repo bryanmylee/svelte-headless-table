@@ -1,5 +1,6 @@
 import { DataColumn, GroupColumn, type Column } from './columns';
 import { DataHeaderCell, DisplayHeaderCell, GroupHeaderCell, type HeaderCell } from './headerCells';
+import type { ColumnOrder, ColumnFilter } from './types/config';
 import type { Matrix } from './types/Matrix';
 import { getCloned } from './utils/clone';
 import { max, sum } from './utils/math';
@@ -16,11 +17,7 @@ export class HeaderRow<Item> {
 	}
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export interface GetHeaderRowsConfig<Item> {
-	columnOrder?: Array<string>;
-	hiddenColumns?: Array<string>;
-}
+export type GetHeaderRowsConfig<Item> = ColumnOrder<Item> & ColumnFilter<Item>;
 
 export const getHeaderRows = <Item>(
 	columns: Array<Column<Item>>,
