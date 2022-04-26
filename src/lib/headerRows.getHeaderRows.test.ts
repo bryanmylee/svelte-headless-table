@@ -31,6 +31,7 @@ test('flat columns\n[][][]', () => {
 
 	const expected: Array<HeaderRow<User>> = [
 		new HeaderRow({
+			id: '0',
 			cells: [
 				new DataHeaderCell({
 					label: 'First Name',
@@ -79,15 +80,17 @@ test('one group\n[    ]\n[][][]', () => {
 
 	const expected: Array<HeaderRow<User>> = [
 		new HeaderRow({
+			id: '0',
 			cells: [
 				new GroupHeaderCell({
 					colspan: 3,
 					label: 'Info',
-					ids: ['firstName', 'lastName', 'age'],
+					allIds: ['firstName', 'lastName', 'age'],
 				}),
 			],
 		}),
 		new HeaderRow({
+			id: '1',
 			cells: [
 				new DataHeaderCell({
 					label: 'First Name',
@@ -149,20 +152,22 @@ test('two groups\n[  ][    ]\n[][][][][]', () => {
 
 	const expected: Array<HeaderRow<User>> = [
 		new HeaderRow({
+			id: '0',
 			cells: [
 				new GroupHeaderCell({
 					colspan: 2,
 					label: 'Name',
-					ids: ['firstName', 'lastName'],
+					allIds: ['firstName', 'lastName'],
 				}),
 				new GroupHeaderCell({
 					colspan: 3,
 					label: 'Info',
-					ids: ['age', 'status', 'progress'],
+					allIds: ['age', 'status', 'progress'],
 				}),
 			],
 		}),
 		new HeaderRow({
+			id: '1',
 			cells: [
 				new DataHeaderCell({
 					label: 'First Name',
@@ -229,18 +234,20 @@ test('one group and extra\n[  ]      \n[][][][][]', () => {
 
 	const expected: Array<HeaderRow<User>> = [
 		new HeaderRow({
+			id: '0',
 			cells: [
 				new GroupHeaderCell({
 					colspan: 2,
 					label: 'Name',
-					ids: ['firstName', 'lastName'],
+					allIds: ['firstName', 'lastName'],
 				}),
-				new DisplayHeaderCell(),
-				new DisplayHeaderCell(),
-				new DisplayHeaderCell(),
+				new DisplayHeaderCell({ id: '2' }),
+				new DisplayHeaderCell({ id: '3' }),
+				new DisplayHeaderCell({ id: '4' }),
 			],
 		}),
 		new HeaderRow({
+			id: '1',
 			cells: [
 				new DataHeaderCell({
 					label: 'First Name',
@@ -300,25 +307,28 @@ test('data cell on last row\n[  ]\n[]  \n[][]', () => {
 
 	const expected: Array<HeaderRow<User>> = [
 		new HeaderRow({
+			id: '0',
 			cells: [
 				new GroupHeaderCell({
 					colspan: 2,
 					label: 'ID',
-					ids: ['firstName', 'progress'],
+					allIds: ['firstName', 'progress'],
 				}),
 			],
 		}),
 		new HeaderRow({
+			id: '1',
 			cells: [
 				new GroupHeaderCell({
 					colspan: 1,
 					label: 'Name',
-					ids: ['firstName'],
+					allIds: ['firstName'],
 				}),
-				new DisplayHeaderCell(),
+				new DisplayHeaderCell({ id: '1' }),
 			],
 		}),
 		new HeaderRow({
+			id: '2',
 			cells: [
 				new DataHeaderCell({
 					label: 'First Name',
@@ -368,30 +378,33 @@ test('group on lowest row\n[]\n[][]\n[][]', () => {
 
 	const expected: Array<HeaderRow<User>> = [
 		new HeaderRow({
+			id: '0',
 			cells: [
 				new GroupHeaderCell({
 					colspan: 1,
 					label: 'ID',
-					ids: ['firstName'],
+					allIds: ['firstName'],
 				}),
-				new DisplayHeaderCell(),
+				new DisplayHeaderCell({ id: '1' }),
 			],
 		}),
 		new HeaderRow({
+			id: '1',
 			cells: [
 				new GroupHeaderCell({
 					colspan: 1,
 					label: 'Name',
-					ids: ['firstName'],
+					allIds: ['firstName'],
 				}),
 				new GroupHeaderCell({
 					colspan: 1,
 					label: 'Info',
-					ids: ['progress'],
+					allIds: ['progress'],
 				}),
 			],
 		}),
 		new HeaderRow({
+			id: '2',
 			cells: [
 				new DataHeaderCell({
 					label: 'First Name',

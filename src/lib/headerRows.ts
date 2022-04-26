@@ -7,12 +7,15 @@ import { max, sum } from './utils/math';
 import { getNullMatrix, getTransposed } from './utils/matrix';
 
 export interface HeaderRowInit<Item> {
+	id: string;
 	cells: Array<HeaderCell<Item>>;
 }
 
 export class HeaderRow<Item> {
+	id: string;
 	cells: Array<HeaderCell<Item>>;
-	constructor({ cells }: HeaderRowInit<Item>) {
+	constructor({ id, cells }: HeaderRowInit<Item>) {
+		this.id = id;
 		this.cells = cells;
 	}
 }
@@ -49,7 +52,9 @@ export const getHeaderRowMatrix = <Item>(
 		cellOffset += c instanceof GroupColumn ? c.ids.length : 1;
 	});
 	// Replace null cells with blank display cells.
-	return rowMatrix.map((cells) => cells.map((cell) => cell ?? new DisplayHeaderCell()));
+	return rowMatrix.map((cells) =>
+		cells.map((cell, columnIdx) => cell ?? new DisplayHeaderCell({ id: columnIdx.toString() }))
+	);
 };
 
 const loadHeaderRowMatrix = <Item>(
@@ -72,7 +77,7 @@ const loadHeaderRowMatrix = <Item>(
 		const groupCell = new GroupHeaderCell({
 			label: column.header,
 			colspan: 1,
-			ids: column.ids,
+			allIds: column.ids,
 		});
 		// Fill multi-colspan cells.
 		for (let i = 0; i < column.ids.length; i++) {
@@ -130,8 +135,8 @@ export const getFilteredColumnMatrix = <Item>(
 export const rowMatrixToHeaderRows = <Item>(
 	rowMatrix: Matrix<HeaderCell<Item>>
 ): Array<HeaderRow<Item>> => {
-	return rowMatrix.map((cells) => {
-		return new HeaderRow({ cells: getMergedRow(cells) });
+	return rowMatrix.map((rowCells, rowIdx) => {
+		return new HeaderRow({ id: rowIdx.toString(), cells: getMergedRow(rowCells) });
 	});
 };
 
