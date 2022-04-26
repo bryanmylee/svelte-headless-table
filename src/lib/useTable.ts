@@ -1,11 +1,11 @@
 import { derived, readable, type Readable } from 'svelte/store';
-import { getBodyRows } from './bodyRows';
+import { getBodyRows, getSortedBodyRows } from './bodyRows';
 import { getFlatColumns, type Column } from './columns';
 import { getHeaderRows } from './headerRows';
-import type { ColumnFilter, ColumnOrder } from './types/config';
+import type { ColumnFilter, ColumnOrder, SortOn } from './types/config';
 import type { ReadableKeys } from './types/ReadableKeys';
 
-export type UseTableConfig<Item> = ColumnOrder<Item> & ColumnFilter<Item>;
+export type UseTableConfig<Item> = ColumnOrder<Item> & ColumnFilter<Item> & SortOn<Item>;
 
 export type UseTableProps<Item> = {
 	data: Readable<Array<Item>>;
@@ -19,6 +19,7 @@ export const useTable = <Item>({
 	columns: rawColumns,
 	columnOrder = Undefined,
 	hiddenColumns = Undefined,
+	sortKeys = Undefined,
 }: UseTableProps<Item>) => {
 	const flatColumns = derived([columnOrder, hiddenColumns], ([$columnOrder, $hiddenColumns]) => {
 		return getFlatColumns(rawColumns, { columnOrder: $columnOrder, hiddenColumns: $hiddenColumns });
@@ -29,8 +30,14 @@ export const useTable = <Item>({
 			hiddenColumns: $hiddenColumns,
 		});
 	});
-	const bodyRows = derived([data, flatColumns], ([$data, $flatColumns]) => {
+	const originalBodyRows = derived([data, flatColumns], ([$data, $flatColumns]) => {
 		return getBodyRows($data, $flatColumns);
+	});
+	const bodyRows = derived([originalBodyRows, sortKeys], ([$originalBodyRows, $sortKeys]) => {
+		if ($sortKeys === undefined) {
+			return $originalBodyRows;
+		}
+		return getSortedBodyRows($originalBodyRows, $sortKeys);
 	});
 	return {
 		flatColumns,

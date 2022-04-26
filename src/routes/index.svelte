@@ -4,10 +4,28 @@
 	import { useTable } from '$lib/useTable';
 	import { sampleRows, type SampleRow } from './_sampleRows';
 	import Render from '$lib/components/Render.svelte';
+	import type { SortKey } from '$lib/types/config';
 
 	const data = writable(sampleRows);
-	const columnOrder = writable<Array<string>>([]);
-	const hiddenColumns = writable<Array<string>>([]);
+	const columnOrder = writable<Array<string>>([
+		'status',
+		'firstName',
+		'lastName',
+		'age',
+		'visits',
+		'progress',
+	]);
+	const hiddenColumns = writable<Array<string>>(['progress']);
+	const sortKeys = writable<Array<SortKey>>([
+		{
+			id: 'status',
+			order: 'desc',
+		},
+		{
+			id: 'firstName',
+			order: 'asc',
+		},
+	]);
 
 	const { headerRows, bodyRows } = useTable<SampleRow>({
 		data,
@@ -49,6 +67,7 @@
 		]),
 		columnOrder,
 		hiddenColumns,
+		sortKeys,
 	});
 </script>
 
@@ -58,6 +77,7 @@
 		{
 			columnOrder: $columnOrder,
 			hiddenColumns: $hiddenColumns,
+			sortKeys: $sortKeys,
 		},
 		null,
 		2
