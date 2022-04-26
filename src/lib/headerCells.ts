@@ -77,17 +77,19 @@ export class DataHeaderCell<Item> extends HeaderCell<Item> {
  * except columns.
  */
 export interface GroupHeaderCellInit<Item> extends Omit<HeaderCellInit<Item>, 'id'> {
-	allIds: Array<string>;
 	ids: Array<string>;
+	allIds: Array<string>;
 }
 
 export class GroupHeaderCell<Item> extends HeaderCell<Item> {
-	allIds: Array<string>;
 	ids: Array<string>;
-	constructor({ label, colspan, allIds, ids }: GroupHeaderCellInit<Item>) {
+	allId: string;
+	allIds: Array<string>;
+	constructor({ label, colspan, ids, allIds }: GroupHeaderCellInit<Item>) {
 		super({ id: ids.join(','), label, colspan });
-		this.allIds = allIds;
 		this.ids = ids;
+		this.allId = allIds.join(',');
+		this.allIds = allIds;
 	}
 }
 
