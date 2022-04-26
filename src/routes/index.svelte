@@ -5,6 +5,7 @@
 	import { sampleRows, type SampleRow } from './_sampleRows';
 	import Render from '$lib/components/Render.svelte';
 	import type { SortKey } from '$lib/types/config';
+	import { getShuffled } from '$lib/utils/array';
 
 	const data = writable(sampleRows);
 	const columnOrder = writable<Array<string>>([
@@ -15,9 +16,6 @@
 		'visits',
 		'progress',
 	]);
-	setInterval(() => {
-		$columnOrder = [$columnOrder[$columnOrder.length - 1], ...$columnOrder.slice(0, -1)];
-	}, 1000);
 	const hiddenColumns = writable<Array<string>>(['progress']);
 	const sortKeys = writable<Array<SortKey>>([
 		{
@@ -78,7 +76,6 @@
 
 <pre>{JSON.stringify(
 		{
-			headerRows: $headerRows,
 			columnOrder: $columnOrder,
 			hiddenColumns: $hiddenColumns,
 			sortKeys: $sortKeys,
@@ -86,6 +83,8 @@
 		null,
 		2
 	)}</pre>
+
+<button on:click={() => ($columnOrder = getShuffled($columnOrder))}>Shuffle columns</button>
 
 <table>
 	<thead>
