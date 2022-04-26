@@ -15,6 +15,9 @@
 		'visits',
 		'progress',
 	]);
+	setInterval(() => {
+		$columnOrder = [$columnOrder[$columnOrder.length - 1], ...$columnOrder.slice(0, -1)];
+	}, 1000);
 	const hiddenColumns = writable<Array<string>>(['progress']);
 	const sortKeys = writable<Array<SortKey>>([
 		{
@@ -75,6 +78,7 @@
 
 <pre>{JSON.stringify(
 		{
+			headerRows: $headerRows,
 			columnOrder: $columnOrder,
 			hiddenColumns: $hiddenColumns,
 			sortKeys: $sortKeys,
@@ -85,10 +89,10 @@
 
 <table>
 	<thead>
-		{#each $headerRows as headerRow}
+		{#each $headerRows as headerRow (headerRow.id)}
 			<tr>
-				{#each headerRow.cells as cell}
-					<th {...cell.attrs()}>
+				{#each headerRow.cells as cell (cell.id)}
+					<th {...cell.attrs()} use:cell.action>
 						<Render {...cell.render()} />
 					</th>
 				{/each}

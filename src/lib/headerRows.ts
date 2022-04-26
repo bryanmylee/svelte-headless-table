@@ -36,6 +36,7 @@ export const getHeaderRows = <Item>(
 	if (hiddenColumns !== undefined) {
 		columnMatrix = getFilteredColumnMatrix(columnMatrix, hiddenColumns);
 	}
+	populateGroupHeaderCellIds(columnMatrix);
 	return rowMatrixToHeaderRows(getTransposed(columnMatrix));
 };
 
@@ -74,14 +75,14 @@ const loadHeaderRowMatrix = <Item>(
 		return;
 	}
 	if (column instanceof GroupColumn) {
-		const groupCell = new GroupHeaderCell({
-			label: column.header,
-			colspan: 1,
-			allIds: column.ids,
-		});
 		// Fill multi-colspan cells.
 		for (let i = 0; i < column.ids.length; i++) {
-			rowMatrix[rowOffset][cellOffset + i] = groupCell;
+			rowMatrix[rowOffset][cellOffset + i] = new GroupHeaderCell({
+				label: column.header,
+				colspan: 1,
+				allIds: column.ids,
+				ids: [],
+			});
 		}
 		let childCellOffset = 0;
 		column.columns.forEach((c) => {
@@ -103,12 +104,12 @@ export const getOrderedColumnMatrix = <Item>(
 	// Each row of the transposed matrix represents a column.
 	// The `DataHeaderCell` is the last cell of each column.
 	columnOrder.forEach((key) => {
-		const nextColumn = columnMatrix.find((cells) => {
-			const lastCell = cells[cells.length - 1];
-			if (!(lastCell instanceof DataHeaderCell)) {
-				return false;
+		const nextColumn = columnMatrix.find((columnCells) => {
+			const dataCell = columnCells[columnCells.length - 1];
+			if (!(dataCell instanceof DataHeaderCell)) {
+				throw new Error('The last element of each column must be `DataHeaderCell`');
 			}
-			return lastCell.id === key;
+			return dataCell.id === key;
 		});
 		if (nextColumn !== undefined) {
 			orderedColumnMatrix.push(nextColumn);
@@ -123,12 +124,26 @@ export const getFilteredColumnMatrix = <Item>(
 ): Matrix<HeaderCell<Item>> => {
 	// Each row of the transposed matrix represents a column.
 	// The `DataHeaderCell` is the last cell of each column.
-	return columnMatrix.filter((column) => {
-		const lastCell = column[column.length - 1];
-		if (!(lastCell instanceof DataHeaderCell)) {
-			return true;
+	return columnMatrix.filter((columnCells) => {
+		const dataCell = columnCells[columnCells.length - 1];
+		if (!(dataCell instanceof DataHeaderCell)) {
+			throw new Error('The last element of each column must be `DataHeaderCell`');
 		}
-		return !hiddenColumns.includes(lastCell.id);
+		return !hiddenColumns.includes(dataCell.id);
+	});
+};
+
+const populateGroupHeaderCellIds = <Item>(columnMatrix: Matrix<HeaderCell<Item>>) => {
+	columnMatrix.forEach((columnCells) => {
+		const dataCell = columnCells[columnCells.length - 1];
+		if (!(dataCell instanceof DataHeaderCell)) {
+			throw new Error('The last element of each column must be `DataHeaderCell`');
+		}
+		columnCells.forEach((c) => {
+			if (c instanceof GroupHeaderCell) {
+				c.ids.push(dataCell.id);
+			}
+		});
 	});
 };
 
@@ -143,6 +158,10 @@ export const rowMatrixToHeaderRows = <Item>(
 /**
  * Multi-colspan cells will appear as multiple adjacent cells on the same row.
  * Join these adjacent multi-colspan cells and update the colspan property.
+ *
+ * Non-adjacent multi-colspan cells (due to column ordering) must be cloned
+ * from the original .
+ *
  * @param cells An array of cells.
  * @returns An array of cells with no duplicate consecutive cells.
  */
@@ -154,18 +173,25 @@ export const getMergedRow = <Item>(cells: Array<HeaderCell<Item>>): Array<Header
 	let startIdx = 0;
 	let endIdx = 1;
 	while (startIdx < cells.length) {
-		// The comparison works because each cell is a reference to the same instance.
-		while (endIdx <= cells.length && cells[endIdx] === cells[startIdx]) {
+		const cell = getCloned(cells[startIdx]);
+		if (!(cell instanceof GroupHeaderCell)) {
+			mergedCells.push(cell);
+			startIdx++;
+			continue;
+		}
+		endIdx = startIdx + 1;
+		const ids: Array<string> = [...cell.ids];
+		while (endIdx < cells.length && cells[endIdx].id === cells[startIdx].id) {
+			const nextCell = cells[endIdx];
+			if (nextCell instanceof GroupHeaderCell) {
+				ids.push(...nextCell.ids);
+			}
 			endIdx++;
 		}
-		let cell = cells[startIdx];
-		if (cell instanceof GroupHeaderCell) {
-			cell = getCloned(cell);
-			cell.colspan = endIdx - startIdx;
-		}
+		cell.ids = ids;
+		cell.colspan = endIdx - startIdx;
 		mergedCells.push(cell);
 		startIdx = endIdx;
-		endIdx = startIdx + 1;
 	}
 	return mergedCells;
 };

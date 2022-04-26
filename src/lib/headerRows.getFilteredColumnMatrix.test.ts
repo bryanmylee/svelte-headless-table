@@ -14,19 +14,39 @@ interface User {
 it('orders the matrix columns', () => {
 	const columnMatrix: Matrix<HeaderCell<User>> = [
 		[
-			new GroupHeaderCell({ label: 'Name', colspan: 1, allIds: ['firstName', 'lastName'] }),
+			new GroupHeaderCell({
+				label: 'Name',
+				colspan: 1,
+				allIds: ['firstName', 'lastName'],
+				ids: [],
+			}),
 			new DataHeaderCell({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
 		],
 		[
-			new GroupHeaderCell({ label: 'Name', colspan: 1, allIds: ['firstName', 'lastName'] }),
+			new GroupHeaderCell({
+				label: 'Name',
+				colspan: 1,
+				allIds: ['firstName', 'lastName'],
+				ids: [],
+			}),
 			new DataHeaderCell({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
 		],
 		[
-			new GroupHeaderCell({ label: 'Info', colspan: 1, allIds: ['age', 'progress'] }),
+			new GroupHeaderCell({
+				label: 'Info',
+				colspan: 1,
+				allIds: ['age', 'progress'],
+				ids: [],
+			}),
 			new DataHeaderCell({ label: 'Age', accessorKey: 'age', id: 'age' }),
 		],
 		[
-			new GroupHeaderCell({ label: 'Info', colspan: 1, allIds: ['age', 'progress'] }),
+			new GroupHeaderCell({
+				label: 'Info',
+				colspan: 1,
+				allIds: ['age', 'progress'],
+				ids: [],
+			}),
 			new DataHeaderCell({ label: 'Progress', accessorKey: 'progress', id: 'progress' }),
 		],
 	];
@@ -35,11 +55,21 @@ it('orders the matrix columns', () => {
 
 	const expected: Matrix<HeaderCell<User>> = [
 		[
-			new GroupHeaderCell({ label: 'Name', colspan: 1, allIds: ['firstName', 'lastName'] }),
+			new GroupHeaderCell({
+				label: 'Name',
+				colspan: 1,
+				allIds: ['firstName', 'lastName'],
+				ids: [],
+			}),
 			new DataHeaderCell({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
 		],
 		[
-			new GroupHeaderCell({ label: 'Info', colspan: 1, allIds: ['age', 'progress'] }),
+			new GroupHeaderCell({
+				label: 'Info',
+				colspan: 1,
+				allIds: ['age', 'progress'],
+				ids: [],
+			}),
 			new DataHeaderCell({ label: 'Age', accessorKey: 'age', id: 'age' }),
 		],
 	];
