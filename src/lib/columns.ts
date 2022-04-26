@@ -22,18 +22,22 @@ export class Column<Item> {
 	}
 }
 
-export interface DataColumnInit<Item, Value = unknown> extends Omit<ColumnInit<Item>, 'height'> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface DataColumnInit<Item, Value = any> extends Omit<ColumnInit<Item>, 'height'> {
 	cell?: Label<Item, Value>;
 	accessor: keyof Item | ((item: Item) => Value);
 	id?: string;
+	sortKey?: (value: Value) => string | number;
 }
 
-export class DataColumn<Item, Value = unknown> extends Column<Item> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export class DataColumn<Item, Value = any> extends Column<Item> {
 	cell?: Label<Item, Value>;
 	accessorKey?: keyof Item;
 	accessorFn?: (item: Item) => Value;
 	id: string;
-	constructor({ header, footer, cell, accessor, id }: DataColumnInit<Item, Value>) {
+	sortOnFn?: (value: Value) => string | number;
+	constructor({ header, footer, cell, accessor, id, sortKey }: DataColumnInit<Item, Value>) {
 		super({ header, footer, height: 1 });
 		this.cell = cell;
 		if (accessor instanceof Function) {
@@ -45,6 +49,7 @@ export class DataColumn<Item, Value = unknown> extends Column<Item> {
 			throw new Error('A column id or string accessor is required');
 		}
 		this.id = id ?? `${this.accessorKey}`;
+		this.sortOnFn = sortKey;
 	}
 }
 
@@ -66,7 +71,8 @@ export class GroupColumn<Item> extends Column<Item> {
 	}
 }
 
-export const column = <Item, Value = unknown>(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const column = <Item, Value = any>(
 	def: DataColumnInit<Item, Value>
 ): DataColumn<Item, Value> => new DataColumn(def);
 

@@ -7,3 +7,13 @@ export interface ColumnFilter<Item> {
 export interface ColumnOrder<Item> {
 	columnOrder?: Array<string>;
 }
+
+export interface SortKey {
+	id: string;
+	order: 'asc' | 'desc';
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export interface SortOn<Item> {
+	sortKeys?: Array<SortKey>;
+}

@@ -11,22 +11,41 @@ interface User {
 	status: string;
 }
 
-describe('getBodyRows', () => {
-	const columns = [
-		column<User>({
-			accessor: 'firstName',
-			header: 'First Name',
-		}),
-		column<User>({
-			accessor: 'lastName',
-			header: 'Last Name',
-		}),
-		column<User>({
-			accessor: 'progress',
-			header: 'Profile Progress',
-		}),
-	];
+const data: Array<User> = [
+	{
+		firstName: 'Adam',
+		lastName: 'West',
+		age: 50,
+		progress: 75,
+		status: 'completed',
+		visits: 32,
+	},
+	{
+		firstName: 'Becky',
+		lastName: 'White',
+		age: 93,
+		progress: 43,
+		status: 'completed',
+		visits: 10,
+	},
+];
 
+const columns = [
+	column<User>({
+		accessor: 'firstName',
+		header: 'First Name',
+	}),
+	column<User>({
+		accessor: 'lastName',
+		header: 'Last Name',
+	}),
+	column<User>({
+		accessor: 'progress',
+		header: 'Profile Progress',
+	}),
+];
+
+describe('getBodyRows', () => {
 	it('transforms empty data', () => {
 		const actual = getBodyRows([], columns);
 
@@ -36,25 +55,6 @@ describe('getBodyRows', () => {
 	});
 
 	it('transforms data', () => {
-		const data: Array<User> = [
-			{
-				firstName: 'Adam',
-				lastName: 'West',
-				age: 50,
-				progress: 75,
-				status: 'completed',
-				visits: 32,
-			},
-			{
-				firstName: 'Becky',
-				lastName: 'White',
-				age: 93,
-				progress: 43,
-				status: 'completed',
-				visits: 10,
-			},
-		];
-
 		const actual = getBodyRows(data, columns);
 
 		const row0 = new BodyRow<User>({ id: '0', cells: [] });
