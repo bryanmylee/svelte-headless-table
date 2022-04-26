@@ -1,19 +1,78 @@
 <script lang="ts">
+	import { writable } from 'svelte/store';
+	import { column, createColumns, group } from '$lib/columns';
+	import { useTable } from '$lib/useTable';
+	import type { SampleRow } from './_sampleRows';
+	import Render from '$lib/components/Render.svelte';
+
+	const columnOrder = writable<Array<string>>([]);
+	const hiddenColumns = writable<Array<string>>([]);
+
+	const { headerRows } = useTable<SampleRow>({
+		columns: createColumns([
+			group({
+				header: 'Name',
+				columns: [
+					column({
+						header: 'First Name',
+						accessor: 'firstName',
+					}),
+					column({
+						header: 'Last Name',
+						accessor: 'lastName',
+					}),
+				],
+			}),
+			group({
+				header: 'Info',
+				columns: [
+					column({
+						header: 'Age',
+						accessor: 'age',
+					}),
+					column({
+						header: 'Status',
+						accessor: 'status',
+					}),
+					column({
+						header: 'Visits',
+						accessor: 'visits',
+					}),
+					column({
+						header: 'Profile Progress',
+						accessor: 'progress',
+					}),
+				],
+			}),
+		]),
+		columnOrder,
+		hiddenColumns,
+	});
+	$: console.log($headerRows);
 </script>
 
 <h1>svelte-tables</h1>
 
+<pre>{JSON.stringify(
+		{
+			columnOrder: $columnOrder,
+			hiddenColumns: $hiddenColumns,
+		},
+		null,
+		2
+	)}</pre>
+
 <table>
 	<thead>
-		<!-- {#each $table.headerRows as headerRow} -->
-		<tr>
-			<!-- {#each headerRow.cells as cell} -->
-			<th>
-				<!-- <Render {...cell.render()} /> -->
-			</th>
-			<!-- {/each} -->
-		</tr>
-		<!-- {/each} -->
+		{#each $headerRows as headerRow}
+			<tr>
+				{#each headerRow.cells as cell}
+					<th {...cell.attrs()}>
+						<Render {...cell.render()} />
+					</th>
+				{/each}
+			</tr>
+		{/each}
 	</thead>
 	<tbody>
 		<!-- {#each $table.dataRows as dataRow} -->
@@ -40,7 +99,8 @@
 </table>
 
 <style global>
-	* {
+	h1,
+	table {
 		font-family: sans-serif;
 	}
 

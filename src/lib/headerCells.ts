@@ -1,17 +1,36 @@
 import { NBSP } from './constants';
 import type { AggregateLabel } from './types/AggregateLabel';
+import type { RenderProps } from './types/RenderProps';
 
 export interface HeaderCellInit<Item> {
 	label: AggregateLabel<Item>;
 	colspan: number;
 }
 
+export interface HeaderCellAttributes<Item> {
+	colspan: number;
+}
 export class HeaderCell<Item> {
 	label: AggregateLabel<Item>;
 	colspan: number;
 	constructor({ label, colspan }: HeaderCellInit<Item>) {
 		this.label = label;
 		this.colspan = colspan;
+	}
+	attrs(): HeaderCellAttributes<Item> {
+		return {
+			colspan: this.colspan,
+		};
+	}
+	render(): RenderProps {
+		if (typeof this.label === 'string') {
+			return {
+				text: this.label,
+			};
+		}
+		return {
+			text: 'Work in progress',
+		};
 	}
 }
 

@@ -21,4 +21,7 @@ export const useTable = <Item>({
 			hiddenColumns: $hiddenColumns,
 		});
 	});
+	return {
+		headerRows,
+	};
 };
