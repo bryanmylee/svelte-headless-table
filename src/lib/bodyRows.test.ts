@@ -59,32 +59,40 @@ describe('getBodyRows', () => {
 
 		const expected: Array<BodyRow<User>> = [
 			new BodyRow({
+				id: '0',
 				cells: [
 					new BodyCell<User>({
+						rowId: '0',
 						columnId: 'firstName',
 						value: 'Adam',
 					}),
 					new BodyCell<User>({
+						rowId: '0',
 						columnId: 'lastName',
 						value: 'West',
 					}),
 					new BodyCell<User>({
+						rowId: '0',
 						columnId: 'progress',
 						value: 75,
 					}),
 				],
 			}),
 			new BodyRow({
+				id: '1',
 				cells: [
 					new BodyCell<User>({
+						rowId: '1',
 						columnId: 'firstName',
 						value: 'Becky',
 					}),
 					new BodyCell<User>({
+						rowId: '1',
 						columnId: 'lastName',
 						value: 'White',
 					}),
 					new BodyCell<User>({
+						rowId: '1',
 						columnId: 'progress',
 						value: 43,
 					}),

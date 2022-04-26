@@ -2,6 +2,7 @@ import type { Label } from './types/Label';
 import type { RenderProps } from './types/RenderProps';
 
 export interface BodyCellInit<Item, Value = unknown> {
+	rowId: string;
 	columnId: string;
 	label?: Label<Item, Value>;
 	value: Value;
@@ -11,10 +12,12 @@ export interface BodyCellInit<Item, Value = unknown> {
 export interface BodyCellAttributes<Item> {}
 
 export class BodyCell<Item, Value = unknown> {
+	rowId: string;
 	columnId: string;
 	label?: Label<Item, Value>;
 	value: Value;
-	constructor({ columnId, label, value }: BodyCellInit<Item, Value>) {
+	constructor({ rowId, columnId, label, value }: BodyCellInit<Item, Value>) {
+		this.rowId = rowId;
 		this.columnId = columnId;
 		this.label = label;
 		this.value = value;
