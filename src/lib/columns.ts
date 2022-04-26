@@ -29,11 +29,13 @@ export interface DataColumnInit<Item, Value = unknown> extends Omit<ColumnInit<I
 }
 
 export class DataColumn<Item, Value = unknown> extends Column<Item> {
+	cell?: Label<Item, Value>;
 	accessorKey?: keyof Item;
 	accessorFn?: (item: Item) => Value;
 	id: string;
-	constructor({ header, footer, accessor, id }: DataColumnInit<Item, Value>) {
+	constructor({ header, footer, cell, accessor, id }: DataColumnInit<Item, Value>) {
 		super({ header, footer, height: 1 });
+		this.cell = cell;
 		if (accessor instanceof Function) {
 			this.accessorFn = accessor;
 		} else {

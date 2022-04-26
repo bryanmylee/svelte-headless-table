@@ -41,26 +41,26 @@ export const getHeaderRowMatrix = <Item>(
 ): Matrix<HeaderCell<Item>> => {
 	const maxColspan = sum(columns.map((c) => (c instanceof GroupColumn ? c.ids.length : 1)));
 	const maxHeight = max(columns.map((c) => c.height));
-	const cellMatrix: Matrix<HeaderCell<Item> | null> = getNullMatrix(maxColspan, maxHeight);
+	const rowMatrix: Matrix<HeaderCell<Item> | null> = getNullMatrix(maxColspan, maxHeight);
 	let cellOffset = 0;
 	columns.forEach((c) => {
 		const heightOffset = maxHeight - c.height;
-		loadHeaderRowMatrix(cellMatrix, c, heightOffset, cellOffset);
+		loadHeaderRowMatrix(rowMatrix, c, heightOffset, cellOffset);
 		cellOffset += c instanceof GroupColumn ? c.ids.length : 1;
 	});
 	// Replace null cells with blank display cells.
-	return cellMatrix.map((cells) => cells.map((cell) => cell ?? new DisplayHeaderCell()));
+	return rowMatrix.map((cells) => cells.map((cell) => cell ?? new DisplayHeaderCell()));
 };
 
 const loadHeaderRowMatrix = <Item>(
-	cellMatrix: Matrix<HeaderCell<Item> | undefined | null>,
+	rowMatrix: Matrix<HeaderCell<Item> | undefined | null>,
 	column: Column<Item>,
 	rowOffset: number,
 	cellOffset: number
 ) => {
 	if (column instanceof DataColumn) {
 		// `DataHeaderCell` should always be in the last row.
-		cellMatrix[cellMatrix.length - 1][cellOffset] = new DataHeaderCell({
+		rowMatrix[rowMatrix.length - 1][cellOffset] = new DataHeaderCell({
 			label: column.header,
 			accessorFn: column.accessorFn,
 			accessorKey: column.accessorKey,
@@ -76,11 +76,11 @@ const loadHeaderRowMatrix = <Item>(
 		});
 		// Fill multi-colspan cells.
 		for (let i = 0; i < column.ids.length; i++) {
-			cellMatrix[rowOffset][cellOffset + i] = groupCell;
+			rowMatrix[rowOffset][cellOffset + i] = groupCell;
 		}
 		let childCellOffset = 0;
 		column.columns.forEach((c) => {
-			loadHeaderRowMatrix(cellMatrix, c, rowOffset + 1, cellOffset + childCellOffset);
+			loadHeaderRowMatrix(rowMatrix, c, rowOffset + 1, cellOffset + childCellOffset);
 			childCellOffset += c instanceof GroupColumn ? c.ids.length : 1;
 		});
 		return;
