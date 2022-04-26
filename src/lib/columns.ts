@@ -70,7 +70,7 @@ export const column = <Item, Value = unknown>(
 
 export const group = <Item>(def: GroupColumnInit<Item>): GroupColumn<Item> => new GroupColumn(def);
 
-export const createColumns = <Item>(columns: Column<Item>[]): Column<Item>[] => {
+export const createColumns = <Item>(columns: Array<Column<Item>>): Array<Column<Item>> => {
 	const ids = getFlatColumnIds(columns);
 	const duplicateIds = getDuplicates(ids);
 	if (duplicateIds.length !== 0) {

@@ -5,5 +5,5 @@ import type { RenderPropsComponent } from './RenderProps';
 export type AggregateLabel<Item> =
 	| string
 	| RenderPropsComponent
-	| ((data: Item[]) => string)
-	| ((data: Item[]) => RenderPropsComponent);
+	| ((data: Array<Item>) => string)
+	| ((data: Array<Item>) => RenderPropsComponent);
