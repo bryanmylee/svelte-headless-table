@@ -85,7 +85,7 @@ export class GroupHeaderCell<Item> extends HeaderCell<Item> {
 	allIds: Array<string>;
 	ids: Array<string>;
 	constructor({ label, colspan, allIds, ids }: GroupHeaderCellInit<Item>) {
-		super({ id: allIds.join(','), label, colspan });
+		super({ id: ids.join(','), label, colspan });
 		this.allIds = allIds;
 		this.ids = ids;
 	}
