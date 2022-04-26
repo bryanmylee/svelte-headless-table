@@ -24,14 +24,17 @@ export class HeaderCell<Item> {
 		};
 	}
 	render(): RenderProps {
+		if (this.label instanceof Function) {
+			return {
+				text: 'Work in progress',
+			};
+		}
 		if (typeof this.label === 'string') {
 			return {
 				text: this.label,
 			};
 		}
-		return {
-			text: 'Work in progress',
-		};
+		return this.label;
 	}
 }
 

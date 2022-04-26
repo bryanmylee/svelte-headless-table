@@ -4,6 +4,7 @@ import type { Label } from './types/Label';
 import { getDuplicates } from './utils/array';
 import { max } from './utils/math';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface ColumnInit<Item> {
 	header: AggregateLabel<Item>;
 	footer?: AggregateLabel<Item>;
@@ -21,17 +22,17 @@ export class Column<Item> {
 	}
 }
 
-export interface DataColumnInit<Item> extends Omit<ColumnInit<Item>, 'height'> {
-	cell?: Label<Item>;
-	accessor: keyof Item | ((item: Item) => unknown);
+export interface DataColumnInit<Item, Value = unknown> extends Omit<ColumnInit<Item>, 'height'> {
+	cell?: Label<Item, Value>;
+	accessor: keyof Item | ((item: Item) => Value);
 	id?: string;
 }
 
-export class DataColumn<Item> extends Column<Item> {
+export class DataColumn<Item, Value = unknown> extends Column<Item> {
 	accessorKey?: keyof Item;
-	accessorFn?: (item: Item) => unknown;
+	accessorFn?: (item: Item) => Value;
 	id: string;
-	constructor({ header, footer, accessor, id }: DataColumnInit<Item>) {
+	constructor({ header, footer, accessor, id }: DataColumnInit<Item, Value>) {
 		super({ header, footer, height: 1 });
 		if (accessor instanceof Function) {
 			this.accessorFn = accessor;
@@ -63,7 +64,9 @@ export class GroupColumn<Item> extends Column<Item> {
 	}
 }
 
-export const column = <Item>(def: DataColumnInit<Item>): DataColumn<Item> => new DataColumn(def);
+export const column = <Item, Value = unknown>(
+	def: DataColumnInit<Item, Value>
+): DataColumn<Item, Value> => new DataColumn(def);
 
 export const group = <Item>(def: GroupColumnInit<Item>): GroupColumn<Item> => new GroupColumn(def);
 

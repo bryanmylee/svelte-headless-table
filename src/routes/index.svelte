@@ -2,9 +2,10 @@
 	import { writable } from 'svelte/store';
 	import { column, createColumns, group } from '$lib/columns';
 	import { useTable } from '$lib/useTable';
-	import type { SampleRow } from './_sampleRows';
+	import { sampleRows, type SampleRow } from './_sampleRows';
 	import Render from '$lib/components/Render.svelte';
 
+	const data = writable(sampleRows);
 	const columnOrder = writable<Array<string>>([]);
 	const hiddenColumns = writable<Array<string>>([]);
 

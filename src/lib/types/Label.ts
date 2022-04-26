@@ -1,5 +1,6 @@
 import type { RenderPropsComponent } from './RenderProps';
 
-export type Label<Item> =
-	| ((value: Item[keyof Item]) => string)
-	| ((value: Item[keyof Item]) => RenderPropsComponent);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type Label<Item, Value> =
+	| ((value: Value) => string)
+	| ((value: Value) => RenderPropsComponent);
