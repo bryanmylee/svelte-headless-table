@@ -61,12 +61,15 @@ describe('getBodyRows', () => {
 			new BodyRow({
 				cells: [
 					new BodyCell<User>({
+						columnId: 'firstName',
 						value: 'Adam',
 					}),
 					new BodyCell<User>({
+						columnId: 'lastName',
 						value: 'West',
 					}),
 					new BodyCell<User>({
+						columnId: 'progress',
 						value: 75,
 					}),
 				],
@@ -74,12 +77,15 @@ describe('getBodyRows', () => {
 			new BodyRow({
 				cells: [
 					new BodyCell<User>({
+						columnId: 'firstName',
 						value: 'Becky',
 					}),
 					new BodyCell<User>({
+						columnId: 'lastName',
 						value: 'White',
 					}),
 					new BodyCell<User>({
+						columnId: 'progress',
 						value: 43,
 					}),
 				],

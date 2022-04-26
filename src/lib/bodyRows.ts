@@ -25,7 +25,7 @@ export const getBodyRows = <Item>(
 					: c.accessorKey !== undefined
 					? item[c.accessorKey]
 					: undefined;
-			return new BodyCell({ label: c.cell, value });
+			return new BodyCell({ columnId: c.id, label: c.cell, value });
 		});
 	});
 	return rowMatrix.map((rowCells) => new BodyRow({ cells: rowCells }));
