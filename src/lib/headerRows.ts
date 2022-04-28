@@ -1,6 +1,5 @@
 import { DataColumn, GroupColumn, type Column } from './columns';
 import { DataHeaderCell, DisplayHeaderCell, GroupHeaderCell, type HeaderCell } from './headerCells';
-import type { ColumnOrder, ColumnFilter } from './types/config';
 import type { Matrix } from './types/Matrix';
 import { getCloned } from './utils/clone';
 import { max, sum } from './utils/math';
@@ -20,22 +19,17 @@ export class HeaderRow<Item> {
 	}
 }
 
-export type GetHeaderRowsConfig<Item> = ColumnOrder<Item> & ColumnFilter<Item>;
-
-export const getHeaderRows = <Item>(
-	columns: Array<Column<Item>>,
-	{ columnOrder, hiddenColumns }: GetHeaderRowsConfig<Item> = {}
-): Array<HeaderRow<Item>> => {
+export const getHeaderRows = <Item>(columns: Array<Column<Item>>): Array<HeaderRow<Item>> => {
 	const rowMatrix = getHeaderRowMatrix(columns);
 	// Perform all column operations on the transposed columnMatrix. This helps
 	// to reduce the number of expensive transpose operations required.
-	let columnMatrix = getTransposed(rowMatrix);
-	if (columnOrder !== undefined) {
-		columnMatrix = getOrderedColumnMatrix(columnMatrix, columnOrder);
-	}
-	if (hiddenColumns !== undefined) {
-		columnMatrix = getFilteredColumnMatrix(columnMatrix, hiddenColumns);
-	}
+	const columnMatrix = getTransposed(rowMatrix);
+	// if (columnOrder !== undefined) {
+	// 	columnMatrix = getOrderedColumnMatrix(columnMatrix, columnOrder);
+	// }
+	// if (hiddenColumns !== undefined) {
+	// 	columnMatrix = getFilteredColumnMatrix(columnMatrix, hiddenColumns);
+	// }
 	populateGroupHeaderCellIds(columnMatrix);
 	return rowMatrixToHeaderRows(getTransposed(columnMatrix));
 };

@@ -1,10 +1,9 @@
-import { derived, type Readable } from 'svelte/store';
+import { derived, readable, type Readable } from 'svelte/store';
 import { BodyRow, getBodyRows } from './bodyRows';
 import { getFlatColumns, type Column } from './columns';
 import type { HeaderCell } from './headerCells';
 import { getHeaderRows, type HeaderRow } from './headerRows';
 import { nonNullish } from './utils/filter';
-import { Undefined } from './utils/store';
 
 export type UseTableProps<Item> = {
 	data: Readable<Array<Item>>;
@@ -92,21 +91,8 @@ export const useTable = <Item, P extends Record<string, UseTablePlugin<Item, unk
 		}
 	});
 
-	const columnOrder = Undefined;
-	const hiddenColumns = Undefined;
-
-	const flatColumns = derived([columnOrder, hiddenColumns], ([$columnOrder, $hiddenColumns]) => {
-		return getFlatColumns(rawColumns, {
-			columnOrder: $columnOrder,
-			hiddenColumns: $hiddenColumns,
-		});
-	});
-	const headerRows = derived([columnOrder, hiddenColumns], ([$columnOrder, $hiddenColumns]) => {
-		return getHeaderRows(rawColumns, {
-			columnOrder: $columnOrder,
-			hiddenColumns: $hiddenColumns,
-		});
-	});
+	const flatColumns = readable(getFlatColumns(rawColumns));
+	const headerRows = readable(getHeaderRows(rawColumns));
 
 	const originalBodyRows = derived([data, flatColumns], ([$data, $flatColumns]) => {
 		return getBodyRows($data, $flatColumns);
