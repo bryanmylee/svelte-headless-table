@@ -1,51 +1,13 @@
 import { derived, readable, type Readable } from 'svelte/store';
-import { BodyRow, getBodyRows } from './bodyRows';
+import { getBodyRows } from './bodyRows';
 import { getFlatColumns, type Column } from './columns';
-import type { HeaderCell } from './headerCells';
-import { getHeaderRows, type HeaderRow } from './headerRows';
+import { getHeaderRows } from './headerRows';
+import type { AggregateTableHooks, UseTablePlugin } from './types/plugin';
 import { nonNullish } from './utils/filter';
 
 export type UseTableProps<Item> = {
 	data: Readable<Array<Item>>;
 	columns: Array<Column<Item>>;
-};
-
-export type UseTablePlugin<Item, PluginState> = {
-	state: PluginState;
-	sortFn?: Readable<(a: BodyRow<Item>, b: BodyRow<Item>) => number>;
-	hooks?: TableHooks<Item>;
-};
-
-export type TableHooks<Item> = {
-	thead?: {
-		tr?: ElementHook<HeaderRow<Item>> & {
-			th?: ElementHook<HeaderCell<Item>>;
-		};
-	};
-};
-
-export type ElementHook<TableComponent> = {
-	eventHandler?: EventHandler<TableComponent>;
-};
-
-export type EventHandler<TableComponent> = (props: EventProps<TableComponent>) => void;
-
-export type EventProps<TableComponent> = {
-	type: 'click';
-	event: MouseEvent;
-	component: TableComponent;
-};
-
-type AggregateTableHooks<Item> = {
-	thead: {
-		tr: AggregateElementHook<HeaderRow<Item>> & {
-			th: AggregateElementHook<HeaderCell<Item>>;
-		};
-	};
-};
-
-type AggregateElementHook<TableComponent> = {
-	eventHandlers: Array<EventHandler<TableComponent>>;
 };
 
 export const useTable = <Item, P extends Record<string, UseTablePlugin<Item, unknown>>>(
