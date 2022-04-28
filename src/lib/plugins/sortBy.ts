@@ -1,5 +1,6 @@
 import type { BodyRow } from '$lib/bodyRows';
-import type { UseTablePlugin } from '$lib/useTable';
+import type { HeaderCell } from '$lib/headerCells';
+import type { EventHandler, UseTablePlugin } from '$lib/useTable';
 import { compare } from '$lib/utils/compare';
 import { derived, writable, type Writable } from 'svelte/store';
 
@@ -58,8 +59,48 @@ export const sortBy = <Item>({
 		};
 	});
 
+	const thEventHandler: EventHandler<HeaderCell<Item>> = ({ component, type }) => {
+		if (type === 'click') {
+			const { id } = component;
+			sortKeys.update(($sortKeys) => {
+				const keyIdx = $sortKeys.findIndex((key) => key.id === id);
+				if (!multiSort) {
+					if (keyIdx === -1) {
+						return [{ id, order: 'asc' }];
+					}
+					const key = $sortKeys[keyIdx];
+					if (key.order === 'asc') {
+						return [{ id, order: 'desc' }];
+					}
+					return [];
+				}
+				if (keyIdx === -1) {
+					return [...$sortKeys, { id, order: 'asc' }];
+				}
+				const key = $sortKeys[keyIdx];
+				if (key.order === 'asc') {
+					return [
+						...$sortKeys.slice(0, keyIdx),
+						{ id, order: 'desc' },
+						...$sortKeys.slice(keyIdx + 1),
+					];
+				}
+				return [...$sortKeys.slice(0, keyIdx), ...$sortKeys.slice(keyIdx + 1)];
+			});
+		}
+	};
+
 	return {
 		state,
 		sortFn,
+		hooks: {
+			thead: {
+				tr: {
+					th: {
+						eventHandler: thEventHandler,
+					},
+				},
+			},
+		},
 	};
 };
