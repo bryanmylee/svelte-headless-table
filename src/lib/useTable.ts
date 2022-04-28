@@ -1,24 +1,48 @@
 import { derived, type Readable } from 'svelte/store';
 import { getBodyRows, getSortedBodyRows } from './bodyRows';
 import { getFlatColumns, type Column } from './columns';
-import { getHeaderRows } from './headerRows';
+import type { HeaderCell } from './headerCells';
+import { getHeaderRows, type HeaderRow } from './headerRows';
 import type { ColumnFilter, ColumnOrder, SortOn } from './types/config';
-import { Undefined, type ReadableKeys } from './utils/store';
+import { Undefined } from './utils/store';
 
 export type UseTableConfig<Item> = ColumnOrder<Item> & ColumnFilter<Item> & SortOn<Item>;
 
 export type UseTableProps<Item> = {
 	data: Readable<Array<Item>>;
 	columns: Array<Column<Item>>;
-} & ReadableKeys<UseTableConfig<Item>>;
+};
 
-export const useTable = <Item>({
-	data,
-	columns: rawColumns,
-	columnOrder = Undefined,
-	hiddenColumns = Undefined,
-	sortKeys = Undefined,
-}: UseTableProps<Item>) => {
+export type UseTablePlugin<Item, PluginState> = {
+	state?: PluginState;
+	hooks?: {
+		thead?: {
+			tr?: ElementHook<HeaderRow<Item>> & {
+				th?: ElementHook<HeaderCell<Item>>;
+			};
+		};
+	};
+};
+
+export interface ElementHook<TableComponent> {
+	eventHandlers?: Array<EventHandler<TableComponent>>;
+}
+
+export type EventHandler<TableComponent> = (props: EventProps<TableComponent>) => void;
+
+export interface EventProps<TableComponent> {
+	type: 'click';
+	event: MouseEvent;
+	component: TableComponent;
+}
+
+export const useTable = <Item, Plugins extends Array<UseTablePlugin<Item, unknown>> = []>(
+	{ data, columns: rawColumns }: UseTableProps<Item>,
+	...plugins: Plugins
+) => {
+	const columnOrder = Undefined;
+	const hiddenColumns = Undefined;
+	const sortKeys = Undefined;
 	const flatColumns = derived([columnOrder, hiddenColumns], ([$columnOrder, $hiddenColumns]) => {
 		return getFlatColumns(rawColumns, { columnOrder: $columnOrder, hiddenColumns: $hiddenColumns });
 	});

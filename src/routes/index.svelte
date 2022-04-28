@@ -66,9 +66,6 @@
 				],
 			}),
 		]),
-		columnOrder,
-		hiddenColumns,
-		sortKeys,
 	});
 </script>
 
