@@ -17,16 +17,6 @@
 		'progress',
 	]);
 	const hiddenColumns = writable<Array<string>>(['progress']);
-	// const sortKeys = writable<Array<SortKey>>([
-	// 	{
-	// 		id: 'status',
-	// 		order: 'desc',
-	// 	},
-	// 	{
-	// 		id: 'firstName',
-	// 		order: 'asc',
-	// 	},
-	// ]);
 
 	const columns = createColumns<SampleRow>([
 		group({

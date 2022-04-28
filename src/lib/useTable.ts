@@ -4,6 +4,7 @@ import { DataColumn, getFlatColumns, type Column } from './columns';
 import type { HeaderCell } from './headerCells';
 import { getHeaderRows, type HeaderRow } from './headerRows';
 import type { ColumnFilter, ColumnOrder, SortOn } from './types/config';
+import { nonNullish } from './utils/filter';
 import { Undefined } from './utils/store';
 
 export type UseTableConfig<Item> = ColumnOrder<Item> & ColumnFilter<Item> & SortOn<Item>;
@@ -52,7 +53,6 @@ export const useTable = <Item, P extends Plugins<Item>>(
 ) => {
 	const columnOrder = Undefined;
 	const hiddenColumns = Undefined;
-	const sortKeys = Undefined;
 
 	const flatColumns = derived([columnOrder, hiddenColumns], ([$columnOrder, $hiddenColumns]) => {
 		return getFlatColumns(rawColumns, {
@@ -66,20 +66,26 @@ export const useTable = <Item, P extends Plugins<Item>>(
 			hiddenColumns: $hiddenColumns,
 		});
 	});
-	const originalBodyRows = derived([data, flatColumns], ([$data, $flatColumns]) => {
-		return getBodyRows($data, $flatColumns);
-	});
-	const bodyRows = derived([originalBodyRows, sortKeys], ([$originalBodyRows, $sortKeys]) => {
-		if ($sortKeys === undefined) {
-			return $originalBodyRows;
-		}
-		return getSortedBodyRows($originalBodyRows, $sortKeys);
-	});
 
 	type PluginStates = { [K in keyof P]: P[K]['state'] };
 	const plugins = Object.fromEntries(
 		Object.entries(pluginConfigs).map(([key, plugin]) => [key, plugin.state])
 	) as PluginStates;
+
+	const sortFns = Object.values(pluginConfigs)
+		.map((plugin) => plugin.sortFn)
+		.filter(nonNullish);
+
+	const originalBodyRows = derived([data, flatColumns], ([$data, $flatColumns]) => {
+		return getBodyRows($data, $flatColumns);
+	});
+	const bodyRows = derived([originalBodyRows, ...sortFns], ([$originalBodyRows, ...$sortFns]) => {
+		const sortedRows = [...$originalBodyRows];
+		$sortFns.forEach((sortFn) => {
+			sortedRows.sort(sortFn);
+		});
+		return sortedRows;
+	});
 
 	return {
 		flatColumns,
