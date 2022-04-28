@@ -1,9 +1,9 @@
-import { derived, readable, type Readable } from 'svelte/store';
+import { derived, type Readable } from 'svelte/store';
 import { getBodyRows, getSortedBodyRows } from './bodyRows';
 import { getFlatColumns, type Column } from './columns';
 import { getHeaderRows } from './headerRows';
 import type { ColumnFilter, ColumnOrder, SortOn } from './types/config';
-import type { ReadableKeys } from './types/ReadableKeys';
+import { Undefined, type ReadableKeys } from './utils/store';
 
 export type UseTableConfig<Item> = ColumnOrder<Item> & ColumnFilter<Item> & SortOn<Item>;
 
@@ -11,8 +11,6 @@ export type UseTableProps<Item> = {
 	data: Readable<Array<Item>>;
 	columns: Array<Column<Item>>;
 } & ReadableKeys<UseTableConfig<Item>>;
-
-const Undefined = readable(undefined);
 
 export const useTable = <Item>({
 	data,
