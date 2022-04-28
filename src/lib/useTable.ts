@@ -1,6 +1,6 @@
 import { derived, type Readable } from 'svelte/store';
-import { getBodyRows, getSortedBodyRows } from './bodyRows';
-import { getFlatColumns, type Column } from './columns';
+import { BodyRow, getBodyRows, getSortedBodyRows } from './bodyRows';
+import { DataColumn, getFlatColumns, type Column } from './columns';
 import type { HeaderCell } from './headerCells';
 import { getHeaderRows, type HeaderRow } from './headerRows';
 import type { ColumnFilter, ColumnOrder, SortOn } from './types/config';
@@ -13,8 +13,11 @@ export type UseTableProps<Item> = {
 	columns: Array<Column<Item>>;
 };
 
+type Plugins<Item> = Record<string, UseTablePlugin<Item, unknown>>;
+
 export type UseTablePlugin<Item, PluginState> = {
-	state?: PluginState;
+	state: PluginState;
+	sortFn?: Readable<(a: BodyRow<Item>, b: BodyRow<Item>) => number>;
 	hooks?: {
 		thead?: {
 			tr?: ElementHook<HeaderRow<Item>> & {
@@ -36,15 +39,26 @@ export interface EventProps<TableComponent> {
 	component: TableComponent;
 }
 
-export const useTable = <Item, Plugins extends Array<UseTablePlugin<Item, unknown>> = []>(
+export interface UseTable<Item> {
+	flatColumns: Readable<DataColumn<Item>>;
+	headerRows: Readable<Array<HeaderRow<Item>>>;
+	bodyRows: Readable<Array<BodyRow<Item>>>;
+}
+
+export const useTable = <Item, P extends Plugins<Item>>(
 	{ data, columns: rawColumns }: UseTableProps<Item>,
-	...plugins: Plugins
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	pluginConfigs: P = {} as any
 ) => {
 	const columnOrder = Undefined;
 	const hiddenColumns = Undefined;
 	const sortKeys = Undefined;
+
 	const flatColumns = derived([columnOrder, hiddenColumns], ([$columnOrder, $hiddenColumns]) => {
-		return getFlatColumns(rawColumns, { columnOrder: $columnOrder, hiddenColumns: $hiddenColumns });
+		return getFlatColumns(rawColumns, {
+			columnOrder: $columnOrder,
+			hiddenColumns: $hiddenColumns,
+		});
 	});
 	const headerRows = derived([columnOrder, hiddenColumns], ([$columnOrder, $hiddenColumns]) => {
 		return getHeaderRows(rawColumns, {
@@ -61,9 +75,16 @@ export const useTable = <Item, Plugins extends Array<UseTablePlugin<Item, unknow
 		}
 		return getSortedBodyRows($originalBodyRows, $sortKeys);
 	});
+
+	type PluginStates = { [K in keyof P]: P[K]['state'] };
+	const plugins = Object.fromEntries(
+		Object.entries(pluginConfigs).map(([key, plugin]) => [key, plugin.state])
+	) as PluginStates;
+
 	return {
 		flatColumns,
 		headerRows,
 		bodyRows,
+		plugins,
 	};
 };

@@ -4,8 +4,8 @@
 	import { useTable } from '$lib/useTable';
 	import { sampleRows, type SampleRow } from './_sampleRows';
 	import Render from '$lib/components/Render.svelte';
-	import type { SortKey } from '$lib/types/config';
 	import { getShuffled } from '$lib/utils/array';
+	import { sortBy } from '$lib/plugins/sortBy';
 
 	const data = writable(sampleRows);
 	const columnOrder = writable<Array<string>>([
@@ -17,56 +17,64 @@
 		'progress',
 	]);
 	const hiddenColumns = writable<Array<string>>(['progress']);
-	const sortKeys = writable<Array<SortKey>>([
-		{
-			id: 'status',
-			order: 'desc',
-		},
-		{
-			id: 'firstName',
-			order: 'asc',
-		},
+	// const sortKeys = writable<Array<SortKey>>([
+	// 	{
+	// 		id: 'status',
+	// 		order: 'desc',
+	// 	},
+	// 	{
+	// 		id: 'firstName',
+	// 		order: 'asc',
+	// 	},
+	// ]);
+
+	const columns = createColumns<SampleRow>([
+		group({
+			header: 'Name',
+			columns: [
+				column({
+					header: 'First Name',
+					accessor: 'firstName',
+				}),
+				column({
+					header: 'Last Name',
+					accessor: 'lastName',
+				}),
+			],
+		}),
+		group({
+			header: 'Info',
+			columns: [
+				column({
+					header: 'Age',
+					accessor: 'age',
+				}),
+				column({
+					header: 'Status',
+					accessor: 'status',
+				}),
+				column({
+					header: 'Visits',
+					accessor: 'visits',
+				}),
+				column({
+					header: 'Profile Progress',
+					accessor: 'progress',
+				}),
+			],
+		}),
 	]);
 
-	const { headerRows, bodyRows } = useTable<SampleRow>({
-		data,
-		columns: createColumns([
-			group({
-				header: 'Name',
-				columns: [
-					column({
-						header: 'First Name',
-						accessor: 'firstName',
-					}),
-					column({
-						header: 'Last Name',
-						accessor: 'lastName',
-					}),
-				],
-			}),
-			group({
-				header: 'Info',
-				columns: [
-					column({
-						header: 'Age',
-						accessor: 'age',
-					}),
-					column({
-						header: 'Status',
-						accessor: 'status',
-					}),
-					column({
-						header: 'Visits',
-						accessor: 'visits',
-					}),
-					column({
-						header: 'Profile Progress',
-						accessor: 'progress',
-					}),
-				],
-			}),
-		]),
-	});
+	const { headerRows, bodyRows, plugins } = useTable(
+		{
+			data,
+			columns,
+		},
+		{
+			sort: sortBy(),
+		}
+	);
+	const { sortKeys } = plugins.sort;
 </script>
 
 <h1>svelte-tables</h1>
