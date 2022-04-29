@@ -9,12 +9,13 @@ export type UseTablePlugin<Item, PluginState> = {
 	hooks?: TableHooks<Item>;
 };
 
+export type KeyToComponent<Item> = {
+	'thead.tr': HeaderRow<Item>;
+	'thead.tr.th': HeaderCell<Item>;
+};
+
 export type TableHooks<Item> = {
-	thead?: {
-		tr?: ElementHook<HeaderRow<Item>> & {
-			th?: ElementHook<HeaderCell<Item>>;
-		};
-	};
+	[K in keyof KeyToComponent<Item>]?: ElementHook<KeyToComponent<Item>[K]>;
 };
 
 export type ElementHook<TableComponent> = {
@@ -32,11 +33,7 @@ export type EventProps<EventType, TableComponent> = {
 };
 
 export type AggregateTableHooks<Item> = {
-	thead: {
-		tr: AggregateElementHook<HeaderRow<Item>> & {
-			th: AggregateElementHook<HeaderCell<Item>>;
-		};
-	};
+	[K in keyof KeyToComponent<Item>]: AggregateElementHook<KeyToComponent<Item>[K]>;
 };
 
 export type AggregateElementHook<TableComponent> = {

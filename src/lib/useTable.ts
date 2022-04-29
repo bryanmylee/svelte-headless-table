@@ -2,7 +2,8 @@ import { derived, readable, type Readable } from 'svelte/store';
 import { getBodyRows } from './bodyRows';
 import { getFlatColumns, type Column } from './columns';
 import { getHeaderRows } from './headerRows';
-import type { AggregateTableHooks, UseTablePlugin } from './types/plugin';
+import type { Entries } from './types/Entries';
+import type { AggregateTableHooks, TableHooks, UseTablePlugin } from './types/plugin';
 import { nonNullish } from './utils/filter';
 
 export type UseTableProps<Item> = {
@@ -32,7 +33,7 @@ export const useTable = <Item, Plugins extends Record<string, UseTablePlugin<Ite
 		// Apply hooks.
 		$headerRows.forEach((row) => {
 			row.cells.forEach((cell) => {
-				cell.applyHook(aggregateHooks.thead.tr.th);
+				cell.applyHook(aggregateHooks['thead.tr.th']);
 			});
 		});
 		return $headerRows;
@@ -61,38 +62,27 @@ const getAggregateHooks = <Item, Plugins extends Record<string, UseTablePlugin<I
 	plugins: Plugins
 ) => {
 	const aggregateHooks: AggregateTableHooks<Item> = {
-		thead: {
-			tr: {
-				eventHandlers: [],
-				th: {
-					eventHandlers: [],
-				},
-			},
+		'thead.tr': {
+			eventHandlers: [],
+		},
+		'thead.tr.th': {
+			eventHandlers: [],
 		},
 	};
 	Object.values(plugins).forEach(({ hooks }) => {
 		if (hooks === undefined) return;
-		const { thead } = hooks;
-		if (thead !== undefined) {
-			const { tr } = thead;
-			if (tr !== undefined) {
-				if (tr.eventHandlers !== undefined) {
-					aggregateHooks.thead.tr.eventHandlers = [
-						...aggregateHooks.thead.tr.eventHandlers,
-						...tr.eventHandlers,
-					];
-				}
-				const { th } = tr;
-				if (th !== undefined) {
-					if (th.eventHandlers !== undefined) {
-						aggregateHooks.thead.tr.th.eventHandlers = [
-							...aggregateHooks.thead.tr.th.eventHandlers,
-							...th.eventHandlers,
-						];
-					}
-				}
+		const hookEntries = Object.entries(hooks) as Entries<TableHooks<Item>>;
+		hookEntries.forEach(([key, hook]) => {
+			if (hook.eventHandlers !== undefined) {
+				// We know logically that key and hook types are bound.
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				aggregateHooks[key].eventHandlers = [
+					...aggregateHooks[key].eventHandlers,
+					...hook.eventHandlers,
+				];
 			}
-		}
+		});
 	});
 	return aggregateHooks;
 };

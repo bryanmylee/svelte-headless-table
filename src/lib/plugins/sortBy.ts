@@ -59,7 +59,7 @@ export const sortBy = <Item>({
 		};
 	});
 
-	const thEventHandler: EventHandler<HeaderCell<Item>> = {
+	const thOnClick: EventHandler<HeaderCell<Item>> = {
 		type: 'click',
 		callback: ({ component }) => {
 			const { id } = component;
@@ -95,12 +95,8 @@ export const sortBy = <Item>({
 		state,
 		sortFn,
 		hooks: {
-			thead: {
-				tr: {
-					th: {
-						eventHandlers: [thEventHandler],
-					},
-				},
+			'thead.tr.th': {
+				eventHandlers: [thOnClick],
 			},
 		},
 	};
