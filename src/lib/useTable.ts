@@ -10,12 +10,12 @@ export type UseTableProps<Item> = {
 	columns: Array<Column<Item>>;
 };
 
-export const useTable = <Item, P extends Record<string, UseTablePlugin<Item, unknown>>>(
+export const useTable = <Item, Plugins extends Record<string, UseTablePlugin<Item, unknown>>>(
 	{ data, columns: rawColumns }: UseTableProps<Item>,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	plugins: P = {} as any
+	plugins: Plugins = {} as any
 ) => {
-	type PluginStates = { [K in keyof P]: P[K]['state'] };
+	type PluginStates = { [K in keyof Plugins]: Plugins[K]['state'] };
 	const pluginStates = Object.fromEntries(
 		Object.entries(plugins).map(([key, plugin]) => [key, plugin.state])
 	) as PluginStates;
@@ -24,6 +24,42 @@ export const useTable = <Item, P extends Record<string, UseTablePlugin<Item, unk
 		.map((plugin) => plugin.sortFn)
 		.filter(nonNullish);
 
+	const aggregateHooks = getAggregateHooks<Item, Plugins>(plugins);
+
+	const flatColumns = readable(getFlatColumns(rawColumns));
+	const headerRows = derived([], () => {
+		const $headerRows = getHeaderRows(rawColumns);
+		// Apply hooks.
+		$headerRows.forEach((row) => {
+			row.cells.forEach((cell) => {
+				cell.applyHook(aggregateHooks.thead.tr.th);
+			});
+		});
+		return $headerRows;
+	});
+
+	const originalBodyRows = derived([data, flatColumns], ([$data, $flatColumns]) => {
+		return getBodyRows($data, $flatColumns);
+	});
+	const bodyRows = derived([originalBodyRows, ...sortFns], ([$originalBodyRows, ...$sortFns]) => {
+		const sortedRows = [...$originalBodyRows];
+		$sortFns.forEach((sortFn) => {
+			sortedRows.sort(sortFn);
+		});
+		return sortedRows;
+	});
+
+	return {
+		flatColumns,
+		headerRows,
+		bodyRows,
+		plugins: pluginStates,
+	};
+};
+
+const getAggregateHooks = <Item, Plugins extends Record<string, UseTablePlugin<Item, unknown>>>(
+	plugins: Plugins
+) => {
 	const aggregateHooks: AggregateTableHooks<Item> = {
 		thead: {
 			tr: {
@@ -58,34 +94,5 @@ export const useTable = <Item, P extends Record<string, UseTablePlugin<Item, unk
 			}
 		}
 	});
-
-	const flatColumns = readable(getFlatColumns(rawColumns));
-	const headerRows = derived([], () => {
-		const $headerRows = getHeaderRows(rawColumns);
-		// Apply hooks.
-		$headerRows.forEach((row) => {
-			row.cells.forEach((cell) => {
-				cell.applyHook(aggregateHooks.thead.tr.th);
-			});
-		});
-		return $headerRows;
-	});
-
-	const originalBodyRows = derived([data, flatColumns], ([$data, $flatColumns]) => {
-		return getBodyRows($data, $flatColumns);
-	});
-	const bodyRows = derived([originalBodyRows, ...sortFns], ([$originalBodyRows, ...$sortFns]) => {
-		const sortedRows = [...$originalBodyRows];
-		$sortFns.forEach((sortFn) => {
-			sortedRows.sort(sortFn);
-		});
-		return sortedRows;
-	});
-
-	return {
-		flatColumns,
-		headerRows,
-		bodyRows,
-		plugins: pluginStates,
-	};
+	return aggregateHooks;
 };
