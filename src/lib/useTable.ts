@@ -11,7 +11,7 @@ export type UseTableProps<Item> = {
 };
 
 export const useTable = <Item, Plugins extends Record<string, UseTablePlugin<Item, unknown>>>(
-	{ data, columns: rawColumns }: UseTableProps<Item>,
+	{ data, columns }: UseTableProps<Item>,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	plugins: Plugins = {} as any
 ) => {
@@ -26,9 +26,9 @@ export const useTable = <Item, Plugins extends Record<string, UseTablePlugin<Ite
 
 	const aggregateHooks = getAggregateHooks<Item, Plugins>(plugins);
 
-	const flatColumns = readable(getFlatColumns(rawColumns));
+	const flatColumns = readable(getFlatColumns(columns));
 	const headerRows = derived([], () => {
-		const $headerRows = getHeaderRows(rawColumns);
+		const $headerRows = getHeaderRows(columns);
 		// Apply hooks.
 		$headerRows.forEach((row) => {
 			row.cells.forEach((cell) => {
