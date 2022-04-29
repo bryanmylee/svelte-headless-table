@@ -40,13 +40,19 @@ export const useTable = <Item, P extends Record<string, UseTablePlugin<Item, unk
 		if (thead !== undefined) {
 			const { tr } = thead;
 			if (tr !== undefined) {
-				if (tr.eventHandler !== undefined) {
-					aggregateHooks.thead.tr.eventHandlers.push(tr.eventHandler);
+				if (tr.eventHandlers !== undefined) {
+					aggregateHooks.thead.tr.eventHandlers = [
+						...aggregateHooks.thead.tr.eventHandlers,
+						...tr.eventHandlers,
+					];
 				}
 				const { th } = tr;
 				if (th !== undefined) {
-					if (th.eventHandler !== undefined) {
-						aggregateHooks.thead.tr.th.eventHandlers.push(th.eventHandler);
+					if (th.eventHandlers !== undefined) {
+						aggregateHooks.thead.tr.th.eventHandlers = [
+							...aggregateHooks.thead.tr.th.eventHandlers,
+							...th.eventHandlers,
+						];
 					}
 				}
 			}
@@ -54,7 +60,16 @@ export const useTable = <Item, P extends Record<string, UseTablePlugin<Item, unk
 	});
 
 	const flatColumns = readable(getFlatColumns(rawColumns));
-	const headerRows = readable(getHeaderRows(rawColumns));
+	const headerRows = derived([], () => {
+		const $headerRows = getHeaderRows(rawColumns);
+		// Apply hooks.
+		$headerRows.forEach((row) => {
+			row.cells.forEach((cell) => {
+				cell.applyHook(aggregateHooks.thead.tr.th);
+			});
+		});
+		return $headerRows;
+	});
 
 	const originalBodyRows = derived([data, flatColumns], ([$data, $flatColumns]) => {
 		return getBodyRows($data, $flatColumns);

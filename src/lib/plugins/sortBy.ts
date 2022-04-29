@@ -59,8 +59,9 @@ export const sortBy = <Item>({
 		};
 	});
 
-	const thEventHandler: EventHandler<HeaderCell<Item>> = ({ component, type }) => {
-		if (type === 'click') {
+	const thEventHandler: EventHandler<HeaderCell<Item>> = {
+		type: 'click',
+		callback: ({ component }) => {
 			const { id } = component;
 			sortKeys.update(($sortKeys) => {
 				const keyIdx = $sortKeys.findIndex((key) => key.id === id);
@@ -87,7 +88,7 @@ export const sortBy = <Item>({
 				}
 				return [...$sortKeys.slice(0, keyIdx), ...$sortKeys.slice(keyIdx + 1)];
 			});
-		}
+		},
 	};
 
 	return {
@@ -97,7 +98,7 @@ export const sortBy = <Item>({
 			thead: {
 				tr: {
 					th: {
-						eventHandler: thEventHandler,
+						eventHandlers: [thEventHandler],
 					},
 				},
 			},

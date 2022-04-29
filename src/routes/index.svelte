@@ -86,7 +86,7 @@
 		{#each $headerRows as headerRow (headerRow.id)}
 			<tr>
 				{#each headerRow.cells as cell (cell.id)}
-					<th {...cell.attrs()} use:cell.action>
+					<th {...cell.attrs()} use:cell.events>
 						<Render {...cell.render()} />
 					</th>
 				{/each}

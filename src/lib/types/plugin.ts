@@ -18,14 +18,16 @@ export type TableHooks<Item> = {
 };
 
 export type ElementHook<TableComponent> = {
-	eventHandler?: EventHandler<TableComponent>;
+	eventHandlers?: Array<EventHandler<TableComponent>>;
 };
 
-export type EventHandler<TableComponent> = (props: EventProps<TableComponent>) => void;
-
-export type EventProps<TableComponent> = {
+export type EventHandler<TableComponent> = {
 	type: 'click';
-	event: MouseEvent;
+	callback: (props: EventProps<MouseEvent, TableComponent>) => void;
+};
+
+export type EventProps<EventType, TableComponent> = {
+	event: EventType;
 	component: TableComponent;
 };
 
