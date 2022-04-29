@@ -69,16 +69,6 @@
 
 <h1>svelte-tables</h1>
 
-<pre>{JSON.stringify(
-		{
-			columnOrder: $columnOrder,
-			hiddenColumns: $hiddenColumns,
-			sortKeys: $sortKeys,
-		},
-		null,
-		2
-	)}</pre>
-
 <button on:click={() => ($columnOrder = getShuffled($columnOrder))}>Shuffle columns</button>
 
 <table>
@@ -116,6 +106,16 @@
 		<!-- {/each} -->
 	</tfoot>
 </table>
+
+<pre>{JSON.stringify(
+		{
+			columnOrder: $columnOrder,
+			hiddenColumns: $hiddenColumns,
+			sortKeys: $sortKeys,
+		},
+		null,
+		2
+	)}</pre>
 
 <style global>
 	h1,
