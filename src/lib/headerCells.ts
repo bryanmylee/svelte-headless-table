@@ -1,3 +1,4 @@
+import { derived, type Readable } from 'svelte/store';
 import { NBSP } from './constants';
 import type { ActionReturnType } from './types/Action';
 import type { AggregateLabel } from './types/AggregateLabel';
@@ -42,9 +43,13 @@ export class HeaderCell<Item> {
 		return this.label;
 	}
 	private eventHandlers: Array<EventHandler> = [];
-	applyHook(hook: ElementHook) {
+	private extraPropsArray: Array<Readable<Record<string, unknown>>> = [];
+	applyHook(hook: ElementHook<Record<string, unknown>>) {
 		if (hook.eventHandlers !== undefined) {
 			this.eventHandlers = [...this.eventHandlers, ...hook.eventHandlers];
+		}
+		if (hook.extraProps !== undefined) {
+			this.extraPropsArray = [...this.extraPropsArray, hook.extraProps];
 		}
 	}
 	events(node: HTMLTableCellElement): ActionReturnType {
@@ -60,6 +65,15 @@ export class HeaderCell<Item> {
 				unsubscribers.forEach((unsubscribe) => unsubscribe());
 			},
 		};
+	}
+	extraProps(): Readable<Record<string, unknown>> {
+		return derived(this.extraPropsArray, ($extraPropsArray) => {
+			let props = {};
+			$extraPropsArray.forEach((extraProps) => {
+				props = { ...props, ...extraProps };
+			});
+			return props;
+		});
 	}
 }
 

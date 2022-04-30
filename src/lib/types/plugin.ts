@@ -14,12 +14,21 @@ export type KeyToComponent<Item> = {
 	'thead.tr.th': HeaderCell<Item>;
 };
 
-export type TableHooks<Item> = {
-	[K in keyof KeyToComponent<Item>]?: (component: KeyToComponent<Item>[K]) => ElementHook;
+export type ExtraPropSet<HeaderRowExtraProps, HeaderCellExtraProps> = {
+	'thead.tr': HeaderRowExtraProps;
+	'thead.tr.th': HeaderCellExtraProps;
 };
 
-export type ElementHook = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyExtraPropSet = ExtraPropSet<any, any>;
+
+export type TableHooks<Item, E extends ExtraPropSet<unknown, unknown> = AnyExtraPropSet> = {
+	[K in keyof KeyToComponent<Item>]?: (component: KeyToComponent<Item>[K]) => ElementHook<E[K]>;
+};
+
+export type ElementHook<ExtraProps> = {
 	eventHandlers?: Array<EventHandler>;
+	extraProps?: Readable<ExtraProps>;
 };
 
 export type EventHandler = {

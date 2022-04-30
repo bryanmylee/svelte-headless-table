@@ -6,6 +6,7 @@
 	import Render from '$lib/components/Render.svelte';
 	import { getShuffled } from '$lib/utils/array';
 	import { sortBy } from '$lib/plugins/sortBy';
+	import ExtraProps from '$lib/components/ExtraProps.svelte';
 
 	const data = writable(sampleRows);
 	const columnOrder = writable<Array<string>>([
@@ -78,6 +79,9 @@
 				{#each headerRow.cells as cell (cell.id)}
 					<th {...cell.attrs()} use:cell.events>
 						<Render {...cell.render()} />
+						<ExtraProps extraProps={cell.extraProps()} let:extraProps>
+							{JSON.stringify(extraProps)}
+						</ExtraProps>
 					</th>
 				{/each}
 			</tr>

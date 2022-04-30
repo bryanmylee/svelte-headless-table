@@ -65,6 +65,12 @@ export const sortBy = <Item>({ multiSort = true }: SortByConfig = {}): UseTableP
 		sortFn,
 		hooks: {
 			'thead.tr.th': (cell) => {
+				const extraProps = derived(sortKeys, ($sortKeys) => {
+					const key = $sortKeys.find((k) => k.id === cell.id);
+					return {
+						order: key?.order,
+					};
+				});
 				const onClick: EventHandler = {
 					type: 'click',
 					callback() {
@@ -98,6 +104,7 @@ export const sortBy = <Item>({ multiSort = true }: SortByConfig = {}): UseTableP
 				};
 				return {
 					eventHandlers: cell instanceof DataHeaderCell ? [onClick] : [],
+					extraProps,
 				};
 			},
 		},
