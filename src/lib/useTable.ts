@@ -1,6 +1,6 @@
 import { derived, readable, type Readable } from 'svelte/store';
 import { getBodyRows } from './bodyRows';
-import { getFlatColumns, type Column } from './columns';
+import { DataColumn, getFlatColumns, type Column } from './columns';
 import { getHeaderRows, HeaderRow } from './headerRows';
 import type { ComponentKeys, UseTablePlugin } from './types/plugin';
 import { nonNullish } from './utils/filter';
@@ -38,31 +38,38 @@ export const useTable = <Item, Plugins extends Record<string, UseTablePlugin<Ite
 		.filter(nonNullish);
 
 	const flatColumns = readable(getFlatColumns(columns));
-	const headerRows = derived(
+	const orderedFlatColumns = derived(
 		[flatColumns, ...flatColumnIdFns],
 		([$flatColumns, ...$flatColumnIdFns]) => {
-			let ids = $flatColumns.map((column) => column.id);
+			let ids = $flatColumns.map((c) => c.id);
 			$flatColumnIdFns.forEach((fn) => {
 				ids = fn(ids);
 			});
-			const $headerRows = getHeaderRows(columns, ids);
-			// Apply hooks.
-			Object.entries(plugins).forEach(([pluginName, plugin]) => {
-				$headerRows.forEach((row) => {
-					row.cells.forEach((cell) => {
-						if (plugin.hooks?.['thead.tr.th'] !== undefined) {
-							cell.applyHook(pluginName, plugin.hooks['thead.tr.th'](cell));
-						}
-					});
-				});
-			});
-			// Inject inferred TablePropSet type.
-			return $headerRows as Array<HeaderRow<Item, PluginTablePropSet>>;
+			return ids.map((id) => $flatColumns.find((c) => c.id === id)).filter(nonNullish);
 		}
 	);
 
-	const originalBodyRows = derived([data, flatColumns], ([$data, $flatColumns]) => {
-		return getBodyRows($data, $flatColumns);
+	const headerRows = derived(orderedFlatColumns, ($orderedFlatColumns) => {
+		const $headerRows = getHeaderRows(
+			columns,
+			$orderedFlatColumns.map((c) => c.id)
+		);
+		// Apply hooks.
+		Object.entries(plugins).forEach(([pluginName, plugin]) => {
+			$headerRows.forEach((row) => {
+				row.cells.forEach((cell) => {
+					if (plugin.hooks?.['thead.tr.th'] !== undefined) {
+						cell.applyHook(pluginName, plugin.hooks['thead.tr.th'](cell));
+					}
+				});
+			});
+		});
+		// Inject inferred TablePropSet type.
+		return $headerRows as Array<HeaderRow<Item, PluginTablePropSet>>;
+	});
+
+	const originalBodyRows = derived([data, orderedFlatColumns], ([$data, $orderedFlatColumns]) => {
+		return getBodyRows($data, $orderedFlatColumns);
 	});
 	const bodyRows = derived([originalBodyRows, ...sortFns], ([$originalBodyRows, ...$sortFns]) => {
 		const sortedRows = [...$originalBodyRows];
