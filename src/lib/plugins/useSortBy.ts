@@ -13,7 +13,7 @@ export interface SortByConfig {
  * `PluginState` should be `Writable` or contain `Writable`s.
  */
 export interface SortByState {
-	sortKeys: Writable<Array<SortKey>>;
+	sortKeys: SortKeys;
 }
 
 /**
@@ -33,13 +33,54 @@ export interface SortKey {
 	order: 'asc' | 'desc';
 }
 
+export const useSortKeys = (initKeys: Array<SortKey>) => {
+	const { subscribe, update, set } = writable(initKeys);
+	const toggleId = (id: string, { multiSort = true }: SortByConfig = {}) => {
+		update(($sortKeys) => {
+			const keyIdx = $sortKeys.findIndex((key) => key.id === id);
+			if (!multiSort) {
+				if (keyIdx === -1) {
+					return [{ id, order: 'asc' }];
+				}
+				const key = $sortKeys[keyIdx];
+				if (key.order === 'asc') {
+					return [{ id, order: 'desc' }];
+				}
+				return [];
+			}
+			if (keyIdx === -1) {
+				return [...$sortKeys, { id, order: 'asc' }];
+			}
+			const key = $sortKeys[keyIdx];
+			if (key.order === 'asc') {
+				return [
+					...$sortKeys.slice(0, keyIdx),
+					{ id, order: 'desc' },
+					...$sortKeys.slice(keyIdx + 1),
+				];
+			}
+			return [...$sortKeys.slice(0, keyIdx), ...$sortKeys.slice(keyIdx + 1)];
+		});
+	};
+	return {
+		subscribe,
+		update,
+		set,
+		toggleId,
+	};
+};
+
+export type SortKeys = Writable<Array<SortKey>> & {
+	toggleId: (id: string) => void;
+};
+
 export const useSortBy = <Item>({ multiSort = true }: SortByConfig = {}): UseTablePlugin<
 	Item,
 	SortByState,
 	SortByPropSet
 > => {
 	// TODO Custom store interface and methods.
-	const sortKeys = writable<Array<SortKey>>([]);
+	const sortKeys = useSortKeys([]);
 
 	const pluginState: SortByState = { sortKeys };
 
@@ -90,31 +131,7 @@ export const useSortBy = <Item>({ multiSort = true }: SortByConfig = {}): UseTab
 					type: 'click',
 					callback() {
 						const { id } = cell;
-						sortKeys.update(($sortKeys) => {
-							const keyIdx = $sortKeys.findIndex((key) => key.id === id);
-							if (!multiSort) {
-								if (keyIdx === -1) {
-									return [{ id, order: 'asc' }];
-								}
-								const key = $sortKeys[keyIdx];
-								if (key.order === 'asc') {
-									return [{ id, order: 'desc' }];
-								}
-								return [];
-							}
-							if (keyIdx === -1) {
-								return [...$sortKeys, { id, order: 'asc' }];
-							}
-							const key = $sortKeys[keyIdx];
-							if (key.order === 'asc') {
-								return [
-									...$sortKeys.slice(0, keyIdx),
-									{ id, order: 'desc' },
-									...$sortKeys.slice(keyIdx + 1),
-								];
-							}
-							return [...$sortKeys.slice(0, keyIdx), ...$sortKeys.slice(keyIdx + 1)];
-						});
+						sortKeys.toggleId(id, { multiSort });
 					},
 				};
 				return {
