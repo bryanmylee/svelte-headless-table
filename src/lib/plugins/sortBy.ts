@@ -1,5 +1,6 @@
 import type { BodyRow } from '$lib/bodyRows';
-import type { UseTablePlugin } from '$lib/types/plugin';
+import { DataHeaderCell } from '$lib/headerCells';
+import type { EventHandler, UseTablePlugin } from '$lib/types/plugin';
 import { compare } from '$lib/utils/compare';
 import { derived, writable, type Writable } from 'svelte/store';
 
@@ -16,10 +17,11 @@ export interface SortKey {
 	order: 'asc' | 'desc';
 }
 
-export const sortBy = <Item>({
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	multiSort = true,
-}: SortByConfig = {}): UseTablePlugin<Item, SortByState> => {
+export const sortBy = <Item>({ multiSort = true }: SortByConfig = {}): UseTablePlugin<
+	Item,
+	SortByState
+> => {
+	// TODO Custom store interface and methods.
 	const sortKeys = writable<Array<SortKey>>([]);
 
 	const state: SortByState = {
@@ -62,40 +64,42 @@ export const sortBy = <Item>({
 		state,
 		sortFn,
 		hooks: {
-			'thead.tr.th': ({ id }) => ({
-				eventHandlers: [
-					{
-						type: 'click',
-						callback() {
-							sortKeys.update(($sortKeys) => {
-								const keyIdx = $sortKeys.findIndex((key) => key.id === id);
-								if (!multiSort) {
-									if (keyIdx === -1) {
-										return [{ id, order: 'asc' }];
-									}
-									const key = $sortKeys[keyIdx];
-									if (key.order === 'asc') {
-										return [{ id, order: 'desc' }];
-									}
-									return [];
-								}
+			'thead.tr.th': (cell) => {
+				const onClick: EventHandler = {
+					type: 'click',
+					callback() {
+						const { id } = cell;
+						sortKeys.update(($sortKeys) => {
+							const keyIdx = $sortKeys.findIndex((key) => key.id === id);
+							if (!multiSort) {
 								if (keyIdx === -1) {
-									return [...$sortKeys, { id, order: 'asc' }];
+									return [{ id, order: 'asc' }];
 								}
 								const key = $sortKeys[keyIdx];
 								if (key.order === 'asc') {
-									return [
-										...$sortKeys.slice(0, keyIdx),
-										{ id, order: 'desc' },
-										...$sortKeys.slice(keyIdx + 1),
-									];
+									return [{ id, order: 'desc' }];
 								}
-								return [...$sortKeys.slice(0, keyIdx), ...$sortKeys.slice(keyIdx + 1)];
-							});
-						},
+								return [];
+							}
+							if (keyIdx === -1) {
+								return [...$sortKeys, { id, order: 'asc' }];
+							}
+							const key = $sortKeys[keyIdx];
+							if (key.order === 'asc') {
+								return [
+									...$sortKeys.slice(0, keyIdx),
+									{ id, order: 'desc' },
+									...$sortKeys.slice(keyIdx + 1),
+								];
+							}
+							return [...$sortKeys.slice(0, keyIdx), ...$sortKeys.slice(keyIdx + 1)];
+						});
 					},
-				],
-			}),
+				};
+				return {
+					eventHandlers: cell instanceof DataHeaderCell ? [onClick] : [],
+				};
+			},
 		},
 	};
 };
