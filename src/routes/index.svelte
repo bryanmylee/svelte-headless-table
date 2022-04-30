@@ -80,7 +80,11 @@
 					<th {...cell.attrs()} use:cell.events>
 						<ExtraProps extraProps={cell.extraProps()} let:extraProps>
 							<Render {...cell.render()} />
-							{JSON.stringify(extraProps)}
+							{#if extraProps.order === 'asc'}
+								⬇️
+							{:else if extraProps.order === 'desc'}
+								⬆️
+							{/if}
 						</ExtraProps>
 					</th>
 				{/each}
