@@ -10,6 +10,8 @@ export type UseTablePlugin<Item, PluginState, E extends ExtraPropSet = AnyExtraP
 	hooks?: TableHooks<Item, E>;
 };
 
+export type ComponentKeys = 'thead.tr' | 'thead.tr.th';
+
 export type KeyToComponent<Item> = {
 	'thead.tr': HeaderRow<Item>;
 	'thead.tr.th': HeaderCell<Item>;

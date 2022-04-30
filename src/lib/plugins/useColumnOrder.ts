@@ -1,16 +1,12 @@
 import type { UseTablePlugin } from '$lib/types/plugin';
 import { derived, writable, type Writable } from 'svelte/store';
 
-export interface ColumnOrderConfig {
-	initialOrder?: Array<string>;
-}
-
 /**
  * `PluginState` will be exposed to the user as controls for the plugin.
  * `PluginState` should be `Writable` or contain `Writable`s.
  */
 export interface ColumnOrderState {
-	columnOrder: Writable<Array<string>>;
+	columnIdOrder: Writable<Array<string>>;
 }
 
 /**
@@ -21,16 +17,16 @@ export interface ColumnOrderExtraPropSet {
 	'thead.tr.th': never;
 }
 
-export const useColumnOrder = <Item>({ initialOrder = [] }: ColumnOrderConfig = {}): UseTablePlugin<
+export const useColumnOrder = <Item>(): UseTablePlugin<
 	Item,
 	ColumnOrderState,
 	ColumnOrderExtraPropSet
 > => {
-	const columnOrder = writable<Array<string>>(initialOrder);
+	const columnIdOrder = writable<Array<string>>([]);
 
-	const pluginState: ColumnOrderState = { columnOrder };
+	const pluginState: ColumnOrderState = { columnIdOrder };
 
-	const flatColumnIdFn = derived(columnOrder, ($columnOrder) => {
+	const flatColumnIdFn = derived(columnIdOrder, ($columnOrder) => {
 		return (ids: Array<string>) => {
 			const originalIds = [...ids];
 			let orderedIds: Array<string> = [];
