@@ -10,9 +10,9 @@ export interface ColumnOrderState {
 }
 
 /**
- * `PluginExtraPropSet` describes data passed into each table component.
+ * `PluginPropSet` describes data passed into each table component.
  */
-export interface ColumnOrderExtraPropSet {
+export interface ColumnOrderPropSet {
 	'thead.tr': never;
 	'thead.tr.th': never;
 }
@@ -20,7 +20,7 @@ export interface ColumnOrderExtraPropSet {
 export const useColumnOrder = <Item>(): UseTablePlugin<
 	Item,
 	ColumnOrderState,
-	ColumnOrderExtraPropSet
+	ColumnOrderPropSet
 > => {
 	const columnIdOrder = writable<Array<string>>([]);
 

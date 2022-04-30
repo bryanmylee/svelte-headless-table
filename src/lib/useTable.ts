@@ -16,12 +16,12 @@ export const useTable = <Item, Plugins extends Record<string, UseTablePlugin<Ite
 	plugins: Plugins = {} as any
 ) => {
 	type PluginStates = { [K in keyof Plugins]: Plugins[K]['pluginState'] };
-	type PluginKeyToExtraPropSet = {
+	type PluginKeyToTablePropSet = {
 		[K in keyof Plugins]: Plugins[K] extends UseTablePlugin<Item, unknown, infer E> ? E : never;
 	};
-	type PluginExtraPropSet = {
+	type PluginTablePropSet = {
 		[ComponentKey in ComponentKeys]: {
-			[PluginKey in keyof Plugins]: PluginKeyToExtraPropSet[PluginKey][ComponentKey];
+			[PluginKey in keyof Plugins]: PluginKeyToTablePropSet[PluginKey][ComponentKey];
 		};
 	};
 
@@ -56,8 +56,8 @@ export const useTable = <Item, Plugins extends Record<string, UseTablePlugin<Ite
 					});
 				});
 			});
-			// Inject inferred ExtraPropSet type.
-			return $headerRows as Array<HeaderRow<Item, PluginExtraPropSet>>;
+			// Inject inferred TablePropSet type.
+			return $headerRows as Array<HeaderRow<Item, PluginTablePropSet>>;
 		}
 	);
 

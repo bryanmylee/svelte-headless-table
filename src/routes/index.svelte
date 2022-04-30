@@ -6,7 +6,7 @@
 	import Render from '$lib/components/Render.svelte';
 	import { getShuffled } from '$lib/utils/array';
 	import { useSortBy } from '$lib/plugins/useSortBy';
-	import ExtraProps from '$lib/components/ExtraProps.svelte';
+	import Subscribe from '$lib/components/Subscribe.svelte';
 	import { useColumnOrder } from '$lib/plugins/useColumnOrder';
 	import { useHiddenColumns } from '$lib/plugins/useHiddenColumns';
 
@@ -61,8 +61,9 @@
 	);
 	const { sortKeys } = pluginStates.sort;
 	const { columnIdOrder } = pluginStates.columnOrder;
-	const { hiddenColumnIds } = pluginStates.hiddenColumns;
 	$columnIdOrder = $flatColumns.map((c) => c.id);
+	const { hiddenColumnIds } = pluginStates.hiddenColumns;
+	$hiddenColumnIds = ['progress'];
 </script>
 
 <h1>svelte-tables</h1>
@@ -75,14 +76,14 @@
 			<tr>
 				{#each headerRow.cells as cell (cell.id)}
 					<th {...cell.attrs()} use:cell.events>
-						<ExtraProps extraProps={cell.extraProps()} let:extraProps>
+						<Subscribe props={cell.props()} let:props>
 							<Render {...cell.render()} />
-							{#if extraProps.sort.order === 'asc'}
+							{#if props.sort.order === 'asc'}
 								⬇️
-							{:else if extraProps.sort.order === 'desc'}
+							{:else if props.sort.order === 'desc'}
 								⬆️
 							{/if}
-						</ExtraProps>
+						</Subscribe>
 					</th>
 				{/each}
 			</tr>

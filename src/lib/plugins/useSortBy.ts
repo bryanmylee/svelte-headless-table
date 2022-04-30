@@ -17,9 +17,9 @@ export interface SortByState {
 }
 
 /**
- * `PluginExtraPropSet` describes data passed into each table component.
+ * `PluginPropSet` describes data passed into each table component.
  */
-export interface SortByExtraPropSet {
+export interface SortByPropSet {
 	'thead.tr': never;
 	'thead.tr.th': {
 		order: 'asc' | 'desc' | undefined;
@@ -34,7 +34,7 @@ export interface SortKey {
 export const useSortBy = <Item>({ multiSort = true }: SortByConfig = {}): UseTablePlugin<
 	Item,
 	SortByState,
-	SortByExtraPropSet
+	SortByPropSet
 > => {
 	// TODO Custom store interface and methods.
 	const sortKeys = writable<Array<SortKey>>([]);
@@ -78,7 +78,7 @@ export const useSortBy = <Item>({ multiSort = true }: SortByConfig = {}): UseTab
 		sortFn,
 		hooks: {
 			'thead.tr.th': (cell) => {
-				const extraProps = derived(sortKeys, ($sortKeys) => {
+				const props = derived(sortKeys, ($sortKeys) => {
 					const key = $sortKeys.find((k) => k.id === cell.id);
 					return {
 						order: key?.order,
@@ -117,7 +117,7 @@ export const useSortBy = <Item>({ multiSort = true }: SortByConfig = {}): UseTab
 				};
 				return {
 					eventHandlers: cell instanceof DataHeaderCell ? [onClick] : [],
-					extraProps,
+					props: props,
 				};
 			},
 		},

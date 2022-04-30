@@ -10,9 +10,9 @@ export interface HiddenColumnsState {
 }
 
 /**
- * `PluginExtraPropSet` describes data passed into each table component.
+ * `PluginPropSet` describes data passed into each table component.
  */
-export interface HiddenColumnsExtraPropSet {
+export interface HiddenColumnsPropSet {
 	'thead.tr': never;
 	'thead.tr.th': {
 		hidden: boolean;
@@ -22,7 +22,7 @@ export interface HiddenColumnsExtraPropSet {
 export const useHiddenColumns = <Item>(): UseTablePlugin<
 	Item,
 	HiddenColumnsState,
-	HiddenColumnsExtraPropSet
+	HiddenColumnsPropSet
 > => {
 	const hiddenColumnIds = writable<Array<string>>([]);
 

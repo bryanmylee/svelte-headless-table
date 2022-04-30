@@ -2,7 +2,7 @@ import { derived, type Readable } from 'svelte/store';
 import { NBSP } from './constants';
 import type { ActionReturnType } from './types/Action';
 import type { AggregateLabel } from './types/AggregateLabel';
-import type { AnyExtraPropSet, ElementHook, EventHandler, ExtraPropSet } from './types/plugin';
+import type { AnyTablePropSet, ElementHook, EventHandler, TablePropSet } from './types/plugin';
 import type { RenderProps } from './types/RenderProps';
 
 export interface HeaderCellInit<Item> {
@@ -15,7 +15,7 @@ export interface HeaderCellInit<Item> {
 export interface HeaderCellAttributes<Item> {
 	colspan: number;
 }
-export class HeaderCell<Item, E extends ExtraPropSet = AnyExtraPropSet> {
+export class HeaderCell<Item, E extends TablePropSet = AnyTablePropSet> {
 	id: string;
 	label: AggregateLabel<Item>;
 	colspan: number;
@@ -43,13 +43,13 @@ export class HeaderCell<Item, E extends ExtraPropSet = AnyExtraPropSet> {
 		return this.label;
 	}
 	private eventHandlers: Array<EventHandler> = [];
-	private extraPropsMap: Record<string, Readable<Record<string, unknown>>> = {};
+	private nameToProps: Record<string, Readable<Record<string, unknown>>> = {};
 	applyHook(pluginName: string, hook: ElementHook<Record<string, unknown>>) {
 		if (hook.eventHandlers !== undefined) {
 			this.eventHandlers = [...this.eventHandlers, ...hook.eventHandlers];
 		}
-		if (hook.extraProps !== undefined) {
-			this.extraPropsMap[pluginName] = hook.extraProps;
+		if (hook.props !== undefined) {
+			this.nameToProps[pluginName] = hook.props;
 		}
 	}
 	events(node: HTMLTableCellElement): ActionReturnType {
@@ -66,15 +66,15 @@ export class HeaderCell<Item, E extends ExtraPropSet = AnyExtraPropSet> {
 			},
 		};
 	}
-	extraProps(): Readable<E['thead.tr.th']> {
-		const entries = Object.entries(this.extraPropsMap);
-		const pluginNames = entries.map(([pluginName]) => pluginName);
+	props(): Readable<E['thead.tr.th']> {
+		const propsEntries = Object.entries(this.nameToProps);
+		const pluginNames = propsEntries.map(([pluginName]) => pluginName);
 		return derived(
-			entries.map(([, extraProps]) => extraProps),
-			($extraPropsArray) => {
+			propsEntries.map(([, props]) => props),
+			($propsArray) => {
 				const props: Record<string, Record<string, unknown>> = {};
-				$extraPropsArray.forEach((extraProps, idx) => {
-					props[pluginNames[idx]] = extraProps;
+				$propsArray.forEach((p, idx) => {
+					props[pluginNames[idx]] = p;
 				});
 				// No easy way to extend this.
 				return props as E['thead.tr.th'];
