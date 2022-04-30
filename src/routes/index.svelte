@@ -93,9 +93,11 @@
 		{#each $bodyRows as bodyRow (bodyRow.id)}
 			<tr>
 				{#each bodyRow.cells as cell (cell.id)}
-					<td>
-						<Render of={cell} />
-					</td>
+					<Subscribe to={cell} let:attrs let:props>
+						<td>
+							<Render of={cell} />
+						</td>
+					</Subscribe>
 				{/each}
 			</tr>
 		{/each}
