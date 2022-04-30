@@ -6,6 +6,7 @@ import type { Readable } from 'svelte/store';
 export type UseTablePlugin<Item, PluginState, E extends ExtraPropSet = AnyExtraPropSet> = {
 	pluginState: PluginState;
 	sortFn?: Readable<(a: BodyRow<Item>, b: BodyRow<Item>) => number>;
+	flatColumnIdFn?: Readable<(ids: Array<string>) => Array<string>>;
 	hooks?: TableHooks<Item, E>;
 };
 

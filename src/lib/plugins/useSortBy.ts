@@ -31,7 +31,7 @@ export interface SortKey {
 	order: 'asc' | 'desc';
 }
 
-export const sortBy = <Item>({ multiSort = true }: SortByConfig = {}): UseTablePlugin<
+export const useSortBy = <Item>({ multiSort = true }: SortByConfig = {}): UseTablePlugin<
 	Item,
 	SortByState,
 	SortByExtraPropSet
@@ -39,9 +39,7 @@ export const sortBy = <Item>({ multiSort = true }: SortByConfig = {}): UseTableP
 	// TODO Custom store interface and methods.
 	const sortKeys = writable<Array<SortKey>>([]);
 
-	const pluginState: SortByState = {
-		sortKeys,
-	};
+	const pluginState: SortByState = { sortKeys };
 
 	const sortFn = derived(sortKeys, ($sortKeys) => {
 		// Memoize the id to column index relationship.

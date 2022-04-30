@@ -28,22 +28,33 @@ export const useTable = <Item, Plugins extends Record<string, UseTablePlugin<Ite
 		.map((plugin) => plugin.sortFn)
 		.filter(nonNullish);
 
+	const flatColumnIdFns = Object.values(plugins)
+		.map((plugin) => plugin.flatColumnIdFn)
+		.filter(nonNullish);
+
 	const flatColumns = readable(getFlatColumns(columns));
-	const headerRows = derived([], () => {
-		const $headerRows = getHeaderRows(columns);
-		// Apply hooks.
-		Object.values(plugins).forEach((plugin) => {
-			$headerRows.forEach((row) => {
-				row.cells.forEach((cell) => {
-					if (plugin.hooks?.['thead.tr.th'] !== undefined) {
-						cell.applyHook(plugin.hooks['thead.tr.th'](cell));
-					}
+	const headerRows = derived(
+		[flatColumns, ...flatColumnIdFns],
+		([$flatColumns, ...$flatColumnIdFns]) => {
+			let ids = $flatColumns.map((column) => column.id);
+			$flatColumnIdFns.forEach((fn) => {
+				ids = fn(ids);
+			});
+			const $headerRows = getHeaderRows(columns, ids);
+			// Apply hooks.
+			Object.values(plugins).forEach((plugin) => {
+				$headerRows.forEach((row) => {
+					row.cells.forEach((cell) => {
+						if (plugin.hooks?.['thead.tr.th'] !== undefined) {
+							cell.applyHook(plugin.hooks['thead.tr.th'](cell));
+						}
+					});
 				});
 			});
-		});
-		// Inject inferred ExtraPropSet type.
-		return $headerRows as Array<HeaderRow<Item, PluginExtraPropSets>>;
-	});
+			// Inject inferred ExtraPropSet type.
+			return $headerRows as Array<HeaderRow<Item, PluginExtraPropSets>>;
+		}
+	);
 
 	const originalBodyRows = derived([data, flatColumns], ([$data, $flatColumns]) => {
 		return getBodyRows($data, $flatColumns);

@@ -5,20 +5,11 @@
 	import { sampleRows, type SampleRow } from './_sampleRows';
 	import Render from '$lib/components/Render.svelte';
 	import { getShuffled } from '$lib/utils/array';
-	import { sortBy } from '$lib/plugins/sortBy';
+	import { useSortBy } from '$lib/plugins/useSortBy';
 	import ExtraProps from '$lib/components/ExtraProps.svelte';
+	import { useColumnOrder } from '$lib/plugins/useColumnOrder';
 
 	const data = writable(sampleRows);
-	const columnOrder = writable<Array<string>>([
-		'status',
-		'firstName',
-		'lastName',
-		'age',
-		'visits',
-		'progress',
-	]);
-	const hiddenColumns = writable<Array<string>>(['progress']);
-
 	const columns = createColumns<SampleRow>([
 		group({
 			header: 'Name',
@@ -56,16 +47,19 @@
 		}),
 	]);
 
-	const { headerRows, bodyRows, pluginStates } = useTable(
+	const { flatColumns, headerRows, bodyRows, pluginStates } = useTable(
 		{
 			data,
 			columns,
 		},
 		{
-			sort: sortBy(),
+			sort: useSortBy(),
+			columnOrder: useColumnOrder(),
 		}
 	);
 	const { sortKeys } = pluginStates.sort;
+	const { columnOrder } = pluginStates.columnOrder;
+	$columnOrder = $flatColumns.map((c) => c.id);
 </script>
 
 <h1>svelte-tables</h1>
@@ -118,7 +112,6 @@
 <pre>{JSON.stringify(
 		{
 			columnOrder: $columnOrder,
-			hiddenColumns: $hiddenColumns,
 			sortKeys: $sortKeys,
 		},
 		null,

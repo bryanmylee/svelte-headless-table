@@ -33,17 +33,15 @@ export class HeaderRow<Item, E extends ExtraPropSet = AnyExtraPropSet> {
 	}
 }
 
-export const getHeaderRows = <Item>(columns: Array<Column<Item>>): Array<HeaderRow<Item>> => {
+export const getHeaderRows = <Item>(
+	columns: Array<Column<Item>>,
+	flatColumnIds: Array<string> = []
+): Array<HeaderRow<Item>> => {
 	const rowMatrix = getHeaderRowMatrix(columns);
 	// Perform all column operations on the transposed columnMatrix. This helps
 	// to reduce the number of expensive transpose operations required.
-	const columnMatrix = getTransposed(rowMatrix);
-	// if (columnOrder !== undefined) {
-	// 	columnMatrix = getOrderedColumnMatrix(columnMatrix, columnOrder);
-	// }
-	// if (hiddenColumns !== undefined) {
-	// 	columnMatrix = getFilteredColumnMatrix(columnMatrix, hiddenColumns);
-	// }
+	let columnMatrix = getTransposed(rowMatrix);
+	columnMatrix = getOrderedColumnMatrix(columnMatrix, flatColumnIds);
 	populateGroupHeaderCellIds(columnMatrix);
 	return rowMatrixToHeaderRows(getTransposed(columnMatrix));
 };
@@ -103,15 +101,15 @@ const loadHeaderRowMatrix = <Item>(
 
 export const getOrderedColumnMatrix = <Item>(
 	columnMatrix: Matrix<HeaderCell<Item>>,
-	columnOrder: Array<string>
+	flatColumnIds: Array<string>
 ): Matrix<HeaderCell<Item>> => {
-	if (columnOrder.length === 0) {
+	if (flatColumnIds.length === 0) {
 		return columnMatrix;
 	}
 	const orderedColumnMatrix: Matrix<HeaderCell<Item>> = [];
 	// Each row of the transposed matrix represents a column.
 	// The `DataHeaderCell` is the last cell of each column.
-	columnOrder.forEach((key) => {
+	flatColumnIds.forEach((key) => {
 		const nextColumn = columnMatrix.find((columnCells) => {
 			const dataCell = columnCells[columnCells.length - 1];
 			if (!(dataCell instanceof DataHeaderCell)) {
@@ -124,21 +122,6 @@ export const getOrderedColumnMatrix = <Item>(
 		}
 	});
 	return orderedColumnMatrix;
-};
-
-export const getFilteredColumnMatrix = <Item>(
-	columnMatrix: Matrix<HeaderCell<Item>>,
-	hiddenColumns: Array<string>
-): Matrix<HeaderCell<Item>> => {
-	// Each row of the transposed matrix represents a column.
-	// The `DataHeaderCell` is the last cell of each column.
-	return columnMatrix.filter((columnCells) => {
-		const dataCell = columnCells[columnCells.length - 1];
-		if (!(dataCell instanceof DataHeaderCell)) {
-			throw new Error('The last element of each column must be `DataHeaderCell`');
-		}
-		return !hiddenColumns.includes(dataCell.id);
-	});
 };
 
 const populateGroupHeaderCellIds = <Item>(columnMatrix: Matrix<HeaderCell<Item>>) => {
