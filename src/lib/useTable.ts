@@ -1,6 +1,6 @@
 import { derived, readable, type Readable } from 'svelte/store';
 import { getBodyRows } from './bodyRows';
-import { DataColumn, getFlatColumns, type Column } from './columns';
+import { getFlatColumns, type Column } from './columns';
 import { getHeaderRows, HeaderRow } from './headerRows';
 import type { ComponentKeys, UseTablePlugin } from './types/plugin';
 import { nonNullish } from './utils/filter';
