@@ -90,9 +90,9 @@
 		{/each}
 	</thead>
 	<tbody>
-		{#each $bodyRows as bodyRow}
+		{#each $bodyRows as bodyRow (bodyRow.id)}
 			<tr>
-				{#each bodyRow.cells as cell}
+				{#each bodyRow.cells as cell (cell.id)}
 					<td>
 						<Render of={cell} />
 					</td>
