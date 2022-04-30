@@ -75,16 +75,16 @@
 		{#each $headerRows as headerRow (headerRow.id)}
 			<tr>
 				{#each headerRow.cells as cell (cell.id)}
-					<th {...cell.attrs()} use:cell.events>
-						<Subscribe props={cell.props()} let:props>
-							<Render {...cell.render()} />
+					<Subscribe to={cell} let:attrs let:props>
+						<th {...attrs} use:cell.events>
+							<Render of={cell} />
 							{#if props.sort.order === 'asc'}
 								⬇️
 							{:else if props.sort.order === 'desc'}
 								⬆️
 							{/if}
-						</Subscribe>
-					</th>
+						</th>
+					</Subscribe>
 				{/each}
 			</tr>
 		{/each}
@@ -94,7 +94,7 @@
 			<tr>
 				{#each bodyRow.cells as cell}
 					<td>
-						<Render {...cell.render()} />
+						<Render of={cell} />
 					</td>
 				{/each}
 			</tr>

@@ -1,6 +1,6 @@
 import type { BodyRow } from '$lib/bodyRows';
-import type { HeaderCell } from '$lib/headerCells';
-import type { HeaderRow } from '$lib/headerRows';
+import type { HeaderCell, HeaderCellAttributes } from '$lib/headerCells';
+import type { HeaderRow, HeaderRowAttributes } from '$lib/headerRows';
 import type { Readable } from 'svelte/store';
 
 export type UseTablePlugin<Item, PluginState, E extends TablePropSet = AnyTablePropSet> = {
@@ -11,6 +11,11 @@ export type UseTablePlugin<Item, PluginState, E extends TablePropSet = AnyTableP
 };
 
 export type ComponentKeys = 'thead.tr' | 'thead.tr.th';
+
+export type KeyToAttributes<Item> = {
+	'thead.tr': HeaderRowAttributes<Item>;
+	'thead.tr.th': HeaderCellAttributes<Item>;
+};
 
 export type KeyToComponent<Item> = {
 	'thead.tr': HeaderRow<Item>;

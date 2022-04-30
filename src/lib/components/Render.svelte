@@ -1,9 +1,12 @@
 <script lang="ts">
-	import type { SvelteComponent } from 'svelte';
+	import type { RenderProps } from '$lib/types/RenderProps';
 
-	export let text: string | undefined = undefined;
-	export let component: typeof SvelteComponent | undefined = undefined;
-	export let props: Record<string, unknown> | undefined = undefined;
+	type Component = {
+		render(): RenderProps;
+	};
+
+	export let of: Component;
+	const { component, props, text } = of.render();
 </script>
 
 {#if text !== undefined}

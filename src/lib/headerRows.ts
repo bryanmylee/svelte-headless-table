@@ -6,6 +6,9 @@ import { getCloned } from './utils/clone';
 import { max, sum } from './utils/math';
 import { getNullMatrix, getTransposed } from './utils/matrix';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-unused-vars
+export interface HeaderRowAttributes<Item> {}
+
 export interface HeaderRowInit<Item, E extends TablePropSet = AnyTablePropSet> {
 	id: string;
 	cells: Array<HeaderCell<Item, E>>;

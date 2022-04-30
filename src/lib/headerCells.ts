@@ -1,8 +1,8 @@
-import { derived, type Readable } from 'svelte/store';
+import { derived } from 'svelte/store';
 import { NBSP } from './constants';
-import type { ActionReturnType } from './types/Action';
+import { TableComponent } from './tableComponent';
 import type { AggregateLabel } from './types/AggregateLabel';
-import type { AnyTablePropSet, ElementHook, EventHandler, TablePropSet } from './types/plugin';
+import type { AnyTablePropSet, TablePropSet } from './types/plugin';
 import type { RenderProps } from './types/RenderProps';
 
 export interface HeaderCellInit<Item> {
@@ -15,19 +15,24 @@ export interface HeaderCellInit<Item> {
 export interface HeaderCellAttributes<Item> {
 	colspan: number;
 }
-export class HeaderCell<Item, E extends TablePropSet = AnyTablePropSet> {
-	id: string;
+export class HeaderCell<Item, E extends TablePropSet = AnyTablePropSet> extends TableComponent<
+	Item,
+	'thead.tr.th',
+	E
+> {
 	label: AggregateLabel<Item>;
 	colspan: number;
 	constructor({ id, label, colspan }: HeaderCellInit<Item>) {
-		this.id = id;
+		super({ id });
 		this.label = label;
 		this.colspan = colspan;
 	}
-	attrs(): HeaderCellAttributes<Item> {
-		return {
-			colspan: this.colspan,
-		};
+	attrs() {
+		return derived([], () => {
+			return {
+				colspan: this.colspan,
+			};
+		});
 	}
 	render(): RenderProps {
 		if (this.label instanceof Function) {
@@ -41,45 +46,6 @@ export class HeaderCell<Item, E extends TablePropSet = AnyTablePropSet> {
 			};
 		}
 		return this.label;
-	}
-	private eventHandlers: Array<EventHandler> = [];
-	private nameToProps: Record<string, Readable<Record<string, unknown>>> = {};
-	applyHook(pluginName: string, hook: ElementHook<Record<string, unknown>>) {
-		if (hook.eventHandlers !== undefined) {
-			this.eventHandlers = [...this.eventHandlers, ...hook.eventHandlers];
-		}
-		if (hook.props !== undefined) {
-			this.nameToProps[pluginName] = hook.props;
-		}
-	}
-	events(node: HTMLTableCellElement): ActionReturnType {
-		const unsubscribers = this.eventHandlers.map(({ type, callback }) => {
-			node.addEventListener(type, callback);
-			return () => {
-				node.removeEventListener(type, callback);
-			};
-		});
-		return {
-			destroy() {
-				console.log('destroying action');
-				unsubscribers.forEach((unsubscribe) => unsubscribe());
-			},
-		};
-	}
-	props(): Readable<E['thead.tr.th']> {
-		const propsEntries = Object.entries(this.nameToProps);
-		const pluginNames = propsEntries.map(([pluginName]) => pluginName);
-		return derived(
-			propsEntries.map(([, props]) => props),
-			($propsArray) => {
-				const props: Record<string, Record<string, unknown>> = {};
-				$propsArray.forEach((p, idx) => {
-					props[pluginNames[idx]] = p;
-				});
-				// No easy way to extend this.
-				return props as E['thead.tr.th'];
-			}
-		);
 	}
 }
 
