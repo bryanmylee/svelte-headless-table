@@ -7,7 +7,7 @@ import type {
 	EventHandler,
 	AttributesForKey,
 	TablePropSet,
-} from './types/plugin';
+} from './types/UseTablePlugin';
 
 export interface TableComponentInit {
 	id: string;

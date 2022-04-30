@@ -1,4 +1,4 @@
-import type { UseTablePlugin } from '$lib/types/plugin';
+import type { UseTablePlugin } from '$lib/types/UseTablePlugin';
 import { derived, writable, type Writable } from 'svelte/store';
 
 /**

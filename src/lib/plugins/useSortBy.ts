@@ -1,6 +1,6 @@
 import type { BodyRow } from '$lib/bodyRows';
 import { DataHeaderCell } from '$lib/headerCells';
-import type { EventHandler, UseTablePlugin } from '$lib/types/plugin';
+import type { EventHandler, UseTablePlugin } from '$lib/types/UseTablePlugin';
 import { compare } from '$lib/utils/compare';
 import { derived, writable, type Writable } from 'svelte/store';
 

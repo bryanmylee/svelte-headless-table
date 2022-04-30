@@ -2,7 +2,7 @@ import { DataColumn, GroupColumn, type Column } from './columns';
 import { DataHeaderCell, DisplayHeaderCell, GroupHeaderCell, type HeaderCell } from './headerCells';
 import { TableComponent } from './tableComponent';
 import type { Matrix } from './types/Matrix';
-import type { AnyTablePropSet, TablePropSet } from './types/plugin';
+import type { AnyTablePropSet, TablePropSet } from './types/UseTablePlugin';
 import { getCloned } from './utils/clone';
 import { max, sum } from './utils/math';
 import { getNullMatrix, getTransposed } from './utils/matrix';

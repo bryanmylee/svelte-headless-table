@@ -2,7 +2,7 @@ import { derived } from 'svelte/store';
 import { NBSP } from './constants';
 import { TableComponent } from './tableComponent';
 import type { AggregateLabel } from './types/AggregateLabel';
-import type { AnyTablePropSet, TablePropSet } from './types/plugin';
+import type { AnyTablePropSet, TablePropSet } from './types/UseTablePlugin';
 import type { RenderProps } from './types/RenderProps';
 
 export interface HeaderCellInit<Item> {

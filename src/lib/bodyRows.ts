@@ -2,7 +2,7 @@ import { derived } from 'svelte/store';
 import { BodyCell } from './bodyCells';
 import type { DataColumn } from './columns';
 import { TableComponent } from './tableComponent';
-import type { AnyTablePropSet, TablePropSet } from './types/plugin';
+import type { AnyTablePropSet, TablePropSet } from './types/UseTablePlugin';
 
 export interface BodyRowInit<Item> {
 	id: string;
