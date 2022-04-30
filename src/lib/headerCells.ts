@@ -43,13 +43,13 @@ export class HeaderCell<Item, E extends ExtraPropSet = AnyExtraPropSet> {
 		return this.label;
 	}
 	private eventHandlers: Array<EventHandler> = [];
-	private extraPropsArray: Array<Readable<Record<string, unknown>>> = [];
-	applyHook(hook: ElementHook<Record<string, unknown>>) {
+	private extraPropsMap: Record<string, Readable<Record<string, unknown>>> = {};
+	applyHook(pluginName: string, hook: ElementHook<Record<string, unknown>>) {
 		if (hook.eventHandlers !== undefined) {
 			this.eventHandlers = [...this.eventHandlers, ...hook.eventHandlers];
 		}
 		if (hook.extraProps !== undefined) {
-			this.extraPropsArray = [...this.extraPropsArray, hook.extraProps];
+			this.extraPropsMap[pluginName] = hook.extraProps;
 		}
 	}
 	events(node: HTMLTableCellElement): ActionReturnType {
@@ -67,14 +67,19 @@ export class HeaderCell<Item, E extends ExtraPropSet = AnyExtraPropSet> {
 		};
 	}
 	extraProps(): Readable<E['thead.tr.th']> {
-		return derived(this.extraPropsArray, ($extraPropsArray) => {
-			let props = {};
-			$extraPropsArray.forEach((extraProps) => {
-				props = { ...props, ...extraProps };
-			});
-			// No easy way to extend this.
-			return props as E['thead.tr.th'];
-		});
+		const entries = Object.entries(this.extraPropsMap);
+		const pluginNames = entries.map(([pluginName]) => pluginName);
+		return derived(
+			entries.map(([, extraProps]) => extraProps),
+			($extraPropsArray) => {
+				const props: Record<string, Record<string, unknown>> = {};
+				$extraPropsArray.forEach((extraProps, idx) => {
+					props[pluginNames[idx]] = extraProps;
+				});
+				// No easy way to extend this.
+				return props as E['thead.tr.th'];
+			}
+		);
 	}
 }
 

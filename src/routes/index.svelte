@@ -8,6 +8,7 @@
 	import { useSortBy } from '$lib/plugins/useSortBy';
 	import ExtraProps from '$lib/components/ExtraProps.svelte';
 	import { useColumnOrder } from '$lib/plugins/useColumnOrder';
+	import { useHiddenColumns } from '$lib/plugins/useHiddenColumns';
 
 	const data = writable(sampleRows);
 	const columns = createColumns<SampleRow>([
@@ -55,16 +56,18 @@
 		{
 			sort: useSortBy(),
 			columnOrder: useColumnOrder(),
+			hiddenColumns: useHiddenColumns(),
 		}
 	);
 	const { sortKeys } = pluginStates.sort;
-	const { columnOrder } = pluginStates.columnOrder;
-	$columnOrder = $flatColumns.map((c) => c.id);
+	const { columnIdOrder } = pluginStates.columnOrder;
+	const { hiddenColumnIds } = pluginStates.hiddenColumns;
+	$columnIdOrder = $flatColumns.map((c) => c.id);
 </script>
 
 <h1>svelte-tables</h1>
 
-<button on:click={() => ($columnOrder = getShuffled($columnOrder))}>Shuffle columns</button>
+<button on:click={() => ($columnIdOrder = getShuffled($columnIdOrder))}>Shuffle columns</button>
 
 <table>
 	<thead>
@@ -74,9 +77,9 @@
 					<th {...cell.attrs()} use:cell.events>
 						<ExtraProps extraProps={cell.extraProps()} let:extraProps>
 							<Render {...cell.render()} />
-							{#if extraProps.order === 'asc'}
+							{#if extraProps.sort.order === 'asc'}
 								⬇️
-							{:else if extraProps.order === 'desc'}
+							{:else if extraProps.sort.order === 'desc'}
 								⬆️
 							{/if}
 						</ExtraProps>
@@ -111,7 +114,8 @@
 
 <pre>{JSON.stringify(
 		{
-			columnOrder: $columnOrder,
+			columnIdOrder: $columnIdOrder,
+			hiddenColumnIds: $hiddenColumnIds,
 			sortKeys: $sortKeys,
 		},
 		null,

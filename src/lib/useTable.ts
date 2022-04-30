@@ -2,7 +2,7 @@ import { derived, readable, type Readable } from 'svelte/store';
 import { getBodyRows } from './bodyRows';
 import { getFlatColumns, type Column } from './columns';
 import { getHeaderRows, HeaderRow } from './headerRows';
-import type { UseTablePlugin } from './types/plugin';
+import type { ComponentKeys, UseTablePlugin } from './types/plugin';
 import { nonNullish } from './utils/filter';
 
 export type UseTableProps<Item> = {
@@ -16,9 +16,14 @@ export const useTable = <Item, Plugins extends Record<string, UseTablePlugin<Ite
 	plugins: Plugins = {} as any
 ) => {
 	type PluginStates = { [K in keyof Plugins]: Plugins[K]['pluginState'] };
-	type PluginExtraPropSets = Plugins[keyof Plugins] extends UseTablePlugin<Item, unknown, infer E>
-		? E
-		: never;
+	type PluginKeyToExtraPropSet = {
+		[K in keyof Plugins]: Plugins[K] extends UseTablePlugin<Item, unknown, infer E> ? E : never;
+	};
+	type PluginExtraPropSet = {
+		[ComponentKey in ComponentKeys]: {
+			[PluginKey in keyof Plugins]: PluginKeyToExtraPropSet[PluginKey][ComponentKey];
+		};
+	};
 
 	const pluginStates = Object.fromEntries(
 		Object.entries(plugins).map(([key, plugin]) => [key, plugin.pluginState])
@@ -42,17 +47,17 @@ export const useTable = <Item, Plugins extends Record<string, UseTablePlugin<Ite
 			});
 			const $headerRows = getHeaderRows(columns, ids);
 			// Apply hooks.
-			Object.values(plugins).forEach((plugin) => {
+			Object.entries(plugins).forEach(([pluginName, plugin]) => {
 				$headerRows.forEach((row) => {
 					row.cells.forEach((cell) => {
 						if (plugin.hooks?.['thead.tr.th'] !== undefined) {
-							cell.applyHook(plugin.hooks['thead.tr.th'](cell));
+							cell.applyHook(pluginName, plugin.hooks['thead.tr.th'](cell));
 						}
 					});
 				});
 			});
 			// Inject inferred ExtraPropSet type.
-			return $headerRows as Array<HeaderRow<Item, PluginExtraPropSets>>;
+			return $headerRows as Array<HeaderRow<Item, PluginExtraPropSet>>;
 		}
 	);
 
