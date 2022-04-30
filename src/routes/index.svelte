@@ -2,7 +2,7 @@
 	import { writable } from 'svelte/store';
 	import { column, createColumns, group } from '$lib/columns';
 	import { useTable } from '$lib/useTable';
-	import { sampleRows, type SampleRow } from './_sampleRows';
+	import { sampleRows, type Sample } from './_sampleRows';
 	import Render from '$lib/components/Render.svelte';
 	import { getShuffled } from '$lib/utils/array';
 	import { useSortBy } from '$lib/plugins/useSortBy';
@@ -11,7 +11,7 @@
 	import { useHiddenColumns } from '$lib/plugins/useHiddenColumns';
 
 	const data = writable(sampleRows);
-	const columns = createColumns<SampleRow>([
+	const columns = createColumns<Sample>([
 		group({
 			header: 'Name',
 			columns: [
