@@ -5,7 +5,7 @@ import type {
 	AnyTablePropSet,
 	ElementHook,
 	EventHandler,
-	KeyToAttributes,
+	AttributesForKey,
 	TablePropSet,
 } from './types/plugin';
 
@@ -23,7 +23,7 @@ export class TableComponent<
 		this.id = id;
 	}
 
-	attrs(): Readable<KeyToAttributes<Item>[Key]> {
+	attrs(): Readable<AttributesForKey<Item>[Key]> {
 		throw Error('Missing `attrs` implementation');
 	}
 
@@ -42,9 +42,9 @@ export class TableComponent<
 		};
 	}
 
-	private nameToProps: Record<string, Readable<Record<string, unknown>>> = {};
+	private propsForName: Record<string, Readable<Record<string, unknown>>> = {};
 	props(): Readable<E[Key]> {
-		const propsEntries = Object.entries(this.nameToProps);
+		const propsEntries = Object.entries(this.propsForName);
 		const pluginNames = propsEntries.map(([pluginName]) => pluginName);
 		return derived(
 			propsEntries.map(([, props]) => props),
@@ -63,7 +63,7 @@ export class TableComponent<
 			this.eventHandlers = [...this.eventHandlers, ...hook.eventHandlers];
 		}
 		if (hook.props !== undefined) {
-			this.nameToProps[pluginName] = hook.props;
+			this.propsForName[pluginName] = hook.props;
 		}
 	}
 }

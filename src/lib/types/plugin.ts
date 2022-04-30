@@ -11,14 +11,14 @@ export type UseTablePlugin<Item, PluginState, E extends TablePropSet = AnyTableP
 	hooks?: TableHooks<Item, E>;
 };
 
-export type KeyToAttributes<Item> = {
+export type AttributesForKey<Item> = {
 	'thead.tr': HeaderRowAttributes<Item>;
 	'thead.tr.th': HeaderCellAttributes<Item>;
 	'tbody.tr': BodyRowAttributes<Item>;
 	'tbody.tr.td': BodyCellAttributes<Item>;
 };
 
-export type KeyToComponent<Item> = {
+export type ComponentForKey<Item> = {
 	'thead.tr': HeaderRow<Item>;
 	'thead.tr.th': HeaderCell<Item>;
 	'tbody.tr': BodyRow<Item>;
@@ -41,7 +41,7 @@ export type TablePropSet<
 export type AnyTablePropSet = TablePropSet<any, any>;
 
 export type TableHooks<Item, E extends TablePropSet = AnyTablePropSet> = {
-	[K in keyof KeyToComponent<Item>]?: (component: KeyToComponent<Item>[K]) => ElementHook<E[K]>;
+	[K in keyof ComponentForKey<Item>]?: (component: ComponentForKey<Item>[K]) => ElementHook<E[K]>;
 };
 
 export type ElementHook<Props> = {

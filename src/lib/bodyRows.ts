@@ -6,6 +6,8 @@ import type { AnyTablePropSet, TablePropSet } from './types/plugin';
 
 export interface BodyRowInit<Item> {
 	id: string;
+	item: Item;
+	valueForId: Record<string, unknown>;
 	cells: Array<BodyCell<Item>>;
 }
 
@@ -17,9 +19,13 @@ export class BodyRow<Item, E extends TablePropSet = AnyTablePropSet> extends Tab
 	'tbody.tr',
 	E
 > {
+	item: Item;
+	valueForId: Record<string, unknown>;
 	cells: Array<BodyCell<Item>>;
-	constructor({ id, cells }: BodyRowInit<Item>) {
+	constructor({ id, item, valueForId, cells }: BodyRowInit<Item>) {
 		super({ id });
+		this.item = item;
+		this.valueForId = valueForId;
 		this.cells = cells;
 	}
 
@@ -36,7 +42,25 @@ export const getBodyRows = <Item>(
 ): Array<BodyRow<Item>> => {
 	const rows: Array<BodyRow<Item>> = [];
 	for (let i = 0; i < data.length; i++) {
-		rows.push(new BodyRow({ id: i.toString(), cells: [] }));
+		const item = data[i];
+		const valueForId: Record<string, unknown> = {};
+		flatColumns.forEach((c) => {
+			const value =
+				c.accessorFn !== undefined
+					? c.accessorFn(item)
+					: c.accessorKey !== undefined
+					? item[c.accessorKey]
+					: undefined;
+			valueForId[c.id] = value;
+		});
+		rows.push(
+			new BodyRow({
+				id: i.toString(),
+				item,
+				valueForId: valueForId,
+				cells: [],
+			})
+		);
 	}
 	data.forEach((item, rowIdx) => {
 		const cells = flatColumns.map((c) => {

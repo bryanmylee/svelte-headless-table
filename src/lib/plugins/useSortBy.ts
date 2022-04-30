@@ -86,14 +86,14 @@ export const useSortBy = <Item>({ multiSort = true }: SortByConfig = {}): UseTab
 
 	const sortFn = derived(sortKeys, ($sortKeys) => {
 		// Memoize the id to column index relationship.
-		const colIdToIdx: Record<string, number> = {};
+		const idxForId: Record<string, number> = {};
 		return (a: BodyRow<Item>, b: BodyRow<Item>) => {
 			for (const key of $sortKeys) {
-				if (!(key.id in colIdToIdx)) {
+				if (!(key.id in idxForId)) {
 					const idx = a.cells.findIndex((cell) => cell.column.id === key.id);
-					colIdToIdx[key.id] = idx;
+					idxForId[key.id] = idx;
 				}
-				const idx = colIdToIdx[key.id];
+				const idx = idxForId[key.id];
 				const cellA = a.cells[idx];
 				const cellB = b.cells[idx];
 				let order = 0;

@@ -17,12 +17,12 @@ export const useTable = <Item, Plugins extends Record<string, UseTablePlugin<Ite
 	plugins: Plugins = {} as any
 ) => {
 	type PluginStates = { [K in keyof Plugins]: Plugins[K]['pluginState'] };
-	type PluginKeyToTablePropSet = {
+	type TablePropSetForPluginKey = {
 		[K in keyof Plugins]: Plugins[K] extends UseTablePlugin<Item, unknown, infer E> ? E : never;
 	};
 	type PluginTablePropSet = {
 		[ComponentKey in ComponentKeys]: {
-			[PluginKey in keyof Plugins]: PluginKeyToTablePropSet[PluginKey][ComponentKey];
+			[PluginKey in keyof Plugins]: TablePropSetForPluginKey[PluginKey][ComponentKey];
 		};
 	};
 

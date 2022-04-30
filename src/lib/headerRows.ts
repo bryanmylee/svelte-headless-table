@@ -37,7 +37,7 @@ export const getHeaderRows = <Item>(
 	let columnMatrix = getTransposed(rowMatrix);
 	columnMatrix = getOrderedColumnMatrix(columnMatrix, flatColumnIds);
 	populateGroupHeaderCellIds(columnMatrix);
-	return rowMatrixToHeaderRows(getTransposed(columnMatrix));
+	return headerRowsForRowMatrix(getTransposed(columnMatrix));
 };
 
 export const getHeaderRowMatrix = <Item>(
@@ -133,7 +133,7 @@ const populateGroupHeaderCellIds = <Item>(columnMatrix: Matrix<HeaderCell<Item>>
 	});
 };
 
-export const rowMatrixToHeaderRows = <Item>(
+export const headerRowsForRowMatrix = <Item>(
 	rowMatrix: Matrix<HeaderCell<Item>>
 ): Array<HeaderRow<Item>> => {
 	return rowMatrix.map((rowCells, rowIdx) => {
