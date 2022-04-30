@@ -1,4 +1,5 @@
-import type { BodyRow } from '$lib/bodyRows';
+import type { BodyCell, BodyCellAttributes } from '$lib/bodyCells';
+import type { BodyRow, BodyRowAttributes } from '$lib/bodyRows';
 import type { HeaderCell, HeaderCellAttributes } from '$lib/headerCells';
 import type { HeaderRow, HeaderRowAttributes } from '$lib/headerRows';
 import type { Readable } from 'svelte/store';
@@ -10,21 +11,30 @@ export type UseTablePlugin<Item, PluginState, E extends TablePropSet = AnyTableP
 	hooks?: TableHooks<Item, E>;
 };
 
-export type ComponentKeys = 'thead.tr' | 'thead.tr.th';
-
 export type KeyToAttributes<Item> = {
 	'thead.tr': HeaderRowAttributes<Item>;
 	'thead.tr.th': HeaderCellAttributes<Item>;
+	'tbody.tr': BodyRowAttributes<Item>;
+	'tbody.tr.td': BodyCellAttributes<Item>;
 };
 
 export type KeyToComponent<Item> = {
 	'thead.tr': HeaderRow<Item>;
 	'thead.tr.th': HeaderCell<Item>;
+	'tbody.tr': BodyRow<Item>;
+	'tbody.tr.td': BodyCell<Item>;
 };
 
-export type TablePropSet<HeaderRowProps = unknown, HeaderCellProps = unknown> = {
+export type TablePropSet<
+	HeaderRowProps = unknown,
+	HeaderCellProps = unknown,
+	BodyRowProps = unknown,
+	BodyCellProps = unknown
+> = {
 	'thead.tr': HeaderRowProps;
 	'thead.tr.th': HeaderCellProps;
+	'tbody.tr': BodyRowProps;
+	'tbody.tr.td': BodyCellProps;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

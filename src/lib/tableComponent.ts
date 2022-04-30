@@ -1,8 +1,8 @@
 import { derived, type Readable } from 'svelte/store';
 import type { ActionReturnType } from './types/Action';
+import type { ComponentKeys } from './types/ComponentKeys';
 import type {
 	AnyTablePropSet,
-	ComponentKeys,
 	ElementHook,
 	EventHandler,
 	KeyToAttributes,

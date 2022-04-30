@@ -15,6 +15,8 @@ export interface ColumnOrderState {
 export interface ColumnOrderPropSet {
 	'thead.tr': never;
 	'thead.tr.th': never;
+	'tbody.tr': never;
+	'tbody.tr.td': never;
 }
 
 export const useColumnOrder = <Item>(): UseTablePlugin<

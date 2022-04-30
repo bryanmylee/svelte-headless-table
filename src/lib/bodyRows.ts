@@ -1,17 +1,32 @@
+import { derived } from 'svelte/store';
 import { BodyCell } from './bodyCells';
 import type { DataColumn } from './columns';
+import { TableComponent } from './tableComponent';
+import type { AnyTablePropSet, TablePropSet } from './types/plugin';
 
 export interface BodyRowInit<Item> {
 	id: string;
 	cells: Array<BodyCell<Item>>;
 }
 
-export class BodyRow<Item> {
-	id: string;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-interface
+export interface BodyRowAttributes<Item> {}
+
+export class BodyRow<Item, E extends TablePropSet = AnyTablePropSet> extends TableComponent<
+	Item,
+	'tbody.tr',
+	E
+> {
 	cells: Array<BodyCell<Item>>;
 	constructor({ id, cells }: BodyRowInit<Item>) {
-		this.id = id;
+		super({ id });
 		this.cells = cells;
+	}
+
+	attrs() {
+		return derived([], () => {
+			return {};
+		});
 	}
 }
 

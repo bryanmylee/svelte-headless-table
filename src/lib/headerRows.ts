@@ -1,5 +1,6 @@
 import { DataColumn, GroupColumn, type Column } from './columns';
 import { DataHeaderCell, DisplayHeaderCell, GroupHeaderCell, type HeaderCell } from './headerCells';
+import { TableComponent } from './tableComponent';
 import type { Matrix } from './types/Matrix';
 import type { AnyTablePropSet, TablePropSet } from './types/plugin';
 import { getCloned } from './utils/clone';
@@ -14,11 +15,14 @@ export interface HeaderRowInit<Item, E extends TablePropSet = AnyTablePropSet> {
 	cells: Array<HeaderCell<Item, E>>;
 }
 
-export class HeaderRow<Item, E extends TablePropSet = AnyTablePropSet> {
-	id: string;
+export class HeaderRow<Item, E extends TablePropSet = AnyTablePropSet> extends TableComponent<
+	Item,
+	'tbody.tr',
+	E
+> {
 	cells: Array<HeaderCell<Item, E>>;
 	constructor({ id, cells }: HeaderRowInit<Item, E>) {
-		this.id = id;
+		super({ id });
 		this.cells = cells;
 	}
 }

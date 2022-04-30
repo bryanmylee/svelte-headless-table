@@ -27,6 +27,7 @@ export class HeaderCell<Item, E extends TablePropSet = AnyTablePropSet> extends 
 		this.label = label;
 		this.colspan = colspan;
 	}
+
 	attrs() {
 		return derived([], () => {
 			return {
@@ -34,6 +35,7 @@ export class HeaderCell<Item, E extends TablePropSet = AnyTablePropSet> extends 
 			};
 		});
 	}
+
 	render(): RenderProps {
 		if (this.label instanceof Function) {
 			return {

@@ -24,6 +24,8 @@ export interface SortByPropSet {
 	'thead.tr.th': {
 		order: 'asc' | 'desc' | undefined;
 	};
+	'tbody.tr': never;
+	'tbody.tr.td': never;
 }
 
 export interface SortKey {

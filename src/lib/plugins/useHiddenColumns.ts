@@ -17,6 +17,8 @@ export interface HiddenColumnsPropSet {
 	'thead.tr.th': {
 		hidden: boolean;
 	};
+	'tbody.tr': never;
+	'tbody.tr.td': never;
 }
 
 export const useHiddenColumns = <Item>(): UseTablePlugin<
