@@ -15,27 +15,14 @@ export type KeyToComponent<Item> = {
 };
 
 export type TableHooks<Item> = {
-	[K in keyof KeyToComponent<Item>]?: ElementHook<KeyToComponent<Item>[K]>;
+	[K in keyof KeyToComponent<Item>]?: (component: KeyToComponent<Item>[K]) => ElementHook;
 };
 
-export type ElementHook<TableComponent> = {
-	eventHandlers?: Array<EventHandler<TableComponent>>;
+export type ElementHook = {
+	eventHandlers?: Array<EventHandler>;
 };
 
-export type EventHandler<TableComponent> = {
+export type EventHandler = {
 	type: 'click';
-	callback: (props: EventProps<MouseEvent, TableComponent>) => void;
-};
-
-export type EventProps<EventType, TableComponent> = {
-	event: EventType;
-	component: TableComponent;
-};
-
-export type AggregateTableHooks<Item> = {
-	[K in keyof KeyToComponent<Item>]: AggregateElementHook<KeyToComponent<Item>[K]>;
-};
-
-export type AggregateElementHook<TableComponent> = {
-	eventHandlers: Array<EventHandler<TableComponent>>;
+	callback: (event: MouseEvent) => void;
 };

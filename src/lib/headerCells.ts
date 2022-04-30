@@ -1,7 +1,7 @@
 import { NBSP } from './constants';
 import type { ActionReturnType } from './types/Action';
 import type { AggregateLabel } from './types/AggregateLabel';
-import type { AggregateElementHook, EventHandler } from './types/plugin';
+import type { ElementHook, EventHandler } from './types/plugin';
 import type { RenderProps } from './types/RenderProps';
 
 export interface HeaderCellInit<Item> {
@@ -41,20 +41,17 @@ export class HeaderCell<Item> {
 		}
 		return this.label;
 	}
-	private eventHandlers: Array<EventHandler<HeaderCell<Item>>> = [];
-	applyHook(hook: AggregateElementHook<HeaderCell<Item>>) {
-		this.eventHandlers = [...this.eventHandlers, ...hook.eventHandlers];
+	private eventHandlers: Array<EventHandler> = [];
+	applyHook(hook: ElementHook) {
+		if (hook.eventHandlers !== undefined) {
+			this.eventHandlers = [...this.eventHandlers, ...hook.eventHandlers];
+		}
 	}
 	events(node: HTMLTableCellElement): ActionReturnType {
 		const unsubscribers = this.eventHandlers.map(({ type, callback }) => {
-			// No inferrence available for strict typing.
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const boundCallback = (event: any) => {
-				callback({ event, component: this });
-			};
-			node.addEventListener(type, boundCallback);
+			node.addEventListener(type, callback);
 			return () => {
-				node.removeEventListener(type, boundCallback);
+				node.removeEventListener(type, callback);
 			};
 		});
 		return {
