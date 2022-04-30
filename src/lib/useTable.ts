@@ -15,13 +15,13 @@ export const useTable = <Item, Plugins extends Record<string, UseTablePlugin<Ite
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	plugins: Plugins = {} as any
 ) => {
-	type PluginStates = { [K in keyof Plugins]: Plugins[K]['state'] };
+	type PluginStates = { [K in keyof Plugins]: Plugins[K]['pluginState'] };
 	type PluginExtraPropSets = Plugins[keyof Plugins] extends UseTablePlugin<Item, unknown, infer E>
 		? E
 		: never;
 
 	const pluginStates = Object.fromEntries(
-		Object.entries(plugins).map(([key, plugin]) => [key, plugin.state])
+		Object.entries(plugins).map(([key, plugin]) => [key, plugin.pluginState])
 	) as PluginStates;
 
 	const sortFns = Object.values(plugins)
@@ -60,6 +60,6 @@ export const useTable = <Item, Plugins extends Record<string, UseTablePlugin<Ite
 		flatColumns,
 		headerRows,
 		bodyRows,
-		plugins: pluginStates,
+		pluginStates,
 	};
 };

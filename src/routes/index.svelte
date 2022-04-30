@@ -56,7 +56,7 @@
 		}),
 	]);
 
-	const { headerRows, bodyRows, plugins } = useTable(
+	const { headerRows, bodyRows, pluginStates } = useTable(
 		{
 			data,
 			columns,
@@ -65,7 +65,7 @@
 			sort: sortBy(),
 		}
 	);
-	const { sortKeys } = plugins.sort;
+	const { sortKeys } = pluginStates.sort;
 </script>
 
 <h1>svelte-tables</h1>

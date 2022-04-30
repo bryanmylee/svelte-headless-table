@@ -8,10 +8,17 @@ export interface SortByConfig {
 	multiSort?: boolean;
 }
 
+/**
+ * `PluginState` will be exposed to the user as controls for the plugin.
+ * `PluginState` should be `Writable` or contain `Writable`s.
+ */
 export interface SortByState {
 	sortKeys: Writable<Array<SortKey>>;
 }
 
+/**
+ * `PluginExtraPropSet` describes data passed into each table component.
+ */
 export interface SortByExtraPropSet {
 	'thead.tr': never;
 	'thead.tr.th': {
@@ -32,7 +39,7 @@ export const sortBy = <Item>({ multiSort = true }: SortByConfig = {}): UseTableP
 	// TODO Custom store interface and methods.
 	const sortKeys = writable<Array<SortKey>>([]);
 
-	const state: SortByState = {
+	const pluginState: SortByState = {
 		sortKeys,
 	};
 
@@ -69,7 +76,7 @@ export const sortBy = <Item>({ multiSort = true }: SortByConfig = {}): UseTableP
 	});
 
 	return {
-		state,
+		pluginState,
 		sortFn,
 		hooks: {
 			'thead.tr.th': (cell) => {

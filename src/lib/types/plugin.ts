@@ -3,8 +3,8 @@ import type { HeaderCell } from '$lib/headerCells';
 import type { HeaderRow } from '$lib/headerRows';
 import type { Readable } from 'svelte/store';
 
-export type UseTablePlugin<Item, State, E extends ExtraPropSet = AnyExtraPropSet> = {
-	state: State;
+export type UseTablePlugin<Item, PluginState, E extends ExtraPropSet = AnyExtraPropSet> = {
+	pluginState: PluginState;
 	sortFn?: Readable<(a: BodyRow<Item>, b: BodyRow<Item>) => number>;
 	hooks?: TableHooks<Item, E>;
 };
