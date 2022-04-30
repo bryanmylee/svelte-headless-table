@@ -78,8 +78,8 @@
 			<tr>
 				{#each headerRow.cells as cell (cell.id)}
 					<th {...cell.attrs()} use:cell.events>
-						<Render {...cell.render()} />
 						<ExtraProps extraProps={cell.extraProps()} let:extraProps>
+							<Render {...cell.render()} />
 							{JSON.stringify(extraProps)}
 						</ExtraProps>
 					</th>

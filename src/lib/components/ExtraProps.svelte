@@ -1,7 +1,9 @@
 <script lang="ts">
 	import type { Readable } from 'svelte/store';
 
-	export let extraProps: Readable<Record<string, unknown>>;
+	type ExtraProps = $$Generic;
+
+	export let extraProps: Readable<ExtraProps>;
 </script>
 
 <slot extraProps={$extraProps} />

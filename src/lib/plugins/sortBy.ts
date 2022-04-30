@@ -12,6 +12,13 @@ export interface SortByState {
 	sortKeys: Writable<Array<SortKey>>;
 }
 
+export interface SortByExtraPropSet {
+	'thead.tr': never;
+	'thead.tr.th': {
+		order: 'asc' | 'desc' | undefined;
+	};
+}
+
 export interface SortKey {
 	id: string;
 	order: 'asc' | 'desc';
@@ -19,7 +26,8 @@ export interface SortKey {
 
 export const sortBy = <Item>({ multiSort = true }: SortByConfig = {}): UseTablePlugin<
 	Item,
-	SortByState
+	SortByState,
+	SortByExtraPropSet
 > => {
 	// TODO Custom store interface and methods.
 	const sortKeys = writable<Array<SortKey>>([]);

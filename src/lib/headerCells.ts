@@ -2,7 +2,7 @@ import { derived, type Readable } from 'svelte/store';
 import { NBSP } from './constants';
 import type { ActionReturnType } from './types/Action';
 import type { AggregateLabel } from './types/AggregateLabel';
-import type { ElementHook, EventHandler } from './types/plugin';
+import type { AnyExtraPropSet, ElementHook, EventHandler, ExtraPropSet } from './types/plugin';
 import type { RenderProps } from './types/RenderProps';
 
 export interface HeaderCellInit<Item> {
@@ -15,7 +15,7 @@ export interface HeaderCellInit<Item> {
 export interface HeaderCellAttributes<Item> {
 	colspan: number;
 }
-export class HeaderCell<Item> {
+export class HeaderCell<Item, E extends ExtraPropSet = AnyExtraPropSet> {
 	id: string;
 	label: AggregateLabel<Item>;
 	colspan: number;
@@ -66,13 +66,14 @@ export class HeaderCell<Item> {
 			},
 		};
 	}
-	extraProps(): Readable<Record<string, unknown>> {
+	extraProps(): Readable<E['thead.tr.th']> {
 		return derived(this.extraPropsArray, ($extraPropsArray) => {
 			let props = {};
 			$extraPropsArray.forEach((extraProps) => {
 				props = { ...props, ...extraProps };
 			});
-			return props;
+			// No easy way to extend this.
+			return props as E['thead.tr.th'];
 		});
 	}
 }

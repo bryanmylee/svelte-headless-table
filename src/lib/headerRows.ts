@@ -1,21 +1,35 @@
+import { derived, type Readable } from 'svelte/store';
 import { DataColumn, GroupColumn, type Column } from './columns';
 import { DataHeaderCell, DisplayHeaderCell, GroupHeaderCell, type HeaderCell } from './headerCells';
 import type { Matrix } from './types/Matrix';
+import type { AnyExtraPropSet, ElementHook, ExtraPropSet } from './types/plugin';
 import { getCloned } from './utils/clone';
 import { max, sum } from './utils/math';
 import { getNullMatrix, getTransposed } from './utils/matrix';
 
-export interface HeaderRowInit<Item> {
+export interface HeaderRowInit<Item, E extends ExtraPropSet = AnyExtraPropSet> {
 	id: string;
-	cells: Array<HeaderCell<Item>>;
+	cells: Array<HeaderCell<Item, E>>;
 }
 
-export class HeaderRow<Item> {
+export class HeaderRow<Item, E extends ExtraPropSet = AnyExtraPropSet> {
 	id: string;
-	cells: Array<HeaderCell<Item>>;
-	constructor({ id, cells }: HeaderRowInit<Item>) {
+	cells: Array<HeaderCell<Item, E>>;
+	constructor({ id, cells }: HeaderRowInit<Item, E>) {
 		this.id = id;
 		this.cells = cells;
+	}
+	private extraPropsArray: Array<Readable<Record<string, unknown>>> = [];
+	applyHook(hook: ElementHook<Record<string, unknown>>) {
+		if (hook.extraProps !== undefined) {
+			this.extraPropsArray = [...this.extraPropsArray, hook.extraProps];
+		}
+	}
+	extraProps(): Readable<E['thead.tr']> {
+		return derived([], () => {
+			const props = {};
+			return props as E['thead.tr'];
+		});
 	}
 }
 

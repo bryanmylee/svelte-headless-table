@@ -3,10 +3,10 @@ import type { HeaderCell } from '$lib/headerCells';
 import type { HeaderRow } from '$lib/headerRows';
 import type { Readable } from 'svelte/store';
 
-export type UseTablePlugin<Item, PluginState> = {
-	state: PluginState;
+export type UseTablePlugin<Item, State, E extends ExtraPropSet = AnyExtraPropSet> = {
+	state: State;
 	sortFn?: Readable<(a: BodyRow<Item>, b: BodyRow<Item>) => number>;
-	hooks?: TableHooks<Item>;
+	hooks?: TableHooks<Item, E>;
 };
 
 export type KeyToComponent<Item> = {
@@ -14,7 +14,7 @@ export type KeyToComponent<Item> = {
 	'thead.tr.th': HeaderCell<Item>;
 };
 
-export type ExtraPropSet<HeaderRowExtraProps, HeaderCellExtraProps> = {
+export type ExtraPropSet<HeaderRowExtraProps = unknown, HeaderCellExtraProps = unknown> = {
 	'thead.tr': HeaderRowExtraProps;
 	'thead.tr.th': HeaderCellExtraProps;
 };
@@ -22,7 +22,7 @@ export type ExtraPropSet<HeaderRowExtraProps, HeaderCellExtraProps> = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyExtraPropSet = ExtraPropSet<any, any>;
 
-export type TableHooks<Item, E extends ExtraPropSet<unknown, unknown> = AnyExtraPropSet> = {
+export type TableHooks<Item, E extends ExtraPropSet = AnyExtraPropSet> = {
 	[K in keyof KeyToComponent<Item>]?: (component: KeyToComponent<Item>[K]) => ElementHook<E[K]>;
 };
 

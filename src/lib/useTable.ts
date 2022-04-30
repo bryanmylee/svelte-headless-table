@@ -1,7 +1,7 @@
 import { derived, readable, type Readable } from 'svelte/store';
 import { getBodyRows } from './bodyRows';
 import { getFlatColumns, type Column } from './columns';
-import { getHeaderRows } from './headerRows';
+import { getHeaderRows, HeaderRow } from './headerRows';
 import type { UseTablePlugin } from './types/plugin';
 import { nonNullish } from './utils/filter';
 
@@ -16,6 +16,10 @@ export const useTable = <Item, Plugins extends Record<string, UseTablePlugin<Ite
 	plugins: Plugins = {} as any
 ) => {
 	type PluginStates = { [K in keyof Plugins]: Plugins[K]['state'] };
+	type PluginExtraPropSets = Plugins[keyof Plugins] extends UseTablePlugin<Item, unknown, infer E>
+		? E
+		: never;
+
 	const pluginStates = Object.fromEntries(
 		Object.entries(plugins).map(([key, plugin]) => [key, plugin.state])
 	) as PluginStates;
@@ -37,7 +41,8 @@ export const useTable = <Item, Plugins extends Record<string, UseTablePlugin<Ite
 				});
 			});
 		});
-		return $headerRows;
+		// Inject inferred ExtraPropSet type.
+		return $headerRows as Array<HeaderRow<Item, PluginExtraPropSets>>;
 	});
 
 	const originalBodyRows = derived([data, flatColumns], ([$data, $flatColumns]) => {
