@@ -33,7 +33,7 @@ export interface SortKey {
 	order: 'asc' | 'desc';
 }
 
-export const useSortKeys = (initKeys: Array<SortKey>) => {
+export const useSortKeys = (initKeys: Array<SortKey>): SortKeys => {
 	const { subscribe, update, set } = writable(initKeys);
 	const toggleId = (id: string, { multiSort = true }: SortByConfig = {}) => {
 		update(($sortKeys) => {
@@ -71,7 +71,7 @@ export const useSortKeys = (initKeys: Array<SortKey>) => {
 };
 
 export type SortKeys = Writable<Array<SortKey>> & {
-	toggleId: (id: string) => void;
+	toggleId: (id: string, config: SortByConfig) => void;
 };
 
 export const useSortBy = <Item>({ multiSort = true }: SortByConfig = {}): UseTablePlugin<
