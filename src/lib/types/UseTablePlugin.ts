@@ -7,19 +7,13 @@ import type { Readable } from 'svelte/store';
 export type UseTablePlugin<Item, PluginState, E extends TablePropSet = AnyTablePropSet> = {
 	pluginState: PluginState;
 	sortFn?: Readable<SortFn<Item>>;
+	filterFn?: Readable<FilterFn<Item>>;
 	flatColumnIdFn?: Readable<FlatColumnIdFn>;
 	hooks?: TableHooks<Item, E>;
 };
 
 export type SortFn<Item> = (a: BodyRow<Item>, b: BodyRow<Item>) => number;
-export type FilterFn<Item, FilterValue = string> = (
-	props: FilterFnProps<Item, FilterValue>
-) => Array<BodyRow<Item>>;
-export type FilterFnProps<Item, FilterValue> = {
-	rows: Array<BodyRow<Item>>;
-	id: string;
-	filterValue: FilterValue;
-};
+export type FilterFn<Item> = (row: BodyRow<Item>) => boolean;
 export type FlatColumnIdFn = (ids: Array<string>) => Array<string>;
 
 export type AttributesForKey<Item> = {
