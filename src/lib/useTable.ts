@@ -39,7 +39,7 @@ export const useTable = <Item, Plugins extends Record<string, UseTablePlugin<Ite
 		.filter(nonNullish);
 
 	const flatColumns = readable(getFlatColumns(columns));
-	const orderedFlatColumns = derived(
+	const visibleColumns = derived(
 		[flatColumns, ...flatColumnIdFns],
 		([$flatColumns, ...$flatColumnIdFns]) => {
 			let ids = $flatColumns.map((c) => c.id);
@@ -50,7 +50,7 @@ export const useTable = <Item, Plugins extends Record<string, UseTablePlugin<Ite
 		}
 	);
 
-	const headerRows = derived(orderedFlatColumns, ($orderedFlatColumns) => {
+	const headerRows = derived(visibleColumns, ($orderedFlatColumns) => {
 		const $headerRows = getHeaderRows(
 			columns,
 			$orderedFlatColumns.map((c) => c.id)
@@ -69,7 +69,7 @@ export const useTable = <Item, Plugins extends Record<string, UseTablePlugin<Ite
 		return $headerRows as Array<HeaderRow<Item, PluginTablePropSet>>;
 	});
 
-	const originalBodyRows = derived([data, orderedFlatColumns], ([$data, $orderedFlatColumns]) => {
+	const originalBodyRows = derived([data, visibleColumns], ([$data, $orderedFlatColumns]) => {
 		return getBodyRows($data, $orderedFlatColumns);
 	});
 	const bodyRows = derived([originalBodyRows, ...sortFns], ([$originalBodyRows, ...$sortFns]) => {
@@ -81,7 +81,7 @@ export const useTable = <Item, Plugins extends Record<string, UseTablePlugin<Ite
 	});
 
 	return {
-		flatColumns,
+		visibleColumns,
 		headerRows,
 		bodyRows,
 		pluginStates,

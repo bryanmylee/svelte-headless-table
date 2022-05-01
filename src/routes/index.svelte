@@ -48,7 +48,7 @@
 		}),
 	]);
 
-	const { flatColumns, headerRows, bodyRows, pluginStates } = useTable(
+	const { visibleColumns, headerRows, bodyRows, pluginStates } = useTable(
 		{
 			data,
 			columns,
@@ -61,7 +61,7 @@
 	);
 	const { sortKeys } = pluginStates.sort;
 	const { columnIdOrder } = pluginStates.columnOrder;
-	$columnIdOrder = $flatColumns.map((c) => c.id);
+	$columnIdOrder = $visibleColumns.map((c) => c.id);
 	const { hiddenColumnIds } = pluginStates.hiddenColumns;
 	$hiddenColumnIds = ['progress'];
 </script>
