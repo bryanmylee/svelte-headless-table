@@ -21,24 +21,16 @@ export class Column<Item> {
 	}
 }
 
-export type DataColumnInit<
-	Item,
-	Id extends string,
-	ValueForId extends Record<string, unknown>
-> = DataColumnInitBase<Item, Id, ValueForId> &
+export type DataColumnInit<Item, Id extends string, Value> = DataColumnInitBase<Item, Value> &
 	(
 		| (Id extends keyof Item ? DataColumnInitKey<Item, Id> : never)
-		| DataColumnInitKeyAndId<Item, Id>
-		| DataColumnInitFnAndId<Item, Id, ValueForId>
+		| DataColumnInitIdAndKey<Item, Id, keyof Item>
+		| DataColumnInitFnAndId<Item, Id, Value>
 	);
 
-export type DataColumnInitBase<
-	Item,
-	Id extends string,
-	ValueForId extends Record<string, unknown>
-> = Omit<ColumnInit<Item>, 'height'> & {
-	cell?: Label<Item, ValueForId[Id]>;
-	sortKey?: (value: ValueForId[Id]) => string | number;
+export type DataColumnInitBase<Item, Value> = Omit<ColumnInit<Item>, 'height'> & {
+	cell?: Label<Item, Value>;
+	sortKey?: (value: Value) => string | number;
 };
 
 export type DataColumnInitKey<Item, Id extends keyof Item> = {
@@ -46,38 +38,23 @@ export type DataColumnInitKey<Item, Id extends keyof Item> = {
 	id?: Id;
 };
 
-export type DataColumnInitKeyAndId<Item, Id extends string> = {
-	accessor: keyof Item;
+export type DataColumnInitIdAndKey<Item, Id extends string, Key extends keyof Item> = {
+	accessor: Key;
 	id: Id;
 };
 
-export type DataColumnInitFnAndId<
-	Item,
-	Id extends string,
-	ValueForId extends Record<string, unknown>
-> = {
-	accessor: keyof Item | ((item: Item) => ValueForId[Id]);
+export type DataColumnInitFnAndId<Item, Id extends string, Value> = {
+	accessor: keyof Item | ((item: Item) => Value);
 	id?: Id;
 };
 
-export class DataColumn<
-	Item,
-	Id extends string = any,
-	ValueForId extends Record<string, unknown> = Record<string, any>
-> extends Column<Item> {
-	cell?: Label<Item, ValueForId[Id]>;
+export class DataColumn<Item, Id extends string = any, Value = any> extends Column<Item> {
+	cell?: Label<Item, Value>;
 	accessorKey?: keyof Item;
-	accessorFn?: (item: Item) => ValueForId[Id];
+	accessorFn?: (item: Item) => Value;
 	id: Id;
-	sortOnFn?: (value: ValueForId[Id]) => string | number;
-	constructor({
-		header,
-		footer,
-		cell,
-		accessor,
-		id,
-		sortKey,
-	}: DataColumnInit<Item, Id, ValueForId>) {
+	sortOnFn?: (value: Value) => string | number;
+	constructor({ header, footer, cell, accessor, id, sortKey }: DataColumnInit<Item, Id, Value>) {
 		super({ header, footer, height: 1 });
 		this.cell = cell;
 		if (accessor instanceof Function) {
@@ -111,22 +88,20 @@ export class GroupColumn<Item> extends Column<Item> {
 	}
 }
 
-export function column<
-	Item,
-	Id extends Exclude<keyof Item, symbol>,
-	ValueForId extends Record<string, unknown>
->(
-	def: DataColumnInitBase<Item, `${Id}`, ValueForId> & DataColumnInitKey<Item, Id>
-): DataColumn<Item, `${Id}`, ValueForId>;
-export function column<Item, Id extends string, ValueForId extends Record<string, unknown>>(
-	def: DataColumnInitBase<Item, Id, ValueForId> & DataColumnInitKeyAndId<Item, Id>
-): DataColumn<Item, Id, ValueForId>;
-export function column<Item, Id extends string, ValueForId extends Record<string, unknown>>(
-	def: DataColumnInitBase<Item, Id, ValueForId> & DataColumnInitFnAndId<Item, Id, ValueForId>
-): DataColumn<Item, Id, ValueForId>;
-export function column<Item, Id extends string, ValueForId extends Record<string, unknown>>(
-	def: DataColumnInit<Item, Id, ValueForId>
-): DataColumn<Item, Id, ValueForId> {
+// `accessorKey` only
+export function column<Item, Id extends Exclude<keyof Item, symbol>>(
+	def: DataColumnInitBase<Item, Item[Id]> & DataColumnInitKey<Item, Id>
+): DataColumn<Item, `${Id}`, Item[Id]>;
+// `accessorKey` and `id`
+export function column<Item, Id extends string, Key extends keyof Item>(
+	def: DataColumnInitBase<Item, Item[Key]> & DataColumnInitIdAndKey<Item, Id, Key>
+): DataColumn<Item, Id, Item[Key]>;
+export function column<Item, Id extends string, Value>(
+	def: DataColumnInitBase<Item, Value> & DataColumnInitFnAndId<Item, Id, Value>
+): DataColumn<Item, Id, Value>;
+export function column<Item, Id extends string, Value>(
+	def: DataColumnInit<Item, Id, Value>
+): DataColumn<Item, Id, Value> {
 	return new DataColumn(def);
 }
 
