@@ -21,22 +21,63 @@ export class Column<Item> {
 	}
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface DataColumnInit<Item, Value = any> extends Omit<ColumnInit<Item>, 'height'> {
-	cell?: Label<Item, Value>;
-	accessor: keyof Item | ((item: Item) => Value);
-	id?: string;
-	sortKey?: (value: Value) => string | number;
-}
+export type DataColumnInit<
+	Item,
+	Id extends string,
+	ValueForId extends Record<string, unknown>
+> = DataColumnInitBase<Item, Id, ValueForId> &
+	(
+		| (Id extends keyof Item ? DataColumnInitKey<Item, Id> : never)
+		| DataColumnInitKeyAndId<Item, Id>
+		| DataColumnInitFnAndId<Item, Id, ValueForId>
+	);
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class DataColumn<Item, Value = any> extends Column<Item> {
-	cell?: Label<Item, Value>;
+export type DataColumnInitBase<
+	Item,
+	Id extends string,
+	ValueForId extends Record<string, unknown>
+> = Omit<ColumnInit<Item>, 'height'> & {
+	cell?: Label<Item, ValueForId[Id]>;
+	sortKey?: (value: ValueForId[Id]) => string | number;
+};
+
+export type DataColumnInitKey<Item, Id extends keyof Item> = {
+	accessor: Id;
+	id?: Id;
+};
+
+export type DataColumnInitKeyAndId<Item, Id extends string> = {
+	accessor: keyof Item;
+	id: Id;
+};
+
+export type DataColumnInitFnAndId<
+	Item,
+	Id extends string,
+	ValueForId extends Record<string, unknown>
+> = {
+	accessor: keyof Item | ((item: Item) => ValueForId[Id]);
+	id?: Id;
+};
+
+export class DataColumn<
+	Item,
+	Id extends string = any,
+	ValueForId extends Record<string, unknown> = Record<string, any>
+> extends Column<Item> {
+	cell?: Label<Item, ValueForId[Id]>;
 	accessorKey?: keyof Item;
-	accessorFn?: (item: Item) => Value;
-	id: string;
-	sortOnFn?: (value: Value) => string | number;
-	constructor({ header, footer, cell, accessor, id, sortKey }: DataColumnInit<Item, Value>) {
+	accessorFn?: (item: Item) => ValueForId[Id];
+	id: Id;
+	sortOnFn?: (value: ValueForId[Id]) => string | number;
+	constructor({
+		header,
+		footer,
+		cell,
+		accessor,
+		id,
+		sortKey,
+	}: DataColumnInit<Item, Id, ValueForId>) {
 		super({ header, footer, height: 1 });
 		this.cell = cell;
 		if (accessor instanceof Function) {
@@ -47,7 +88,7 @@ export class DataColumn<Item, Value = any> extends Column<Item> {
 		if (id === undefined && this.accessorKey === undefined) {
 			throw new Error('A column id or string accessor is required');
 		}
-		this.id = id ?? `${this.accessorKey}`;
+		this.id = (id ?? `${this.accessorKey}`) as Id;
 		this.sortOnFn = sortKey;
 	}
 }
@@ -70,10 +111,24 @@ export class GroupColumn<Item> extends Column<Item> {
 	}
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const column = <Item, Value = any>(
-	def: DataColumnInit<Item, Value>
-): DataColumn<Item, Value> => new DataColumn(def);
+export function column<
+	Item,
+	Id extends Exclude<keyof Item, symbol>,
+	ValueForId extends Record<string, unknown>
+>(
+	def: DataColumnInitBase<Item, `${Id}`, ValueForId> & DataColumnInitKey<Item, Id>
+): DataColumn<Item, `${Id}`, ValueForId>;
+export function column<Item, Id extends string, ValueForId extends Record<string, unknown>>(
+	def: DataColumnInitBase<Item, Id, ValueForId> & DataColumnInitKeyAndId<Item, Id>
+): DataColumn<Item, Id, ValueForId>;
+export function column<Item, Id extends string, ValueForId extends Record<string, unknown>>(
+	def: DataColumnInitBase<Item, Id, ValueForId> & DataColumnInitFnAndId<Item, Id, ValueForId>
+): DataColumn<Item, Id, ValueForId>;
+export function column<Item, Id extends string, ValueForId extends Record<string, unknown>>(
+	def: DataColumnInit<Item, Id, ValueForId>
+): DataColumn<Item, Id, ValueForId> {
+	return new DataColumn(def);
+}
 
 export const group = <Item>(def: GroupColumnInit<Item>): GroupColumn<Item> => new GroupColumn(def);
 
@@ -93,12 +148,6 @@ const getFlatColumnIds = <Item>(columns: Array<Column<Item>>): Array<string> =>
 
 export const getFlatColumns = <Item>(columns: Array<Column<Item>>): Array<DataColumn<Item>> => {
 	const flatColumns = _getFlatColumns(columns);
-	// if (columnOrder !== undefined) {
-	// 	flatColumns = getOrderedFlatColumns(flatColumns, columnOrder);
-	// }
-	// if (hiddenColumns !== undefined) {
-	// 	flatColumns = getHiddenFlatColumns(flatColumns, hiddenColumns);
-	// }
 	return flatColumns;
 };
 

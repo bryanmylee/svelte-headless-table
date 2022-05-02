@@ -34,7 +34,8 @@
 				}),
 				column({
 					header: 'Status',
-					accessor: 'status',
+					id: 'status',
+					accessor: (item) => item.status,
 				}),
 				column({
 					header: 'Visits',
@@ -43,6 +44,7 @@
 				column({
 					header: 'Profile Progress',
 					accessor: 'progress',
+					id: 'profileProgress',
 				}),
 			],
 		}),
