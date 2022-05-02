@@ -12,7 +12,7 @@ interface User {
 
 const data = writable<User[]>([]);
 
-const table = createTable({ data });
+const table = createTable(data);
 
 it('passes if no duplicate columns', () => {
 	expect(() => {

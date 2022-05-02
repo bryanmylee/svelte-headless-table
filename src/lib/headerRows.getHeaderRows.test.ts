@@ -14,7 +14,7 @@ interface User {
 
 const data = writable<User[]>([]);
 
-const table = createTable({ data });
+const table = createTable(data);
 
 test('flat columns\n[][][]', () => {
 	const columns = table.createColumns([
