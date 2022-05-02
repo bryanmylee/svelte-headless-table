@@ -1,4 +1,6 @@
-import { column, createColumns, DataColumn, getFlatColumns, group } from './columns';
+import { writable } from 'svelte/store';
+import { DataColumn, getFlatColumns } from './columns';
+import { createTable } from './createTable';
 
 interface User {
 	firstName: string;
@@ -9,42 +11,46 @@ interface User {
 	status: string;
 }
 
+const data = writable<User[]>([]);
+
+const table = createTable({ data });
+
 it('flattens data columns', () => {
-	const columns = createColumns<User>([
-		group({
+	const columns = table.createColumns([
+		table.group({
 			header: 'ID',
 			columns: [
-				group({
+				table.group({
 					header: 'Name',
 					columns: [
-						column({
+						table.column({
 							header: 'First Name',
 							accessor: 'firstName',
 						}),
 					],
 				}),
-				column({
+				table.column({
 					header: 'Last Name',
 					accessor: 'lastName',
 				}),
 			],
 		}),
-		group({
+		table.group({
 			header: 'Info',
 			columns: [
-				column({
+				table.column({
 					header: 'Age',
 					accessor: 'age',
 				}),
-				column({
+				table.column({
 					header: 'Status',
 					accessor: 'status',
 				}),
-				column({
+				table.column({
 					header: 'Visits',
 					accessor: 'visits',
 				}),
-				column({
+				table.column({
 					header: 'Profile Progress',
 					accessor: 'progress',
 				}),
@@ -55,12 +61,12 @@ it('flattens data columns', () => {
 	const actual = getFlatColumns(columns);
 
 	const expected: Array<DataColumn<User>> = [
-		column({ header: 'First Name', accessor: 'firstName' }),
-		column({ header: 'Last Name', accessor: 'lastName' }),
-		column({ header: 'Age', accessor: 'age' }),
-		column({ header: 'Status', accessor: 'status' }),
-		column({ header: 'Visits', accessor: 'visits' }),
-		column({ header: 'Profile Progress', accessor: 'progress' }),
+		table.column({ header: 'First Name', accessor: 'firstName' }),
+		table.column({ header: 'Last Name', accessor: 'lastName' }),
+		table.column({ header: 'Age', accessor: 'age' }),
+		table.column({ header: 'Status', accessor: 'status' }),
+		table.column({ header: 'Visits', accessor: 'visits' }),
+		table.column({ header: 'Profile Progress', accessor: 'progress' }),
 	];
 
 	expect(actual).toStrictEqual(expected);

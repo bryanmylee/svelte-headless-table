@@ -1,4 +1,5 @@
-import { column, createColumns, group } from './columns';
+import { writable } from 'svelte/store';
+import { createTable } from './createTable';
 import { DataHeaderCell, DisplayHeaderCell, GroupHeaderCell } from './headerCells';
 import { getHeaderRows, HeaderRow } from './headerRows';
 
@@ -11,17 +12,21 @@ interface User {
 	status: string;
 }
 
+const data = writable<User[]>([]);
+
+const table = createTable({ data });
+
 test('flat columns\n[][][]', () => {
-	const columns = createColumns<User>([
-		column({
+	const columns = table.createColumns([
+		table.column({
 			header: 'First Name',
 			accessor: 'firstName',
 		}),
-		column({
+		table.column({
 			header: 'Last Name',
 			accessor: 'lastName',
 		}),
-		column({
+		table.column({
 			header: 'Age',
 			accessor: 'age',
 		}),
@@ -56,19 +61,19 @@ test('flat columns\n[][][]', () => {
 });
 
 test('one group\n[    ]\n[][][]', () => {
-	const columns = createColumns<User>([
-		group({
+	const columns = table.createColumns([
+		table.group({
 			header: 'Info',
 			columns: [
-				column({
+				table.column({
 					header: 'First Name',
 					accessor: 'firstName',
 				}),
-				column({
+				table.column({
 					header: 'Last Name',
 					accessor: 'lastName',
 				}),
-				column({
+				table.column({
 					header: 'Age',
 					accessor: 'age',
 				}),
@@ -116,32 +121,32 @@ test('one group\n[    ]\n[][][]', () => {
 });
 
 test('two groups\n[  ][    ]\n[][][][][]', () => {
-	const columns = createColumns<User>([
-		group({
+	const columns = table.createColumns([
+		table.group({
 			header: 'Name',
 			columns: [
-				column({
+				table.column({
 					header: 'First Name',
 					accessor: 'firstName',
 				}),
-				column({
+				table.column({
 					header: 'Last Name',
 					accessor: 'lastName',
 				}),
 			],
 		}),
-		group({
+		table.group({
 			header: 'Info',
 			columns: [
-				column({
+				table.column({
 					header: 'Age',
 					accessor: 'age',
 				}),
-				column({
+				table.column({
 					header: 'Status',
 					accessor: 'status',
 				}),
-				column({
+				table.column({
 					header: 'Profile Progress',
 					accessor: 'progress',
 				}),
@@ -205,29 +210,29 @@ test('two groups\n[  ][    ]\n[][][][][]', () => {
 });
 
 test('one group and extra\n[  ]      \n[][][][][]', () => {
-	const columns = createColumns<User>([
-		group({
+	const columns = table.createColumns([
+		table.group({
 			header: 'Name',
 			columns: [
-				column({
+				table.column({
 					header: 'First Name',
 					accessor: 'firstName',
 				}),
-				column({
+				table.column({
 					header: 'Last Name',
 					accessor: 'lastName',
 				}),
 			],
 		}),
-		column({
+		table.column({
 			header: 'Age',
 			accessor: 'age',
 		}),
-		column({
+		table.column({
 			header: 'Status',
 			accessor: 'status',
 		}),
-		column({
+		table.column({
 			header: 'Profile Progress',
 			accessor: 'progress',
 		}),
@@ -286,20 +291,20 @@ test('one group and extra\n[  ]      \n[][][][][]', () => {
 });
 
 test('data cell on last row\n[  ]\n[]  \n[][]', () => {
-	const columns = createColumns<User>([
-		group({
+	const columns = table.createColumns([
+		table.group({
 			header: 'ID',
 			columns: [
-				group({
+				table.group({
 					header: 'Name',
 					columns: [
-						column({
+						table.column({
 							header: 'First Name',
 							accessor: 'firstName',
 						}),
 					],
 				}),
-				column({
+				table.column({
 					header: 'Profile Progress',
 					accessor: 'progress',
 				}),
@@ -354,14 +359,14 @@ test('data cell on last row\n[  ]\n[]  \n[][]', () => {
 });
 
 test('group on lowest row\n[]\n[][]\n[][]', () => {
-	const columns = createColumns<User>([
-		group({
+	const columns = table.createColumns([
+		table.group({
 			header: 'ID',
 			columns: [
-				group({
+				table.group({
 					header: 'Name',
 					columns: [
-						column({
+						table.column({
 							header: 'First Name',
 							accessor: 'firstName',
 						}),
@@ -369,10 +374,10 @@ test('group on lowest row\n[]\n[][]\n[][]', () => {
 				}),
 			],
 		}),
-		group({
+		table.group({
 			header: 'Info',
 			columns: [
-				column({
+				table.column({
 					header: 'Profile Progress',
 					accessor: 'progress',
 				}),

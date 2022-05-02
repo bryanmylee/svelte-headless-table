@@ -1,4 +1,5 @@
-import { column, createColumns } from './columns';
+import { writable } from 'svelte/store';
+import { createTable } from './createTable';
 
 interface User {
 	firstName: string;
@@ -9,14 +10,18 @@ interface User {
 	status: string;
 }
 
+const data = writable<User[]>([]);
+
+const table = createTable({ data });
+
 it('passes if no duplicate columns', () => {
 	expect(() => {
-		createColumns<User>([
-			column({
+		table.createColumns([
+			table.column({
 				header: 'First Name',
 				accessor: 'firstName',
 			}),
-			column({
+			table.column({
 				header: 'Age',
 				accessor: 'age',
 			}),
@@ -26,12 +31,12 @@ it('passes if no duplicate columns', () => {
 
 it('throws if two columns have the same id', () => {
 	expect(() => {
-		createColumns<User>([
-			column({
+		table.createColumns([
+			table.column({
 				header: 'First Name',
 				accessor: 'firstName',
 			}),
-			column({
+			table.column({
 				header: 'Age',
 				accessor: 'firstName',
 			}),

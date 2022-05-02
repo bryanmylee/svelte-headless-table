@@ -1,6 +1,5 @@
 import type { AggregateLabel } from './types/AggregateLabel';
 import type { Label } from './types/Label';
-import { getDuplicates } from './utils/array';
 import { max } from './utils/math';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -85,46 +84,13 @@ export class GroupColumn<Item> extends Column<Item> {
 	}
 }
 
-// `accessorKey` only
-export function column<Item, Id extends Exclude<keyof Item, symbol>>(
-	def: DataColumnInitBase<Item, Item[Id]> & DataColumnInitKey<Item, Id>
-): DataColumn<Item, `${Id}`, Item[Id]>;
-// `accessorKey` and `id`
-export function column<Item, Id extends string, Key extends keyof Item>(
-	def: DataColumnInitBase<Item, Item[Key]> & DataColumnInitIdAndKey<Item, Id, Key>
-): DataColumn<Item, Id, Item[Key]>;
-// `accessorFn` and `id`
-export function column<Item, Id extends string, Value>(
-	def: DataColumnInitBase<Item, Value> & DataColumnInitFnAndId<Item, Id, Value>
-): DataColumn<Item, Id, Value>;
-export function column<Item, Id extends string, Value>(
-	def: DataColumnInit<Item, Id, Value>
-): DataColumn<Item, Id, Value> {
-	return new DataColumn(def);
-}
-
-export const group = <Item>(def: GroupColumnInit<Item>): GroupColumn<Item> => new GroupColumn(def);
-
-export const createColumns = <Item>(columns: Array<Column<Item>>): Array<Column<Item>> => {
-	const ids = getFlatColumnIds(columns);
-	const duplicateIds = getDuplicates(ids);
-	if (duplicateIds.length !== 0) {
-		throw new Error(`Duplicate column ids not allowed: "${duplicateIds.join('", "')}"`);
-	}
-	return columns;
-};
-
-const getFlatColumnIds = <Item>(columns: Array<Column<Item>>): Array<string> =>
+export const getFlatColumnIds = <Item>(columns: Array<Column<Item>>): Array<string> =>
 	columns.flatMap((c) =>
 		c instanceof DataColumn ? [c.id] : c instanceof GroupColumn ? c.ids : []
 	);
 
 export const getFlatColumns = <Item>(columns: Array<Column<Item>>): Array<DataColumn<Item>> => {
-	const flatColumns = _getFlatColumns(columns);
-	return flatColumns;
-};
-
-const _getFlatColumns = <Item>(columns: Array<Column<Item>>): Array<DataColumn<Item>> =>
-	columns.flatMap((c) =>
-		c instanceof DataColumn ? [c] : c instanceof GroupColumn ? _getFlatColumns(c.columns) : []
+	return columns.flatMap((c) =>
+		c instanceof DataColumn ? [c] : c instanceof GroupColumn ? getFlatColumns(c.columns) : []
 	);
+};

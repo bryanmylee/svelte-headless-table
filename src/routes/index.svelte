@@ -1,47 +1,48 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
-	import { column, createColumns, group } from '$lib/columns';
 	import { useTable } from '$lib/useTable';
-	import { sampleRows, type Sample } from './_sampleRows';
+	import { sampleRows } from './_sampleRows';
 	import Render from '$lib/components/Render.svelte';
 	import { getShuffled } from '$lib/utils/array';
 	import { useSortBy } from '$lib/plugins/useSortBy';
 	import Subscribe from '$lib/components/Subscribe.svelte';
 	import { useColumnOrder } from '$lib/plugins/useColumnOrder';
 	import { useHiddenColumns } from '$lib/plugins/useHiddenColumns';
+	import { createTable } from '$lib/createTable';
 
 	const data = writable(sampleRows);
-	const columns = createColumns<Sample>([
-		group({
+	const table = createTable({ data });
+	const columns = table.createColumns([
+		table.group({
 			header: 'Name',
 			columns: [
-				column({
+				table.column({
 					header: 'First Name',
 					accessor: 'firstName',
 				}),
-				column({
+				table.column({
 					header: 'Last Name',
 					accessor: 'lastName',
 				}),
 			],
 		}),
-		group({
+		table.group({
 			header: 'Info',
 			columns: [
-				column({
+				table.column({
 					header: 'Age',
 					accessor: 'age',
 				}),
-				column({
+				table.column({
 					header: 'Status',
 					id: 'status',
 					accessor: (item) => item.status,
 				}),
-				column({
+				table.column({
 					header: 'Visits',
 					accessor: 'visits',
 				}),
-				column({
+				table.column({
 					header: 'Profile Progress',
 					accessor: 'progress',
 					id: 'profileProgress',
