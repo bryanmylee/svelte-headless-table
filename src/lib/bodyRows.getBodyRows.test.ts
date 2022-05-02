@@ -1,6 +1,7 @@
+import { writable } from 'svelte/store';
 import { BodyCell } from './bodyCells';
 import { BodyRow, getBodyRows } from './bodyRows';
-import { column } from './columns';
+import { createTable } from './createTable';
 
 interface User {
 	firstName: string;
@@ -11,7 +12,7 @@ interface User {
 	status: string;
 }
 
-const data: Array<User> = [
+const data: User[] = [
 	{
 		firstName: 'Adam',
 		lastName: 'West',
@@ -30,16 +31,18 @@ const data: Array<User> = [
 	},
 ];
 
+const table = createTable(writable(data));
+
 const columns = [
-	column<User>({
+	table.column({
 		accessor: 'firstName',
 		header: 'First Name',
 	}),
-	column<User>({
+	table.column({
 		accessor: 'lastName',
 		header: 'Last Name',
 	}),
-	column<User>({
+	table.column({
 		accessor: 'progress',
 		header: 'Profile Progress',
 	}),
@@ -56,7 +59,7 @@ it('transforms empty data', () => {
 it('transforms data', () => {
 	const actual = getBodyRows(data, columns);
 
-	const row0 = new BodyRow<User>({ id: '0', cells: [] });
+	const row0 = new BodyRow<User>({ id: '0', item: data[0], cells: [], cellForId: {} });
 	const cells0 = [
 		new BodyCell<User>({
 			row: row0,
@@ -75,7 +78,14 @@ it('transforms data', () => {
 		}),
 	];
 	row0.cells = cells0;
-	const row1 = new BodyRow<User>({ id: '1', cells: [] });
+	const cellForId0 = {
+		firstName: cells0[0],
+		lastName: cells0[1],
+		progress: cells0[2],
+	};
+	row0.cellForId = cellForId0;
+
+	const row1 = new BodyRow<User>({ id: '1', item: data[1], cells: [], cellForId: {} });
 	const cells1 = [
 		new BodyCell<User>({
 			row: row1,
@@ -94,7 +104,22 @@ it('transforms data', () => {
 		}),
 	];
 	row1.cells = cells1;
+	const cellForId1 = {
+		firstName: cells1[0],
+		lastName: cells1[1],
+		progress: cells1[2],
+	};
+	row1.cellForId = cellForId1;
+
 	const expected: Array<BodyRow<User>> = [row0, row1];
 
-	expect(actual).toStrictEqual(expected);
+	[0, 1].forEach((rowIdx) => {
+		expect(actual[rowIdx].item).toStrictEqual(expected[rowIdx].item);
+		expect(actual[rowIdx].cells.length).toStrictEqual(expected[rowIdx].cells.length);
+		actual[rowIdx].cells.forEach((_, colIdx) => {
+			expect(actual[rowIdx].cells[colIdx].value).toStrictEqual(
+				expected[rowIdx].cells[colIdx].value
+			);
+		});
+	});
 });

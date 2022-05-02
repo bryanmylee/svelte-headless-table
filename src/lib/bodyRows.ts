@@ -7,8 +7,8 @@ import type { AnyTablePropSet, TablePropSet } from './types/UseTablePlugin';
 export interface BodyRowInit<Item> {
 	id: string;
 	item: Item;
-	valueForId: Record<string, unknown>;
 	cells: Array<BodyCell<Item>>;
+	cellForId: Record<string, BodyCell<Item>>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-interface
@@ -20,13 +20,13 @@ export class BodyRow<Item, E extends TablePropSet = AnyTablePropSet> extends Tab
 	E
 > {
 	item: Item;
-	valueForId: Record<string, unknown>;
 	cells: Array<BodyCell<Item>>;
-	constructor({ id, item, valueForId, cells }: BodyRowInit<Item>) {
+	cellForId: Record<string, unknown>;
+	constructor({ id, item, cells, cellForId }: BodyRowInit<Item>) {
 		super({ id });
 		this.item = item;
-		this.valueForId = valueForId;
 		this.cells = cells;
+		this.cellForId = cellForId;
 	}
 
 	attrs() {
@@ -41,24 +41,14 @@ export const getBodyRows = <Item>(
 	flatColumns: Array<DataColumn<Item>>
 ): Array<BodyRow<Item>> => {
 	const rows: Array<BodyRow<Item>> = [];
-	for (let i = 0; i < data.length; i++) {
-		const item = data[i];
-		const valueForId: Record<string, unknown> = {};
-		flatColumns.forEach((c) => {
-			const value =
-				c.accessorFn !== undefined
-					? c.accessorFn(item)
-					: c.accessorKey !== undefined
-					? item[c.accessorKey]
-					: undefined;
-			valueForId[c.id] = value;
-		});
+	for (let rowIdx = 0; rowIdx < data.length; rowIdx++) {
+		const item = data[rowIdx];
 		rows.push(
 			new BodyRow({
-				id: i.toString(),
+				id: rowIdx.toString(),
 				item,
-				valueForId: valueForId,
 				cells: [],
+				cellForId: {},
 			})
 		);
 	}
@@ -73,6 +63,9 @@ export const getBodyRows = <Item>(
 			return new BodyCell({ row: rows[rowIdx], column: c, label: c.cell, value });
 		});
 		rows[rowIdx].cells = cells;
+		flatColumns.forEach((c, colIdx) => {
+			rows[rowIdx].cellForId[c.id] = cells[colIdx];
+		});
 	});
 	return rows;
 };
