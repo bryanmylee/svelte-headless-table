@@ -1,13 +1,13 @@
-import { derived, readable, type Readable } from 'svelte/store';
+import { derived, readable } from 'svelte/store';
 import { getBodyRows } from './bodyRows';
 import { getFlatColumns, type Column } from './columns';
+import type { Table } from './createTable';
 import { getHeaderRows, HeaderRow } from './headerRows';
 import type { ComponentKeys } from './types/ComponentKeys';
 import type { UseTablePlugin } from './types/UseTablePlugin';
 import { nonNullish } from './utils/filter';
 
-export type UseTableProps<Item> = {
-	data: Readable<Array<Item>>;
+export type UseTableProps<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	columns: Array<Column<Item>>;
 };
 
@@ -15,9 +15,8 @@ export type UseTableProps<Item> = {
 export type AnyPlugins = Record<string, UseTablePlugin<any, any>>;
 
 export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
-	{ data, columns }: UseTableProps<Item>,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	plugins: Plugins = {} as any
+	table: Table<Item, Plugins>,
+	{ columns }: UseTableProps<Item, Plugins>
 ) => {
 	type PluginStates = { [K in keyof Plugins]: Plugins[K]['pluginState'] };
 	type TablePropSetForPluginKey = {
@@ -28,6 +27,8 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 			[PluginKey in keyof Plugins]: TablePropSetForPluginKey[PluginKey][ComponentKey];
 		};
 	};
+
+	const { data, plugins } = table;
 
 	const pluginStates = Object.fromEntries(
 		Object.entries(plugins).map(([key, plugin]) => [key, plugin.pluginState])

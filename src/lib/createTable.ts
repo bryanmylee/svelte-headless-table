@@ -14,11 +14,13 @@ import {
 import type { AnyPlugins } from './useTable';
 import { getDuplicates } from './utils/array';
 
-export interface CreateTableProps<Item> {
-	data: Writable<Item[]>;
-}
-
 export class Table<Item, Plugins extends AnyPlugins = AnyPlugins> {
+	data: Writable<Item[]>;
+	plugins: Plugins;
+	constructor(data: Writable<Item[]>, plugins: Plugins) {
+		this.data = data;
+		this.plugins = plugins;
+	}
 	createColumns(columns: Column<Item>[]): Column<Item>[] {
 		const ids = getFlatColumnIds(columns);
 		const duplicateIds = getDuplicates(ids);
@@ -48,9 +50,9 @@ export class Table<Item, Plugins extends AnyPlugins = AnyPlugins> {
 }
 
 export const createTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
-	{ data }: CreateTableProps<Item>,
+	data: Writable<Item[]>,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	plugins: Plugins = {} as any
 ): Table<Item, Plugins> => {
-	return new Table<Item, Plugins>();
+	return new Table(data, plugins);
 };

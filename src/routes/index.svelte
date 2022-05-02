@@ -11,7 +11,13 @@
 	import { createTable } from '$lib/createTable';
 
 	const data = writable(sampleRows);
-	const table = createTable({ data });
+
+	const table = createTable(data, {
+		sort: useSortBy(),
+		columnOrder: useColumnOrder(),
+		hiddenColumns: useHiddenColumns(),
+	});
+
 	const columns = table.createColumns([
 		table.group({
 			header: 'Name',
@@ -51,17 +57,8 @@
 		}),
 	]);
 
-	const { visibleColumns, headerRows, bodyRows, pluginStates } = useTable(
-		{
-			data,
-			columns,
-		},
-		{
-			sort: useSortBy(),
-			columnOrder: useColumnOrder(),
-			hiddenColumns: useHiddenColumns(),
-		}
-	);
+	const { visibleColumns, headerRows, bodyRows, pluginStates } = useTable(table, { columns });
+
 	const { sortKeys } = pluginStates.sort;
 	const { columnIdOrder } = pluginStates.columnOrder;
 	$columnIdOrder = $visibleColumns.map((c) => c.id);
