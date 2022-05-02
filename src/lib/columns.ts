@@ -2,7 +2,6 @@ import type { AggregateLabel } from './types/AggregateLabel';
 import type { Label } from './types/Label';
 import { max } from './utils/math';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface ColumnInit<Item> {
 	header: AggregateLabel<Item>;
 	footer?: AggregateLabel<Item>;
@@ -47,6 +46,7 @@ export type DataColumnInitFnAndId<Item, Id extends string, Value> = {
 	id?: Id;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class DataColumn<Item, Id extends string = any, Value = any> extends Column<Item> {
 	cell?: Label<Item, Value>;
 	accessorKey?: keyof Item;

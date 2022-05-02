@@ -11,7 +11,10 @@ export type UseTableProps<Item> = {
 	columns: Array<Column<Item>>;
 };
 
-export const useTable = <Item, Plugins extends Record<string, UseTablePlugin<Item, unknown>>>(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyPlugins = Record<string, UseTablePlugin<any, any>>;
+
+export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	{ data, columns }: UseTableProps<Item>,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	plugins: Plugins = {} as any

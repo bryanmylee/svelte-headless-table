@@ -11,16 +11,14 @@ import {
 	type DataColumnInitKey,
 	type GroupColumnInit,
 } from './columns';
-import type { UseTablePlugin } from './types/UseTablePlugin';
+import type { AnyPlugins } from './useTable';
 import { getDuplicates } from './utils/array';
 
 export interface CreateTableProps<Item> {
 	data: Writable<Item[]>;
 }
 
-export type TablePlugins<Item> = Record<string, UseTablePlugin<Item, unknown>>;
-
-export class Table<Item, Plugins extends TablePlugins<Item>> {
+export class Table<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	createColumns(columns: Column<Item>[]): Column<Item>[] {
 		const ids = getFlatColumnIds(columns);
 		const duplicateIds = getDuplicates(ids);
@@ -49,8 +47,9 @@ export class Table<Item, Plugins extends TablePlugins<Item>> {
 	}
 }
 
-export const createTable = <Item, Plugins extends Record<string, UseTablePlugin<Item, unknown>>>(
+export const createTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	{ data }: CreateTableProps<Item>,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	plugins: Plugins = {} as any
 ): Table<Item, Plugins> => {
 	return new Table<Item, Plugins>();
