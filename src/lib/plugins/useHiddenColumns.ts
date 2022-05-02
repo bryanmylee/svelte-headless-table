@@ -30,7 +30,7 @@ export const useHiddenColumns = <Item>(): UseTablePlugin<
 
 	const pluginState: HiddenColumnsState = { hiddenColumnIds };
 
-	const flatColumnIdFn = derived(hiddenColumnIds, ($hiddenColumnIds) => {
+	const visibleColumnIdsFn = derived(hiddenColumnIds, ($hiddenColumnIds) => {
 		return (ids: Array<string>) => {
 			return ids.filter((id) => !$hiddenColumnIds.includes(id));
 		};
@@ -38,6 +38,6 @@ export const useHiddenColumns = <Item>(): UseTablePlugin<
 
 	return {
 		pluginState,
-		flatColumnIdFn,
+		visibleColumnIdsFn,
 	};
 };

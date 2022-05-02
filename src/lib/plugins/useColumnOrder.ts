@@ -28,7 +28,7 @@ export const useColumnOrder = <Item>(): UseTablePlugin<
 
 	const pluginState: ColumnOrderState = { columnIdOrder };
 
-	const flatColumnIdFn = derived(columnIdOrder, ($columnOrder) => {
+	const visibleColumnIdsFn = derived(columnIdOrder, ($columnOrder) => {
 		return (ids: Array<string>) => {
 			const originalIds = [...ids];
 			let orderedIds: Array<string> = [];
@@ -46,6 +46,6 @@ export const useColumnOrder = <Item>(): UseTablePlugin<
 
 	return {
 		pluginState,
-		flatColumnIdFn,
+		visibleColumnIdsFn,
 	};
 };

@@ -8,13 +8,13 @@ export type UseTablePlugin<Item, PluginState, E extends TablePropSet = AnyTableP
 	pluginState: PluginState;
 	sortFn?: Readable<SortFn<Item>>;
 	filterFn?: Readable<FilterFn<Item>>;
-	flatColumnIdFn?: Readable<FlatColumnIdFn>;
+	visibleColumnIdsFn?: Readable<VisibleColumnIdsFn>;
 	hooks?: TableHooks<Item, E>;
 };
 
 export type SortFn<Item> = (a: BodyRow<Item>, b: BodyRow<Item>) => number;
 export type FilterFn<Item> = (row: BodyRow<Item>) => boolean;
-export type FlatColumnIdFn = (ids: Array<string>) => Array<string>;
+export type VisibleColumnIdsFn = (ids: Array<string>) => Array<string>;
 
 export type AttributesForKey<Item> = {
 	'thead.tr': HeaderRowAttributes<Item>;

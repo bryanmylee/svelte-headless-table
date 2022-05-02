@@ -38,16 +38,16 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		.map((plugin) => plugin.sortFn)
 		.filter(nonNullish);
 
-	const flatColumnIdFns = Object.values(plugins)
-		.map((plugin) => plugin.flatColumnIdFn)
+	const visibleColumnIdsFns = Object.values(plugins)
+		.map((plugin) => plugin.visibleColumnIdsFn)
 		.filter(nonNullish);
 
 	const flatColumns = readable(getFlatColumns(columns));
 	const visibleColumns = derived(
-		[flatColumns, ...flatColumnIdFns],
-		([$flatColumns, ...$flatColumnIdFns]) => {
+		[flatColumns, ...visibleColumnIdsFns],
+		([$flatColumns, ...$visibleColumnIdsFns]) => {
 			let ids = $flatColumns.map((c) => c.id);
-			$flatColumnIdFns.forEach((fn) => {
+			$visibleColumnIdsFns.forEach((fn) => {
 				ids = fn(ids);
 			});
 			return ids.map((id) => $flatColumns.find((c) => c.id === id)).filter(nonNullish);

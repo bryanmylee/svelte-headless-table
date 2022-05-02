@@ -51,7 +51,6 @@
 				table.column({
 					header: 'Profile Progress',
 					accessor: 'progress',
-					id: 'profileProgress',
 				}),
 			],
 		}),
