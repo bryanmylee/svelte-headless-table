@@ -96,6 +96,7 @@ export function column<Item, Id extends Exclude<keyof Item, symbol>>(
 export function column<Item, Id extends string, Key extends keyof Item>(
 	def: DataColumnInitBase<Item, Item[Key]> & DataColumnInitIdAndKey<Item, Id, Key>
 ): DataColumn<Item, Id, Item[Key]>;
+// `accessorFn` and `id`
 export function column<Item, Id extends string, Value>(
 	def: DataColumnInitBase<Item, Value> & DataColumnInitFnAndId<Item, Id, Value>
 ): DataColumn<Item, Id, Value>;
