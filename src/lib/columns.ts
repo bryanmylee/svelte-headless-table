@@ -76,9 +76,6 @@ export interface GroupColumnInit<Item> extends Omit<ColumnInit<Item>, 'height'> 
 
 export class GroupColumn<Item> extends Column<Item> {
 	columns: Array<Column<Item>>;
-	/**
-	 * A flatlist of the ids of `DataColumn`s under this group.
-	 */
 	ids: Array<string>;
 	constructor({ header, footer, columns }: GroupColumnInit<Item>) {
 		const height = max(columns.map((c) => c.height)) + 1;
@@ -131,29 +128,3 @@ const _getFlatColumns = <Item>(columns: Array<Column<Item>>): Array<DataColumn<I
 	columns.flatMap((c) =>
 		c instanceof DataColumn ? [c] : c instanceof GroupColumn ? _getFlatColumns(c.columns) : []
 	);
-
-// const getOrderedFlatColumns = <Item>(
-// 	columns: Array<DataColumn<Item>>,
-// 	columnOrder: Array<string>
-// ): Array<DataColumn<Item>> => {
-// 	if (columnOrder.length === 0) {
-// 		return columns;
-// 	}
-// 	const orderedColumns: Array<DataColumn<Item>> = [];
-// 	// Each row of the transposed matrix represents a column.
-// 	// The `DataHeaderCell` is the last cell of each column.
-// 	columnOrder.forEach((key) => {
-// 		const nextColumn = columns.find((column) => column.id === key);
-// 		if (nextColumn !== undefined) {
-// 			orderedColumns.push(nextColumn);
-// 		}
-// 	});
-// 	return orderedColumns;
-// };
-
-// const getHiddenFlatColumns = <Item>(
-// 	columns: Array<DataColumn<Item>>,
-// 	hiddenColumns: Array<string>
-// ): Array<DataColumn<Item>> => {
-// 	return columns.filter((column) => !hiddenColumns.includes(column.id));
-// };
