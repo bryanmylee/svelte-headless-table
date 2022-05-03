@@ -5,12 +5,14 @@ specifiers:
   '@sveltejs/kit': next
   '@testing-library/jest-dom': ^5.16.4
   '@testing-library/svelte': ^3.1.1
+  '@types/faker': '5'
   '@types/jest': ^27.4.1
   '@typescript-eslint/eslint-plugin': ^5.21.0
   '@typescript-eslint/parser': ^5.21.0
   eslint: ^7.32.0
   eslint-config-prettier: ^8.5.0
   eslint-plugin-svelte3: ^3.4.1
+  faker: '5'
   jest: ^27.5.1
   prettier: ^2.6.2
   prettier-plugin-svelte: ^2.7.0
@@ -29,12 +31,14 @@ devDependencies:
   '@sveltejs/kit': 1.0.0-next.324_svelte@3.47.0
   '@testing-library/jest-dom': 5.16.4
   '@testing-library/svelte': 3.1.1_svelte@3.47.0
+  '@types/faker': 5.5.9
   '@types/jest': 27.4.1
   '@typescript-eslint/eslint-plugin': 5.21.0_3f2b8947418667c394a050c1406f9730
   '@typescript-eslint/parser': 5.21.0_eslint@7.32.0+typescript@4.6.4
   eslint: 7.32.0
   eslint-config-prettier: 8.5.0_eslint@7.32.0
   eslint-plugin-svelte3: 3.4.1_eslint@7.32.0+svelte@3.47.0
+  faker: 5.5.3
   jest: 27.5.1
   prettier: 2.6.2
   prettier-plugin-svelte: 2.7.0_prettier@2.6.2+svelte@3.47.0
@@ -845,6 +849,10 @@ packages:
     resolution: {integrity: sha512-kVzjari1s2YVi77D3w1yuvohV2idweYXMCDzqBiVNN63TcDWrIlTVOYpqVrvbbyOE/IyzBoTKF0fdnLPEORFxA==}
     dependencies:
       '@babel/types': 7.17.10
+    dev: true
+
+  /@types/faker/5.5.9:
+    resolution: {integrity: sha512-uCx6mP3UY5SIO14XlspxsGjgaemrxpssJI0Ol+GfhxtcKpv9pgRZYsS4eeKeHVLje6Qtc8lGszuBI461+gVZBA==}
     dev: true
 
   /@types/graceful-fs/4.1.5:
@@ -2026,6 +2034,10 @@ packages:
       jest-get-type: 27.5.1
       jest-matcher-utils: 27.5.1
       jest-message-util: 27.5.1
+    dev: true
+
+  /faker/5.5.3:
+    resolution: {integrity: sha512-wLTv2a28wjUyWkbnX7u/ABZBkUkIF2fCd73V6P2oFqEGEktDfzWx4UxrSqtPRw0xPRAcjeAOIiJWqZm3pP4u3g==}
     dev: true
 
   /fast-deep-equal/3.1.3:

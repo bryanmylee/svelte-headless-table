@@ -3,7 +3,7 @@
 	import Subscribe from '$lib/components/Subscribe.svelte';
 	import { createTable } from '$lib/createTable';
 	import { getShuffled } from '$lib/utils/array';
-	import { sampleRows } from './_sampleRows';
+	import { createSamples } from './_createSamples';
 	import {
 		numberRangeFilter,
 		textPrefixFilter,
@@ -20,7 +20,7 @@
 	import { createRender } from '$lib/render';
 	import NumberRangeFilter from './_NumberRangeFilter.svelte';
 
-	const data = writable(sampleRows);
+	const data = writable(createSamples(100));
 
 	const table = createTable(data, {
 		sort: useSortBy(),
@@ -34,7 +34,7 @@
 			header: createRender(Italic, { text: 'Name' }),
 			columns: [
 				table.column({
-					header: createRender(Tick),
+					header: createRender(Italic, { text: 'First Name' }),
 					accessor: 'firstName',
 					plugins: {
 						filter: {
@@ -58,7 +58,7 @@
 					accessor: 'age',
 				}),
 				table.column({
-					header: 'Status',
+					header: createRender(Tick),
 					id: 'status',
 					accessor: (item) => item.status,
 				}),
