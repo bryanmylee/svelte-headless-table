@@ -3,7 +3,7 @@ import { getBodyRows } from './bodyRows';
 import { getFlatColumns, type Column } from './columns';
 import type { Table } from './createTable';
 import { getHeaderRows, HeaderRow } from './headerRows';
-import type { ComponentKeys } from './types/ComponentKeys';
+import type { PluginStates, PluginTablePropSet } from './types/Plugins';
 import type { UseTablePlugin } from './types/UseTablePlugin';
 import { nonNullish } from './utils/filter';
 
@@ -18,21 +18,11 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	table: Table<Item, Plugins>,
 	{ columns }: UseTableProps<Item, Plugins>
 ) => {
-	type PluginStates = { [K in keyof Plugins]: Plugins[K]['pluginState'] };
-	type TablePropSetForPluginKey = {
-		[K in keyof Plugins]: Plugins[K] extends UseTablePlugin<Item, unknown, infer E> ? E : never;
-	};
-	type PluginTablePropSet = {
-		[ComponentKey in ComponentKeys]: {
-			[PluginKey in keyof Plugins]: TablePropSetForPluginKey[PluginKey][ComponentKey];
-		};
-	};
-
 	const { data, plugins } = table;
 
 	const pluginStates = Object.fromEntries(
 		Object.entries(plugins).map(([key, plugin]) => [key, plugin.pluginState])
-	) as PluginStates;
+	) as PluginStates<Plugins>;
 
 	const sortFns = Object.values(plugins)
 		.map((plugin) => plugin.sortFn)
@@ -70,7 +60,7 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 			});
 		});
 		// Inject inferred TablePropSet type.
-		return $headerRows as Array<HeaderRow<Item, PluginTablePropSet>>;
+		return $headerRows as Array<HeaderRow<Item, PluginTablePropSet<Plugins>>>;
 	});
 
 	const originalBodyRows = derived([data, visibleColumns], ([$data, $orderedFlatColumns]) => {
