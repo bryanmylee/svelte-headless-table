@@ -11,6 +11,7 @@
 	import { useTable } from '$lib/useTable';
 	import { writable } from 'svelte/store';
 	import Italic from './_Italic.svelte';
+	import Tick from './_Tick.svelte';
 	import { createRender } from '$lib/render';
 
 	const data = writable(sampleRows);
@@ -27,7 +28,7 @@
 			header: createRender(Italic, { text: 'Name' }),
 			columns: [
 				table.column({
-					header: 'First Name',
+					header: createRender(Tick),
 					accessor: 'firstName',
 					plugins: {
 						filter: {

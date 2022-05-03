@@ -17,11 +17,21 @@ export type RenderConfig<C extends SvelteComponent = SvelteComponent, Props = an
 	| ComponentRenderConfig<C, Props>
 	| string;
 
+export function createRender<C extends SvelteComponent, Props extends Record<string, never>>(
+	component: SvelteComponentWithProps<C, Props>
+): ComponentRenderConfig<C, undefined>;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const createRender = <C extends SvelteComponent, Props = any>(
+export function createRender<C extends SvelteComponent, Props = any>(
+	component: SvelteComponentWithProps<C, Props>,
+	props: Props
+): ComponentRenderConfig<C, Props>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function createRender<C extends SvelteComponent, Props = any>(
 	component: SvelteComponentWithProps<C, Props>,
 	props?: Props
-): ComponentRenderConfig<C, Props> => ({
-	component,
-	props,
-});
+) {
+	return {
+		component,
+		props,
+	};
+}

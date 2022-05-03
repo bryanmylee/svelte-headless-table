@@ -12,5 +12,5 @@
 {#if typeof render === 'string'}
 	{render}
 {:else}
-	<svelte:component this={render.component} {...render.props} />
+	<svelte:component this={render.component} {...render.props ?? {}} />
 {/if}
