@@ -1,4 +1,4 @@
-import { derived } from 'svelte/store';
+import { derived, writable } from 'svelte/store';
 import { NBSP } from './constants';
 import { TableComponent } from './tableComponent';
 import type { AggregateLabel } from './types/AggregateLabel';
@@ -36,8 +36,11 @@ export class HeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends T
 
 	private buildRender(): RenderConfig {
 		if (this.label instanceof Function) {
-			// TODO inject data
-			return 'Work in progress';
+			const data = writable<Item[]>([]);
+			setInterval(() => {
+				data.update(($data) => [...$data, {} as Item]);
+			}, 1000);
+			return this.label({ data });
 		}
 		return this.label;
 	}

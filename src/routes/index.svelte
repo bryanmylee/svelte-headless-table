@@ -13,7 +13,7 @@
 	import { useHiddenColumns } from '$lib/plugins/useHiddenColumns';
 	import { useSortBy } from '$lib/plugins/useSortBy';
 	import { useTable } from '$lib/useTable';
-	import { writable } from 'svelte/store';
+	import { derived, writable } from 'svelte/store';
 	import Italic from './_Italic.svelte';
 	import Tick from './_Tick.svelte';
 	import TextFilter from './_TextFilter.svelte';
@@ -44,7 +44,7 @@
 					},
 				}),
 				table.column({
-					header: 'Last Name',
+					header: ({ data }) => derived(data, (_data) => `Last Name (${_data.length} samples)`),
 					accessor: 'lastName',
 					plugins: {},
 				}),

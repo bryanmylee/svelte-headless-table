@@ -1,9 +1,15 @@
-import { type Writable, type Readable, readable } from 'svelte/store';
+import type { Readable, Writable } from 'svelte/store';
 
 export type ReadOrWritable<T> = Readable<T> | Writable<T>;
 
-export const isWritable = <T>(store: ReadOrWritable<T>): store is Writable<T> => {
-	return (store as Writable<T>).update !== undefined && (store as Writable<T>).set !== undefined;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const isReadable = <T>(value: any): value is Readable<T> => {
+	return value.subscribe !== undefined;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const isWritable = <T>(store: any): store is Writable<T> => {
+	return store.update !== undefined && store.set !== undefined;
 };
 
 export type WritableKeys<T> = {
@@ -16,12 +22,4 @@ export type ReadableKeys<T> = {
 
 export type ReadOrWritableKeys<T> = {
 	[K in keyof T]: T[K] extends undefined ? ReadOrWritable<T[K] | undefined> : ReadOrWritable<T[K]>;
-};
-
-export const Undefined = readable(undefined);
-
-export const isNotUndefined = <T>(
-	store: ReadOrWritable<T | undefined>
-): store is ReadOrWritable<T> => {
-	return store !== Undefined;
 };

@@ -1,4 +1,5 @@
 import type { SvelteComponent } from 'svelte';
+import type { Readable } from 'svelte/store';
 
 export type SvelteComponentWithProps<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -15,7 +16,8 @@ type ComponentRenderConfig<Props = any, C extends SvelteComponent = SvelteCompon
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type RenderConfig<Props = any, C extends SvelteComponent = SvelteComponent> =
 	| ComponentRenderConfig<Props, C>
-	| string;
+	| string
+	| Readable<string>;
 
 export function createRender<Props extends Record<string, never>, C extends SvelteComponent>(
 	component: SvelteComponentWithProps<Props, C>
