@@ -21,7 +21,7 @@ export class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends Tabl
 > {
 	item: Item;
 	cells: BodyCell<Item, Plugins>[];
-	cellForId: Record<string, unknown>;
+	cellForId: Record<string, BodyCell<Item, Plugins>>;
 	constructor({ id, item, cells, cellForId }: BodyRowInit<Item, Plugins>) {
 		super({ id });
 		this.item = item;

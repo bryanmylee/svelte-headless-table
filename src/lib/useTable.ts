@@ -1,6 +1,6 @@
 import { derived, readable } from 'svelte/store';
 import { getBodyRows } from './bodyRows';
-import { getFlatColumns, type Column } from './columns';
+import { getDataColumns, type Column } from './columns';
 import type { Table } from './createTable';
 import { getHeaderRows, HeaderRow } from './headerRows';
 import type { AnyPlugins, PluginStates } from './types/UseTablePlugin';
@@ -24,11 +24,15 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		.map((plugin) => plugin.sortFn)
 		.filter(nonNullish);
 
+	const filterFns = Object.values(plugins)
+		.map((plugin) => plugin.filterFn)
+		.filter(nonNullish);
+
 	const visibleColumnIdsFns = Object.values(plugins)
 		.map((plugin) => plugin.visibleColumnIdsFn)
 		.filter(nonNullish);
 
-	const flatColumns = readable(getFlatColumns(columns));
+	const flatColumns = readable(getDataColumns(columns));
 	const visibleColumns = derived(
 		[flatColumns, ...visibleColumnIdsFns],
 		([$flatColumns, ...$visibleColumnIdsFns]) => {
@@ -61,8 +65,18 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	const originalBodyRows = derived([data, visibleColumns], ([$data, $orderedFlatColumns]) => {
 		return getBodyRows($data, $orderedFlatColumns);
 	});
-	const bodyRows = derived([originalBodyRows, ...sortFns], ([$originalBodyRows, ...$sortFns]) => {
-		const sortedRows = [...$originalBodyRows];
+	const filteredBodyRows = derived(
+		[originalBodyRows, ...filterFns],
+		([$bodyRows, ...$filterFns]) => {
+			let filteredRows = [...$bodyRows];
+			$filterFns.forEach((filterFn) => {
+				filteredRows = filteredRows.filter(filterFn);
+			});
+			return filteredRows;
+		}
+	);
+	const sortedBodyRows = derived([filteredBodyRows, ...sortFns], ([$bodyRows, ...$sortFns]) => {
+		const sortedRows = [...$bodyRows];
 		$sortFns.forEach((sortFn) => {
 			sortedRows.sort(sortFn);
 		});
@@ -72,7 +86,7 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	return {
 		visibleColumns,
 		headerRows,
-		bodyRows,
+		bodyRows: sortedBodyRows,
 		pluginStates,
 	};
 };

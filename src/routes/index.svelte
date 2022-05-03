@@ -1,21 +1,23 @@
 <script lang="ts">
-	import { writable } from 'svelte/store';
-	import { useTable } from '$lib/useTable';
-	import { sampleRows } from './_sampleRows';
 	import Render from '$lib/components/Render.svelte';
-	import { getShuffled } from '$lib/utils/array';
-	import { useSortBy } from '$lib/plugins/useSortBy';
 	import Subscribe from '$lib/components/Subscribe.svelte';
+	import { createTable } from '$lib/createTable';
+	import { getShuffled } from '$lib/utils/array';
+	import { sampleRows } from './_sampleRows';
+	import { useColumnFilters } from '$lib/plugins/useColumnFilters';
 	import { useColumnOrder } from '$lib/plugins/useColumnOrder';
 	import { useHiddenColumns } from '$lib/plugins/useHiddenColumns';
-	import { createTable } from '$lib/createTable';
+	import { useSortBy } from '$lib/plugins/useSortBy';
+	import { useTable } from '$lib/useTable';
+	import { writable } from 'svelte/store';
 
 	const data = writable(sampleRows);
 
 	const table = createTable(data, {
 		sort: useSortBy(),
-		columnOrder: useColumnOrder(),
-		hiddenColumns: useHiddenColumns(),
+		filter: useColumnFilters(),
+		orderColumns: useColumnOrder(),
+		hideColumns: useHiddenColumns(),
 	});
 
 	const columns = table.createColumns([
@@ -25,6 +27,11 @@
 				table.column({
 					header: 'First Name',
 					accessor: 'firstName',
+					plugins: {
+						filter: {
+							fn: ({ filterValue, value }) => String(filterValue) === value,
+						},
+					},
 				}),
 				table.column({
 					header: 'Last Name',
@@ -59,9 +66,10 @@
 	const { visibleColumns, headerRows, bodyRows, pluginStates } = useTable(table, { columns });
 
 	const { sortKeys } = pluginStates.sort;
-	const { columnIdOrder } = pluginStates.columnOrder;
+	const { filterValues } = pluginStates.filter;
+	const { columnIdOrder } = pluginStates.orderColumns;
 	$columnIdOrder = $visibleColumns.map((c) => c.id);
-	const { hiddenColumnIds } = pluginStates.hiddenColumns;
+	const { hiddenColumnIds } = pluginStates.hideColumns;
 	$hiddenColumnIds = ['progress'];
 </script>
 
@@ -116,9 +124,10 @@
 
 <pre>{JSON.stringify(
 		{
+			sortKeys: $sortKeys,
+			filterValues: $filterValues,
 			columnIdOrder: $columnIdOrder,
 			hiddenColumnIds: $hiddenColumnIds,
-			sortKeys: $sortKeys,
 		},
 		null,
 		2

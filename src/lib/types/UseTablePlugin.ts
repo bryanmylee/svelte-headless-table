@@ -1,5 +1,6 @@
 import type { BodyCell, BodyCellAttributes } from '$lib/bodyCells';
 import type { BodyRow, BodyRowAttributes } from '$lib/bodyRows';
+import type { Column } from '$lib/columns';
 import type { HeaderCell, HeaderCellAttributes } from '$lib/headerCells';
 import type { HeaderRow, HeaderRowAttributes } from '$lib/headerRows';
 import type { Readable } from 'svelte/store';
@@ -15,11 +16,17 @@ export type UseTablePlugin<
 	}
 > = {
 	pluginState: Config['PluginState'];
+	onPluginInit?: ({ name }: PluginInitEvent) => void;
+	onCreateColumns?: (columns: Column<Item>[]) => void;
 	sortFn?: Readable<SortFn<Item>>;
 	filterFn?: Readable<FilterFn<Item>>;
 	visibleColumnIdsFn?: Readable<VisibleColumnIdsFn>;
 	columnConfig?: Config['ColumnOptions'];
 	hooks?: TableHooks<Item, Config['TablePropSet']>;
+};
+
+export type PluginInitEvent = {
+	name: string;
 };
 
 export type AnyPlugins = Record<

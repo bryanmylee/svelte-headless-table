@@ -1,7 +1,7 @@
 import type { Writable } from 'svelte/store';
 import {
 	DataColumn,
-	getFlatColumnIds,
+	getDataColumnIds,
 	GroupColumn,
 	type Column,
 	type DataColumnInit,
@@ -20,14 +20,20 @@ export class Table<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	constructor(data: Writable<Item[]>, plugins: Plugins) {
 		this.data = data;
 		this.plugins = plugins;
+		Object.entries(plugins).map(([name, plugin]) => {
+			plugin.onPluginInit?.({ name });
+		});
 	}
 
 	createColumns(columns: Column<Item, Plugins>[]): Column<Item, Plugins>[] {
-		const ids = getFlatColumnIds(columns);
+		const ids = getDataColumnIds(columns);
 		const duplicateIds = getDuplicates(ids);
 		if (duplicateIds.length !== 0) {
 			throw new Error(`Duplicate column ids not allowed: "${duplicateIds.join('", "')}"`);
 		}
+		Object.values(this.plugins).map((plugin) => {
+			plugin.onCreateColumns?.(columns);
+		});
 		return columns;
 	}
 

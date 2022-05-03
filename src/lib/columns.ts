@@ -111,19 +111,19 @@ export class GroupColumn<Item, Plugins extends AnyPlugins = AnyPlugins> extends 
 		const height = max(columns.map((c) => c.height)) + 1;
 		super({ header, footer, height, plugins });
 		this.columns = columns;
-		this.ids = getFlatColumnIds(columns);
+		this.ids = getDataColumnIds(columns);
 	}
 }
 
-export const getFlatColumnIds = <Item>(columns: Column<Item>[]): string[] =>
+export const getDataColumnIds = <Item>(columns: Column<Item>[]): string[] =>
 	columns.flatMap((c) =>
 		c instanceof DataColumn ? [c.id] : c instanceof GroupColumn ? c.ids : []
 	);
 
-export const getFlatColumns = <Item, Plugins extends AnyPlugins = AnyPlugins>(
+export const getDataColumns = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	columns: Column<Item, Plugins>[]
 ): DataColumn<Item, Plugins>[] => {
 	return columns.flatMap((c) =>
-		c instanceof DataColumn ? [c] : c instanceof GroupColumn ? getFlatColumns(c.columns) : []
+		c instanceof DataColumn ? [c] : c instanceof GroupColumn ? getDataColumns(c.columns) : []
 	);
 };

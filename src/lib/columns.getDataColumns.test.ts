@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { DataColumn, getFlatColumns } from './columns';
+import { DataColumn, getDataColumns } from './columns';
 import { createTable } from './createTable';
 
 interface User {
@@ -58,7 +58,7 @@ it('flattens data columns', () => {
 		}),
 	]);
 
-	const actual = getFlatColumns(columns);
+	const actual = getDataColumns(columns);
 
 	const expected: DataColumn<User>[] = [
 		table.column({ header: 'First Name', accessor: 'firstName' }),
