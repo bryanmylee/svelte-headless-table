@@ -118,7 +118,11 @@ export const useSortBy = <Item>({ multiSort = true }: SortByConfig = {}): UseTab
 			'thead.tr.th': (cell) => {
 				const props = derived(sortKeys, ($sortKeys) => {
 					const key = $sortKeys.find((k) => k.id === cell.id);
-					const toggle = () => sortKeys.toggleId(cell.id, { multiSort });
+					const toggle = () => {
+						if (cell.isData) {
+							sortKeys.toggleId(cell.id, { multiSort });
+						}
+					};
 					return {
 						order: key?.order,
 						toggle,
