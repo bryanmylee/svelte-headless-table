@@ -25,11 +25,21 @@ export class HeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends T
 	isData: boolean;
 	label: AggregateLabel<Item>;
 	colspan: number;
+	render: RenderConfig;
 	constructor({ id, label, colspan, isData = false }: HeaderCellInit<Item>) {
 		super({ id });
 		this.isData = isData;
 		this.label = label;
 		this.colspan = colspan;
+		this.render = this.buildRender();
+	}
+
+	private buildRender(): RenderConfig {
+		if (this.label instanceof Function) {
+			// TODO inject data
+			return 'Work in progress';
+		}
+		return this.label;
 	}
 
 	attrs() {
@@ -38,14 +48,6 @@ export class HeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends T
 				colspan: this.colspan,
 			};
 		});
-	}
-
-	render(): RenderConfig {
-		if (this.label instanceof Function) {
-			// TODO inject data
-			return 'Work in progress';
-		}
-		return this.label;
 	}
 }
 
