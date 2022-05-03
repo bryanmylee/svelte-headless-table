@@ -4,7 +4,11 @@
 	import { createTable } from '$lib/createTable';
 	import { getShuffled } from '$lib/utils/array';
 	import { sampleRows } from './_sampleRows';
-	import { textPrefixMatch, useColumnFilters } from '$lib/plugins/useColumnFilters';
+	import {
+		numberRangeFilter,
+		textPrefixFilter,
+		useColumnFilters,
+	} from '$lib/plugins/useColumnFilters';
 	import { useColumnOrder } from '$lib/plugins/useColumnOrder';
 	import { useHiddenColumns } from '$lib/plugins/useHiddenColumns';
 	import { useSortBy } from '$lib/plugins/useSortBy';
@@ -14,6 +18,7 @@
 	import Tick from './_Tick.svelte';
 	import TextFilter from './_TextFilter.svelte';
 	import { createRender } from '$lib/render';
+	import NumberRangeFilter from './_NumberRangeFilter.svelte';
 
 	const data = writable(sampleRows);
 
@@ -33,7 +38,7 @@
 					accessor: 'firstName',
 					plugins: {
 						filter: {
-							fn: textPrefixMatch,
+							fn: textPrefixFilter,
 							render: ({ filterValue }) => createRender(TextFilter, { filterValue }),
 						},
 					},
@@ -60,6 +65,13 @@
 				table.column({
 					header: 'Visits',
 					accessor: 'visits',
+					plugins: {
+						filter: {
+							fn: numberRangeFilter,
+							initValue: [null, null],
+							render: ({ filterValue }) => createRender(NumberRangeFilter, { filterValue }),
+						},
+					},
 				}),
 				table.column({
 					header: 'Profile Progress',

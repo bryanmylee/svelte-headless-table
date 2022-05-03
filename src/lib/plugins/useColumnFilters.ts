@@ -10,29 +10,35 @@ export interface ColumnFiltersState {
 	filterValues: Writable<Record<string, unknown>>;
 }
 
-export interface ColumnFiltersColumnOptions {
-	fn: ColumnFilterFn;
-	render: (props: ColumnRenderConfigProps) => RenderConfig<ColumnRenderConfigProps>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface ColumnFiltersColumnOptions<FilterValue = any> {
+	fn: ColumnFilterFn<FilterValue>;
+	initValue?: FilterValue;
+	render: (
+		props: ColumnRenderConfigProps<FilterValue>
+	) => RenderConfig<ColumnRenderConfigProps<FilterValue>>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface ColumnRenderConfigProps<T = any> {
-	filterValue: Writable<T>;
+interface ColumnRenderConfigProps<FilterValue = any> {
+	filterValue: Writable<FilterValue>;
 }
 
-export type ColumnFilterFn = (props: ColumnFilterFnProps) => boolean;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ColumnFilterFn<FilterValue = any, Value = any> = (
+	props: ColumnFilterFnProps<FilterValue, Value>
+) => boolean;
 
-export type ColumnFilterFnProps = {
-	filterValue: unknown;
-	value: unknown;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ColumnFilterFnProps<FilterValue = any, Value = any> = {
+	filterValue: FilterValue;
+	value: Value;
 };
 
 export type ColumnFiltersPropSet = NewTablePropSet<{
 	'thead.tr.th':
 		| {
 				render: RenderConfig;
-				value: unknown;
-				setValue: (value: unknown) => void;
 		  }
 		| undefined;
 }>;
@@ -92,34 +98,34 @@ export const useColumnFilters = <Item>(): UseTablePlugin<
 		},
 		hooks: {
 			'thead.tr.th': (cell) => {
-				const setValue = (value: unknown) => {
-					filterValues.update((_filterValues) => ({
-						..._filterValues,
-						[cell.id]: value,
-					}));
-				};
 				const filterValue = keyed(filterValues, cell.id);
-				const props = derived(
-					[filterValues, filtersColumnOptions],
-					([$filterValues, $filtersColumnOptions]) => {
-						const columnOption = $filtersColumnOptions[cell.id];
-						if (columnOption === undefined) {
-							return undefined;
-						}
-						const value = $filterValues[cell.id];
-						const render = columnOption.render({ filterValue });
-						return { value, setValue, render };
+				const props = derived([filtersColumnOptions], ([$filtersColumnOptions]) => {
+					const columnOption = $filtersColumnOptions[cell.id];
+					if (columnOption === undefined) {
+						return undefined;
 					}
-				);
+					if (columnOption.initValue !== undefined) {
+						filterValue.set(columnOption.initValue);
+					}
+					const render = columnOption.render({ filterValue });
+					return { render };
+				});
 				return { props };
 			},
 		},
 	};
 };
 
-export const textPrefixMatch: ColumnFilterFn = ({ value, filterValue }) => {
+export const textPrefixFilter: ColumnFilterFn<string, string> = ({ filterValue, value }) => {
 	if (filterValue === '') {
 		return true;
 	}
 	return String(value).toLowerCase().startsWith(String(filterValue).toLowerCase());
+};
+
+export const numberRangeFilter: ColumnFilterFn<[number | null, number | null], number> = ({
+	filterValue: [min, max],
+	value,
+}) => {
+	return (min ?? -Infinity) <= value && value <= (max ?? Infinity);
 };
