@@ -11,7 +11,7 @@ export interface SortByState {
 	sortKeys: WritableSortKeys;
 }
 
-type SortByPropSet = NewTablePropSet<{
+export type SortByPropSet = NewTablePropSet<{
 	'thead.tr.th': {
 		order: 'asc' | 'desc' | undefined;
 		toggle: () => void;
@@ -86,6 +86,9 @@ export const useSortBy = <Item>({ multiSort = true }: SortByConfig = {}): UseTab
 					idxForId[key.id] = idx;
 				}
 				const idx = idxForId[key.id];
+				if (idx === -1) {
+					continue;
+				}
 				const cellA = a.cells[idx];
 				const cellB = b.cells[idx];
 				let order = 0;
