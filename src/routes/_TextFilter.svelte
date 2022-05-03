@@ -4,4 +4,4 @@
 	export let filterValue: Writable<string>;
 </script>
 
-<input type="text" bind:value={$filterValue} />
+<input type="text" bind:value={$filterValue} on:click|stopPropagation />
