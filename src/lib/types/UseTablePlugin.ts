@@ -50,18 +50,24 @@ export type ComponentKeys = keyof Components<unknown>;
 
 type TablePropSet<
 	PropSet extends {
-		[K in ComponentKeys]: unknown;
-	} = {
-		[K in ComponentKeys]: unknown;
+		[K in ComponentKeys]?: unknown;
 	}
 > = {
 	[K in ComponentKeys]: PropSet[K];
 };
 
+export type NewTablePropSet<
+	PropSet extends {
+		[K in ComponentKeys]?: unknown;
+	}
+> = {
+	[K in ComponentKeys]: unknown extends PropSet[K] ? never : PropSet[K];
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyTablePropSet = TablePropSet<any>;
 
-export type TableHooks<Item, PropSet extends TablePropSet = AnyTablePropSet> = {
+export type TableHooks<Item, PropSet extends AnyTablePropSet = AnyTablePropSet> = {
 	[ComponentKey in keyof Components<Item>]?: (
 		component: Components<Item>[ComponentKey]
 	) => ElementHook<PropSet[ComponentKey]>;

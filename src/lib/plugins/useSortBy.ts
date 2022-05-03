@@ -1,5 +1,5 @@
 import type { BodyRow } from '$lib/bodyRows';
-import type { UseTablePlugin } from '$lib/types/UseTablePlugin';
+import type { UseTablePlugin, NewTablePropSet } from '$lib/types/UseTablePlugin';
 import { compare } from '$lib/utils/compare';
 import { derived, writable, type Writable } from 'svelte/store';
 
@@ -7,26 +7,16 @@ export interface SortByConfig {
 	multiSort?: boolean;
 }
 
-/**
- * `PluginState` will be exposed to the user as controls for the plugin.
- * `PluginState` should be `Writable` or contain `Writable`s.
- */
 export interface SortByState {
 	sortKeys: WritableSortKeys;
 }
 
-/**
- * `PluginPropSet` describes data passed into each table component.
- */
-export interface SortByPropSet {
-	'thead.tr': never;
+type SortByPropSet = NewTablePropSet<{
 	'thead.tr.th': {
 		order: 'asc' | 'desc' | undefined;
 		toggle: () => void;
 	};
-	'tbody.tr': never;
-	'tbody.tr.td': never;
-}
+}>;
 
 export interface SortKey {
 	id: string;
