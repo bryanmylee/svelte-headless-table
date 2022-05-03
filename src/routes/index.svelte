@@ -103,7 +103,7 @@
 					<Subscribe to={cell} let:attrs let:props>
 						<th {...attrs} on:click={props.sort.toggle}>
 							<div>
-								<Render of={cell.render} />
+								<Render of={cell.render()} />
 								{#if props.sort.order === 'asc'}
 									⬇️
 								{:else if props.sort.order === 'desc'}
@@ -125,7 +125,7 @@
 				{#each bodyRow.cells as cell (cell.id)}
 					<Subscribe to={cell} let:attrs let:props>
 						<td>
-							<Render of={cell.render} />
+							<Render of={cell.render()} />
 						</td>
 					</Subscribe>
 				{/each}

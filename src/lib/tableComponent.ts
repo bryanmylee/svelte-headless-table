@@ -1,4 +1,5 @@
 import { derived, type Readable } from 'svelte/store';
+import type { Table } from './createTable';
 import type {
 	AnyPlugins,
 	AttributesForKey,
@@ -35,6 +36,11 @@ export class TableComponent<Item, Plugins extends AnyPlugins, Key extends Compon
 				return props as PluginTablePropSet<Plugins>[Key];
 			}
 		);
+	}
+
+	protected table?: Table<Item, Plugins>;
+	injectTableReference(table: Table<Item, Plugins>) {
+		this.table = table;
 	}
 
 	applyHook(pluginName: string, hook: ElementHook<Record<string, unknown>>) {

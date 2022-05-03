@@ -25,17 +25,15 @@ export class BodyCell<
 	column: DataColumn<Item, Plugins>;
 	label?: Label<Item, Value>;
 	value: Value;
-	render: RenderConfig;
 	constructor({ row, column, label, value }: BodyCellInit<Item, Plugins, Value>) {
 		super({ id: column.id });
 		this.row = row;
 		this.column = column;
 		this.label = label;
 		this.value = value;
-		this.render = this.buildRender();
 	}
 
-	private buildRender(): RenderConfig {
+	render(): RenderConfig {
 		if (this.label === undefined) {
 			return `${this.value}`;
 		}

@@ -49,7 +49,14 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 			columns,
 			$orderedFlatColumns.map((c) => c.id)
 		);
-		// Apply hooks.
+		// Inject table reference.
+		$headerRows.forEach((row) => {
+			row.injectTableReference(table);
+			row.cells.forEach((cell) => {
+				cell.injectTableReference(table);
+			});
+		});
+		// Apply plugin component hooks.
 		Object.entries(plugins).forEach(([pluginName, plugin]) => {
 			$headerRows.forEach((row) => {
 				row.cells.forEach((cell) => {

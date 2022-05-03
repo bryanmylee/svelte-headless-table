@@ -1,4 +1,4 @@
-import { derived, writable } from 'svelte/store';
+import { derived } from 'svelte/store';
 import { NBSP } from './constants';
 import { TableComponent } from './tableComponent';
 import type { AggregateLabel } from './types/AggregateLabel';
@@ -25,22 +25,19 @@ export class HeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends T
 	isData: boolean;
 	label: AggregateLabel<Item>;
 	colspan: number;
-	render: RenderConfig;
 	constructor({ id, label, colspan, isData = false }: HeaderCellInit<Item>) {
 		super({ id });
 		this.isData = isData;
 		this.label = label;
 		this.colspan = colspan;
-		this.render = this.buildRender();
 	}
 
-	private buildRender(): RenderConfig {
+	render(): RenderConfig {
 		if (this.label instanceof Function) {
-			const data = writable<Item[]>([]);
-			setInterval(() => {
-				data.update(($data) => [...$data, {} as Item]);
-			}, 1000);
-			return this.label({ data });
+			if (this.table === undefined) {
+				throw new Error('Missing `table` reference');
+			}
+			return this.label({ data: this.table.data });
 		}
 		return this.label;
 	}
