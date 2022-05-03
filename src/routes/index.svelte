@@ -4,7 +4,7 @@
 	import { createTable } from '$lib/createTable';
 	import { getShuffled } from '$lib/utils/array';
 	import { sampleRows } from './_sampleRows';
-	import { useColumnFilters } from '$lib/plugins/useColumnFilters';
+	import { textPrefixMatch, useColumnFilters } from '$lib/plugins/useColumnFilters';
 	import { useColumnOrder } from '$lib/plugins/useColumnOrder';
 	import { useHiddenColumns } from '$lib/plugins/useHiddenColumns';
 	import { useSortBy } from '$lib/plugins/useSortBy';
@@ -29,13 +29,18 @@
 					accessor: 'firstName',
 					plugins: {
 						filter: {
-							fn: ({ filterValue, value }) => String(filterValue) === value,
+							fn: textPrefixMatch,
 						},
 					},
 				}),
 				table.column({
 					header: 'Last Name',
 					accessor: 'lastName',
+					plugins: {
+						filter: {
+							fn: textPrefixMatch,
+						},
+					},
 				}),
 			],
 		}),
@@ -84,11 +89,23 @@
 				{#each headerRow.cells as cell (cell.id)}
 					<Subscribe to={cell} let:attrs let:props>
 						<th {...attrs} on:click={props.sort.toggle}>
-							<Render of={cell} />
-							{#if props.sort.order === 'asc'}
-								⬇️
-							{:else if props.sort.order === 'desc'}
-								⬆️
+							<div>
+								<Render of={cell} />
+								{#if props.sort.order === 'asc'}
+									⬇️
+								{:else if props.sort.order === 'desc'}
+									⬆️
+								{/if}
+							</div>
+							{#if cell.isData}
+								<div>
+									<input
+										type="text"
+										on:click|stopPropagation
+										value={props.filter.value ?? ''}
+										on:input={(e) => props.filter.setValue(e.target?.value)}
+									/>
+								</div>
 							{/if}
 						</th>
 					</Subscribe>
@@ -109,17 +126,6 @@
 			</tr>
 		{/each}
 	</tbody>
-	<tfoot>
-		<!-- {#each $table.footerRows as footerRow} -->
-		<tr>
-			<!-- {#each footerRow.cells as cell} -->
-			<td>
-				<!-- <Render {...cell.render()} /> -->
-			</td>
-			<!-- {/each} -->
-		</tr>
-		<!-- {/each} -->
-	</tfoot>
 </table>
 
 <pre>{JSON.stringify(

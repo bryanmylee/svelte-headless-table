@@ -21,6 +21,7 @@ export type ColumnFilterFnProps = {
 
 export type ColumnFiltersPropSet = NewTablePropSet<{
 	'thead.tr.th': {
+		value: unknown;
 		setValue: (value: unknown) => void;
 	};
 }>;
@@ -81,17 +82,25 @@ export const useColumnFilters = <Item>(): UseTablePlugin<
 		},
 		hooks: {
 			'thead.tr.th': (cell) => {
+				const setValue = (value: unknown) => {
+					filterValues.update((_filterValues) => ({
+						..._filterValues,
+						[cell.id]: value,
+					}));
+				};
 				const props = derived(filterValues, ($filterValues) => {
-					const setValue = (value: unknown) => {
-						filterValues.update((_filterValues) => ({
-							..._filterValues,
-							[cell.id]: value,
-						}));
-					};
-					return { setValue };
+					const value = $filterValues[cell.id];
+					return { value, setValue };
 				});
 				return { props };
 			},
 		},
 	};
+};
+
+export const textPrefixMatch: ColumnFilterFn = ({ value, filterValue }) => {
+	if (filterValue === '') {
+		return true;
+	}
+	return String(value).toLowerCase().startsWith(String(filterValue).toLowerCase());
 };

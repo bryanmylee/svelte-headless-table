@@ -8,6 +8,7 @@ import type { RenderProps } from './types/RenderProps';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface HeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	id: string;
+	isData?: boolean;
 	label: AggregateLabel<Item>;
 	colspan: number;
 }
@@ -21,10 +22,12 @@ export class HeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends T
 	Plugins,
 	'thead.tr.th'
 > {
+	isData: boolean;
 	label: AggregateLabel<Item>;
 	colspan: number;
-	constructor({ id, label, colspan }: HeaderCellInit<Item>) {
+	constructor({ id, label, colspan, isData = false }: HeaderCellInit<Item>) {
 		super({ id });
+		this.isData = isData;
 		this.label = label;
 		this.colspan = colspan;
 	}
@@ -56,7 +59,7 @@ export class HeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends T
  * `DataHeaderCellInit` should match non-inherited `DataColumn` class properties.
  */
 export interface DataHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins>
-	extends Omit<HeaderCellInit<Item, Plugins>, 'colspan'> {
+	extends Omit<HeaderCellInit<Item, Plugins>, 'isDataColumn' | 'colspan'> {
 	accessorKey?: keyof Item;
 	accessorFn?: (item: Item) => unknown;
 }
@@ -68,7 +71,7 @@ export class DataHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exten
 	accessorKey?: keyof Item;
 	accessorFn?: (item: Item) => unknown;
 	constructor({ id, label, accessorKey, accessorFn }: DataHeaderCellInit<Item, Plugins>) {
-		super({ id, label, colspan: 1 });
+		super({ id, isData: true, label, colspan: 1 });
 		this.accessorKey = accessorKey;
 		this.accessorFn = accessorFn;
 	}
