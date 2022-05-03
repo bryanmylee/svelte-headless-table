@@ -6,7 +6,7 @@ import { derived, writable, type Writable } from 'svelte/store';
  * `PluginState` should be `Writable` or contain `Writable`s.
  */
 export interface HiddenColumnsState {
-	hiddenColumnIds: Writable<Array<string>>;
+	hiddenColumnIds: Writable<string[]>;
 }
 
 /**
@@ -29,12 +29,12 @@ export const useHiddenColumns = <Item>(): UseTablePlugin<
 		TablePropSet: HiddenColumnsPropSet;
 	}
 > => {
-	const hiddenColumnIds = writable<Array<string>>([]);
+	const hiddenColumnIds = writable<string[]>([]);
 
 	const pluginState: HiddenColumnsState = { hiddenColumnIds };
 
 	const visibleColumnIdsFn = derived(hiddenColumnIds, ($hiddenColumnIds) => {
-		return (ids: Array<string>) => {
+		return (ids: string[]) => {
 			return ids.filter((id) => !$hiddenColumnIds.includes(id));
 		};
 	});

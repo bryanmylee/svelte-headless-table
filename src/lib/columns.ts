@@ -98,15 +98,15 @@ export class DataColumn<
 
 export interface GroupColumnInit<Item, Plugins extends AnyPlugins = AnyPlugins>
 	extends Omit<ColumnInit<Item, Plugins>, 'height'> {
-	columns: Array<Column<Item, Plugins>>;
+	columns: Column<Item, Plugins>[];
 }
 
 export class GroupColumn<Item, Plugins extends AnyPlugins = AnyPlugins> extends Column<
 	Item,
 	Plugins
 > {
-	columns: Array<Column<Item, Plugins>>;
-	ids: Array<string>;
+	columns: Column<Item, Plugins>[];
+	ids: string[];
 	constructor({ header, footer, columns, plugins }: GroupColumnInit<Item, Plugins>) {
 		const height = max(columns.map((c) => c.height)) + 1;
 		super({ header, footer, height, plugins });
@@ -115,14 +115,14 @@ export class GroupColumn<Item, Plugins extends AnyPlugins = AnyPlugins> extends 
 	}
 }
 
-export const getFlatColumnIds = <Item>(columns: Array<Column<Item>>): Array<string> =>
+export const getFlatColumnIds = <Item>(columns: Column<Item>[]): string[] =>
 	columns.flatMap((c) =>
 		c instanceof DataColumn ? [c.id] : c instanceof GroupColumn ? c.ids : []
 	);
 
 export const getFlatColumns = <Item, Plugins extends AnyPlugins = AnyPlugins>(
-	columns: Array<Column<Item, Plugins>>
-): Array<DataColumn<Item, Plugins>> => {
+	columns: Column<Item, Plugins>[]
+): DataColumn<Item, Plugins>[] => {
 	return columns.flatMap((c) =>
 		c instanceof DataColumn ? [c] : c instanceof GroupColumn ? getFlatColumns(c.columns) : []
 	);

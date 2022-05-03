@@ -7,7 +7,7 @@ export interface Sample {
 	status: string;
 }
 
-export const sampleRows: Array<Sample> = [
+export const sampleRows: Sample[] = [
 	{
 		firstName: 'apartment',
 		lastName: 'employment',

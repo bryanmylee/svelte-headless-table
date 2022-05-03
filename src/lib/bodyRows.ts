@@ -7,7 +7,7 @@ import type { AnyPlugins } from './types/UseTablePlugin';
 export interface BodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	id: string;
 	item: Item;
-	cells: Array<BodyCell<Item, Plugins>>;
+	cells: BodyCell<Item, Plugins>[];
 	cellForId: Record<string, BodyCell<Item, Plugins>>;
 }
 
@@ -20,7 +20,7 @@ export class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends Tabl
 	'tbody.tr'
 > {
 	item: Item;
-	cells: Array<BodyCell<Item, Plugins>>;
+	cells: BodyCell<Item, Plugins>[];
 	cellForId: Record<string, unknown>;
 	constructor({ id, item, cells, cellForId }: BodyRowInit<Item, Plugins>) {
 		super({ id });
@@ -37,10 +37,10 @@ export class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends Tabl
 }
 
 export const getBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
-	data: Array<Item>,
-	flatColumns: Array<DataColumn<Item, Plugins>>
-): Array<BodyRow<Item, Plugins>> => {
-	const rows: Array<BodyRow<Item, Plugins>> = [];
+	data: Item[],
+	flatColumns: DataColumn<Item, Plugins>[]
+): BodyRow<Item, Plugins>[] => {
+	const rows: BodyRow<Item, Plugins>[] = [];
 	for (let rowIdx = 0; rowIdx < data.length; rowIdx++) {
 		const item = data[rowIdx];
 		rows.push(

@@ -31,7 +31,7 @@ export type AnyPlugins = Record<
 
 export type SortFn<Item> = (a: BodyRow<Item>, b: BodyRow<Item>) => number;
 export type FilterFn<Item> = (row: BodyRow<Item>) => boolean;
-export type VisibleColumnIdsFn = (ids: Array<string>) => Array<string>;
+export type VisibleColumnIdsFn = (ids: string[]) => string[];
 
 export type AttributesForKey<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	'thead.tr': HeaderRowAttributes<Item, Plugins>;
@@ -67,7 +67,7 @@ export type TableHooks<Item, T extends TablePropSet = AnyTablePropSet> = {
 };
 
 export type ElementHook<Props> = {
-	eventHandlers?: Array<EventHandler>;
+	eventHandlers?: EventHandler[];
 	props?: Readable<Props>;
 };
 

@@ -51,7 +51,7 @@ const columns = [
 it('transforms empty data', () => {
 	const actual = getBodyRows([], columns);
 
-	const expected: Array<BodyRow<User>> = [];
+	const expected: BodyRow<User>[] = [];
 
 	expect(actual).toStrictEqual(expected);
 });
@@ -111,7 +111,7 @@ it('transforms data', () => {
 	};
 	row1.cellForId = cellForId1;
 
-	const expected: Array<BodyRow<User>> = [row0, row1];
+	const expected: BodyRow<User>[] = [row0, row1];
 
 	[0, 1].forEach((rowIdx) => {
 		expect(actual[rowIdx].item).toStrictEqual(expected[rowIdx].item);

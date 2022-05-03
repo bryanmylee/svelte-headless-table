@@ -6,7 +6,7 @@ import { derived, writable, type Writable } from 'svelte/store';
  * `PluginState` should be `Writable` or contain `Writable`s.
  */
 export interface ColumnOrderState {
-	columnIdOrder: Writable<Array<string>>;
+	columnIdOrder: Writable<string[]>;
 }
 
 /**
@@ -27,14 +27,14 @@ export const useColumnOrder = <Item>(): UseTablePlugin<
 		TablePropSet: ColumnOrderPropSet;
 	}
 > => {
-	const columnIdOrder = writable<Array<string>>([]);
+	const columnIdOrder = writable<string[]>([]);
 
 	const pluginState: ColumnOrderState = { columnIdOrder };
 
 	const visibleColumnIdsFn = derived(columnIdOrder, ($columnOrder) => {
-		return (ids: Array<string>) => {
+		return (ids: string[]) => {
 			const originalIds = [...ids];
-			let orderedIds: Array<string> = [];
+			let orderedIds: string[] = [];
 			$columnOrder.forEach((id) => {
 				const index = originalIds.indexOf(id);
 				if (index !== -1) {

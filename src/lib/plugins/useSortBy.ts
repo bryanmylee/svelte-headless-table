@@ -13,7 +13,7 @@ export interface SortByConfig {
  * `PluginState` should be `Writable` or contain `Writable`s.
  */
 export interface SortByState {
-	sortKeys: SortKeys;
+	sortKeys: WritableSortKeys;
 }
 
 /**
@@ -33,7 +33,7 @@ export interface SortKey {
 	order: 'asc' | 'desc';
 }
 
-export const useSortKeys = (initKeys: Array<SortKey>): SortKeys => {
+export const useSortKeys = (initKeys: SortKey[]): WritableSortKeys => {
 	const { subscribe, update, set } = writable(initKeys);
 	const toggleId = (id: string, { multiSort = true }: SortByConfig = {}) => {
 		update(($sortKeys) => {
@@ -70,7 +70,7 @@ export const useSortKeys = (initKeys: Array<SortKey>): SortKeys => {
 	};
 };
 
-export type SortKeys = Writable<Array<SortKey>> & {
+export type WritableSortKeys = Writable<SortKey[]> & {
 	toggleId: (id: string, config: SortByConfig) => void;
 };
 
@@ -82,7 +82,6 @@ export const useSortBy = <Item>({ multiSort = true }: SortByConfig = {}): UseTab
 		TablePropSet: SortByPropSet;
 	}
 > => {
-	// TODO Custom store interface and methods.
 	const sortKeys = useSortKeys([]);
 
 	const pluginState: SortByState = { sortKeys };

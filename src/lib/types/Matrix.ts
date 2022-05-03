@@ -1,1 +1,1 @@
-export type Matrix<T> = Array<Array<T>>;
+export type Matrix<T> = T[][];

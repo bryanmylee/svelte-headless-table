@@ -60,7 +60,7 @@ it('flattens data columns', () => {
 
 	const actual = getFlatColumns(columns);
 
-	const expected: Array<DataColumn<User>> = [
+	const expected: DataColumn<User>[] = [
 		table.column({ header: 'First Name', accessor: 'firstName' }),
 		table.column({ header: 'Last Name', accessor: 'lastName' }),
 		table.column({ header: 'Age', accessor: 'age' }),

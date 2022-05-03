@@ -23,7 +23,7 @@ export class TableComponent<Item, Plugins extends AnyPlugins, Key extends Compon
 		throw Error('Missing `attrs` implementation');
 	}
 
-	private eventHandlers: Array<EventHandler> = [];
+	private eventHandlers: EventHandler[] = [];
 	events(node: HTMLElement): ActionReturnType {
 		const unsubscribers = this.eventHandlers.map(({ type, callback }) => {
 			node.addEventListener(type, callback);

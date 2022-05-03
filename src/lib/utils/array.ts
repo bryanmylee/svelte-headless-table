@@ -1,12 +1,12 @@
 import { getCounter } from './counter';
 
-export const getDuplicates = <T>(items: Array<T>): Array<T> => {
+export const getDuplicates = <T>(items: T[]): T[] => {
 	return Array.from(getCounter(items).entries())
 		.filter(([, count]) => count !== 1)
 		.map(([key]) => key);
 };
 
-export const getShuffled = <T>(items: Array<T>): Array<T> => {
+export const getShuffled = <T>(items: T[]): T[] => {
 	items = [...items];
 	const shuffled = [];
 	while (items.length) {
