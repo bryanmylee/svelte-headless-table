@@ -59,7 +59,7 @@ it('transforms empty data', () => {
 it('transforms data', () => {
 	const actual = getBodyRows(data, columns);
 
-	const row0 = new BodyRow<User>({ id: '0', item: data[0], cells: [], cellForId: {} });
+	const row0 = new BodyRow<User>({ id: '0', original: data[0], cells: [], cellForId: {} });
 	const cells0 = [
 		new BodyCell<User>({
 			row: row0,
@@ -85,7 +85,7 @@ it('transforms data', () => {
 	};
 	row0.cellForId = cellForId0;
 
-	const row1 = new BodyRow<User>({ id: '1', item: data[1], cells: [], cellForId: {} });
+	const row1 = new BodyRow<User>({ id: '1', original: data[1], cells: [], cellForId: {} });
 	const cells1 = [
 		new BodyCell<User>({
 			row: row1,
@@ -114,7 +114,7 @@ it('transforms data', () => {
 	const expected: BodyRow<User>[] = [row0, row1];
 
 	[0, 1].forEach((rowIdx) => {
-		expect(actual[rowIdx].item).toStrictEqual(expected[rowIdx].item);
+		expect(actual[rowIdx].original).toStrictEqual(expected[rowIdx].original);
 		expect(actual[rowIdx].cells.length).toStrictEqual(expected[rowIdx].cells.length);
 		actual[rowIdx].cells.forEach((_, colIdx) => {
 			expect(actual[rowIdx].cells[colIdx].value).toStrictEqual(
