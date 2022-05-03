@@ -33,21 +33,21 @@ export class Table<Item, Plugins extends AnyPlugins = AnyPlugins> {
 
 	// `accessorKey` only
 	column<Id extends Exclude<keyof Item, symbol>>(
-		def: DataColumnInitBase<Item, Item[Id]> & DataColumnInitKey<Item, Id>
-	): DataColumn<Item, `${Id}`, Item[Id]>;
+		def: DataColumnInitBase<Item, Plugins, Item[Id]> & DataColumnInitKey<Item, Id>
+	): DataColumn<Item, Plugins, `${Id}`, Item[Id]>;
 	// `accessorKey` and `id`
 	column<Id extends string, Key extends keyof Item>(
-		def: DataColumnInitBase<Item, Item[Key]> & DataColumnInitIdAndKey<Item, Id, Key>
-	): DataColumn<Item, Id, Item[Key]>;
+		def: DataColumnInitBase<Item, Plugins, Item[Key]> & DataColumnInitIdAndKey<Item, Id, Key>
+	): DataColumn<Item, Plugins, Id, Item[Key]>;
 	// `accessorFn` and `id`
 	column<Id extends string, Value>(
-		def: DataColumnInitBase<Item, Value> & DataColumnInitFnAndId<Item, Id, Value>
-	): DataColumn<Item, Id, Value>;
-	column<Id extends string, Value>(def: DataColumnInit<Item, Id, Value>) {
+		def: DataColumnInitBase<Item, Plugins, Value> & DataColumnInitFnAndId<Item, Id, Value>
+	): DataColumn<Item, Plugins, Id, Value>;
+	column<Id extends string, Value>(def: DataColumnInit<Item, Plugins, Id, Value>) {
 		return new DataColumn(def);
 	}
 
-	group(def: GroupColumnInit<Item>): GroupColumn<Item> {
+	group(def: GroupColumnInit<Item, Plugins>): GroupColumn<Item, Plugins> {
 		return new GroupColumn(def);
 	}
 }

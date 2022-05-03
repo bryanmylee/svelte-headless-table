@@ -7,7 +7,7 @@ import type { AnyPlugins, PluginStates, PluginTablePropSet } from './types/UseTa
 import { nonNullish } from './utils/filter';
 
 export type UseTableProps<Item, Plugins extends AnyPlugins = AnyPlugins> = {
-	columns: Array<Column<Item>>;
+	columns: Array<Column<Item, Plugins>>;
 };
 
 export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(

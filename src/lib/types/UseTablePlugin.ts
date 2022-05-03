@@ -84,3 +84,7 @@ export type PluginTablePropSet<Plugins extends AnyPlugins> = {
 		[PluginKey in keyof Plugins]: TablePropSetForPluginKey<Plugins>[PluginKey][ComponentKey];
 	};
 };
+
+export type PluginColumnConfigs<Plugins extends AnyPlugins> = {
+	[K in keyof Plugins]: Plugins[K]['columnConfig'];
+};
