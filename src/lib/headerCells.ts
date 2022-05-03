@@ -73,10 +73,6 @@ export class DataHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exten
 	}
 }
 
-/**
- * `GroupHeaderCellInit` should match non-inherited `GroupColumn` class properties
- * except columns.
- */
 export interface GroupHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins>
 	extends Omit<HeaderCellInit<Item, Plugins>, 'id'> {
 	ids: string[];
@@ -91,10 +87,18 @@ export class GroupHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exte
 	allId: string;
 	allIds: string[];
 	constructor({ label, colspan, ids, allIds }: GroupHeaderCellInit<Item, Plugins>) {
-		super({ id: ids.join(','), label, colspan });
+		super({ id: `[${ids.join(',')}]`, label, colspan });
 		this.ids = ids;
-		this.allId = allIds.join(',');
+		this.allId = `[${allIds.join(',')}]`;
 		this.allIds = allIds;
+	}
+	setIds(ids: string[]) {
+		this.ids = ids;
+		this.id = `[${this.ids.join(',')}]`;
+	}
+	pushId(id: string) {
+		this.ids = [...this.ids, id];
+		this.id = `[${this.ids.join(',')}]`;
 	}
 }
 

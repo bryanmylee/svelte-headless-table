@@ -126,8 +126,7 @@ const populateGroupHeaderCellIds = <Item>(columnMatrix: Matrix<HeaderCell<Item>>
 		}
 		columnCells.forEach((c) => {
 			if (c instanceof GroupHeaderCell) {
-				c.ids.push(dataCell.id);
-				c.id = c.ids.join(',');
+				c.pushId(dataCell.id);
 			}
 		});
 	});
@@ -180,8 +179,7 @@ export const getMergedRow = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 			ids.push(...nextCell.ids);
 			endIdx++;
 		}
-		cell.ids = ids;
-		cell.id = ids.join(',');
+		cell.setIds(ids);
 		cell.colspan = endIdx - startIdx;
 		mergedCells.push(cell);
 		startIdx = endIdx;

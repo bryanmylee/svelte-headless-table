@@ -128,6 +128,7 @@
 			filterValues: $filterValues,
 			columnIdOrder: $columnIdOrder,
 			hiddenColumnIds: $hiddenColumnIds,
+			headerRows: $headerRows,
 		},
 		null,
 		2
