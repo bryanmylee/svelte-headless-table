@@ -1,11 +1,11 @@
 import { derived, type Readable } from 'svelte/store';
 import type { ActionReturnType } from './types/Action';
-import type { ComponentKeys } from './types/ComponentKeys';
 import type {
+	AnyPlugins,
+	AttributesForKey,
+	ComponentKeys,
 	ElementHook,
 	EventHandler,
-	AttributesForKey,
-	AnyPlugins,
 	PluginTablePropSet,
 } from './types/UseTablePlugin';
 
@@ -19,7 +19,7 @@ export class TableComponent<Item, Plugins extends AnyPlugins, Key extends Compon
 		this.id = id;
 	}
 
-	attrs(): Readable<AttributesForKey<Item>[Key]> {
+	attrs(): Readable<AttributesForKey<Item, Plugins>[Key]> {
 		throw Error('Missing `attrs` implementation');
 	}
 

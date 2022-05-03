@@ -3,7 +3,6 @@ import type { BodyRow, BodyRowAttributes } from '$lib/bodyRows';
 import type { HeaderCell, HeaderCellAttributes } from '$lib/headerCells';
 import type { HeaderRow, HeaderRowAttributes } from '$lib/headerRows';
 import type { Readable } from 'svelte/store';
-import type { ComponentKeys } from './ComponentKeys';
 
 export type UseTablePlugin<
 	Item,
@@ -29,9 +28,16 @@ export type AnyPlugins = Record<
 	UseTablePlugin<any, { PluginState: any; ColumnOptions: any; TablePropSet: AnyTablePropSet }>
 >;
 
-export type SortFn<Item> = (a: BodyRow<Item>, b: BodyRow<Item>) => number;
-export type FilterFn<Item> = (row: BodyRow<Item>) => boolean;
-export type VisibleColumnIdsFn = (ids: string[]) => string[];
+type SortFn<Item> = (a: BodyRow<Item>, b: BodyRow<Item>) => number;
+type FilterFn<Item> = (row: BodyRow<Item>) => boolean;
+type VisibleColumnIdsFn = (ids: string[]) => string[];
+
+export type Components<Item, Plugins extends AnyPlugins = AnyPlugins> = {
+	'thead.tr': HeaderRow<Item, Plugins>;
+	'thead.tr.th': HeaderCell<Item, Plugins>;
+	'tbody.tr': BodyRow<Item, Plugins>;
+	'tbody.tr.td': BodyCell<Item, Plugins>;
+};
 
 export type AttributesForKey<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	'thead.tr': HeaderRowAttributes<Item, Plugins>;
@@ -40,30 +46,25 @@ export type AttributesForKey<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	'tbody.tr.td': BodyCellAttributes<Item, Plugins>;
 };
 
-export type ComponentForKey<Item, Plugins extends AnyPlugins = AnyPlugins> = {
-	'thead.tr': HeaderRow<Item, Plugins>;
-	'thead.tr.th': HeaderCell<Item, Plugins>;
-	'tbody.tr': BodyRow<Item, Plugins>;
-	'tbody.tr.td': BodyCell<Item, Plugins>;
-};
+export type ComponentKeys = keyof Components<unknown>;
 
-export type TablePropSet<
-	HeaderRowProps = unknown,
-	HeaderCellProps = unknown,
-	BodyRowProps = unknown,
-	BodyCellProps = unknown
+type TablePropSet<
+	PropSet extends {
+		[K in ComponentKeys]: unknown;
+	} = {
+		[K in ComponentKeys]: unknown;
+	}
 > = {
-	'thead.tr': HeaderRowProps;
-	'thead.tr.th': HeaderCellProps;
-	'tbody.tr': BodyRowProps;
-	'tbody.tr.td': BodyCellProps;
+	[K in ComponentKeys]: PropSet[K];
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type AnyTablePropSet = TablePropSet<any, any>;
+type AnyTablePropSet = TablePropSet<any>;
 
-export type TableHooks<Item, T extends TablePropSet = AnyTablePropSet> = {
-	[K in keyof ComponentForKey<Item>]?: (component: ComponentForKey<Item>[K]) => ElementHook<T[K]>;
+export type TableHooks<Item, PropSet extends TablePropSet = AnyTablePropSet> = {
+	[ComponentKey in keyof Components<Item>]?: (
+		component: Components<Item>[ComponentKey]
+	) => ElementHook<PropSet[ComponentKey]>;
 };
 
 export type ElementHook<Props> = {

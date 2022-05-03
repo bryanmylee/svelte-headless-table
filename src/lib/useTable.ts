@@ -55,7 +55,6 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 				});
 			});
 		});
-		// Inject inferred TablePropSet type.
 		return $headerRows as HeaderRow<Item, Plugins>[];
 	});
 
