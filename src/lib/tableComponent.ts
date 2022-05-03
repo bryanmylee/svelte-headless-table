@@ -1,11 +1,9 @@
 import { derived, type Readable } from 'svelte/store';
-import type { ActionReturnType } from './types/Action';
 import type {
 	AnyPlugins,
 	AttributesForKey,
 	ComponentKeys,
 	ElementHook,
-	EventHandler,
 	PluginTablePropSet,
 } from './types/UseTablePlugin';
 
@@ -21,21 +19,6 @@ export class TableComponent<Item, Plugins extends AnyPlugins, Key extends Compon
 
 	attrs(): Readable<AttributesForKey<Item, Plugins>[Key]> {
 		throw Error('Missing `attrs` implementation');
-	}
-
-	private eventHandlers: EventHandler[] = [];
-	events(node: HTMLElement): ActionReturnType {
-		const unsubscribers = this.eventHandlers.map(({ type, callback }) => {
-			node.addEventListener(type, callback);
-			return () => {
-				node.removeEventListener(type, callback);
-			};
-		});
-		return {
-			destroy() {
-				unsubscribers.forEach((unsubscribe) => unsubscribe());
-			},
-		};
 	}
 
 	private propsForName: Record<string, Readable<Record<string, unknown>>> = {};
@@ -55,9 +38,6 @@ export class TableComponent<Item, Plugins extends AnyPlugins, Key extends Compon
 	}
 
 	applyHook(pluginName: string, hook: ElementHook<Record<string, unknown>>) {
-		if (hook.eventHandlers !== undefined) {
-			this.eventHandlers = [...this.eventHandlers, ...hook.eventHandlers];
-		}
 		if (hook.props !== undefined) {
 			this.propsForName[pluginName] = hook.props;
 		}

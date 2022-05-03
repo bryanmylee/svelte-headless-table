@@ -75,7 +75,7 @@
 			<tr>
 				{#each headerRow.cells as cell (cell.id)}
 					<Subscribe to={cell} let:attrs let:props>
-						<th {...attrs} use:cell.events>
+						<th {...attrs} on:click={props.sort.toggle}>
 							<Render of={cell} />
 							{#if props.sort.order === 'asc'}
 								⬇️

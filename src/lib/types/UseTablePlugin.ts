@@ -68,13 +68,7 @@ export type TableHooks<Item, PropSet extends TablePropSet = AnyTablePropSet> = {
 };
 
 export type ElementHook<Props> = {
-	eventHandlers?: EventHandler[];
 	props?: Readable<Props>;
-};
-
-export type EventHandler = {
-	type: 'click';
-	callback: (event: MouseEvent) => void;
 };
 
 export type PluginStates<Plugins extends AnyPlugins> = {

@@ -1,6 +1,5 @@
 import type { BodyRow } from '$lib/bodyRows';
-import { DataHeaderCell } from '$lib/headerCells';
-import type { EventHandler, UseTablePlugin } from '$lib/types/UseTablePlugin';
+import type { UseTablePlugin } from '$lib/types/UseTablePlugin';
 import { compare } from '$lib/utils/compare';
 import { derived, writable, type Writable } from 'svelte/store';
 
@@ -23,6 +22,7 @@ export interface SortByPropSet {
 	'thead.tr': never;
 	'thead.tr.th': {
 		order: 'asc' | 'desc' | undefined;
+		toggle: () => void;
 	};
 	'tbody.tr': never;
 	'tbody.tr.td': never;
@@ -125,21 +125,13 @@ export const useSortBy = <Item>({ multiSort = true }: SortByConfig = {}): UseTab
 			'thead.tr.th': (cell) => {
 				const props = derived(sortKeys, ($sortKeys) => {
 					const key = $sortKeys.find((k) => k.id === cell.id);
+					const toggle = () => sortKeys.toggleId(cell.id, { multiSort });
 					return {
 						order: key?.order,
+						toggle,
 					};
 				});
-				const onClick: EventHandler = {
-					type: 'click',
-					callback() {
-						const { id } = cell;
-						sortKeys.toggleId(id, { multiSort });
-					},
-				};
-				return {
-					eventHandlers: cell instanceof DataHeaderCell ? [onClick] : [],
-					props: props,
-				};
+				return { props };
 			},
 		},
 	};
