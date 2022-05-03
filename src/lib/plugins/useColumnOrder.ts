@@ -9,8 +9,6 @@ export interface ColumnOrderState {
 	columnIdOrder: Writable<Array<string>>;
 }
 
-export type ColumnOrderColumnConfig = never;
-
 /**
  * `PluginPropSet` describes data passed into each table component.
  */
@@ -23,9 +21,11 @@ export interface ColumnOrderPropSet {
 
 export const useColumnOrder = <Item>(): UseTablePlugin<
 	Item,
-	ColumnOrderState,
-	ColumnOrderColumnConfig,
-	ColumnOrderPropSet
+	{
+		PluginState: ColumnOrderState;
+		ColumnOptions: never;
+		TablePropSet: ColumnOrderPropSet;
+	}
 > => {
 	const columnIdOrder = writable<Array<string>>([]);
 

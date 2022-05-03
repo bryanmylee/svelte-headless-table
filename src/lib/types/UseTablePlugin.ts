@@ -7,20 +7,27 @@ import type { ComponentKeys } from './ComponentKeys';
 
 export type UseTablePlugin<
 	Item,
-	PluginState = never,
-	ColumnConfig = never,
-	T extends TablePropSet = AnyTablePropSet
+	Config extends {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		PluginState: any;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		ColumnOptions: any;
+		TablePropSet: AnyTablePropSet;
+	}
 > = {
-	pluginState: PluginState;
+	pluginState: Config['PluginState'];
 	sortFn?: Readable<SortFn<Item>>;
 	filterFn?: Readable<FilterFn<Item>>;
 	visibleColumnIdsFn?: Readable<VisibleColumnIdsFn>;
-	columnConfig?: ColumnConfig;
-	hooks?: TableHooks<Item, T>;
+	columnConfig?: Config['ColumnOptions'];
+	hooks?: TableHooks<Item, Config['TablePropSet']>;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type AnyPlugins = Record<string, UseTablePlugin<any, any, any, AnyTablePropSet>>;
+export type AnyPlugins = Record<
+	string,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	UseTablePlugin<any, { PluginState: any; ColumnOptions: any; TablePropSet: AnyTablePropSet }>
+>;
 
 export type SortFn<Item> = (a: BodyRow<Item>, b: BodyRow<Item>) => number;
 export type FilterFn<Item> = (row: BodyRow<Item>) => boolean;
@@ -74,8 +81,8 @@ export type PluginStates<Plugins extends AnyPlugins> = {
 };
 
 type TablePropSetForPluginKey<Plugins extends AnyPlugins> = {
-	[K in keyof Plugins]: Plugins[K] extends UseTablePlugin<unknown, unknown, unknown, infer E>
-		? E
+	[K in keyof Plugins]: Plugins[K] extends UseTablePlugin<unknown, infer Config>
+		? Config['TablePropSet']
 		: never;
 };
 
