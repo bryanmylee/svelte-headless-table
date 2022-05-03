@@ -3,16 +3,12 @@ import { getBodyRows } from './bodyRows';
 import { getFlatColumns, type Column } from './columns';
 import type { Table } from './createTable';
 import { getHeaderRows, HeaderRow } from './headerRows';
-import type { PluginStates, PluginTablePropSet } from './types/Plugins';
-import type { UseTablePlugin } from './types/UseTablePlugin';
+import type { AnyPlugins, PluginStates, PluginTablePropSet } from './types/UseTablePlugin';
 import { nonNullish } from './utils/filter';
 
 export type UseTableProps<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	columns: Array<Column<Item>>;
 };
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type AnyPlugins = Record<string, UseTablePlugin<any, any>>;
 
 export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	table: Table<Item, Plugins>,

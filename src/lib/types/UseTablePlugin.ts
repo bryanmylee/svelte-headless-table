@@ -3,14 +3,24 @@ import type { BodyRow, BodyRowAttributes } from '$lib/bodyRows';
 import type { HeaderCell, HeaderCellAttributes } from '$lib/headerCells';
 import type { HeaderRow, HeaderRowAttributes } from '$lib/headerRows';
 import type { Readable } from 'svelte/store';
+import type { ComponentKeys } from './ComponentKeys';
 
-export type UseTablePlugin<Item, PluginState, E extends TablePropSet = AnyTablePropSet> = {
+export type UseTablePlugin<
+	Item,
+	PluginState,
+	ColumnConfig,
+	E extends TablePropSet = AnyTablePropSet
+> = {
 	pluginState: PluginState;
 	sortFn?: Readable<SortFn<Item>>;
 	filterFn?: Readable<FilterFn<Item>>;
 	visibleColumnIdsFn?: Readable<VisibleColumnIdsFn>;
+	columnConfig: ColumnConfig;
 	hooks?: TableHooks<Item, E>;
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyPlugins = Record<string, UseTablePlugin<any, any, any>>;
 
 export type SortFn<Item> = (a: BodyRow<Item>, b: BodyRow<Item>) => number;
 export type FilterFn<Item> = (row: BodyRow<Item>) => boolean;
@@ -57,4 +67,20 @@ export type ElementHook<Props> = {
 export type EventHandler = {
 	type: 'click';
 	callback: (event: MouseEvent) => void;
+};
+
+export type PluginStates<Plugins extends AnyPlugins> = {
+	[K in keyof Plugins]: Plugins[K]['pluginState'];
+};
+
+type TablePropSetForPluginKey<Plugins extends AnyPlugins> = {
+	[K in keyof Plugins]: Plugins[K] extends UseTablePlugin<unknown, unknown, unknown, infer E>
+		? E
+		: never;
+};
+
+export type PluginTablePropSet<Plugins extends AnyPlugins> = {
+	[ComponentKey in ComponentKeys]: {
+		[PluginKey in keyof Plugins]: TablePropSetForPluginKey<Plugins>[PluginKey][ComponentKey];
+	};
 };

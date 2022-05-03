@@ -11,7 +11,7 @@ import {
 	type DataColumnInitKey,
 	type GroupColumnInit,
 } from './columns';
-import type { AnyPlugins } from './useTable';
+import type { AnyPlugins } from './types/UseTablePlugin';
 import { getDuplicates } from './utils/array';
 
 export class Table<Item, Plugins extends AnyPlugins = AnyPlugins> {
@@ -21,6 +21,7 @@ export class Table<Item, Plugins extends AnyPlugins = AnyPlugins> {
 		this.data = data;
 		this.plugins = plugins;
 	}
+
 	createColumns(columns: Column<Item>[]): Column<Item>[] {
 		const ids = getFlatColumnIds(columns);
 		const duplicateIds = getDuplicates(ids);
@@ -29,6 +30,7 @@ export class Table<Item, Plugins extends AnyPlugins = AnyPlugins> {
 		}
 		return columns;
 	}
+
 	// `accessorKey` only
 	column<Id extends Exclude<keyof Item, symbol>>(
 		def: DataColumnInitBase<Item, Item[Id]> & DataColumnInitKey<Item, Id>
@@ -44,6 +46,7 @@ export class Table<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	column<Id extends string, Value>(def: DataColumnInit<Item, Id, Value>) {
 		return new DataColumn(def);
 	}
+
 	group(def: GroupColumnInit<Item>): GroupColumn<Item> {
 		return new GroupColumn(def);
 	}

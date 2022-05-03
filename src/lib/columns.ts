@@ -1,5 +1,6 @@
 import type { AggregateLabel } from './types/AggregateLabel';
 import type { Label } from './types/Label';
+import type { AnyPlugins } from './types/UseTablePlugin';
 import { max } from './utils/math';
 
 export interface ColumnInit<Item> {
@@ -8,7 +9,7 @@ export interface ColumnInit<Item> {
 	height: number;
 }
 
-export class Column<Item> {
+export class Column<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	header: AggregateLabel<Item>;
 	footer?: AggregateLabel<Item>;
 	height: number;

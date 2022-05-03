@@ -38,6 +38,12 @@
 				table.column({
 					header: 'Age',
 					accessor: 'age',
+					/**
+					plugins: {
+						sort: {
+							// sortConfig?
+						}
+					}*/
 				}),
 				table.column({
 					header: 'Status',
