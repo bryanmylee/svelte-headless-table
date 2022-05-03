@@ -2,23 +2,24 @@ import { derived } from 'svelte/store';
 import { NBSP } from './constants';
 import { TableComponent } from './tableComponent';
 import type { AggregateLabel } from './types/AggregateLabel';
-import type { AnyTablePropSet, TablePropSet } from './types/UseTablePlugin';
+import type { AnyPlugins } from './types/UseTablePlugin';
 import type { RenderProps } from './types/RenderProps';
 
-export interface HeaderCellInit<Item> {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export interface HeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	id: string;
 	label: AggregateLabel<Item>;
 	colspan: number;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export interface HeaderCellAttributes<Item> {
+export interface HeaderCellAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	colspan: number;
 }
-export class HeaderCell<Item, E extends TablePropSet = AnyTablePropSet> extends TableComponent<
+export class HeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends TableComponent<
 	Item,
-	'thead.tr.th',
-	E
+	Plugins,
+	'thead.tr.th'
 > {
 	label: AggregateLabel<Item>;
 	colspan: number;
@@ -54,15 +55,19 @@ export class HeaderCell<Item, E extends TablePropSet = AnyTablePropSet> extends 
 /**
  * `DataHeaderCellInit` should match non-inherited `DataColumn` class properties.
  */
-export interface DataHeaderCellInit<Item> extends Omit<HeaderCellInit<Item>, 'colspan'> {
+export interface DataHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins>
+	extends Omit<HeaderCellInit<Item, Plugins>, 'colspan'> {
 	accessorKey?: keyof Item;
 	accessorFn?: (item: Item) => unknown;
 }
 
-export class DataHeaderCell<Item> extends HeaderCell<Item> {
+export class DataHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends HeaderCell<
+	Item,
+	Plugins
+> {
 	accessorKey?: keyof Item;
 	accessorFn?: (item: Item) => unknown;
-	constructor({ id, label, accessorKey, accessorFn }: DataHeaderCellInit<Item>) {
+	constructor({ id, label, accessorKey, accessorFn }: DataHeaderCellInit<Item, Plugins>) {
 		super({ id, label, colspan: 1 });
 		this.accessorKey = accessorKey;
 		this.accessorFn = accessorFn;
@@ -73,16 +78,20 @@ export class DataHeaderCell<Item> extends HeaderCell<Item> {
  * `GroupHeaderCellInit` should match non-inherited `GroupColumn` class properties
  * except columns.
  */
-export interface GroupHeaderCellInit<Item> extends Omit<HeaderCellInit<Item>, 'id'> {
-	ids: Array<string>;
-	allIds: Array<string>;
+export interface GroupHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins>
+	extends Omit<HeaderCellInit<Item, Plugins>, 'id'> {
+	ids: string[];
+	allIds: string[];
 }
 
-export class GroupHeaderCell<Item> extends HeaderCell<Item> {
-	ids: Array<string>;
+export class GroupHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends HeaderCell<
+	Item,
+	Plugins
+> {
+	ids: string[];
 	allId: string;
-	allIds: Array<string>;
-	constructor({ label, colspan, ids, allIds }: GroupHeaderCellInit<Item>) {
+	allIds: string[];
+	constructor({ label, colspan, ids, allIds }: GroupHeaderCellInit<Item, Plugins>) {
 		super({ id: ids.join(','), label, colspan });
 		this.ids = ids;
 		this.allId = allIds.join(',');
@@ -91,12 +100,15 @@ export class GroupHeaderCell<Item> extends HeaderCell<Item> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface DisplayHeaderCellInit<Item>
-	extends Pick<HeaderCellInit<Item>, 'id'>,
-		Partial<Omit<HeaderCellInit<Item>, 'id'>> {}
+export interface DisplayHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins>
+	extends Pick<HeaderCellInit<Item, Plugins>, 'id'>,
+		Partial<Omit<HeaderCellInit<Item, Plugins>, 'id'>> {}
 
-export class DisplayHeaderCell<Item> extends HeaderCell<Item> {
-	constructor({ id, label = NBSP, colspan = 1 }: DisplayHeaderCellInit<Item>) {
+export class DisplayHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends HeaderCell<
+	Item,
+	Plugins
+> {
+	constructor({ id, label = NBSP, colspan = 1 }: DisplayHeaderCellInit<Item, Plugins>) {
 		super({ id, label, colspan });
 	}
 }

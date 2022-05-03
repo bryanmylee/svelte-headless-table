@@ -3,7 +3,7 @@ import { getBodyRows } from './bodyRows';
 import { getFlatColumns, type Column } from './columns';
 import type { Table } from './createTable';
 import { getHeaderRows, HeaderRow } from './headerRows';
-import type { AnyPlugins, PluginStates, PluginTablePropSet } from './types/UseTablePlugin';
+import type { AnyPlugins, PluginStates } from './types/UseTablePlugin';
 import { nonNullish } from './utils/filter';
 
 export type UseTableProps<Item, Plugins extends AnyPlugins = AnyPlugins> = {
@@ -56,7 +56,7 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 			});
 		});
 		// Inject inferred TablePropSet type.
-		return $headerRows as Array<HeaderRow<Item, PluginTablePropSet<Plugins>>>;
+		return $headerRows as HeaderRow<Item, Plugins>[];
 	});
 
 	const originalBodyRows = derived([data, visibleColumns], ([$data, $orderedFlatColumns]) => {

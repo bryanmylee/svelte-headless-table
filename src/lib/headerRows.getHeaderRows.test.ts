@@ -34,7 +34,7 @@ test('flat columns\n[][][]', () => {
 
 	const actual = getHeaderRows(columns);
 
-	const expected: Array<HeaderRow<User>> = [
+	const expected: HeaderRow<User>[] = [
 		new HeaderRow({
 			id: '0',
 			cells: [
@@ -83,7 +83,7 @@ test('one group\n[    ]\n[][][]', () => {
 
 	const actual = getHeaderRows(columns);
 
-	const expected: Array<HeaderRow<User>> = [
+	const expected: HeaderRow<User>[] = [
 		new HeaderRow({
 			id: '0',
 			cells: [
@@ -156,7 +156,7 @@ test('two groups\n[  ][    ]\n[][][][][]', () => {
 
 	const actual = getHeaderRows(columns);
 
-	const expected: Array<HeaderRow<User>> = [
+	const expected: HeaderRow<User>[] = [
 		new HeaderRow({
 			id: '0',
 			cells: [
@@ -240,7 +240,7 @@ test('one group and extra\n[  ]      \n[][][][][]', () => {
 
 	const actual = getHeaderRows(columns);
 
-	const expected: Array<HeaderRow<User>> = [
+	const expected: HeaderRow<User>[] = [
 		new HeaderRow({
 			id: '0',
 			cells: [
@@ -314,7 +314,7 @@ test('data cell on last row\n[  ]\n[]  \n[][]', () => {
 
 	const actual = getHeaderRows(columns);
 
-	const expected: Array<HeaderRow<User>> = [
+	const expected: HeaderRow<User>[] = [
 		new HeaderRow({
 			id: '0',
 			cells: [
@@ -387,7 +387,7 @@ test('group on lowest row\n[]\n[][]\n[][]', () => {
 
 	const actual = getHeaderRows(columns);
 
-	const expected: Array<HeaderRow<User>> = [
+	const expected: HeaderRow<User>[] = [
 		new HeaderRow({
 			id: '0',
 			cells: [

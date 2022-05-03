@@ -2,27 +2,27 @@ import { derived } from 'svelte/store';
 import { BodyCell } from './bodyCells';
 import type { DataColumn } from './columns';
 import { TableComponent } from './tableComponent';
-import type { AnyTablePropSet, TablePropSet } from './types/UseTablePlugin';
+import type { AnyPlugins } from './types/UseTablePlugin';
 
-export interface BodyRowInit<Item> {
+export interface BodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	id: string;
 	item: Item;
-	cells: Array<BodyCell<Item>>;
-	cellForId: Record<string, BodyCell<Item>>;
+	cells: Array<BodyCell<Item, Plugins>>;
+	cellForId: Record<string, BodyCell<Item, Plugins>>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-interface
-export interface BodyRowAttributes<Item> {}
+export interface BodyRowAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> {}
 
-export class BodyRow<Item, E extends TablePropSet = AnyTablePropSet> extends TableComponent<
+export class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends TableComponent<
 	Item,
-	'tbody.tr',
-	E
+	Plugins,
+	'tbody.tr'
 > {
 	item: Item;
-	cells: Array<BodyCell<Item>>;
+	cells: Array<BodyCell<Item, Plugins>>;
 	cellForId: Record<string, unknown>;
-	constructor({ id, item, cells, cellForId }: BodyRowInit<Item>) {
+	constructor({ id, item, cells, cellForId }: BodyRowInit<Item, Plugins>) {
 		super({ id });
 		this.item = item;
 		this.cells = cells;
@@ -36,11 +36,11 @@ export class BodyRow<Item, E extends TablePropSet = AnyTablePropSet> extends Tab
 	}
 }
 
-export const getBodyRows = <Item>(
+export const getBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	data: Array<Item>,
-	flatColumns: Array<DataColumn<Item>>
-): Array<BodyRow<Item>> => {
-	const rows: Array<BodyRow<Item>> = [];
+	flatColumns: Array<DataColumn<Item, Plugins>>
+): Array<BodyRow<Item, Plugins>> => {
+	const rows: Array<BodyRow<Item, Plugins>> = [];
 	for (let rowIdx = 0; rowIdx < data.length; rowIdx++) {
 		const item = data[rowIdx];
 		rows.push(

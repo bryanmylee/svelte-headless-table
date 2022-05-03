@@ -2,35 +2,35 @@ import { DataColumn, GroupColumn, type Column } from './columns';
 import { DataHeaderCell, DisplayHeaderCell, GroupHeaderCell, type HeaderCell } from './headerCells';
 import { TableComponent } from './tableComponent';
 import type { Matrix } from './types/Matrix';
-import type { AnyTablePropSet, TablePropSet } from './types/UseTablePlugin';
+import type { AnyPlugins } from './types/UseTablePlugin';
 import { getCloned } from './utils/clone';
 import { max, sum } from './utils/math';
 import { getNullMatrix, getTransposed } from './utils/matrix';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-unused-vars
-export interface HeaderRowAttributes<Item> {}
+export interface HeaderRowAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> {}
 
-export interface HeaderRowInit<Item, E extends TablePropSet = AnyTablePropSet> {
+export interface HeaderRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	id: string;
-	cells: Array<HeaderCell<Item, E>>;
+	cells: HeaderCell<Item, Plugins>[];
 }
 
-export class HeaderRow<Item, E extends TablePropSet = AnyTablePropSet> extends TableComponent<
+export class HeaderRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends TableComponent<
 	Item,
-	'tbody.tr',
-	E
+	Plugins,
+	'tbody.tr'
 > {
-	cells: Array<HeaderCell<Item, E>>;
-	constructor({ id, cells }: HeaderRowInit<Item, E>) {
+	cells: HeaderCell<Item, Plugins>[];
+	constructor({ id, cells }: HeaderRowInit<Item, Plugins>) {
 		super({ id });
 		this.cells = cells;
 	}
 }
 
-export const getHeaderRows = <Item>(
-	columns: Array<Column<Item>>,
-	flatColumnIds: Array<string> = []
-): Array<HeaderRow<Item>> => {
+export const getHeaderRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
+	columns: Column<Item, Plugins>[],
+	flatColumnIds: string[] = []
+): HeaderRow<Item, Plugins>[] => {
 	const rowMatrix = getHeaderRowMatrix(columns);
 	// Perform all column operations on the transposed columnMatrix. This helps
 	// to reduce the number of expensive transpose operations required.
@@ -40,12 +40,12 @@ export const getHeaderRows = <Item>(
 	return headerRowsForRowMatrix(getTransposed(columnMatrix));
 };
 
-export const getHeaderRowMatrix = <Item>(
-	columns: Array<Column<Item>>
-): Matrix<HeaderCell<Item>> => {
+export const getHeaderRowMatrix = <Item, Plugins extends AnyPlugins = AnyPlugins>(
+	columns: Column<Item, Plugins>[]
+): Matrix<HeaderCell<Item, Plugins>> => {
 	const maxColspan = sum(columns.map((c) => (c instanceof GroupColumn ? c.ids.length : 1)));
 	const maxHeight = max(columns.map((c) => c.height));
-	const rowMatrix: Matrix<HeaderCell<Item> | null> = getNullMatrix(maxColspan, maxHeight);
+	const rowMatrix: Matrix<HeaderCell<Item, Plugins> | null> = getNullMatrix(maxColspan, maxHeight);
 	let cellOffset = 0;
 	columns.forEach((c) => {
 		const heightOffset = maxHeight - c.height;
@@ -69,7 +69,7 @@ const loadHeaderRowMatrix = <Item>(
 		rowMatrix[rowMatrix.length - 1][cellOffset] = new DataHeaderCell({
 			label: column.header,
 			accessorFn: column.accessorFn,
-			accessorKey: column.accessorKey,
+			accessorKey: column.accessorKey as keyof Item,
 			id: column.id,
 		});
 		return;
@@ -93,14 +93,14 @@ const loadHeaderRowMatrix = <Item>(
 	}
 };
 
-export const getOrderedColumnMatrix = <Item>(
-	columnMatrix: Matrix<HeaderCell<Item>>,
-	flatColumnIds: Array<string>
-): Matrix<HeaderCell<Item>> => {
+export const getOrderedColumnMatrix = <Item, Plugins extends AnyPlugins = AnyPlugins>(
+	columnMatrix: Matrix<HeaderCell<Item, Plugins>>,
+	flatColumnIds: string[]
+): Matrix<HeaderCell<Item, Plugins>> => {
 	if (flatColumnIds.length === 0) {
 		return columnMatrix;
 	}
-	const orderedColumnMatrix: Matrix<HeaderCell<Item>> = [];
+	const orderedColumnMatrix: Matrix<HeaderCell<Item, Plugins>> = [];
 	// Each row of the transposed matrix represents a column.
 	// The `DataHeaderCell` is the last cell of each column.
 	flatColumnIds.forEach((key) => {
@@ -133,9 +133,9 @@ const populateGroupHeaderCellIds = <Item>(columnMatrix: Matrix<HeaderCell<Item>>
 	});
 };
 
-export const headerRowsForRowMatrix = <Item>(
-	rowMatrix: Matrix<HeaderCell<Item>>
-): Array<HeaderRow<Item>> => {
+export const headerRowsForRowMatrix = <Item, Plugins extends AnyPlugins = AnyPlugins>(
+	rowMatrix: Matrix<HeaderCell<Item, Plugins>>
+): HeaderRow<Item, Plugins>[] => {
 	return rowMatrix.map((rowCells, rowIdx) => {
 		return new HeaderRow({ id: rowIdx.toString(), cells: getMergedRow(rowCells) });
 	});
@@ -151,11 +151,13 @@ export const headerRowsForRowMatrix = <Item>(
  * @param cells An array of cells.
  * @returns An array of cells with no duplicate consecutive cells.
  */
-export const getMergedRow = <Item>(cells: Array<HeaderCell<Item>>): Array<HeaderCell<Item>> => {
+export const getMergedRow = <Item, Plugins extends AnyPlugins = AnyPlugins>(
+	cells: HeaderCell<Item, Plugins>[]
+): HeaderCell<Item, Plugins>[] => {
 	if (cells.length === 0) {
 		return cells;
 	}
-	const mergedCells: Array<HeaderCell<Item>> = [];
+	const mergedCells: HeaderCell<Item, Plugins>[] = [];
 	let startIdx = 0;
 	let endIdx = 1;
 	while (startIdx < cells.length) {
@@ -166,7 +168,7 @@ export const getMergedRow = <Item>(cells: Array<HeaderCell<Item>>): Array<Header
 			continue;
 		}
 		endIdx = startIdx + 1;
-		const ids: Array<string> = [...cell.ids];
+		const ids: string[] = [...cell.ids];
 		while (endIdx < cells.length) {
 			const nextCell = cells[endIdx];
 			if (!(nextCell instanceof GroupHeaderCell)) {

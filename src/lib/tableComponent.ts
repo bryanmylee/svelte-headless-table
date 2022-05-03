@@ -2,22 +2,18 @@ import { derived, type Readable } from 'svelte/store';
 import type { ActionReturnType } from './types/Action';
 import type { ComponentKeys } from './types/ComponentKeys';
 import type {
-	AnyTablePropSet,
 	ElementHook,
 	EventHandler,
 	AttributesForKey,
-	TablePropSet,
+	AnyPlugins,
+	PluginTablePropSet,
 } from './types/UseTablePlugin';
 
 export interface TableComponentInit {
 	id: string;
 }
 
-export class TableComponent<
-	Item,
-	Key extends ComponentKeys,
-	E extends TablePropSet = AnyTablePropSet
-> {
+export class TableComponent<Item, Plugins extends AnyPlugins, Key extends ComponentKeys> {
 	id: string;
 	constructor({ id }: TableComponentInit) {
 		this.id = id;
@@ -43,7 +39,7 @@ export class TableComponent<
 	}
 
 	private propsForName: Record<string, Readable<Record<string, unknown>>> = {};
-	props(): Readable<E[Key]> {
+	props(): Readable<PluginTablePropSet<Plugins>[Key]> {
 		const propsEntries = Object.entries(this.propsForName);
 		const pluginNames = propsEntries.map(([pluginName]) => pluginName);
 		return derived(
@@ -53,7 +49,7 @@ export class TableComponent<
 				$propsArray.forEach((p, idx) => {
 					props[pluginNames[idx]] = p;
 				});
-				return props as E[Key];
+				return props as PluginTablePropSet<Plugins>[Key];
 			}
 		);
 	}

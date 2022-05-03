@@ -10,7 +10,7 @@ interface User {
 }
 
 it('prioritizes a provided id', () => {
-	const actual = new DataColumn<User, string>({
+	const actual = new DataColumn<User>({
 		header: 'First Name',
 		accessor: 'firstName',
 		id: 'name',
@@ -20,7 +20,7 @@ it('prioritizes a provided id', () => {
 });
 
 it('falls back on the string accessor as id', () => {
-	const actual = new DataColumn<User, string>({
+	const actual = new DataColumn<User>({
 		header: 'First Name',
 		accessor: 'firstName',
 	});
@@ -30,7 +30,7 @@ it('falls back on the string accessor as id', () => {
 
 it('throws if id is undefined without string accessor', () => {
 	expect(() => {
-		new DataColumn<User, string>({
+		new DataColumn<User>({
 			header: 'First Name',
 			accessor: (u) => u.firstName,
 		});

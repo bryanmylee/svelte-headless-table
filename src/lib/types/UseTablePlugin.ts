@@ -9,35 +9,35 @@ export type UseTablePlugin<
 	Item,
 	PluginState = never,
 	ColumnConfig = never,
-	E extends TablePropSet = AnyTablePropSet
+	T extends TablePropSet = AnyTablePropSet
 > = {
 	pluginState: PluginState;
 	sortFn?: Readable<SortFn<Item>>;
 	filterFn?: Readable<FilterFn<Item>>;
 	visibleColumnIdsFn?: Readable<VisibleColumnIdsFn>;
 	columnConfig?: ColumnConfig;
-	hooks?: TableHooks<Item, E>;
+	hooks?: TableHooks<Item, T>;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type AnyPlugins = Record<string, UseTablePlugin<any, any, any, any>>;
+export type AnyPlugins = Record<string, UseTablePlugin<any, any, any, AnyTablePropSet>>;
 
 export type SortFn<Item> = (a: BodyRow<Item>, b: BodyRow<Item>) => number;
 export type FilterFn<Item> = (row: BodyRow<Item>) => boolean;
 export type VisibleColumnIdsFn = (ids: Array<string>) => Array<string>;
 
-export type AttributesForKey<Item> = {
-	'thead.tr': HeaderRowAttributes<Item>;
-	'thead.tr.th': HeaderCellAttributes<Item>;
-	'tbody.tr': BodyRowAttributes<Item>;
-	'tbody.tr.td': BodyCellAttributes<Item>;
+export type AttributesForKey<Item, Plugins extends AnyPlugins = AnyPlugins> = {
+	'thead.tr': HeaderRowAttributes<Item, Plugins>;
+	'thead.tr.th': HeaderCellAttributes<Item, Plugins>;
+	'tbody.tr': BodyRowAttributes<Item, Plugins>;
+	'tbody.tr.td': BodyCellAttributes<Item, Plugins>;
 };
 
-export type ComponentForKey<Item> = {
-	'thead.tr': HeaderRow<Item>;
-	'thead.tr.th': HeaderCell<Item>;
-	'tbody.tr': BodyRow<Item>;
-	'tbody.tr.td': BodyCell<Item>;
+export type ComponentForKey<Item, Plugins extends AnyPlugins = AnyPlugins> = {
+	'thead.tr': HeaderRow<Item, Plugins>;
+	'thead.tr.th': HeaderCell<Item, Plugins>;
+	'tbody.tr': BodyRow<Item, Plugins>;
+	'tbody.tr.td': BodyCell<Item, Plugins>;
 };
 
 export type TablePropSet<
@@ -55,8 +55,8 @@ export type TablePropSet<
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyTablePropSet = TablePropSet<any, any>;
 
-export type TableHooks<Item, E extends TablePropSet = AnyTablePropSet> = {
-	[K in keyof ComponentForKey<Item>]?: (component: ComponentForKey<Item>[K]) => ElementHook<E[K]>;
+export type TableHooks<Item, T extends TablePropSet = AnyTablePropSet> = {
+	[K in keyof ComponentForKey<Item>]?: (component: ComponentForKey<Item>[K]) => ElementHook<T[K]>;
 };
 
 export type ElementHook<Props> = {
