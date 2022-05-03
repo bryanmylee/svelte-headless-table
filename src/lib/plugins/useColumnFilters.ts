@@ -1,8 +1,10 @@
 import { get } from 'svelte/store';
+import { keyed } from 'svelte-keyed';
 import type { BodyRow } from '$lib/bodyRows';
 import { getDataColumns } from '$lib/columns';
 import type { UseTablePlugin, NewTablePropSet } from '$lib/types/UseTablePlugin';
 import { derived, writable, type Writable } from 'svelte/store';
+import type { RenderConfig } from '$lib/render';
 
 export interface ColumnFiltersState {
 	filterValues: Writable<Record<string, unknown>>;
@@ -10,6 +12,12 @@ export interface ColumnFiltersState {
 
 export interface ColumnFiltersColumnOptions {
 	fn: ColumnFilterFn;
+	render: (props: ColumnRenderConfigProps) => RenderConfig<ColumnRenderConfigProps>;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+interface ColumnRenderConfigProps<T = any> {
+	filterValue: Writable<T>;
 }
 
 export type ColumnFilterFn = (props: ColumnFilterFnProps) => boolean;
@@ -20,10 +28,13 @@ export type ColumnFilterFnProps = {
 };
 
 export type ColumnFiltersPropSet = NewTablePropSet<{
-	'thead.tr.th': {
-		value: unknown;
-		setValue: (value: unknown) => void;
-	};
+	'thead.tr.th':
+		| {
+				render: RenderConfig;
+				value: unknown;
+				setValue: (value: unknown) => void;
+		  }
+		| undefined;
 }>;
 
 export const useColumnFilters = <Item>(): UseTablePlugin<
@@ -39,14 +50,13 @@ export const useColumnFilters = <Item>(): UseTablePlugin<
 	const pluginState: ColumnFiltersState = { filterValues };
 
 	const pluginName = writable<string>();
-	const columnOptions = writable<Record<string, ColumnFiltersColumnOptions>>({});
+	const filtersColumnOptions = writable<Record<string, ColumnFiltersColumnOptions>>({});
 
 	const filterFn = derived(
-		[filterValues, pluginName, columnOptions],
-		([$filterValues, $pluginName, $columnOptions]) => {
-			console.log({ $filterValues, $pluginName, $columnOptions });
+		[filterValues, filtersColumnOptions],
+		([$filterValues, $filtersColumnOptions]) => {
 			return (row: BodyRow<Item>) => {
-				for (const [columnId, columnOption] of Object.entries($columnOptions)) {
+				for (const [columnId, columnOption] of Object.entries($filtersColumnOptions)) {
 					const { value } = row.cellForId[columnId];
 					const filterValue = $filterValues[columnId];
 					if (filterValue === undefined) {
@@ -74,7 +84,7 @@ export const useColumnFilters = <Item>(): UseTablePlugin<
 			dataColumns.forEach((c) => {
 				const columnOption: ColumnFiltersColumnOptions | undefined = c.plugins?.[$pluginName];
 				if (columnOption === undefined) return;
-				columnOptions.update(($columnOptions) => ({
+				filtersColumnOptions.update(($columnOptions) => ({
 					...$columnOptions,
 					[c.id]: columnOption,
 				}));
@@ -88,10 +98,19 @@ export const useColumnFilters = <Item>(): UseTablePlugin<
 						[cell.id]: value,
 					}));
 				};
-				const props = derived(filterValues, ($filterValues) => {
-					const value = $filterValues[cell.id];
-					return { value, setValue };
-				});
+				const filterValue = keyed(filterValues, cell.id);
+				const props = derived(
+					[filterValues, filtersColumnOptions],
+					([$filterValues, $filtersColumnOptions]) => {
+						const columnOption = $filtersColumnOptions[cell.id];
+						if (columnOption === undefined) {
+							return undefined;
+						}
+						const value = $filterValues[cell.id];
+						const render = columnOption.render({ filterValue });
+						return { value, setValue, render };
+					}
+				);
 				return { props };
 			},
 		},

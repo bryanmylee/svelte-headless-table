@@ -12,6 +12,7 @@
 	import { writable } from 'svelte/store';
 	import Italic from './_Italic.svelte';
 	import Tick from './_Tick.svelte';
+	import TextFilter from './_TextFilter.svelte';
 	import { createRender } from '$lib/render';
 
 	const data = writable(sampleRows);
@@ -33,17 +34,14 @@
 					plugins: {
 						filter: {
 							fn: textPrefixMatch,
+							render: ({ filterValue }) => createRender(TextFilter, { filterValue }),
 						},
 					},
 				}),
 				table.column({
 					header: 'Last Name',
 					accessor: 'lastName',
-					plugins: {
-						filter: {
-							fn: textPrefixMatch,
-						},
-					},
+					plugins: {},
 				}),
 			],
 		}),
@@ -93,17 +91,15 @@
 					<Subscribe to={cell} let:attrs let:props>
 						<th {...attrs} on:click={props.sort.toggle}>
 							<div>
-								<Render of={cell} />
+								<Render of={cell.render()} />
 								{#if props.sort.order === 'asc'}
 									⬇️
 								{:else if props.sort.order === 'desc'}
 									⬆️
 								{/if}
 							</div>
-							{#if cell.isData}
-								<div>
-									<input type="text" on:click|stopPropagation value={props.filter.value ?? ''} />
-								</div>
+							{#if props.filter !== undefined}
+								<Render of={props.filter.render} />
 							{/if}
 						</th>
 					</Subscribe>
@@ -117,7 +113,7 @@
 				{#each bodyRow.cells as cell (cell.id)}
 					<Subscribe to={cell} let:attrs let:props>
 						<td>
-							<Render of={cell} />
+							<Render of={cell.render()} />
 						</td>
 					</Subscribe>
 				{/each}

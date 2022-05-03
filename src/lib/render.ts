@@ -1,33 +1,31 @@
 import type { SvelteComponent } from 'svelte';
 
 export type SvelteComponentWithProps<
-	C extends SvelteComponent = SvelteComponent,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	Props = any
+	Props = any,
+	C extends SvelteComponent = SvelteComponent
 > = AConstructorTypeOf<C, [Svelte2TsxComponentConstructorParameters<Props>]>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ComponentRenderConfig<C extends SvelteComponent, Props = any> = {
-	component: SvelteComponentWithProps<C, Props>;
+type ComponentRenderConfig<Props = any, C extends SvelteComponent = SvelteComponent> = {
+	component: SvelteComponentWithProps<Props, C>;
 	props?: Props;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type RenderConfig<C extends SvelteComponent = SvelteComponent, Props = any> =
-	| ComponentRenderConfig<C, Props>
+export type RenderConfig<Props = any, C extends SvelteComponent = SvelteComponent> =
+	| ComponentRenderConfig<Props, C>
 	| string;
 
-export function createRender<C extends SvelteComponent, Props extends Record<string, never>>(
-	component: SvelteComponentWithProps<C, Props>
-): ComponentRenderConfig<C, undefined>;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function createRender<C extends SvelteComponent, Props = any>(
-	component: SvelteComponentWithProps<C, Props>,
+export function createRender<Props extends Record<string, never>, C extends SvelteComponent>(
+	component: SvelteComponentWithProps<Props, C>
+): ComponentRenderConfig<undefined, C>;
+export function createRender<Props, C extends SvelteComponent>(
+	component: SvelteComponentWithProps<Props, C>,
 	props: Props
-): ComponentRenderConfig<C, Props>;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function createRender<C extends SvelteComponent, Props = any>(
-	component: SvelteComponentWithProps<C, Props>,
+): ComponentRenderConfig<Props, C>;
+export function createRender<Props, C extends SvelteComponent>(
+	component: SvelteComponentWithProps<Props, C>,
 	props?: Props
 ) {
 	return {
