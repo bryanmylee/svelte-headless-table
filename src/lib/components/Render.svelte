@@ -1,16 +1,16 @@
 <script lang="ts">
-	import type { RenderProps } from '$lib/types/RenderProps';
+	import type { RenderConfig } from '$lib/render';
 
 	type Component = {
-		render(): RenderProps;
+		render(): RenderConfig;
 	};
 
 	export let of: Component;
-	const { component, props, text } = of.render();
+	const render = of.render();
 </script>
 
-{#if text !== undefined}
-	{text}
-{:else if component !== undefined}
-	<svelte:component this={component} {...props} />
+{#if typeof render === 'string'}
+	{render}
+{:else}
+	<svelte:component this={render.component} {...render.props} />
 {/if}

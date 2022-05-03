@@ -10,6 +10,8 @@
 	import { useSortBy } from '$lib/plugins/useSortBy';
 	import { useTable } from '$lib/useTable';
 	import { writable } from 'svelte/store';
+	import Italic from './_Italic.svelte';
+	import { createRender } from '$lib/render';
 
 	const data = writable(sampleRows);
 
@@ -22,7 +24,7 @@
 
 	const columns = table.createColumns([
 		table.group({
-			header: 'Name',
+			header: createRender(Italic, { text: 'Name' }),
 			columns: [
 				table.column({
 					header: 'First Name',
@@ -99,12 +101,7 @@
 							</div>
 							{#if cell.isData}
 								<div>
-									<input
-										type="text"
-										on:click|stopPropagation
-										value={props.filter.value ?? ''}
-										on:input={(e) => props.filter.setValue(e.target?.value)}
-									/>
+									<input type="text" on:click|stopPropagation value={props.filter.value ?? ''} />
 								</div>
 							{/if}
 						</th>

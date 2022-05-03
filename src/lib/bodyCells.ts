@@ -4,7 +4,7 @@ import type { DataColumn } from './columns';
 import { TableComponent } from './tableComponent';
 import type { Label } from './types/Label';
 import type { AnyPlugins } from './types/UseTablePlugin';
-import type { RenderProps } from './types/RenderProps';
+import type { RenderConfig } from './render';
 
 export interface BodyCellInit<Item, Plugins extends AnyPlugins = AnyPlugins, Value = unknown> {
 	row: BodyRow<Item, Plugins>;
@@ -39,18 +39,10 @@ export class BodyCell<
 		});
 	}
 
-	render(): RenderProps {
+	render(): RenderConfig {
 		if (this.label === undefined) {
-			return {
-				text: `${this.value}`,
-			};
+			return `${this.value}`;
 		}
-		const label = this.label(this.value);
-		if (typeof label === 'string') {
-			return {
-				text: label,
-			};
-		}
-		return label;
+		return this.label(this.value);
 	}
 }

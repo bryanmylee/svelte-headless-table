@@ -3,7 +3,7 @@ import { NBSP } from './constants';
 import { TableComponent } from './tableComponent';
 import type { AggregateLabel } from './types/AggregateLabel';
 import type { AnyPlugins } from './types/UseTablePlugin';
-import type { RenderProps } from './types/RenderProps';
+import type { RenderConfig } from './render';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface HeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
@@ -40,16 +40,10 @@ export class HeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends T
 		});
 	}
 
-	render(): RenderProps {
+	render(): RenderConfig {
 		if (this.label instanceof Function) {
-			return {
-				text: 'Work in progress',
-			};
-		}
-		if (typeof this.label === 'string') {
-			return {
-				text: this.label,
-			};
+			// TODO inject data
+			return 'Work in progress';
 		}
 		return this.label;
 	}
