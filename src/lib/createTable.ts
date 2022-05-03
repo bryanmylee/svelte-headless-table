@@ -22,7 +22,7 @@ export class Table<Item, Plugins extends AnyPlugins = AnyPlugins> {
 		this.plugins = plugins;
 	}
 
-	createColumns(columns: Column<Item>[]): Column<Item>[] {
+	createColumns(columns: Column<Item, Plugins>[]): Column<Item, Plugins>[] {
 		const ids = getFlatColumnIds(columns);
 		const duplicateIds = getDuplicates(ids);
 		if (duplicateIds.length !== 0) {

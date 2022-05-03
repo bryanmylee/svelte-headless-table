@@ -9,6 +9,8 @@ export interface HiddenColumnsState {
 	hiddenColumnIds: Writable<Array<string>>;
 }
 
+export type HiddenColumnsColumnConfig = never;
+
 /**
  * `PluginPropSet` describes data passed into each table component.
  */
@@ -24,6 +26,7 @@ export interface HiddenColumnsPropSet {
 export const useHiddenColumns = <Item>(): UseTablePlugin<
 	Item,
 	HiddenColumnsState,
+	HiddenColumnsColumnConfig,
 	HiddenColumnsPropSet
 > => {
 	const hiddenColumnIds = writable<Array<string>>([]);

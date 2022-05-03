@@ -16,6 +16,12 @@ export interface SortByState {
 	sortKeys: SortKeys;
 }
 
+export type SortByColumnConfig =
+	| undefined
+	| {
+			clickable: boolean;
+	  };
+
 /**
  * `PluginPropSet` describes data passed into each table component.
  */
@@ -77,6 +83,7 @@ export type SortKeys = Writable<Array<SortKey>> & {
 export const useSortBy = <Item>({ multiSort = true }: SortByConfig = {}): UseTablePlugin<
 	Item,
 	SortByState,
+	SortByColumnConfig,
 	SortByPropSet
 > => {
 	// TODO Custom store interface and methods.

@@ -7,20 +7,20 @@ import type { ComponentKeys } from './ComponentKeys';
 
 export type UseTablePlugin<
 	Item,
-	PluginState,
-	ColumnConfig,
+	PluginState = never,
+	ColumnConfig = never,
 	E extends TablePropSet = AnyTablePropSet
 > = {
 	pluginState: PluginState;
 	sortFn?: Readable<SortFn<Item>>;
 	filterFn?: Readable<FilterFn<Item>>;
 	visibleColumnIdsFn?: Readable<VisibleColumnIdsFn>;
-	columnConfig: ColumnConfig;
+	columnConfig?: ColumnConfig;
 	hooks?: TableHooks<Item, E>;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type AnyPlugins = Record<string, UseTablePlugin<any, any, any>>;
+export type AnyPlugins = Record<string, UseTablePlugin<any, any, any, any>>;
 
 export type SortFn<Item> = (a: BodyRow<Item>, b: BodyRow<Item>) => number;
 export type FilterFn<Item> = (row: BodyRow<Item>) => boolean;
@@ -85,6 +85,6 @@ export type PluginTablePropSet<Plugins extends AnyPlugins> = {
 	};
 };
 
-export type PluginColumnConfigs<Plugins extends AnyPlugins> = {
+export type PluginColumnConfigs<Plugins extends AnyPlugins> = Partial<{
 	[K in keyof Plugins]: Plugins[K]['columnConfig'];
-};
+}>;
