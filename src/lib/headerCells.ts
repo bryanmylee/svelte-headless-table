@@ -37,7 +37,7 @@ export class HeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends T
 			if (this.state === undefined) {
 				throw new Error('Missing `state` reference');
 			}
-			return this.label({ data: this.state.data });
+			return this.label(this.state);
 		}
 		return this.label;
 	}

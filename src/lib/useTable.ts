@@ -1,5 +1,5 @@
-import { derived, readable, type Writable } from 'svelte/store';
-import { getBodyRows } from './bodyRows';
+import { derived, readable, type Readable, type Writable } from 'svelte/store';
+import { BodyRow, getBodyRows } from './bodyRows';
 import { getDataColumns, type Column } from './columns';
 import type { Table } from './createTable';
 import { getHeaderRows, HeaderRow } from './headerRows';
@@ -10,8 +10,11 @@ export type UseTableProps<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	columns: Column<Item, Plugins>[];
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface UseTableState<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	data: Writable<Item[]>;
+	rows: Readable<BodyRow<Item>[]>;
+	filteredRows: Readable<BodyRow<Item>[]>;
 }
 
 export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
@@ -48,8 +51,31 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		}
 	);
 
+	const originalBodyRows = derived([data, visibleColumns], ([$data, $orderedFlatColumns]) => {
+		return getBodyRows($data, $orderedFlatColumns);
+	});
+	const filteredBodyRows = derived(
+		[originalBodyRows, ...filterFns],
+		([$bodyRows, ...$filterFns]) => {
+			let filteredRows = [...$bodyRows];
+			$filterFns.forEach((filterFn) => {
+				filteredRows = filteredRows.filter(filterFn);
+			});
+			return filteredRows;
+		}
+	);
+	const sortedBodyRows = derived([filteredBodyRows, ...sortFns], ([$bodyRows, ...$sortFns]) => {
+		const sortedRows = [...$bodyRows];
+		$sortFns.forEach((sortFn) => {
+			sortedRows.sort(sortFn);
+		});
+		return sortedRows;
+	});
+
 	const state: UseTableState<Item, Plugins> = {
 		data,
+		rows: originalBodyRows,
+		filteredRows: filteredBodyRows,
 	};
 
 	const headerRows = derived(visibleColumns, ($orderedFlatColumns) => {
@@ -75,27 +101,6 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 			});
 		});
 		return $headerRows as HeaderRow<Item, Plugins>[];
-	});
-
-	const originalBodyRows = derived([data, visibleColumns], ([$data, $orderedFlatColumns]) => {
-		return getBodyRows($data, $orderedFlatColumns);
-	});
-	const filteredBodyRows = derived(
-		[originalBodyRows, ...filterFns],
-		([$bodyRows, ...$filterFns]) => {
-			let filteredRows = [...$bodyRows];
-			$filterFns.forEach((filterFn) => {
-				filteredRows = filteredRows.filter(filterFn);
-			});
-			return filteredRows;
-		}
-	);
-	const sortedBodyRows = derived([filteredBodyRows, ...sortFns], ([$bodyRows, ...$sortFns]) => {
-		const sortedRows = [...$bodyRows];
-		$sortFns.forEach((sortFn) => {
-			sortedRows.sort(sortFn);
-		});
-		return sortedRows;
 	});
 
 	return {

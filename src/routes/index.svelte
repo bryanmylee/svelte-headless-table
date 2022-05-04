@@ -31,7 +31,8 @@
 
 	const columns = table.createColumns([
 		table.group({
-			header: createRender(Italic, { text: 'Name' }),
+			header: ({ filteredRows }) =>
+				derived(filteredRows, (_rows) => `Name (${_rows.length} samples)`),
 			columns: [
 				table.column({
 					header: createRender(Italic, { text: 'First Name' }),
@@ -44,7 +45,7 @@
 					},
 				}),
 				table.column({
-					header: ({ data }) => derived(data, (_data) => `Last Name (${_data.length} samples)`),
+					header: () => 'Last Name',
 					accessor: 'lastName',
 					plugins: {},
 				}),
