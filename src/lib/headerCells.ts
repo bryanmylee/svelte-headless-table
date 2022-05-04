@@ -1,7 +1,7 @@
 import { derived } from 'svelte/store';
 import { NBSP } from './constants';
 import { TableComponent } from './tableComponent';
-import type { AggregateLabel } from './types/AggregateLabel';
+import type { HeaderLabel } from './types/Label';
 import type { AnyPlugins } from './types/UseTablePlugin';
 import type { RenderConfig } from './render';
 
@@ -9,7 +9,7 @@ import type { RenderConfig } from './render';
 export interface HeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	id: string;
 	isData?: boolean;
-	label: AggregateLabel<Item>;
+	label: HeaderLabel<Item>;
 	colspan: number;
 }
 
@@ -23,7 +23,7 @@ export class HeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends T
 	'thead.tr.th'
 > {
 	isData: boolean;
-	label: AggregateLabel<Item>;
+	label: HeaderLabel<Item>;
 	colspan: number;
 	constructor({ id, label, colspan, isData = false }: HeaderCellInit<Item>) {
 		super({ id });

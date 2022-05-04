@@ -1,18 +1,18 @@
-import type { AggregateLabel } from './types/AggregateLabel';
+import type { HeaderLabel } from './types/Label';
 import type { Label } from './types/Label';
 import type { AnyPlugins, PluginColumnConfigs } from './types/UseTablePlugin';
 import { max } from './utils/math';
 
 export interface ColumnInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
-	header: AggregateLabel<Item>;
-	footer?: AggregateLabel<Item>;
+	header: HeaderLabel<Item>;
+	footer?: HeaderLabel<Item>;
 	height: number;
 	plugins?: PluginColumnConfigs<Plugins>;
 }
 
 export class Column<Item, Plugins extends AnyPlugins = AnyPlugins> {
-	header: AggregateLabel<Item>;
-	footer?: AggregateLabel<Item>;
+	header: HeaderLabel<Item>;
+	footer?: HeaderLabel<Item>;
 	height: number;
 	plugins?: PluginColumnConfigs<Plugins>;
 	constructor({ header, footer, height, plugins }: ColumnInit<Item, Plugins>) {
