@@ -1,4 +1,4 @@
-import { derived, readable } from 'svelte/store';
+import { derived, readable, type Writable } from 'svelte/store';
 import { getBodyRows } from './bodyRows';
 import { getDataColumns, type Column } from './columns';
 import type { Table } from './createTable';
@@ -9,6 +9,10 @@ import { nonNullish } from './utils/filter';
 export type UseTableProps<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	columns: Column<Item, Plugins>[];
 };
+
+export interface UseTableState<Item, Plugins extends AnyPlugins = AnyPlugins> {
+	data: Writable<Item[]>;
+}
 
 export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	table: Table<Item, Plugins>,
@@ -44,16 +48,20 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		}
 	);
 
+	const state: UseTableState<Item, Plugins> = {
+		data,
+	};
+
 	const headerRows = derived(visibleColumns, ($orderedFlatColumns) => {
 		const $headerRows = getHeaderRows(
 			columns,
 			$orderedFlatColumns.map((c) => c.id)
 		);
-		// Inject table reference.
+		// Inject state.
 		$headerRows.forEach((row) => {
-			row.injectTableReference(table);
+			row.injectState(state);
 			row.cells.forEach((cell) => {
-				cell.injectTableReference(table);
+				cell.injectState(state);
 			});
 		});
 		// Apply plugin component hooks.

@@ -1,5 +1,4 @@
 import { derived, type Readable } from 'svelte/store';
-import type { Table } from './createTable';
 import type {
 	AnyPlugins,
 	AttributesForKey,
@@ -7,6 +6,7 @@ import type {
 	ElementHook,
 	PluginTablePropSet,
 } from './types/UseTablePlugin';
+import type { UseTableState } from './useTable';
 
 export interface TableComponentInit {
 	id: string;
@@ -38,9 +38,9 @@ export class TableComponent<Item, Plugins extends AnyPlugins, Key extends Compon
 		);
 	}
 
-	protected table?: Table<Item, Plugins>;
-	injectTableReference(table: Table<Item, Plugins>) {
-		this.table = table;
+	protected state?: UseTableState<Item, Plugins>;
+	injectState(state: UseTableState<Item, Plugins>) {
+		this.state = state;
 	}
 
 	applyHook(pluginName: string, hook: ElementHook<Record<string, unknown>>) {
