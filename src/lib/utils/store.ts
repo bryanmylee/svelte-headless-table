@@ -1,4 +1,4 @@
-import { derived, type Readable, type Writable } from 'svelte/store';
+import { derived, readable, type Readable, type Writable } from 'svelte/store';
 
 export type ReadOrWritable<T> = Readable<T> | Writable<T>;
 
@@ -41,3 +41,6 @@ export type DerivedKeys<S extends ReadOrWritableKeys<unknown>> = S extends ReadO
 >
 	? Readable<T>
 	: never;
+
+export const Undefined = readable(undefined);
+export const UndefinedAs = <T>() => Undefined as unknown as Readable<T>;

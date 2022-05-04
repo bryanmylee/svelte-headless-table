@@ -1,11 +1,6 @@
-<script lang="ts" context="module">
-	const Undefined = readable(undefined);
-</script>
-
 <script lang="ts">
-	import { readable } from 'svelte/store';
 	import type { RenderConfig } from '$lib/render';
-	import { isReadable } from '$lib/utils/store';
+	import { isReadable, Undefined } from '$lib/utils/store';
 
 	let rendered: RenderConfig;
 	export { rendered as of };
