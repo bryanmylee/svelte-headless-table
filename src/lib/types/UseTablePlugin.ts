@@ -3,6 +3,7 @@ import type { BodyRow, BodyRowAttributes } from '$lib/bodyRows';
 import type { Column } from '$lib/columns';
 import type { HeaderCell, HeaderCellAttributes } from '$lib/headerCells';
 import type { HeaderRow, HeaderRowAttributes } from '$lib/headerRows';
+import type { UseTableState } from '$lib/useTable';
 import type { Readable } from 'svelte/store';
 
 export type UseTablePlugin<
@@ -18,6 +19,7 @@ export type UseTablePlugin<
 	pluginState: Config['PluginState'];
 	onPluginInit?: ({ name }: PluginInitEvent) => void;
 	onCreateColumns?: (columns: Column<Item>[]) => void;
+	onUse?: (tableState: UseTableState<Item>) => void;
 	sortFn?: Readable<SortFn<Item>>;
 	filterFn?: Readable<FilterFn<Item>>;
 	visibleColumnIdsFn?: Readable<VisibleColumnIdsFn>;

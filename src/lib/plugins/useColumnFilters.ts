@@ -1,26 +1,33 @@
-import { get } from 'svelte/store';
 import { keyed } from 'svelte-keyed';
 import type { BodyRow } from '$lib/bodyRows';
 import { getDataColumns } from '$lib/columns';
 import type { UseTablePlugin, NewTablePropSet } from '$lib/types/UseTablePlugin';
 import { derived, writable, type Writable } from 'svelte/store';
 import type { RenderConfig } from '$lib/render';
+import type { UseTableState } from '$lib/useTable';
 
 export interface ColumnFiltersState {
 	filterValues: Writable<Record<string, unknown>>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface ColumnFiltersColumnOptions<FilterValue = any> {
+export interface ColumnFiltersColumnOptions<Item, FilterValue = any> {
 	fn: ColumnFilterFn<FilterValue>;
 	initValue?: FilterValue;
 	render: (
-		props: ColumnRenderConfigProps<FilterValue>
-	) => RenderConfig<ColumnRenderConfigProps<FilterValue>>;
+		props: ColumnRenderConfigPropArgs<Item, FilterValue>
+	) => RenderConfig<ColumnRenderConfigProps<FilterValue> & Partial<UseTableState<Item>>>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface ColumnRenderConfigProps<FilterValue = any> {
+interface ColumnRenderConfigPropArgs<Item, FilterValue = any> extends UseTableState<Item> {
+	id: string;
+	filterValue: Writable<FilterValue>;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+interface ColumnRenderConfigProps<Item, FilterValue = any> extends Partial<UseTableState<Item>> {
+	id?: string;
 	filterValue: Writable<FilterValue>;
 }
 
@@ -47,7 +54,7 @@ export const useColumnFilters = <Item>(): UseTablePlugin<
 	Item,
 	{
 		PluginState: ColumnFiltersState;
-		ColumnOptions: ColumnFiltersColumnOptions;
+		ColumnOptions: ColumnFiltersColumnOptions<Item>;
 		TablePropSet: ColumnFiltersPropSet;
 	}
 > => {
@@ -55,8 +62,9 @@ export const useColumnFilters = <Item>(): UseTablePlugin<
 
 	const pluginState: ColumnFiltersState = { filterValues };
 
-	const pluginName = writable<string>();
-	const filtersColumnOptions = writable<Record<string, ColumnFiltersColumnOptions>>({});
+	let pluginName: string;
+	const filtersColumnOptions = writable<Record<string, ColumnFiltersColumnOptions<Item>>>({});
+	let tableState: UseTableState<Item>;
 
 	const filterFn = derived(
 		[filterValues, filtersColumnOptions],
@@ -82,19 +90,21 @@ export const useColumnFilters = <Item>(): UseTablePlugin<
 		pluginState,
 		filterFn,
 		onPluginInit: ({ name }) => {
-			pluginName.set(name);
+			pluginName = name;
 		},
 		onCreateColumns: (columns) => {
 			const dataColumns = getDataColumns(columns);
-			const $pluginName = get(pluginName);
 			dataColumns.forEach((c) => {
-				const columnOption: ColumnFiltersColumnOptions | undefined = c.plugins?.[$pluginName];
+				const columnOption: ColumnFiltersColumnOptions<Item> | undefined = c.plugins?.[pluginName];
 				if (columnOption === undefined) return;
 				filtersColumnOptions.update(($columnOptions) => ({
 					...$columnOptions,
 					[c.id]: columnOption,
 				}));
 			});
+		},
+		onUse: (state) => {
+			tableState = state;
 		},
 		hooks: {
 			'thead.tr.th': (cell) => {
@@ -107,7 +117,7 @@ export const useColumnFilters = <Item>(): UseTablePlugin<
 					if (columnOption.initValue !== undefined) {
 						filterValue.set(columnOption.initValue);
 					}
-					const render = columnOption.render({ filterValue });
+					const render = columnOption.render({ id: cell.id, filterValue, ...tableState });
 					return { render };
 				});
 				return { props };

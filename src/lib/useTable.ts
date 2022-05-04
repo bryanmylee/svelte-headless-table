@@ -40,6 +40,7 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		.filter(nonNullish);
 
 	const flatColumns = readable(getDataColumns(columns));
+
 	const visibleColumns = derived(
 		[flatColumns, ...visibleColumnIdsFns],
 		([$flatColumns, ...$visibleColumnIdsFns]) => {
@@ -54,6 +55,7 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	const originalBodyRows = derived([data, visibleColumns], ([$data, $orderedFlatColumns]) => {
 		return getBodyRows($data, $orderedFlatColumns);
 	});
+
 	const filteredBodyRows = derived(
 		[originalBodyRows, ...filterFns],
 		([$bodyRows, ...$filterFns]) => {
@@ -64,6 +66,7 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 			return filteredRows;
 		}
 	);
+
 	const sortedBodyRows = derived([filteredBodyRows, ...sortFns], ([$bodyRows, ...$sortFns]) => {
 		const sortedRows = [...$bodyRows];
 		$sortFns.forEach((sortFn) => {
@@ -77,6 +80,10 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		rows: originalBodyRows,
 		filteredRows: filteredBodyRows,
 	};
+
+	Object.values(plugins).forEach((plugin) => {
+		plugin.onUse?.(state);
+	});
 
 	const headerRows = derived(visibleColumns, ($orderedFlatColumns) => {
 		const $headerRows = getHeaderRows(

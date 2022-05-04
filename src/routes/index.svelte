@@ -70,7 +70,8 @@
 						filter: {
 							fn: numberRangeFilter,
 							initValue: [null, null],
-							render: ({ filterValue }) => createRender(NumberRangeFilter, { filterValue }),
+							render: ({ filterValue, id, filteredRows }) =>
+								createRender(NumberRangeFilter, { filterValue, id, filteredRows }),
 						},
 					},
 				}),
