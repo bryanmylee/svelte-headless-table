@@ -1,7 +1,6 @@
 import type { HeaderLabel } from './types/Label';
 import type { Label } from './types/Label';
 import type { AnyPlugins, PluginColumnConfigs } from './types/UseTablePlugin';
-import { max } from './utils/math';
 
 export interface ColumnInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	header: HeaderLabel<Item>;
@@ -108,7 +107,7 @@ export class GroupColumn<Item, Plugins extends AnyPlugins = AnyPlugins> extends 
 	columns: Column<Item, Plugins>[];
 	ids: string[];
 	constructor({ header, footer, columns, plugins }: GroupColumnInit<Item, Plugins>) {
-		const height = max(columns.map((c) => c.height)) + 1;
+		const height = Math.max(...columns.map((c) => c.height)) + 1;
 		super({ header, footer, height, plugins });
 		this.columns = columns;
 		this.ids = getDataColumnIds(columns);

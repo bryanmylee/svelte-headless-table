@@ -4,7 +4,7 @@ import { TableComponent } from './tableComponent';
 import type { Matrix } from './types/Matrix';
 import type { AnyPlugins } from './types/UseTablePlugin';
 import { getCloned } from './utils/clone';
-import { max, sum } from './utils/math';
+import { sum } from './utils/math';
 import { getNullMatrix, getTransposed } from './utils/matrix';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-unused-vars
@@ -44,7 +44,7 @@ export const getHeaderRowMatrix = <Item, Plugins extends AnyPlugins = AnyPlugins
 	columns: Column<Item, Plugins>[]
 ): Matrix<HeaderCell<Item, Plugins>> => {
 	const maxColspan = sum(columns.map((c) => (c instanceof GroupColumn ? c.ids.length : 1)));
-	const maxHeight = max(columns.map((c) => c.height));
+	const maxHeight = Math.max(...columns.map((c) => c.height));
 	const rowMatrix: Matrix<HeaderCell<Item, Plugins> | null> = getNullMatrix(maxColspan, maxHeight);
 	let cellOffset = 0;
 	columns.forEach((c) => {
