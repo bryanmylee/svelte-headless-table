@@ -3,7 +3,6 @@ import { BodyCell } from './bodyCells';
 import type { DataColumn } from './columns';
 import { TableComponent } from './tableComponent';
 import type { AnyPlugins } from './types/UseTablePlugin';
-import { nonUndefined } from './utils/filter';
 
 export interface BodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	id: string;
@@ -77,19 +76,17 @@ export const getColumnedBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugin
 	const columnedRows: BodyRow<Item, Plugins>[] = rows.map(
 		({ id, original }) => new BodyRow({ id, original, cells: [], cellForId: {} })
 	);
+	if (rows.length === 0) return rows;
 	rows.forEach((row, rowIdx) => {
-		const visibleCells = row.cells
-			.map((cell) =>
-				visibleColumnIds.includes(cell.column.id)
-					? new BodyCell({
-							row: columnedRows[rowIdx],
-							column: cell.column,
-							value: cell.value,
-							label: cell.label,
-					  })
-					: undefined
-			)
-			.filter(nonUndefined);
+		const visibleCells = visibleColumnIds.map((cid) => {
+			const cell = row.cellForId[cid];
+			return new BodyCell({
+				row: columnedRows[rowIdx],
+				column: cell.column,
+				value: cell.value,
+				label: cell.label,
+			});
+		});
 		columnedRows[rowIdx].cells = visibleCells;
 		visibleCells.forEach((cell) => {
 			columnedRows[rowIdx].cellForId[cell.id] = cell;
