@@ -5,6 +5,7 @@
 	import { getShuffled } from '$lib/utils/array';
 	import { createSamples } from './_createSamples';
 	import {
+		matchFilter,
 		numberRangeFilter,
 		textPrefixFilter,
 		useColumnFilters,
@@ -13,12 +14,13 @@
 	import { useHiddenColumns } from '$lib/plugins/useHiddenColumns';
 	import { useSortBy } from '$lib/plugins/useSortBy';
 	import { useTable } from '$lib/useTable';
-	import { derived, writable } from 'svelte/store';
+	import { derived, readable, writable } from 'svelte/store';
 	import Italic from './_Italic.svelte';
 	import Tick from './_Tick.svelte';
 	import TextFilter from './_TextFilter.svelte';
 	import { createRender } from '$lib/render';
 	import NumberRangeFilter from './_NumberRangeFilter.svelte';
+	import SelectFilter from './_SelectFilter.svelte';
 
 	const data = writable(createSamples(100));
 
@@ -63,6 +65,13 @@
 					header: createRender(Tick),
 					id: 'status',
 					accessor: (item) => item.status,
+					plugins: {
+						filter: {
+							fn: matchFilter,
+							render: ({ filterValue, values }) =>
+								createRender(SelectFilter, { filterValue, values }),
+						},
+					},
 				}),
 				table.column({
 					header: 'Visits',

@@ -14,9 +14,7 @@ export interface ColumnFiltersState {
 export interface ColumnFiltersColumnOptions<Item, FilterValue = any> {
 	fn: ColumnFilterFn<FilterValue>;
 	initValue?: FilterValue;
-	render: (
-		props: ColumnRenderConfigPropArgs<Item, FilterValue>
-	) => RenderConfig<ColumnRenderConfigProps<Item, FilterValue> & Partial<UseTableState<Item>>>;
+	render: (props: ColumnRenderConfigPropArgs<Item, FilterValue>) => RenderConfig;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,11 +25,6 @@ interface ColumnRenderConfigPropArgs<Item, FilterValue = any, Value = any>
 	values: Readable<Value>;
 	filteredValues: Readable<Value>;
 }
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ColumnRenderConfigProps<Item, FilterValue = any> = Partial<
-	ColumnRenderConfigPropArgs<Item, FilterValue>
->;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ColumnFilterFn<FilterValue = any, Value = any> = (
@@ -138,6 +131,13 @@ export const useColumnFilters = <Item>(): UseTablePlugin<
 			},
 		},
 	};
+};
+
+export const matchFilter: ColumnFilterFn<unknown, unknown> = ({ filterValue, value }) => {
+	if (filterValue === undefined) {
+		return true;
+	}
+	return filterValue === value;
 };
 
 export const textPrefixFilter: ColumnFilterFn<string, string> = ({ filterValue, value }) => {
