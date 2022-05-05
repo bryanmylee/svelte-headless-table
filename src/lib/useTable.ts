@@ -1,9 +1,10 @@
 import { derived, readable, type Readable, type Writable } from 'svelte/store';
-import { BodyRow, getBodyRows } from './bodyRows';
+import { BodyRow, getBodyRows, getColumnedBodyRows } from './bodyRows';
 import { getDataColumns, type Column } from './columns';
 import type { Table } from './createTable';
 import { getHeaderRows, HeaderRow } from './headerRows';
-import type { AnyPlugins, PluginStates } from './types/UseTablePlugin';
+import type { AnyPlugins, PluginStates, TransformRowsFn } from './types/UseTablePlugin';
+import { nonNullish } from './utils/filter';
 
 export type UseTableProps<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	columns: Column<Item, Plugins>[];
@@ -22,58 +23,15 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 ) => {
 	const { data, plugins } = table;
 
-	// const sortFns = Object.values(plugins)
-	// 	.map((plugin) => plugin.sortFn)
-	// 	.filter(nonNullish);
-
-	// const filterFns = Object.values(plugins)
-	// 	.map((plugin) => plugin.filterFn)
-	// 	.filter(nonNullish);
-
-	// const visibleColumnIdsFns = Object.values(plugins)
-	// 	.map((plugin) => plugin.visibleColumnIdsFn)
-	// 	.filter(nonNullish);
-
 	const flatColumns = readable(getDataColumns(columns));
-	const visibleColumns = flatColumns;
 
-	// const visibleColumns = derived(
-	// 	[flatColumns, ...visibleColumnIdsFns],
-	// 	([$flatColumns, ...$visibleColumnIdsFns]) => {
-	// 		let ids = $flatColumns.map((c) => c.id);
-	// 		$visibleColumnIdsFns.forEach((fn) => {
-	// 			ids = fn(ids);
-	// 		});
-	// 		return ids.map((id) => $flatColumns.find((c) => c.id === id)).filter(nonNullish);
-	// 	}
-	// );
-
-	const bodyRows = derived([data, visibleColumns], ([$data, $visibleColumns]) => {
-		return getBodyRows($data, $visibleColumns);
+	const rows = derived([data, flatColumns], ([$data, $flatColumns]) => {
+		return getBodyRows($data, $flatColumns);
 	});
-
-	// const filteredBodyRows = derived(
-	// 	[originalBodyRows, ...filterFns],
-	// 	([$bodyRows, ...$filterFns]) => {
-	// 		let filteredRows = [...$bodyRows];
-	// 		$filterFns.forEach((filterFn) => {
-	// 			filteredRows = filteredRows.filter(filterFn);
-	// 		});
-	// 		return filteredRows;
-	// 	}
-	// );
-
-	// const sortedBodyRows = derived([filteredBodyRows, ...sortFns], ([$bodyRows, ...$sortFns]) => {
-	// 	const sortedRows = [...$bodyRows];
-	// 	$sortFns.forEach((sortFn) => {
-	// 		sortedRows.sort(sortFn);
-	// 	});
-	// 	return sortedRows;
-	// });
 
 	const tableState: UseTableState<Item, Plugins> = {
 		data,
-		rows: bodyRows,
+		rows,
 		columns,
 	};
 
@@ -90,6 +48,43 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 			pluginInstance.pluginState,
 		])
 	) as PluginStates<Plugins>;
+
+	const visibleColumnIdsFns = Object.values(pluginInstances)
+		.map((pluginInstances) => pluginInstances.visibleColumnIdsFn)
+		.filter(nonNullish);
+
+	const visibleColumns = derived(
+		[flatColumns, ...visibleColumnIdsFns],
+		([$flatColumns, ...$visibleColumnIdsFns]) => {
+			let ids = $flatColumns.map((c) => c.id);
+			$visibleColumnIdsFns.forEach((fn) => {
+				ids = fn(ids);
+			});
+			return ids.map((id) => $flatColumns.find((c) => c.id === id)).filter(nonNullish);
+		}
+	);
+
+	const transformRowsFns: Readable<TransformRowsFn<Item>>[] = Object.values(pluginInstances)
+		.map((pluginInstance) => pluginInstance.transformRowsFn)
+		.filter(nonNullish);
+
+	const transformedRows = derived([rows, ...transformRowsFns], ([$rows, ...$transformFowsFns]) => {
+		let transformedRows: BodyRow<Item, Plugins>[] = [...$rows];
+		$transformFowsFns.forEach((fn) => {
+			transformedRows = fn(transformedRows) as BodyRow<Item, Plugins>[];
+		});
+		return transformedRows;
+	});
+
+	const columnedRows = derived(
+		[transformedRows, visibleColumns],
+		([$transformedRows, $visibleColumns]) => {
+			return getColumnedBodyRows(
+				$transformedRows,
+				$visibleColumns.map((c) => c.id)
+			);
+		}
+	);
 
 	const headerRows = derived(visibleColumns, ($visibleColumns) => {
 		const $headerRows = getHeaderRows(
@@ -119,7 +114,7 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	return {
 		visibleColumns,
 		headerRows,
-		bodyRows: bodyRows,
+		bodyRows: columnedRows,
 		pluginStates,
 	};
 };

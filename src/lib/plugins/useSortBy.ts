@@ -76,48 +76,43 @@ export const useSortBy =
 	> =>
 	() => {
 		const sortKeys = useSortKeys([]);
-		const preSortedRows: Readable<BodyRow<Item>[]> = derived([], () => []);
+		const preSortedRows = writable<BodyRow<Item>[]>([]);
 
-		const pluginState: SortByState<Item> = { sortKeys, preSortedRows };
-
-		const sortFn = derived(sortKeys, ($sortKeys) => {
-			// Memoize the id to column index relationship.
-			const idxForId: Record<string, number> = {};
-			return (a: BodyRow<Item>, b: BodyRow<Item>) => {
-				for (const key of $sortKeys) {
-					if (!(key.id in idxForId)) {
-						const idx = a.cells.findIndex((cell) => cell.column.id === key.id);
-						idxForId[key.id] = idx;
+		const transformRowsFn = derived(sortKeys, ($sortKeys) => {
+			return (rows: BodyRow<Item>[]) => {
+				preSortedRows.set(rows);
+				const sortedRows = [...rows];
+				sortedRows.sort((a, b) => {
+					for (const key of $sortKeys) {
+						const cellA = a.cellForId[key.id];
+						const cellB = b.cellForId[key.id];
+						let order = 0;
+						// Only need to check properties of `cellA` as both should have the same
+						// properties.
+						if (cellA.column.sortOnFn !== undefined) {
+							const sortOnFn = cellA.column.sortOnFn;
+							const sortOnA = sortOnFn(cellA.value);
+							const sortOnB = sortOnFn(cellB.value);
+							order = compare(sortOnA, sortOnB);
+						} else if (typeof cellA.value === 'string' || typeof cellA.value === 'number') {
+							// typeof `cellB.value` is logically equal to `cellA.value`.
+							order = compare(cellA.value, cellB.value as string | number);
+						}
+						if (order !== 0) {
+							return key.order === 'asc' ? order : -order;
+						}
 					}
-					const idx = idxForId[key.id];
-					if (idx === -1) {
-						continue;
-					}
-					const cellA = a.cells[idx];
-					const cellB = b.cells[idx];
-					let order = 0;
-					// Only need to check properties of `cellA` as both should have the same
-					// properties.
-					if (cellA.column.sortOnFn !== undefined) {
-						const sortOnFn = cellA.column.sortOnFn;
-						const sortOnA = sortOnFn(cellA.value);
-						const sortOnB = sortOnFn(cellB.value);
-						order = compare(sortOnA, sortOnB);
-					} else if (typeof cellA.value === 'string' || typeof cellA.value === 'number') {
-						// typeof `cellB.value` is logically equal to `cellA.value`.
-						order = compare(cellA.value, cellB.value as string | number);
-					}
-					if (order !== 0) {
-						return key.order === 'asc' ? order : -order;
-					}
-				}
-				return 0;
+					return 0;
+				});
+				return sortedRows;
 			};
 		});
 
+		const pluginState: SortByState<Item> = { sortKeys, preSortedRows };
+
 		return {
 			pluginState,
-			sortFn,
+			transformRowsFn,
 			hooks: {
 				'thead.tr.th': (cell) => {
 					const props = derived(sortKeys, ($sortKeys) => {

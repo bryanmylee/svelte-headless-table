@@ -3,6 +3,7 @@ import { BodyCell } from './bodyCells';
 import type { DataColumn } from './columns';
 import { TableComponent } from './tableComponent';
 import type { AnyPlugins } from './types/UseTablePlugin';
+import { nonUndefined } from './utils/filter';
 
 export interface BodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	id: string;
@@ -67,4 +68,32 @@ export const getBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		});
 	});
 	return rows;
+};
+
+export const getColumnedBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
+	rows: BodyRow<Item, Plugins>[],
+	visibleColumnIds: string[]
+): BodyRow<Item, Plugins>[] => {
+	const columnedRows: BodyRow<Item, Plugins>[] = rows.map(
+		({ id, original }) => new BodyRow({ id, original, cells: [], cellForId: {} })
+	);
+	rows.forEach((row, rowIdx) => {
+		const visibleCells = row.cells
+			.map((cell) =>
+				visibleColumnIds.includes(cell.column.id)
+					? new BodyCell({
+							row: columnedRows[rowIdx],
+							column: cell.column,
+							value: cell.value,
+							label: cell.label,
+					  })
+					: undefined
+			)
+			.filter(nonUndefined);
+		columnedRows[rowIdx].cells = visibleCells;
+		visibleCells.forEach((cell) => {
+			columnedRows[rowIdx].cellForId[cell.id] = cell;
+		});
+	});
+	return columnedRows;
 };

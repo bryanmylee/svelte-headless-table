@@ -32,10 +32,9 @@ export type UseTablePluginInstance<
 	}
 > = {
 	pluginState: Config['PluginState'];
-	sortFn?: Readable<SortFn<Item>>;
-	filterFn?: Readable<FilterFn<Item>>;
+	transformRowsFn?: Readable<TransformRowsFn<Item>>;
 	visibleColumnIdsFn?: Readable<VisibleColumnIdsFn>;
-	columnConfig?: Config['ColumnOptions'];
+	columnOptions?: Config['ColumnOptions'];
 	hooks?: TableHooks<Item, Config['TablePropSet']>;
 };
 
@@ -56,9 +55,8 @@ export type AnyPluginInstances = Record<
 	>
 >;
 
-type SortFn<Item> = (a: BodyRow<Item>, b: BodyRow<Item>) => number;
-type FilterFn<Item> = (row: BodyRow<Item>) => boolean;
-type VisibleColumnIdsFn = (ids: string[]) => string[];
+export type TransformRowsFn<Item> = (rows: BodyRow<Item>[]) => BodyRow<Item>[];
+export type VisibleColumnIdsFn = (ids: string[]) => string[];
 
 export type Components<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	'thead.tr': HeaderRow<Item, Plugins>;
@@ -122,5 +120,5 @@ export type PluginTablePropSet<Plugins extends AnyPlugins> = {
 };
 
 export type PluginColumnConfigs<Plugins extends AnyPlugins> = Partial<{
-	[K in keyof Plugins]: ReturnType<Plugins[K]>['columnConfig'];
+	[K in keyof Plugins]: ReturnType<Plugins[K]>['columnOptions'];
 }>;
