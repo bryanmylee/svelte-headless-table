@@ -65,26 +65,28 @@ export const useColumnFilters =
 		const filterValues = writable<Record<string, unknown>>({});
 		const pluginState: ColumnFiltersState = { filterValues };
 
-		const filterFn = derived([filterValues], ([$filterValues]) => {
-			return (row: BodyRow<Item>) => {
-				for (const [columnId, columnOption] of Object.entries(filtersColumnOptions)) {
-					const { value } = row.cellForId[columnId];
-					const filterValue = $filterValues[columnId];
-					if (filterValue === undefined) {
-						continue;
+		const transformRowsFn = derived(filterValues, ($filterValues) => {
+			return (rows: BodyRow<Item>[]) => {
+				return rows.filter((row) => {
+					for (const [columnId, columnOption] of Object.entries(filtersColumnOptions)) {
+						const { value } = row.cellForId[columnId];
+						const filterValue = $filterValues[columnId];
+						if (filterValue === undefined) {
+							continue;
+						}
+						const isMatch = columnOption.fn({ value, filterValue });
+						if (!isMatch) {
+							return false;
+						}
 					}
-					const isMatch = columnOption.fn({ value, filterValue });
-					if (!isMatch) {
-						return false;
-					}
-				}
-				return true;
+					return true;
+				});
 			};
 		});
 
 		return {
 			pluginState,
-			filterFn,
+			transformRowsFn,
 			hooks: {
 				'thead.tr.th': (cell) => {
 					const filterValue = keyed(filterValues, cell.id);
