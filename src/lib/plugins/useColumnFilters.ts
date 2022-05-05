@@ -2,7 +2,7 @@ import { keyed } from 'svelte-keyed';
 import type { BodyRow } from '$lib/bodyRows';
 import { getDataColumns } from '$lib/columns';
 import type { UseTablePlugin, NewTablePropSet } from '$lib/types/UseTablePlugin';
-import { derived, writable, type Writable } from 'svelte/store';
+import { derived, writable, type Readable, type Writable } from 'svelte/store';
 import type { RenderConfig } from '$lib/render';
 import type { UseTableState } from '$lib/useTable';
 
@@ -16,20 +16,22 @@ export interface ColumnFiltersColumnOptions<Item, FilterValue = any> {
 	initValue?: FilterValue;
 	render: (
 		props: ColumnRenderConfigPropArgs<Item, FilterValue>
-	) => RenderConfig<ColumnRenderConfigProps<FilterValue> & Partial<UseTableState<Item>>>;
+	) => RenderConfig<ColumnRenderConfigProps<Item, FilterValue> & Partial<UseTableState<Item>>>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface ColumnRenderConfigPropArgs<Item, FilterValue = any> extends UseTableState<Item> {
+interface ColumnRenderConfigPropArgs<Item, FilterValue = any, Value = any>
+	extends UseTableState<Item> {
 	id: string;
 	filterValue: Writable<FilterValue>;
+	values: Readable<Value>;
+	filteredValues: Readable<Value>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface ColumnRenderConfigProps<Item, FilterValue = any> extends Partial<UseTableState<Item>> {
-	id?: string;
-	filterValue: Writable<FilterValue>;
-}
+type ColumnRenderConfigProps<Item, FilterValue = any> = Partial<
+	ColumnRenderConfigPropArgs<Item, FilterValue>
+>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ColumnFilterFn<FilterValue = any, Value = any> = (
@@ -117,7 +119,19 @@ export const useColumnFilters = <Item>(): UseTablePlugin<
 					if (columnOption.initValue !== undefined) {
 						filterValue.set(columnOption.initValue);
 					}
-					const render = columnOption.render({ id: cell.id, filterValue, ...tableState });
+					const values = derived(tableState.rows, ($rows) =>
+						$rows.map((row) => row.cellForId[cell.id].value)
+					);
+					const filteredValues = derived(tableState.filteredRows, ($rows) =>
+						$rows.map((row) => row.cellForId[cell.id].value)
+					);
+					const render = columnOption.render({
+						id: cell.id,
+						filterValue,
+						values,
+						filteredValues,
+						...tableState,
+					});
 					return { render };
 				});
 				return { props };

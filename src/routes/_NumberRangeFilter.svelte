@@ -1,19 +1,13 @@
 <script lang="ts">
-	import type { BodyRow } from '$lib/bodyRows';
 	import { isNumber } from '$lib/utils/filter';
-	import { UndefinedAs } from '$lib/utils/store';
 	import type { Readable, Writable } from 'svelte/store';
 
 	export let filterValue: Writable<[number | null, number | null]>;
 
 	export let id: string | undefined = undefined;
-	export let filteredRows: Readable<BodyRow<unknown>[]> = UndefinedAs<BodyRow<unknown>[]>();
-	let values: unknown[];
-	$: if (id !== undefined && $filteredRows !== undefined) {
-		values = $filteredRows.map((row) => row.cellForId[id!].value);
-	}
-	$: min = Math.min(...values.filter(isNumber));
-	$: max = Math.max(...values.filter(isNumber));
+	export let filteredValues: Readable<unknown[]>;
+	$: min = Math.min(...$filteredValues.filter(isNumber));
+	$: max = Math.max(...$filteredValues.filter(isNumber));
 </script>
 
 <div>

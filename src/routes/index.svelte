@@ -40,7 +40,8 @@
 					plugins: {
 						filter: {
 							fn: textPrefixFilter,
-							render: ({ filterValue }) => createRender(TextFilter, { filterValue }),
+							render: ({ filterValue, filteredValues }) =>
+								createRender(TextFilter, { filterValue, filteredValues }),
 						},
 					},
 				}),
@@ -70,8 +71,8 @@
 						filter: {
 							fn: numberRangeFilter,
 							initValue: [null, null],
-							render: ({ filterValue, id, filteredRows }) =>
-								createRender(NumberRangeFilter, { filterValue, id, filteredRows }),
+							render: ({ filterValue, filteredValues }) =>
+								createRender(NumberRangeFilter, { filterValue, filteredValues }),
 						},
 					},
 				}),
