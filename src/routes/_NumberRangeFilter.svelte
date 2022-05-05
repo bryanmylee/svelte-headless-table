@@ -5,9 +5,9 @@
 	export let filterValue: Writable<[number | null, number | null]>;
 
 	export let id: string | undefined = undefined;
-	export let filteredValues: Readable<unknown[]>;
-	$: min = Math.min(...$filteredValues.filter(isNumber));
-	$: max = Math.max(...$filteredValues.filter(isNumber));
+	export let preFilteredValues: Readable<unknown[]>;
+	$: min = Math.min(...$preFilteredValues.filter(isNumber));
+	$: max = Math.max(...$preFilteredValues.filter(isNumber));
 </script>
 
 <div>

@@ -23,7 +23,6 @@ interface ColumnRenderConfigPropArgs<Item, FilterValue = any, Value = any>
 	id: string;
 	filterValue: Writable<FilterValue>;
 	values: Readable<Value>;
-	filteredValues: Readable<Value>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,27 +44,30 @@ export type ColumnFiltersPropSet = NewTablePropSet<{
 		| undefined;
 }>;
 
-export const useColumnFilters = <Item>(): UseTablePlugin<
-	Item,
-	{
-		PluginState: ColumnFiltersState;
-		ColumnOptions: ColumnFiltersColumnOptions<Item>;
-		TablePropSet: ColumnFiltersPropSet;
-	}
-> => {
-	const filterValues = writable<Record<string, unknown>>({});
+export const useColumnFilters =
+	<Item>(): UseTablePlugin<
+		Item,
+		{
+			PluginState: ColumnFiltersState;
+			ColumnOptions: ColumnFiltersColumnOptions<Item>;
+			TablePropSet: ColumnFiltersPropSet;
+		}
+	> =>
+	({ pluginName, tableState }) => {
+		const filtersColumnOptions: Record<string, ColumnFiltersColumnOptions<Item>> = {};
+		const dataColumns = getDataColumns(tableState.columns);
+		dataColumns.forEach((c) => {
+			const columnOption: ColumnFiltersColumnOptions<Item> | undefined = c.plugins?.[pluginName];
+			if (columnOption === undefined) return;
+			filtersColumnOptions[c.id] = columnOption;
+		});
 
-	const pluginState: ColumnFiltersState = { filterValues };
+		const filterValues = writable<Record<string, unknown>>({});
+		const pluginState: ColumnFiltersState = { filterValues };
 
-	let pluginName: string;
-	const filtersColumnOptions = writable<Record<string, ColumnFiltersColumnOptions<Item>>>({});
-	let tableState: UseTableState<Item>;
-
-	const filterFn = derived(
-		[filterValues, filtersColumnOptions],
-		([$filterValues, $filtersColumnOptions]) => {
+		const filterFn = derived([filterValues], ([$filterValues]) => {
 			return (row: BodyRow<Item>) => {
-				for (const [columnId, columnOption] of Object.entries($filtersColumnOptions)) {
+				for (const [columnId, columnOption] of Object.entries(filtersColumnOptions)) {
 					const { value } = row.cellForId[columnId];
 					const filterValue = $filterValues[columnId];
 					if (filterValue === undefined) {
@@ -78,60 +80,38 @@ export const useColumnFilters = <Item>(): UseTablePlugin<
 				}
 				return true;
 			};
-		}
-	);
+		});
 
-	return {
-		pluginState,
-		filterFn,
-		onPluginInit: ({ name }) => {
-			pluginName = name;
-		},
-		onCreateColumns: (columns) => {
-			const dataColumns = getDataColumns(columns);
-			dataColumns.forEach((c) => {
-				const columnOption: ColumnFiltersColumnOptions<Item> | undefined = c.plugins?.[pluginName];
-				if (columnOption === undefined) return;
-				filtersColumnOptions.update(($columnOptions) => ({
-					...$columnOptions,
-					[c.id]: columnOption,
-				}));
-			});
-		},
-		onUse: (state) => {
-			tableState = state;
-		},
-		hooks: {
-			'thead.tr.th': (cell) => {
-				const filterValue = keyed(filterValues, cell.id);
-				const props = derived([filtersColumnOptions], ([$filtersColumnOptions]) => {
-					const columnOption = $filtersColumnOptions[cell.id];
-					if (columnOption === undefined) {
-						return undefined;
-					}
-					if (columnOption.initValue !== undefined) {
-						filterValue.set(columnOption.initValue);
-					}
-					const values = derived(tableState.rows, ($rows) =>
-						$rows.map((row) => row.cellForId[cell.id].value)
-					);
-					const filteredValues = derived(tableState.filteredRows, ($rows) =>
-						$rows.map((row) => row.cellForId[cell.id].value)
-					);
-					const render = columnOption.render({
-						id: cell.id,
-						filterValue,
-						values,
-						filteredValues,
-						...tableState,
+		return {
+			pluginState,
+			filterFn,
+			hooks: {
+				'thead.tr.th': (cell) => {
+					const filterValue = keyed(filterValues, cell.id);
+					const props = derived([], () => {
+						const columnOption = filtersColumnOptions[cell.id];
+						if (columnOption === undefined) {
+							return undefined;
+						}
+						if (columnOption.initValue !== undefined) {
+							filterValue.set(columnOption.initValue);
+						}
+						const values = derived(tableState.rows, ($rows) =>
+							$rows.map((row) => row.cellForId[cell.id].value)
+						);
+						const render = columnOption.render({
+							id: cell.id,
+							filterValue,
+							values,
+							...tableState,
+						});
+						return { render };
 					});
-					return { render };
-				});
-				return { props };
+					return { props };
+				},
 			},
-		},
+		};
 	};
-};
 
 export const matchFilter: ColumnFilterFn<unknown, unknown> = ({ filterValue, value }) => {
 	if (filterValue === undefined) {

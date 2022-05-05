@@ -1,6 +1,5 @@
 import type { BodyCell, BodyCellAttributes } from '$lib/bodyCells';
 import type { BodyRow, BodyRowAttributes } from '$lib/bodyRows';
-import type { Column } from '$lib/columns';
 import type { HeaderCell, HeaderCellAttributes } from '$lib/headerCells';
 import type { HeaderRow, HeaderRowAttributes } from '$lib/headerRows';
 import type { UseTableState } from '$lib/useTable';
@@ -15,11 +14,24 @@ export type UseTablePlugin<
 		ColumnOptions: any;
 		TablePropSet: AnyTablePropSet;
 	}
+> = (init: UseTablePluginInit<Item>) => UseTablePluginInstance<Item, Config>;
+
+export type UseTablePluginInit<Item> = {
+	pluginName: string;
+	tableState: UseTableState<Item>;
+};
+
+export type UseTablePluginInstance<
+	Item,
+	Config extends {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		PluginState: any;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		ColumnOptions: any;
+		TablePropSet: AnyTablePropSet;
+	}
 > = {
 	pluginState: Config['PluginState'];
-	onPluginInit?: ({ name }: PluginInitEvent) => void;
-	onCreateColumns?: (columns: Column<Item>[]) => void;
-	onUse?: (tableState: UseTableState<Item>) => void;
 	sortFn?: Readable<SortFn<Item>>;
 	filterFn?: Readable<FilterFn<Item>>;
 	visibleColumnIdsFn?: Readable<VisibleColumnIdsFn>;
@@ -27,14 +39,21 @@ export type UseTablePlugin<
 	hooks?: TableHooks<Item, Config['TablePropSet']>;
 };
 
-export type PluginInitEvent = {
-	name: string;
-};
-
 export type AnyPlugins = Record<
 	string,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	UseTablePlugin<any, { PluginState: any; ColumnOptions: any; TablePropSet: AnyTablePropSet }>
+>;
+
+export type AnyPluginInstances = Record<
+	string,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	UseTablePluginInstance<
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		any,
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		{ PluginState: any; ColumnOptions: any; TablePropSet: AnyTablePropSet }
+	>
 >;
 
 type SortFn<Item> = (a: BodyRow<Item>, b: BodyRow<Item>) => number;
@@ -87,7 +106,7 @@ export type ElementHook<Props> = {
 };
 
 export type PluginStates<Plugins extends AnyPlugins> = {
-	[K in keyof Plugins]: Plugins[K]['pluginState'];
+	[K in keyof Plugins]: ReturnType<Plugins[K]>['pluginState'];
 };
 
 type TablePropSetForPluginKey<Plugins extends AnyPlugins> = {
@@ -103,5 +122,5 @@ export type PluginTablePropSet<Plugins extends AnyPlugins> = {
 };
 
 export type PluginColumnConfigs<Plugins extends AnyPlugins> = Partial<{
-	[K in keyof Plugins]: Plugins[K]['columnConfig'];
+	[K in keyof Plugins]: ReturnType<Plugins[K]>['columnConfig'];
 }>;

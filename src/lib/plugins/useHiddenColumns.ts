@@ -11,26 +11,28 @@ export type HiddenColumnsPropSet = NewTablePropSet<{
 	};
 }>;
 
-export const useHiddenColumns = <Item>(): UseTablePlugin<
-	Item,
-	{
-		PluginState: HiddenColumnsState;
-		ColumnOptions: never;
-		TablePropSet: HiddenColumnsPropSet;
-	}
-> => {
-	const hiddenColumnIds = writable<string[]>([]);
+export const useHiddenColumns =
+	<Item>(): UseTablePlugin<
+		Item,
+		{
+			PluginState: HiddenColumnsState;
+			ColumnOptions: never;
+			TablePropSet: HiddenColumnsPropSet;
+		}
+	> =>
+	() => {
+		const hiddenColumnIds = writable<string[]>([]);
 
-	const pluginState: HiddenColumnsState = { hiddenColumnIds };
+		const pluginState: HiddenColumnsState = { hiddenColumnIds };
 
-	const visibleColumnIdsFn = derived(hiddenColumnIds, ($hiddenColumnIds) => {
-		return (ids: string[]) => {
-			return ids.filter((id) => !$hiddenColumnIds.includes(id));
+		const visibleColumnIdsFn = derived(hiddenColumnIds, ($hiddenColumnIds) => {
+			return (ids: string[]) => {
+				return ids.filter((id) => !$hiddenColumnIds.includes(id));
+			};
+		});
+
+		return {
+			pluginState,
+			visibleColumnIdsFn,
 		};
-	});
-
-	return {
-		pluginState,
-		visibleColumnIdsFn,
 	};
-};

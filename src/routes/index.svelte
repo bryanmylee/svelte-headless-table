@@ -14,7 +14,7 @@
 	import { useHiddenColumns } from '$lib/plugins/useHiddenColumns';
 	import { useSortBy } from '$lib/plugins/useSortBy';
 	import { useTable } from '$lib/useTable';
-	import { derived, readable, writable } from 'svelte/store';
+	import { derived, writable } from 'svelte/store';
 	import Italic from './_Italic.svelte';
 	import Tick from './_Tick.svelte';
 	import TextFilter from './_TextFilter.svelte';
@@ -33,8 +33,7 @@
 
 	const columns = table.createColumns([
 		table.group({
-			header: ({ filteredRows }) =>
-				derived(filteredRows, (_rows) => `Name (${_rows.length} samples)`),
+			header: ({ rows }) => derived(rows, (_rows) => `Name (${_rows.length} samples)`),
 			columns: [
 				table.column({
 					header: createRender(Italic, { text: 'First Name' }),
@@ -42,8 +41,8 @@
 					plugins: {
 						filter: {
 							fn: textPrefixFilter,
-							render: ({ filterValue, filteredValues }) =>
-								createRender(TextFilter, { filterValue, filteredValues }),
+							render: ({ filterValue, values }) =>
+								createRender(TextFilter, { filterValue, values }),
 						},
 					},
 				}),
@@ -80,8 +79,8 @@
 						filter: {
 							fn: numberRangeFilter,
 							initValue: [null, null],
-							render: ({ filterValue, filteredValues }) =>
-								createRender(NumberRangeFilter, { filterValue, filteredValues }),
+							render: ({ filterValue, values }) =>
+								createRender(NumberRangeFilter, { filterValue, preFilteredValues: values }),
 						},
 					},
 				}),

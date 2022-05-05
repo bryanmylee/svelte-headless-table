@@ -4,7 +4,6 @@ import { getDataColumns, type Column } from './columns';
 import type { Table } from './createTable';
 import { getHeaderRows, HeaderRow } from './headerRows';
 import type { AnyPlugins, PluginStates } from './types/UseTablePlugin';
-import { nonNullish } from './utils/filter';
 
 export type UseTableProps<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	columns: Column<Item, Plugins>[];
@@ -13,8 +12,8 @@ export type UseTableProps<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface UseTableState<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	data: Writable<Item[]>;
+	columns: Column<Item, Plugins>[];
 	rows: Readable<BodyRow<Item>[]>;
-	filteredRows: Readable<BodyRow<Item>[]>;
 }
 
 export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
@@ -23,86 +22,93 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 ) => {
 	const { data, plugins } = table;
 
-	const pluginStates = Object.fromEntries(
-		Object.entries(plugins).map(([key, plugin]) => [key, plugin.pluginState])
-	) as PluginStates<Plugins>;
+	// const sortFns = Object.values(plugins)
+	// 	.map((plugin) => plugin.sortFn)
+	// 	.filter(nonNullish);
 
-	const sortFns = Object.values(plugins)
-		.map((plugin) => plugin.sortFn)
-		.filter(nonNullish);
+	// const filterFns = Object.values(plugins)
+	// 	.map((plugin) => plugin.filterFn)
+	// 	.filter(nonNullish);
 
-	const filterFns = Object.values(plugins)
-		.map((plugin) => plugin.filterFn)
-		.filter(nonNullish);
-
-	const visibleColumnIdsFns = Object.values(plugins)
-		.map((plugin) => plugin.visibleColumnIdsFn)
-		.filter(nonNullish);
+	// const visibleColumnIdsFns = Object.values(plugins)
+	// 	.map((plugin) => plugin.visibleColumnIdsFn)
+	// 	.filter(nonNullish);
 
 	const flatColumns = readable(getDataColumns(columns));
+	const visibleColumns = flatColumns;
 
-	const visibleColumns = derived(
-		[flatColumns, ...visibleColumnIdsFns],
-		([$flatColumns, ...$visibleColumnIdsFns]) => {
-			let ids = $flatColumns.map((c) => c.id);
-			$visibleColumnIdsFns.forEach((fn) => {
-				ids = fn(ids);
-			});
-			return ids.map((id) => $flatColumns.find((c) => c.id === id)).filter(nonNullish);
-		}
-	);
+	// const visibleColumns = derived(
+	// 	[flatColumns, ...visibleColumnIdsFns],
+	// 	([$flatColumns, ...$visibleColumnIdsFns]) => {
+	// 		let ids = $flatColumns.map((c) => c.id);
+	// 		$visibleColumnIdsFns.forEach((fn) => {
+	// 			ids = fn(ids);
+	// 		});
+	// 		return ids.map((id) => $flatColumns.find((c) => c.id === id)).filter(nonNullish);
+	// 	}
+	// );
 
-	const originalBodyRows = derived([data, visibleColumns], ([$data, $orderedFlatColumns]) => {
-		return getBodyRows($data, $orderedFlatColumns);
+	const bodyRows = derived([data, visibleColumns], ([$data, $visibleColumns]) => {
+		return getBodyRows($data, $visibleColumns);
 	});
 
-	const filteredBodyRows = derived(
-		[originalBodyRows, ...filterFns],
-		([$bodyRows, ...$filterFns]) => {
-			let filteredRows = [...$bodyRows];
-			$filterFns.forEach((filterFn) => {
-				filteredRows = filteredRows.filter(filterFn);
-			});
-			return filteredRows;
-		}
-	);
+	// const filteredBodyRows = derived(
+	// 	[originalBodyRows, ...filterFns],
+	// 	([$bodyRows, ...$filterFns]) => {
+	// 		let filteredRows = [...$bodyRows];
+	// 		$filterFns.forEach((filterFn) => {
+	// 			filteredRows = filteredRows.filter(filterFn);
+	// 		});
+	// 		return filteredRows;
+	// 	}
+	// );
 
-	const sortedBodyRows = derived([filteredBodyRows, ...sortFns], ([$bodyRows, ...$sortFns]) => {
-		const sortedRows = [...$bodyRows];
-		$sortFns.forEach((sortFn) => {
-			sortedRows.sort(sortFn);
-		});
-		return sortedRows;
-	});
+	// const sortedBodyRows = derived([filteredBodyRows, ...sortFns], ([$bodyRows, ...$sortFns]) => {
+	// 	const sortedRows = [...$bodyRows];
+	// 	$sortFns.forEach((sortFn) => {
+	// 		sortedRows.sort(sortFn);
+	// 	});
+	// 	return sortedRows;
+	// });
 
-	const state: UseTableState<Item, Plugins> = {
+	const tableState: UseTableState<Item, Plugins> = {
 		data,
-		rows: originalBodyRows,
-		filteredRows: filteredBodyRows,
+		rows: bodyRows,
+		columns,
 	};
 
-	Object.values(plugins).forEach((plugin) => {
-		plugin.onUse?.(state);
-	});
+	const pluginInstances = Object.fromEntries(
+		Object.entries(plugins).map(([pluginName, plugin]) => [
+			pluginName,
+			plugin({ pluginName, tableState }),
+		])
+	);
 
-	const headerRows = derived(visibleColumns, ($orderedFlatColumns) => {
+	const pluginStates = Object.fromEntries(
+		Object.entries(pluginInstances).map(([key, pluginInstance]) => [
+			key,
+			pluginInstance.pluginState,
+		])
+	) as PluginStates<Plugins>;
+
+	const headerRows = derived(visibleColumns, ($visibleColumns) => {
 		const $headerRows = getHeaderRows(
 			columns,
-			$orderedFlatColumns.map((c) => c.id)
+			$visibleColumns.map((c) => c.id)
 		);
 		// Inject state.
 		$headerRows.forEach((row) => {
-			row.injectState(state);
+			row.injectState(tableState);
 			row.cells.forEach((cell) => {
-				cell.injectState(state);
+				cell.injectState(tableState);
 			});
 		});
 		// Apply plugin component hooks.
-		Object.entries(plugins).forEach(([pluginName, plugin]) => {
+		Object.entries(pluginInstances).forEach(([pluginName, pluginInstance]) => {
 			$headerRows.forEach((row) => {
 				row.cells.forEach((cell) => {
-					if (plugin.hooks?.['thead.tr.th'] !== undefined) {
-						cell.applyHook(pluginName, plugin.hooks['thead.tr.th'](cell));
+					if (pluginInstance.hooks?.['thead.tr.th'] !== undefined) {
+						cell.applyHook(pluginName, pluginInstance.hooks['thead.tr.th'](cell));
 					}
 				});
 			});
@@ -113,7 +119,7 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	return {
 		visibleColumns,
 		headerRows,
-		bodyRows: sortedBodyRows,
+		bodyRows: bodyRows,
 		pluginStates,
 	};
 };
