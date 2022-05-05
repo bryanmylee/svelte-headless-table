@@ -4,7 +4,8 @@ import { compare } from '$lib/utils/compare';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 
 export interface SortByConfig {
-	multiSort?: boolean;
+	disableMultiSort?: boolean;
+	isMultiSortEvent?: (event: Event) => boolean;
 }
 
 export interface SortByState<Item> {
@@ -15,7 +16,7 @@ export interface SortByState<Item> {
 export type SortByPropSet = NewTablePropSet<{
 	'thead.tr.th': {
 		order: 'asc' | 'desc' | undefined;
-		toggle: () => void;
+		toggle: (event: Event) => void;
 	};
 }>;
 
@@ -26,7 +27,7 @@ export interface SortKey {
 
 export const useSortKeys = (initKeys: SortKey[]): WritableSortKeys => {
 	const { subscribe, update, set } = writable(initKeys);
-	const toggleId = (id: string, { multiSort = true }: SortByConfig = {}) => {
+	const toggleId = (id: string, { multiSort = true }: ToggleOptions = {}) => {
 		update(($sortKeys) => {
 			const keyIdx = $sortKeys.findIndex((key) => key.id === id);
 			if (!multiSort) {
@@ -61,12 +62,24 @@ export const useSortKeys = (initKeys: SortKey[]): WritableSortKeys => {
 	};
 };
 
+interface ToggleOptions {
+	multiSort?: boolean;
+}
+
 export type WritableSortKeys = Writable<SortKey[]> & {
-	toggleId: (id: string, config: SortByConfig) => void;
+	toggleId: (id: string, options: ToggleOptions) => void;
+};
+
+const shiftClickIsMultiSortEvent = (event: Event) => {
+	if (!(event instanceof MouseEvent)) return false;
+	return event.shiftKey;
 };
 
 export const useSortBy =
-	<Item>({ multiSort = true }: SortByConfig = {}): UseTablePlugin<
+	<Item>({
+		disableMultiSort = false,
+		isMultiSortEvent = shiftClickIsMultiSortEvent,
+	}: SortByConfig = {}): UseTablePlugin<
 		Item,
 		{
 			PluginState: SortByState<Item>;
@@ -117,10 +130,11 @@ export const useSortBy =
 				'thead.tr.th': (cell) => {
 					const props = derived(sortKeys, ($sortKeys) => {
 						const key = $sortKeys.find((k) => k.id === cell.id);
-						const toggle = () => {
-							if (cell.isData) {
-								sortKeys.toggleId(cell.id, { multiSort });
-							}
+						const toggle = (event: Event) => {
+							if (!cell.isData) return;
+							sortKeys.toggleId(cell.id, {
+								multiSort: disableMultiSort ? false : isMultiSortEvent(event),
+							});
 						};
 						return {
 							order: key?.order,
