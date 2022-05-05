@@ -4,10 +4,9 @@
 
 	export let filterValue: Writable<[number | null, number | null]>;
 
-	export let id: string | undefined = undefined;
-	export let preFilteredValues: Readable<unknown[]>;
-	$: min = Math.min(...$preFilteredValues.filter(isNumber));
-	$: max = Math.max(...$preFilteredValues.filter(isNumber));
+	export let values: Readable<unknown[]>;
+	$: min = $values.length === 0 ? 0 : Math.min(...$values.filter(isNumber));
+	$: max = $values.length === 0 ? 0 : Math.max(...$values.filter(isNumber));
 </script>
 
 <div>

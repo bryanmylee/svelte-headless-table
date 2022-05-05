@@ -67,8 +67,8 @@
 					plugins: {
 						filter: {
 							fn: matchFilter,
-							render: ({ filterValue, values }) =>
-								createRender(SelectFilter, { filterValue, values }),
+							render: ({ filterValue, preFilteredValues }) =>
+								createRender(SelectFilter, { filterValue, preFilteredValues }),
 						},
 					},
 				}),
@@ -80,7 +80,7 @@
 							fn: numberRangeFilter,
 							initValue: [null, null],
 							render: ({ filterValue, values }) =>
-								createRender(NumberRangeFilter, { filterValue, preFilteredValues: values }),
+								createRender(NumberRangeFilter, { filterValue, values }),
 						},
 					},
 				}),
@@ -92,7 +92,7 @@
 		}),
 	]);
 
-	const { visibleColumns, headerRows, bodyRows, pluginStates } = useTable(table, { columns });
+	const { visibleColumns, headerRows, rows, pluginStates } = useTable(table, { columns });
 
 	const { sortKeys } = pluginStates.sort;
 	const { filterValues } = pluginStates.filter;
@@ -131,9 +131,9 @@
 		{/each}
 	</thead>
 	<tbody>
-		{#each $bodyRows as bodyRow (bodyRow.id)}
+		{#each $rows as row (row.id)}
 			<tr>
-				{#each bodyRow.cells as cell (cell.id)}
+				{#each row.cells as cell (cell.id)}
 					<Subscribe to={cell} let:attrs let:props>
 						<td>
 							<Render of={cell.render()} />

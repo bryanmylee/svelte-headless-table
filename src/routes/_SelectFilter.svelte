@@ -4,8 +4,8 @@
 	import type { Readable, Writable } from 'svelte/store';
 
 	export let filterValue: Writable<string>;
-	export let values: Readable<unknown[]>;
-	$: uniqueValues = getDistinct($values);
+	export let preFilteredValues: Readable<unknown[]>;
+	$: uniqueValues = getDistinct($preFilteredValues);
 </script>
 
 <select bind:value={$filterValue} on:click|stopPropagation>
