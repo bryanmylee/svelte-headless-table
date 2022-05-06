@@ -1,4 +1,3 @@
-import type { Writable } from 'svelte/store';
 import {
 	DataColumn,
 	getDataColumnIds,
@@ -12,12 +11,13 @@ import {
 	type GroupColumnInit,
 } from './columns';
 import type { AnyPlugins } from './types/UseTablePlugin';
+import type { ReadOrWritable } from './utils/store';
 import { getDuplicates } from './utils/array';
 
 export class Table<Item, Plugins extends AnyPlugins = AnyPlugins> {
-	data: Writable<Item[]>;
+	data: ReadOrWritable<Item[]>;
 	plugins: Plugins;
-	constructor(data: Writable<Item[]>, plugins: Plugins) {
+	constructor(data: ReadOrWritable<Item[]>, plugins: Plugins) {
 		this.data = data;
 		this.plugins = plugins;
 	}
@@ -53,7 +53,7 @@ export class Table<Item, Plugins extends AnyPlugins = AnyPlugins> {
 }
 
 export const createTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
-	data: Writable<Item[]>,
+	data: ReadOrWritable<Item[]>,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	plugins: Plugins = {} as any
 ): Table<Item, Plugins> => {
