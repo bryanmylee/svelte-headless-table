@@ -1,24 +1,20 @@
 <script lang="ts">
-	import Render from '$lib/components/Render.svelte';
-	import { Subscribe } from 'svelte-subscribe';
-	import { createTable } from '$lib/createTable';
-	import { getShuffled } from '$lib/utils/array';
-	import { createSamples } from './_createSamples';
+	import { derived, writable } from 'svelte/store';
+	import { Render, Subscribe, createTable, createRender, useTable } from '$lib';
 	import {
+		useColumnFilters,
+		useColumnOrder,
+		useHiddenColumns,
+		useSortBy,
 		matchFilter,
 		numberRangeFilter,
 		textPrefixFilter,
-		useColumnFilters,
-	} from '$lib/plugins/useColumnFilters';
-	import { useColumnOrder } from '$lib/plugins/useColumnOrder';
-	import { useHiddenColumns } from '$lib/plugins/useHiddenColumns';
-	import { useSortBy } from '$lib/plugins/useSortBy';
-	import { useTable } from '$lib/useTable';
-	import { derived, writable } from 'svelte/store';
+	} from '$lib/plugins';
+	import { getShuffled } from './_getShuffled';
+	import { createSamples } from './_createSamples';
 	import Italic from './_Italic.svelte';
 	import Tick from './_Tick.svelte';
 	import TextFilter from './_TextFilter.svelte';
-	import { createRender } from '$lib/render';
 	import NumberRangeFilter from './_NumberRangeFilter.svelte';
 	import SelectFilter from './_SelectFilter.svelte';
 
