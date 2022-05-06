@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Render from '$lib/components/Render.svelte';
-	import Subscribe from '$lib/components/Subscribe.svelte';
+	import { Subscribe } from 'svelte-subscribe';
 	import { createTable } from '$lib/createTable';
 	import { getShuffled } from '$lib/utils/array';
 	import { createSamples } from './_createSamples';
@@ -97,7 +97,6 @@
 	const { sortKeys } = pluginStates.sort;
 	const { filterValues } = pluginStates.filter;
 	const { columnIdOrder } = pluginStates.orderColumns;
-	console.log($columnIdOrder, $visibleColumns);
 	$columnIdOrder = $visibleColumns.map((c) => c.id);
 	const { hiddenColumnIds } = pluginStates.hideColumns;
 	$hiddenColumnIds = ['progress'];
@@ -112,7 +111,7 @@
 		{#each $headerRows as headerRow (headerRow.id)}
 			<tr>
 				{#each headerRow.cells as cell (cell.id)}
-					<Subscribe to={cell} let:attrs let:props>
+					<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
 						<th {...attrs} on:click={props.sort.toggle}>
 							<div>
 								<Render of={cell.render()} />
@@ -135,7 +134,7 @@
 		{#each $rows as row (row.id)}
 			<tr>
 				{#each row.cells as cell (cell.id)}
-					<Subscribe to={cell} let:attrs let:props>
+					<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
 						<td>
 							<Render of={cell.render()} />
 						</td>
