@@ -1,10 +1,17 @@
 import { derived, readable, writable, type Readable, type Writable } from 'svelte/store';
 import { BodyRow, getBodyRows, getColumnedBodyRows } from './bodyRows';
-import { getDataColumns, type Column } from './columns';
+import { DataColumn, getDataColumns, type Column } from './columns';
 import type { Table } from './createTable';
 import { getHeaderRows, HeaderRow } from './headerRows';
-import type { AnyPlugins, PluginStates, TransformRowsFn } from './types/UseTablePlugin';
-import { nonNullish } from './utils/filter';
+import type {
+	AnyPlugins,
+	AnyTablePropSet,
+	PluginStates,
+	TransformFlatColumnsFn,
+	TransformRowsFn,
+	UseTablePluginInstance,
+} from './types/UseTablePlugin';
+import { nonUndefined } from './utils/filter';
 
 export type UseTableProps<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	columns: Column<Item, Plugins>[];
@@ -14,6 +21,7 @@ export type UseTableProps<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 export interface UseTableState<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	data: Writable<Item[]>;
 	columns: Column<Item, Plugins>[];
+	visibleColumns: Readable<DataColumn<Item, Plugins>[]>;
 	originalRows: Readable<BodyRow<Item>[]>;
 	rows: Readable<BodyRow<Item>[]>;
 }
@@ -31,11 +39,13 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	});
 
 	// _stores need to be defined first to pass into plugins for initialization.
+	const _visibleColumns = writable<DataColumn<Item, Plugins>[]>([]);
 	const _rows = writable<BodyRow<Item>[]>([]);
 	const tableState: UseTableState<Item, Plugins> = {
 		data,
-		originalRows,
 		columns,
+		visibleColumns: _visibleColumns,
+		originalRows,
 		rows: _rows,
 	};
 
@@ -44,7 +54,18 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 			pluginName,
 			plugin({ pluginName, tableState }),
 		])
-	);
+	) as {
+		[K in keyof Plugins]: UseTablePluginInstance<
+			Item,
+			{
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				PluginState: any;
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				ColumnOptions: any;
+				TablePropSet: AnyTablePropSet;
+			}
+		>;
+	};
 
 	const pluginStates = Object.fromEntries(
 		Object.entries(pluginInstances).map(([key, pluginInstance]) => [
@@ -53,44 +74,49 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		])
 	) as PluginStates<Plugins>;
 
-	const visibleColumnIdsFns = Object.values(pluginInstances)
-		.map((pluginInstances) => pluginInstances.visibleColumnIdsFn)
-		.filter(nonNullish);
+	const transformFlatColumnsFns: Readable<TransformFlatColumnsFn<Item>>[] = Object.values(
+		pluginInstances
+	)
+		.map((pluginInstance) => pluginInstance.transformFlatColumnsFn)
+		.filter(nonUndefined);
 
 	const visibleColumns = derived(
-		[flatColumns, ...visibleColumnIdsFns],
-		([$flatColumns, ...$visibleColumnIdsFns]) => {
-			let ids = $flatColumns.map((c) => c.id);
-			$visibleColumnIdsFns.forEach((fn) => {
-				ids = fn(ids);
+		[flatColumns, ...transformFlatColumnsFns],
+		([$flatColumns, ...$transformFlatColumnsFns]) => {
+			let columns: DataColumn<Item, Plugins>[] = [...$flatColumns];
+			$transformFlatColumnsFns.forEach((fn) => {
+				columns = fn(columns) as DataColumn<Item, Plugins>[];
 			});
-			return ids.map((id) => $flatColumns.find((c) => c.id === id)).filter(nonNullish);
+			_visibleColumns.set(columns);
+			return columns;
+		}
+	);
+
+	const columnedRows = derived(
+		[originalRows, visibleColumns],
+		([$originalRows, $visibleColumns]) => {
+			return getColumnedBodyRows(
+				$originalRows,
+				$visibleColumns.map((c) => c.id)
+			);
 		}
 	);
 
 	const transformRowsFns: Readable<TransformRowsFn<Item>>[] = Object.values(pluginInstances)
 		.map((pluginInstance) => pluginInstance.transformRowsFn)
-		.filter(nonNullish);
+		.filter(nonUndefined);
 
-	const transformedRows = derived(
-		[originalRows, ...transformRowsFns],
-		([$originalRows, ...$transformFowsFns]) => {
-			let transformedRows: BodyRow<Item, Plugins>[] = [...$originalRows];
+	const rows = derived(
+		[columnedRows, ...transformRowsFns],
+		([$columnedRows, ...$transformFowsFns]) => {
+			let transformedRows: BodyRow<Item, Plugins>[] = [...$columnedRows];
 			$transformFowsFns.forEach((fn) => {
 				transformedRows = fn(transformedRows) as BodyRow<Item, Plugins>[];
 			});
+			_rows.set(transformedRows);
 			return transformedRows;
 		}
 	);
-
-	const rows = derived([transformedRows, visibleColumns], ([$transformedRows, $visibleColumns]) => {
-		const columnedBodyRows = getColumnedBodyRows(
-			$transformedRows,
-			$visibleColumns.map((c) => c.id)
-		);
-		_rows.set(columnedBodyRows);
-		return columnedBodyRows;
-	});
 
 	const headerRows = derived(visibleColumns, ($visibleColumns) => {
 		const $headerRows = getHeaderRows(

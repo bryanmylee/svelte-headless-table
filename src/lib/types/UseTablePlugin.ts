@@ -1,5 +1,6 @@
 import type { BodyCell, BodyCellAttributes } from '$lib/bodyCells';
 import type { BodyRow, BodyRowAttributes } from '$lib/bodyRows';
+import type { DataColumn } from '$lib/columns';
 import type { HeaderCell, HeaderCellAttributes } from '$lib/headerCells';
 import type { HeaderRow, HeaderRowAttributes } from '$lib/headerRows';
 import type { UseTableState } from '$lib/useTable';
@@ -32,8 +33,8 @@ export type UseTablePluginInstance<
 	}
 > = {
 	pluginState: Config['PluginState'];
+	transformFlatColumnsFn?: Readable<TransformFlatColumnsFn<Item>>;
 	transformRowsFn?: Readable<TransformRowsFn<Item>>;
-	visibleColumnIdsFn?: Readable<VisibleColumnIdsFn>;
 	columnOptions?: Config['ColumnOptions'];
 	hooks?: TableHooks<Item, Config['TablePropSet']>;
 };
@@ -55,8 +56,8 @@ export type AnyPluginInstances = Record<
 	>
 >;
 
+export type TransformFlatColumnsFn<Item> = (flatColumns: DataColumn<Item>[]) => DataColumn<Item>[];
 export type TransformRowsFn<Item> = (rows: BodyRow<Item>[]) => BodyRow<Item>[];
-export type VisibleColumnIdsFn = (ids: string[]) => string[];
 
 export type Components<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	'thead.tr': HeaderRow<Item, Plugins>;
@@ -91,7 +92,7 @@ export type NewTablePropSet<
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnyTablePropSet = TablePropSet<any>;
+export type AnyTablePropSet = TablePropSet<any>;
 
 export type TableHooks<Item, PropSet extends AnyTablePropSet = AnyTablePropSet> = {
 	[ComponentKey in keyof Components<Item>]?: (

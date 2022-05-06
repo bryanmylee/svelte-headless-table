@@ -71,14 +71,14 @@ export const getBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 
 export const getColumnedBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	rows: BodyRow<Item, Plugins>[],
-	visibleColumnIds: string[]
+	columnIdOrder: string[]
 ): BodyRow<Item, Plugins>[] => {
 	const columnedRows: BodyRow<Item, Plugins>[] = rows.map(
 		({ id, original }) => new BodyRow({ id, original, cells: [], cellForId: {} })
 	);
-	if (rows.length === 0) return rows;
+	if (rows.length === 0 || columnIdOrder.length === 0) return rows;
 	rows.forEach((row, rowIdx) => {
-		const visibleCells = visibleColumnIds.map((cid) => {
+		const visibleCells = columnIdOrder.map((cid) => {
 			const cell = row.cellForId[cid];
 			return new BodyCell({
 				row: columnedRows[rowIdx],

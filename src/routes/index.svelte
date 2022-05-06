@@ -22,13 +22,13 @@
 	import NumberRangeFilter from './_NumberRangeFilter.svelte';
 	import SelectFilter from './_SelectFilter.svelte';
 
-	const data = writable(createSamples(100));
+	const data = writable(createSamples(10));
 
 	const table = createTable(data, {
 		sort: useSortBy(),
 		filter: useColumnFilters(),
 		orderColumns: useColumnOrder(),
-		hideColumns: useHiddenColumns(),
+		// hideColumns: useHiddenColumns(),
 	});
 
 	const columns = table.createColumns([
@@ -97,9 +97,10 @@
 	const { sortKeys } = pluginStates.sort;
 	const { filterValues } = pluginStates.filter;
 	const { columnIdOrder } = pluginStates.orderColumns;
+	console.log($columnIdOrder, $visibleColumns);
 	$columnIdOrder = $visibleColumns.map((c) => c.id);
-	const { hiddenColumnIds } = pluginStates.hideColumns;
-	$hiddenColumnIds = ['progress'];
+	// const { hiddenColumnIds } = pluginStates.hideColumns;
+	// $hiddenColumnIds = ['progress'];
 </script>
 
 <h1>svelte-tables</h1>
@@ -150,7 +151,7 @@
 			sortKeys: $sortKeys,
 			filterValues: $filterValues,
 			columnIdOrder: $columnIdOrder,
-			hiddenColumnIds: $hiddenColumnIds,
+			// hiddenColumnIds: $hiddenColumnIds,
 		},
 		null,
 		2
