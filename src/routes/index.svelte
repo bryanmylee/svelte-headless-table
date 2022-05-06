@@ -1,104 +1,164 @@
 <script lang="ts">
-	import { useTable, Render, createColumns, createDataColumn, createGroup } from '$lib';
+	import Render from '$lib/components/Render.svelte';
+	import { Subscribe } from 'svelte-subscribe';
+	import { createTable } from '$lib/createTable';
+	import { getShuffled } from '$lib/utils/array';
+	import { createSamples } from './_createSamples';
+	import {
+		matchFilter,
+		numberRangeFilter,
+		textPrefixFilter,
+		useColumnFilters,
+	} from '$lib/plugins/useColumnFilters';
+	import { useColumnOrder } from '$lib/plugins/useColumnOrder';
+	import { useHiddenColumns } from '$lib/plugins/useHiddenColumns';
+	import { useSortBy } from '$lib/plugins/useSortBy';
+	import { useTable } from '$lib/useTable';
+	import { derived, writable } from 'svelte/store';
 	import Italic from './_Italic.svelte';
-	import { sampleRows, type SampleRow } from '$lib/sampleRows';
-	import { mean, sum } from '$lib/utils/math';
+	import Tick from './_Tick.svelte';
+	import TextFilter from './_TextFilter.svelte';
+	import { createRender } from '$lib/render';
+	import NumberRangeFilter from './_NumberRangeFilter.svelte';
+	import SelectFilter from './_SelectFilter.svelte';
 
-	let columns = createColumns<SampleRow>([
-		createGroup({
-			header: 'Name',
+	const data = writable(createSamples(10));
+
+	const table = createTable(data, {
+		sort: useSortBy(),
+		filter: useColumnFilters(),
+		orderColumns: useColumnOrder(),
+		hideColumns: useHiddenColumns(),
+	});
+
+	const columns = table.createColumns([
+		table.group({
+			header: ({ rows }) => derived(rows, (_rows) => `Name (${_rows.length} samples)`),
 			columns: [
-				createDataColumn({
-					header: 'First Name',
-					key: 'firstName',
+				table.column({
+					header: createRender(Italic, { text: 'First Name' }),
+					accessor: 'firstName',
+					plugins: {
+						filter: {
+							fn: textPrefixFilter,
+							render: ({ filterValue, values }) =>
+								createRender(TextFilter, { filterValue, values }),
+						},
+					},
 				}),
-				createDataColumn({
-					header: 'Last Name',
-					key: 'lastName',
+				table.column({
+					header: () => 'Last Name',
+					accessor: 'lastName',
+					plugins: {},
 				}),
 			],
 		}),
-		createGroup({
+		table.group({
 			header: 'Info',
-			footer: 'Summary',
 			columns: [
-				createDataColumn({
+				table.column({
 					header: 'Age',
-					footer: ({ data }) => `Average: ${mean(...data.map((d) => d['age']))}`,
-					key: 'age',
+					accessor: 'age',
 				}),
-				createDataColumn({
-					header: 'Visits',
-					footer: ({ data }) => `Total: ${sum(...data.map((d) => d['visits']))}`,
-					key: 'visits',
-				}),
-				createDataColumn({
-					header: {
-						component: Italic,
-						props: {
-							text: 'Status',
+				table.column({
+					header: createRender(Tick),
+					id: 'status',
+					accessor: (item) => item.status,
+					plugins: {
+						filter: {
+							fn: matchFilter,
+							render: ({ filterValue, preFilteredValues }) =>
+								createRender(SelectFilter, { filterValue, preFilteredValues }),
 						},
 					},
-					cell: ({ value }) => ({
-						component: Italic,
-						props: {
-							text: value,
-						},
-					}),
-					key: 'status',
 				}),
-				createDataColumn({
+				table.column({
+					header: 'Visits',
+					accessor: 'visits',
+					plugins: {
+						filter: {
+							fn: numberRangeFilter,
+							initValue: [null, null],
+							render: ({ filterValue, values }) =>
+								createRender(NumberRangeFilter, { filterValue, values }),
+						},
+					},
+				}),
+				table.column({
 					header: 'Profile Progress',
-					footer: ({ data }) => `Average: ${mean(...data.map((d) => d['progress']))}`,
-					key: 'progress',
+					accessor: 'progress',
 				}),
 			],
 		}),
 	]);
 
-	const { headerRows, dataRows, footerRows } = useTable({ data: sampleRows, columns });
+	const { visibleColumns, headerRows, rows, pluginStates } = useTable(table, { columns });
+
+	const { sortKeys } = pluginStates.sort;
+	const { filterValues } = pluginStates.filter;
+	const { columnIdOrder } = pluginStates.orderColumns;
+	$columnIdOrder = $visibleColumns.map((c) => c.id);
+	const { hiddenColumnIds } = pluginStates.hideColumns;
+	$hiddenColumnIds = ['progress'];
 </script>
 
-<h1>svelte-tables</h1>
+<h1>svelte-headless-table</h1>
+
+<button on:click={() => ($columnIdOrder = getShuffled($columnIdOrder))}>Shuffle columns</button>
 
 <table>
 	<thead>
-		{#each $headerRows as headerRow}
+		{#each $headerRows as headerRow (headerRow.id)}
 			<tr>
-				{#each headerRow.cells as cell}
-					<th {...cell.attrs()}>
-						<Render {...cell.render()} />
-					</th>
+				{#each headerRow.cells as cell (cell.id)}
+					<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
+						<th {...attrs} on:click={props.sort.toggle}>
+							<div>
+								<Render of={cell.render()} />
+								{#if props.sort.order === 'asc'}
+									⬇️
+								{:else if props.sort.order === 'desc'}
+									⬆️
+								{/if}
+							</div>
+							{#if props.filter !== undefined}
+								<Render of={props.filter.render} />
+							{/if}
+						</th>
+					</Subscribe>
 				{/each}
 			</tr>
 		{/each}
 	</thead>
 	<tbody>
-		{#each $dataRows as dataRow}
+		{#each $rows as row (row.id)}
 			<tr>
-				{#each dataRow.cells as cell}
-					<td>
-						<Render {...cell.render()} />
-					</td>
+				{#each row.cells as cell (cell.id)}
+					<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
+						<td>
+							<Render of={cell.render()} />
+						</td>
+					</Subscribe>
 				{/each}
 			</tr>
 		{/each}
 	</tbody>
-	<tfoot>
-		{#each $footerRows as footerRow}
-			<tr>
-				{#each footerRow.cells as cell}
-					<td {...cell.attrs()}>
-						<Render {...cell.render()} />
-					</td>
-				{/each}
-			</tr>
-		{/each}
-	</tfoot>
 </table>
 
+<pre>{JSON.stringify(
+		{
+			sortKeys: $sortKeys,
+			filterValues: $filterValues,
+			columnIdOrder: $columnIdOrder,
+			hiddenColumnIds: $hiddenColumnIds,
+		},
+		null,
+		2
+	)}</pre>
+
 <style global>
-	* {
+	h1,
+	table {
 		font-family: sans-serif;
 	}
 

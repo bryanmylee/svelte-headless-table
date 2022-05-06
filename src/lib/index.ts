@@ -1,12 +1,9 @@
-export { useTable } from '$lib/useTable';
+// components
 export { default as Render } from '$lib/components/Render.svelte';
-export { createColumns, createDataColumn, createGroup } from '$lib/utils/createColumns';
-export type { Column, DataColumn, GroupColumn } from '$lib/models/Column';
-export type { ColumnLabel } from '$lib/types/ColumnLabel';
-export type { DataColumnDef, GroupColumnDef } from '$lib/types/ColumnDef';
-export type { DataCell } from '$lib/models/DataCell';
-export type { DataCellLabel, DataCellLabelRenderProps } from '$lib/types/DataCellLabel';
-export type { DataRow } from '$lib/models/DataRow';
-export type { FooterCell, FooterDataCell, FooterGroupCell } from '$lib/models/FooterCell';
-export type { HeaderCell, HeaderDataCell, HeaderGroupCell } from '$lib/models/HeaderCell';
-export type { RenderProps, RenderPropsComponent, RenderPropsText } from '$lib/types/RenderProps';
+export { Subscribe } from 'svelte-subscribe';
+// plugins
+export * from './plugins';
+// table core
+export { createTable } from '$lib/createTable';
+export { useTable } from '$lib/useTable';
+export { createRender, type RenderConfig } from '$lib/render';

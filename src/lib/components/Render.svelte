@@ -1,13 +1,19 @@
 <script lang="ts">
-	import type { SvelteComponent } from 'svelte';
+	import type { RenderConfig } from '$lib/render';
+	import { isReadable, Undefined } from '$lib/utils/store';
 
-	export let text: Maybe<string> = undefined;
-	export let component: Maybe<typeof SvelteComponent> = undefined;
-	export let props: Maybe<Record<string, unknown>> = undefined;
+	let rendered: RenderConfig;
+	export { rendered as of };
+
+	const readableRendered = isReadable(rendered) ? rendered : Undefined;
 </script>
 
-{#if text !== undefined}
-	{text}
-{:else if component !== undefined}
-	<svelte:component this={component} {...props} />
+{#if isReadable(rendered)}
+	<!-- Auto-subscriptions must be on a `Readable`.
+		$reactiveRendered is guaranteed to be `Readable` -->
+	{$readableRendered}
+{:else if typeof rendered === 'string'}
+	{rendered}
+{:else}
+	<svelte:component this={rendered.component} {...rendered.props ?? {}} />
 {/if}

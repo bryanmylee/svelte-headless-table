@@ -8,5 +8,3 @@ declare namespace App {
 	// interface Session {}
 	// interface Stuff {}
 }
-
-type Maybe<T> = T | undefined;
