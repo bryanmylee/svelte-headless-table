@@ -67,13 +67,14 @@ export const useColumnFilters =
 
 		const filterValues = writable<Record<string, unknown>>({});
 		const preFilteredRows = writable<BodyRow<Item>[]>([]);
+		const filteredRows = writable<BodyRow<Item>[]>([]);
 
 		const pluginState: ColumnFiltersState<Item> = { filterValues, preFilteredRows };
 
 		const transformRowsFn = derived(filterValues, ($filterValues) => {
 			return (rows: BodyRow<Item>[]) => {
 				preFilteredRows.set(rows);
-				return rows.filter((row) => {
+				const _filteredRows = rows.filter((row) => {
 					for (const [columnId, columnOption] of Object.entries(filtersColumnOptions)) {
 						const { value } = row.cellForId[columnId];
 						const filterValue = $filterValues[columnId];
@@ -87,6 +88,8 @@ export const useColumnFilters =
 					}
 					return true;
 				});
+				filteredRows.set(_filteredRows);
+				return _filteredRows;
 			};
 		});
 
@@ -107,7 +110,7 @@ export const useColumnFilters =
 						const preFilteredValues = derived(preFilteredRows, ($rows) =>
 							$rows.map((row) => row.cellForId[cell.id].value)
 						);
-						const values = derived(tableState.rows, ($rows) =>
+						const values = derived(filteredRows, ($rows) =>
 							$rows.map((row) => row.cellForId[cell.id].value)
 						);
 						const render = columnOption.render({

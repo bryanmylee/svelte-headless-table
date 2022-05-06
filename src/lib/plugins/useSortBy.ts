@@ -90,12 +90,13 @@ export const useSortBy =
 	() => {
 		const sortKeys = useSortKeys([]);
 		const preSortedRows = writable<BodyRow<Item>[]>([]);
+		const sortedRows = writable<BodyRow<Item>[]>([]);
 
 		const transformRowsFn = derived(sortKeys, ($sortKeys) => {
 			return (rows: BodyRow<Item>[]) => {
 				preSortedRows.set(rows);
-				const sortedRows = [...rows];
-				sortedRows.sort((a, b) => {
+				const _sortedRows = [...rows];
+				_sortedRows.sort((a, b) => {
 					for (const key of $sortKeys) {
 						const cellA = a.cellForId[key.id];
 						const cellB = b.cellForId[key.id];
@@ -117,7 +118,8 @@ export const useSortBy =
 					}
 					return 0;
 				});
-				return sortedRows;
+				sortedRows.set(_sortedRows);
+				return _sortedRows;
 			};
 		});
 
