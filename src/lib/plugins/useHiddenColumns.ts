@@ -1,3 +1,4 @@
+import type { DataColumn } from '$lib/columns';
 import type { NewTablePropSet, UseTablePlugin } from '$lib/types/UseTablePlugin';
 import { derived, writable, type Writable } from 'svelte/store';
 
@@ -25,14 +26,17 @@ export const useHiddenColumns =
 
 		const pluginState: HiddenColumnsState = { hiddenColumnIds };
 
-		const visibleColumnIdsFn = derived(hiddenColumnIds, ($hiddenColumnIds) => {
-			return (ids: string[]) => {
-				return ids.filter((id) => !$hiddenColumnIds.includes(id));
+		const transformFlatColumnsFn = derived(hiddenColumnIds, ($hiddenColumnIds) => {
+			return (flatColumns: DataColumn<Item>[]) => {
+				if ($hiddenColumnIds.length === 0) {
+					return flatColumns;
+				}
+				return flatColumns.filter((c) => !$hiddenColumnIds.includes(c.id));
 			};
 		});
 
 		return {
 			pluginState,
-			visibleColumnIdsFn,
+			transformFlatColumnsFn,
 		};
 	};

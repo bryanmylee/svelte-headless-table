@@ -28,7 +28,7 @@
 		sort: useSortBy(),
 		filter: useColumnFilters(),
 		orderColumns: useColumnOrder(),
-		// hideColumns: useHiddenColumns(),
+		hideColumns: useHiddenColumns(),
 	});
 
 	const columns = table.createColumns([
@@ -99,8 +99,8 @@
 	const { columnIdOrder } = pluginStates.orderColumns;
 	console.log($columnIdOrder, $visibleColumns);
 	$columnIdOrder = $visibleColumns.map((c) => c.id);
-	// const { hiddenColumnIds } = pluginStates.hideColumns;
-	// $hiddenColumnIds = ['progress'];
+	const { hiddenColumnIds } = pluginStates.hideColumns;
+	$hiddenColumnIds = ['progress'];
 </script>
 
 <h1>svelte-tables</h1>
@@ -151,7 +151,7 @@
 			sortKeys: $sortKeys,
 			filterValues: $filterValues,
 			columnIdOrder: $columnIdOrder,
-			// hiddenColumnIds: $hiddenColumnIds,
+			hiddenColumnIds: $hiddenColumnIds,
 		},
 		null,
 		2
