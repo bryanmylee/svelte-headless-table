@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { derived, writable } from 'svelte/store';
+	import { derived, readable } from 'svelte/store';
 	import { Render, Subscribe, createTable, createRender, useTable } from '$lib';
 	import {
 		useColumnFilters,
@@ -18,7 +18,7 @@
 	import NumberRangeFilter from './_NumberRangeFilter.svelte';
 	import SelectFilter from './_SelectFilter.svelte';
 
-	const data = writable(createSamples(10));
+	const data = readable(createSamples(10));
 
 	const table = createTable(data, {
 		sort: useSortBy(),
