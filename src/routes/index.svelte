@@ -102,7 +102,7 @@
 	$hiddenColumnIds = ['progress'];
 </script>
 
-<h1>svelte-tables</h1>
+<h1>svelte-headless-table</h1>
 
 <button on:click={() => ($columnIdOrder = getShuffled($columnIdOrder))}>Shuffle columns</button>
 
