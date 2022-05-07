@@ -1,6 +1,6 @@
 {
 	"name": "svelte-headless-table",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"scripts": {
 		"dev": "svelte-kit dev",
 		"build": "svelte-kit build",
@@ -14,6 +14,27 @@
 		"test": "jest --collect-coverage",
 		"test:watch": "npm test -- --watch"
 	},
+	"repository": {
+		"type": "git",
+		"url": "git+ssh://git@github.com/bryanmylee/svelte-headless-table.git"
+	},
+	"keywords": [
+		"svelte",
+		"table",
+		"datagrid",
+		"datatable",
+		"headless",
+		"plugin",
+		"sort",
+		"filter",
+		"order"
+	],
+	"author": "Bryan Lee",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/bryanmylee/svelte-headless-table/issues"
+	},
+	"homepage": "https://svelte-headless-table.bryanmylee.com",
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/kit": "next",
