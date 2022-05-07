@@ -13,6 +13,10 @@ export interface SortByState<Item> {
 	preSortedRows: Readable<BodyRow<Item>[]>;
 }
 
+export interface SortByColumnOptions {
+	disable?: boolean;
+}
+
 export type SortByPropSet = NewTablePropSet<{
 	'thead.tr.th': {
 		order: 'asc' | 'desc' | undefined;
@@ -83,7 +87,7 @@ export const useSortBy =
 		Item,
 		{
 			PluginState: SortByState<Item>;
-			ColumnOptions: never;
+			ColumnOptions: SortByColumnOptions;
 			TablePropSet: SortByPropSet;
 		}
 	> =>

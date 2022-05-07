@@ -20,6 +20,8 @@ export type UseTablePlugin<
 export type UseTablePluginInit<Item> = {
 	pluginName: string;
 	tableState: UseTableState<Item>;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	columnOptions: Record<string, any>;
 };
 
 export type UseTablePluginInstance<

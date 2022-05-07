@@ -1,4 +1,5 @@
-import { derived, readable, writable, type Readable, type Writable } from 'svelte/store';
+import type { ReadOrWritable } from 'svelte-subscribe/derivedKeys';
+import { derived, readable, writable, type Readable } from 'svelte/store';
 import { BodyRow, getBodyRows, getColumnedBodyRows } from './bodyRows';
 import { DataColumn, getDataColumns, type Column } from './columns';
 import type { Table } from './createTable';
@@ -19,7 +20,7 @@ export type UseTableProps<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface UseTableState<Item, Plugins extends AnyPlugins = AnyPlugins> {
-	data: Writable<Item[]>;
+	data: ReadOrWritable<Item[]>;
 	columns: Column<Item, Plugins>[];
 	visibleColumns: Readable<DataColumn<Item, Plugins>[]>;
 	originalRows: Readable<BodyRow<Item>[]>;
@@ -32,7 +33,8 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 ) => {
 	const { data, plugins } = table;
 
-	const flatColumns = readable(getDataColumns(columns));
+	const dataColumns = getDataColumns(columns);
+	const flatColumns = readable(dataColumns);
 
 	const originalRows = derived([data, flatColumns], ([$data, $flatColumns]) => {
 		return getBodyRows($data, $flatColumns);
@@ -50,10 +52,18 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	};
 
 	const pluginInstances = Object.fromEntries(
-		Object.entries(plugins).map(([pluginName, plugin]) => [
-			pluginName,
-			plugin({ pluginName, tableState }),
-		])
+		Object.entries(plugins).map(([pluginName, plugin]) => {
+			const columnOptions = Object.fromEntries(
+				dataColumns
+					.map((c) => {
+						const option = c.plugins?.[pluginName];
+						if (option === undefined) return undefined;
+						return [c.id, option] as const;
+					})
+					.filter(nonUndefined)
+			);
+			return [pluginName, plugin({ pluginName, tableState, columnOptions })];
+		})
 	) as {
 		[K in keyof Plugins]: UseTablePluginInstance<
 			Item,

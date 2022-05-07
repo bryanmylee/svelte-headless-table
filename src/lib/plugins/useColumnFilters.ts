@@ -1,6 +1,5 @@
 import { keyed } from 'svelte-keyed';
 import type { BodyRow } from '$lib/bodyRows';
-import { getDataColumns } from '$lib/columns';
 import type { UseTablePlugin, NewTablePropSet } from '$lib/types/UseTablePlugin';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 import type { RenderConfig } from '$lib/render';
@@ -56,15 +55,7 @@ export const useColumnFilters =
 			TablePropSet: ColumnFiltersPropSet;
 		}
 	> =>
-	({ pluginName, tableState }) => {
-		const filtersColumnOptions: Record<string, ColumnFiltersColumnOptions<Item>> = {};
-		const dataColumns = getDataColumns(tableState.columns);
-		dataColumns.forEach((c) => {
-			const columnOption: ColumnFiltersColumnOptions<Item> | undefined = c.plugins?.[pluginName];
-			if (columnOption === undefined) return;
-			filtersColumnOptions[c.id] = columnOption;
-		});
-
+	({ columnOptions, tableState }) => {
 		const filterValues = writable<Record<string, unknown>>({});
 		const preFilteredRows = writable<BodyRow<Item>[]>([]);
 		const filteredRows = writable<BodyRow<Item>[]>([]);
@@ -75,7 +66,7 @@ export const useColumnFilters =
 			return (rows: BodyRow<Item>[]) => {
 				preFilteredRows.set(rows);
 				const _filteredRows = rows.filter((row) => {
-					for (const [columnId, columnOption] of Object.entries(filtersColumnOptions)) {
+					for (const [columnId, columnOption] of Object.entries(columnOptions)) {
 						const { value } = row.cellForId[columnId];
 						const filterValue = $filterValues[columnId];
 						if (filterValue === undefined) {
@@ -100,7 +91,7 @@ export const useColumnFilters =
 				'thead.tr.th': (cell) => {
 					const filterValue = keyed(filterValues, cell.id);
 					const props = derived([], () => {
-						const columnOption = filtersColumnOptions[cell.id];
+						const columnOption = columnOptions[cell.id];
 						if (columnOption === undefined) {
 							return undefined;
 						}
