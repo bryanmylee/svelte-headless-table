@@ -1,6 +1,6 @@
 {
 	"name": "svelte-headless-table",
-	"version": "0.0.2-alpha.2",
+	"version": "0.0.2-alpha.3",
 	"scripts": {
 		"dev": "svelte-kit dev",
 		"build": "svelte-kit build",
@@ -54,7 +54,6 @@
 		"svelte": "^3.47.0",
 		"svelte-check": "^2.7.0",
 		"svelte-jester": "^2.3.2",
-		"svelte-keyed": "^1.1.4",
 		"svelte-preprocess": "^4.10.6",
 		"svelte2tsx": "^0.5.9",
 		"ts-jest": "^27.1.4",
@@ -62,6 +61,7 @@
 		"typescript": "~4.6.4"
 	},
 	"dependencies": {
+		"svelte-keyed": "^1.1.5",
 		"svelte-subscribe": "^1.0.4"
 	},
 	"type": "module",
