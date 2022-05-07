@@ -14,7 +14,7 @@ export interface SortByState<Item> {
 }
 
 export interface SortByColumnOptions {
-	disabled?: boolean;
+	disable?: boolean;
 }
 
 export type SortByPropSet = NewTablePropSet<{
@@ -94,7 +94,7 @@ export const useSortBy =
 	> =>
 	({ columnOptions }: { columnOptions: Record<string, SortByColumnOptions> }) => {
 		const disabledSortIds = Object.entries(columnOptions)
-			.filter(([, option]) => option.disabled === true)
+			.filter(([, option]) => option.disable === true)
 			.map(([columnId]) => columnId);
 
 		const sortKeys = useSortKeys([]);
