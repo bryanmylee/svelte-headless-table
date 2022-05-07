@@ -45,7 +45,11 @@
 				table.column({
 					header: () => 'Last Name',
 					accessor: 'lastName',
-					plugins: {},
+					plugins: {
+						sort: {
+							disabled: true,
+						},
+					},
 				}),
 			],
 		}),

@@ -14,13 +14,14 @@ export interface SortByState<Item> {
 }
 
 export interface SortByColumnOptions {
-	disable?: boolean;
+	disabled?: boolean;
 }
 
 export type SortByPropSet = NewTablePropSet<{
 	'thead.tr.th': {
 		order: 'asc' | 'desc' | undefined;
 		toggle: (event: Event) => void;
+		disabled: boolean;
 	};
 }>;
 
@@ -91,7 +92,11 @@ export const useSortBy =
 			TablePropSet: SortByPropSet;
 		}
 	> =>
-	() => {
+	({ columnOptions }: { columnOptions: Record<string, SortByColumnOptions> }) => {
+		const disabledSortIds = Object.entries(columnOptions)
+			.filter(([, option]) => option.disabled === true)
+			.map(([columnId]) => columnId);
+
 		const sortKeys = useSortKeys([]);
 		const preSortedRows = writable<BodyRow<Item>[]>([]);
 		const sortedRows = writable<BodyRow<Item>[]>([]);
@@ -134,10 +139,12 @@ export const useSortBy =
 			transformRowsFn,
 			hooks: {
 				'thead.tr.th': (cell) => {
+					const disabled = disabledSortIds.includes(cell.id);
 					const props = derived(sortKeys, ($sortKeys) => {
 						const key = $sortKeys.find((k) => k.id === cell.id);
 						const toggle = (event: Event) => {
 							if (!cell.isData) return;
+							if (disabledSortIds.includes(cell.id)) return;
 							sortKeys.toggleId(cell.id, {
 								multiSort: disableMultiSort ? false : isMultiSortEvent(event),
 							});
@@ -145,6 +152,7 @@ export const useSortBy =
 						return {
 							order: key?.order,
 							toggle,
+							disabled,
 						};
 					});
 					return { props };
