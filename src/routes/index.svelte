@@ -47,14 +47,18 @@
 					accessor: 'lastName',
 					plugins: {
 						sort: {
-							disabled: true,
+							disable: true,
 						},
 					},
 				}),
 			],
 		}),
 		table.group({
-			header: 'Info',
+			header: ({ rows }) =>
+				createRender(
+					Italic,
+					derived(rows, (_rows) => ({ text: `Info (${_rows.length} samples)` }))
+				),
 			columns: [
 				table.column({
 					header: 'Age',

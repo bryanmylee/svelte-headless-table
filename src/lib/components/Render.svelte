@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Subscribe } from 'svelte-subscribe';
 	import type { RenderConfig } from '$lib/render';
 	import { isReadable, Undefined } from '$lib/utils/store';
 
@@ -14,6 +15,10 @@
 	{$readableRendered}
 {:else if typeof rendered === 'string'}
 	{rendered}
+{:else if isReadable(rendered.props)}
+	<Subscribe props={rendered.props} let:props>
+		<svelte:component this={rendered.component} {...props ?? {}} />
+	</Subscribe>
 {:else}
 	<svelte:component this={rendered.component} {...rendered.props ?? {}} />
 {/if}

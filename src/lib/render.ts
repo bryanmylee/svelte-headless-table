@@ -10,7 +10,7 @@ export type SvelteComponentWithProps<
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ComponentRenderConfig<Props = any, C extends SvelteComponent = SvelteComponent> = {
 	component: SvelteComponentWithProps<Props, C>;
-	props?: Props;
+	props?: Props | Readable<Props>;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,11 +24,11 @@ export function createRender<Props extends Record<string, never>, C extends Svel
 ): ComponentRenderConfig<undefined, C>;
 export function createRender<Props, C extends SvelteComponent>(
 	component: SvelteComponentWithProps<Props, C>,
-	props: Props
+	props: Props | Readable<Props>
 ): ComponentRenderConfig<Props, C>;
 export function createRender<Props, C extends SvelteComponent>(
 	component: SvelteComponentWithProps<Props, C>,
-	props?: Props
+	props?: Props | Readable<Props>
 ) {
 	return {
 		component,
