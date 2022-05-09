@@ -3,6 +3,7 @@ import { BodyCell } from './bodyCells';
 import type { DataColumn } from './columns';
 import { TableComponent } from './tableComponent';
 import type { AnyPlugins } from './types/UseTablePlugin';
+import { nonUndefined } from './utils/filter';
 
 export interface BodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	id: string;
@@ -21,6 +22,11 @@ export class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends Tabl
 > {
 	original: Item;
 	cells: BodyCell<Item, Plugins>[];
+	/**
+	 * Get the cell with a given column id.
+	 *
+	 * **This includes hidden cells.**
+	 */
 	cellForId: Record<string, BodyCell<Item, Plugins>>;
 	constructor({ id, original, cells, cellForId }: BodyRowInit<Item, Plugins>) {
 		super({ id });
@@ -78,8 +84,9 @@ export const getColumnedBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugin
 	);
 	if (rows.length === 0 || columnIdOrder.length === 0) return rows;
 	rows.forEach((row, rowIdx) => {
-		const visibleCells = columnIdOrder.map((cid) => {
-			const cell = row.cellForId[cid];
+		// Create a shallow copy of `row.cells` to reassign each `cell`'s `row`
+		// reference.
+		const cells = row.cells.map((cell) => {
 			return new BodyCell({
 				row: columnedRows[rowIdx],
 				column: cell.column,
@@ -87,8 +94,15 @@ export const getColumnedBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugin
 				label: cell.label,
 			});
 		});
+		const visibleCells = columnIdOrder
+			.map((cid) => {
+				return cells.find((c) => c.id === cid);
+			})
+			.filter(nonUndefined);
 		columnedRows[rowIdx].cells = visibleCells;
-		visibleCells.forEach((cell) => {
+		// Include hidden cells in `cellForId` to allow row transformations on
+		// hidden cells.
+		cells.forEach((cell) => {
 			columnedRows[rowIdx].cellForId[cell.id] = cell;
 		});
 	});

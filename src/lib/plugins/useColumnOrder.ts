@@ -1,14 +1,17 @@
 import type { DataColumn } from '$lib/columns';
 import type { NewTablePropSet, UseTablePlugin } from '$lib/types/UseTablePlugin';
-import { nonUndefined } from '$lib/utils/filter';
 import { derived, writable, type Writable } from 'svelte/store';
+
+export interface ColumnOrderConfig {
+	hideUnspecifiedColumns?: boolean;
+}
 
 export interface ColumnOrderState {
 	columnIdOrder: Writable<string[]>;
 }
 
 export const useColumnOrder =
-	<Item>(): UseTablePlugin<
+	<Item>({ hideUnspecifiedColumns = false }: ColumnOrderConfig = {}): UseTablePlugin<
 		Item,
 		{
 			PluginState: ColumnOrderState;
@@ -23,12 +26,17 @@ export const useColumnOrder =
 
 		const transformFlatColumnsFn = derived(columnIdOrder, ($columnIdOrder) => {
 			return (flatColumns: DataColumn<Item>[]) => {
-				if ($columnIdOrder.length === 0) {
-					return flatColumns;
+				const flatColumnsCopy = [...flatColumns];
+				const orderedFlatColumns: DataColumn<Item>[] = [];
+				$columnIdOrder.forEach((id) => {
+					const colIdx = flatColumnsCopy.findIndex((c) => c.id === id);
+					orderedFlatColumns.push(...flatColumnsCopy.splice(colIdx, 1));
+				});
+				if (!hideUnspecifiedColumns) {
+					// Push the remaining unspecified columns.
+					orderedFlatColumns.push(...flatColumnsCopy);
 				}
-				return $columnIdOrder
-					.map((id) => flatColumns.find((c) => c.id === id))
-					.filter(nonUndefined);
+				return orderedFlatColumns;
 			};
 		});
 

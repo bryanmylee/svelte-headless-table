@@ -23,7 +23,7 @@
 	const table = createTable(data, {
 		sort: useSortBy(),
 		filter: useColumnFilters(),
-		orderColumns: useColumnOrder(),
+		orderColumns: useColumnOrder({ hideUnspecifiedColumns: true }),
 		hideColumns: useHiddenColumns(),
 	});
 
@@ -112,7 +112,8 @@
 	const { sortKeys } = pluginStates.sort;
 	const { filterValues } = pluginStates.filter;
 	const { columnIdOrder } = pluginStates.orderColumns;
-	$columnIdOrder = $visibleColumns.map((c) => c.id);
+	// $columnIdOrder = $visibleColumns.slice(3, 5).map((c) => c.id);
+	$columnIdOrder = ['firstName', 'lastName'];
 	const { hiddenColumnIds } = pluginStates.hideColumns;
 	$hiddenColumnIds = ['progress'];
 </script>
