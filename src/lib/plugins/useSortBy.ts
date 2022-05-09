@@ -15,6 +15,8 @@ export interface SortByState<Item> {
 
 export interface SortByColumnOptions {
 	disable?: boolean;
+	// TODO pass <Item> generic into column options
+	getSortValue?: (item: unknown) => string | number;
 }
 
 export type SortByPropSet = NewTablePropSet<{
@@ -112,11 +114,11 @@ export const useSortBy =
 						let order = 0;
 						// Only need to check properties of `cellA` as both should have the same
 						// properties.
-						if (cellA.column.sortOnFn !== undefined) {
-							const sortOnFn = cellA.column.sortOnFn;
-							const sortOnA = sortOnFn(cellA.value);
-							const sortOnB = sortOnFn(cellB.value);
-							order = compare(sortOnA, sortOnB);
+						const getSortValue = columnOptions[cellA.id]?.getSortValue;
+						if (getSortValue !== undefined) {
+							const sortValueA = getSortValue(cellA.value);
+							const sortValueB = getSortValue(cellB.value);
+							order = compare(sortValueA, sortValueB);
 						} else if (typeof cellA.value === 'string' || typeof cellA.value === 'number') {
 							// typeof `cellB.value` is logically equal to `cellA.value`.
 							order = compare(cellA.value, cellB.value as string | number);

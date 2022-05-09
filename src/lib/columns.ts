@@ -40,7 +40,6 @@ export type DataColumnInitBase<
 	Value = unknown
 > = Omit<ColumnInit<Item, Plugins>, 'height'> & {
 	cell?: Label<Item, Value>;
-	sortKey?: (value: Value) => string | number;
 };
 
 export type DataColumnInitKey<Item, Id extends keyof Item> = {
@@ -70,7 +69,6 @@ export class DataColumn<
 	accessorKey?: keyof Item;
 	accessorFn?: (item: Item) => Value;
 	id: Id;
-	sortOnFn?: (value: Value) => string | number;
 	constructor({
 		header,
 		footer,
@@ -78,7 +76,6 @@ export class DataColumn<
 		cell,
 		accessor,
 		id,
-		sortKey,
 	}: DataColumnInit<Item, Plugins, Id, Value>) {
 		super({ header, footer, height: 1, plugins });
 		this.cell = cell;
@@ -91,7 +88,6 @@ export class DataColumn<
 			throw new Error('A column id or string accessor is required');
 		}
 		this.id = (id ?? `${this.accessorKey}`) as Id;
-		this.sortOnFn = sortKey;
 	}
 }
 
