@@ -13,7 +13,7 @@
 	<!-- Auto-subscriptions must be on a `Readable`.
 		$reactiveRendered is guaranteed to be `Readable` -->
 	{$readableRendered}
-{:else if typeof rendered === 'string'}
+{:else if typeof rendered === 'string' || typeof rendered === 'number'}
 	{rendered}
 {:else if isReadable(rendered.props)}
 	<Subscribe props={rendered.props} let:props>

@@ -17,7 +17,8 @@ type ComponentRenderConfig<Props = any, C extends SvelteComponent = SvelteCompon
 export type RenderConfig<Props = any, C extends SvelteComponent = SvelteComponent> =
 	| ComponentRenderConfig<Props, C>
 	| string
-	| Readable<string>;
+	| number
+	| Readable<string | number>;
 
 export function createRender<Props extends Record<string, never>, C extends SvelteComponent>(
 	component: SvelteComponentWithProps<Props, C>
