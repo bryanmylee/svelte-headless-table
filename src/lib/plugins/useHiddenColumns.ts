@@ -2,6 +2,10 @@ import type { DataColumn } from '$lib/columns';
 import type { NewTablePropSet, UseTablePlugin } from '$lib/types/UseTablePlugin';
 import { derived, writable, type Writable } from 'svelte/store';
 
+export interface HiddenColumnsConfig {
+	initialHiddenColumnIds?: string[];
+}
+
 export interface HiddenColumnsState {
 	hiddenColumnIds: Writable<string[]>;
 }
@@ -13,7 +17,7 @@ export type HiddenColumnsPropSet = NewTablePropSet<{
 }>;
 
 export const useHiddenColumns =
-	<Item>(): UseTablePlugin<
+	<Item>({ initialHiddenColumnIds = [] }: HiddenColumnsConfig = {}): UseTablePlugin<
 		Item,
 		{
 			PluginState: HiddenColumnsState;
@@ -22,7 +26,7 @@ export const useHiddenColumns =
 		}
 	> =>
 	() => {
-		const hiddenColumnIds = writable<string[]>([]);
+		const hiddenColumnIds = writable<string[]>(initialHiddenColumnIds);
 
 		const pluginState: HiddenColumnsState = { hiddenColumnIds };
 
