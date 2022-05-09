@@ -4,6 +4,7 @@ import { compare } from '$lib/utils/compare';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 
 export interface SortByConfig {
+	initialSortKeys?: SortKey[];
 	disableMultiSort?: boolean;
 	isMultiSortEvent?: (event: Event) => boolean;
 }
@@ -84,6 +85,7 @@ const shiftClickIsMultiSortEvent = (event: Event) => {
 
 export const useSortBy =
 	<Item>({
+		initialSortKeys = [],
 		disableMultiSort = false,
 		isMultiSortEvent = shiftClickIsMultiSortEvent,
 	}: SortByConfig = {}): UseTablePlugin<
@@ -99,7 +101,7 @@ export const useSortBy =
 			.filter(([, option]) => option.disable === true)
 			.map(([columnId]) => columnId);
 
-		const sortKeys = useSortKeys([]);
+		const sortKeys = useSortKeys(initialSortKeys);
 		const preSortedRows = writable<BodyRow<Item>[]>([]);
 		const sortedRows = writable<BodyRow<Item>[]>([]);
 
