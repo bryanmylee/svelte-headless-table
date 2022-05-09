@@ -28,6 +28,17 @@
 	});
 
 	const columns = table.createColumns([
+		table.column({
+			header: 'Item',
+			id: 'item',
+			accessor: (i) => i,
+			cell: (i) => JSON.stringify(i),
+			plugins: {
+				sort: {
+					getSortValue: (i) => (i as any).lastName,
+				},
+			},
+		}),
 		table.group({
 			header: ({ rows }) => derived(rows, (_rows) => `Name (${_rows.length} samples)`),
 			columns: [
@@ -96,7 +107,7 @@
 		}),
 	]);
 
-	const { visibleColumns, headerRows, rows, pluginStates } = useTable(table, { columns });
+	const { visibleColumns, headerRows, rows, pluginStates } = useTable(table, columns);
 
 	const { sortKeys } = pluginStates.sort;
 	const { filterValues } = pluginStates.filter;

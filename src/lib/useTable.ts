@@ -14,10 +14,6 @@ import type {
 } from './types/UseTablePlugin';
 import { nonUndefined } from './utils/filter';
 
-export type UseTableProps<Item, Plugins extends AnyPlugins = AnyPlugins> = {
-	columns: Column<Item, Plugins>[];
-};
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface UseTableState<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	data: ReadOrWritable<Item[]>;
@@ -29,7 +25,7 @@ export interface UseTableState<Item, Plugins extends AnyPlugins = AnyPlugins> {
 
 export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	table: Table<Item, Plugins>,
-	{ columns }: UseTableProps<Item, Plugins>
+	columns: Column<Item, Plugins>[]
 ) => {
 	const { data, plugins } = table;
 
