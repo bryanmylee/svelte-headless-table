@@ -3,6 +3,7 @@ import type { NewTablePropSet, UseTablePlugin } from '$lib/types/UseTablePlugin'
 import { derived, writable, type Writable } from 'svelte/store';
 
 export interface ColumnOrderConfig {
+	initialColumnIdOrder?: string[];
 	hideUnspecifiedColumns?: boolean;
 }
 
@@ -11,7 +12,10 @@ export interface ColumnOrderState {
 }
 
 export const useColumnOrder =
-	<Item>({ hideUnspecifiedColumns = false }: ColumnOrderConfig = {}): UseTablePlugin<
+	<Item>({
+		initialColumnIdOrder = [],
+		hideUnspecifiedColumns = false,
+	}: ColumnOrderConfig = {}): UseTablePlugin<
 		Item,
 		{
 			PluginState: ColumnOrderState;
@@ -20,7 +24,7 @@ export const useColumnOrder =
 		}
 	> =>
 	() => {
-		const columnIdOrder = writable<string[]>([]);
+		const columnIdOrder = writable<string[]>(initialColumnIdOrder);
 
 		const pluginState: ColumnOrderState = { columnIdOrder };
 

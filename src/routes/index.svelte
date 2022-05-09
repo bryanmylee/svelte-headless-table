@@ -23,7 +23,10 @@
 	const table = createTable(data, {
 		sort: useSortBy(),
 		filter: useColumnFilters(),
-		orderColumns: useColumnOrder({ hideUnspecifiedColumns: true }),
+		orderColumns: useColumnOrder({
+			initialColumnIdOrder: ['firstName', 'lastName'],
+			hideUnspecifiedColumns: true,
+		}),
 		hideColumns: useHiddenColumns(),
 	});
 
