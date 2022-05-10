@@ -16,7 +16,8 @@ export interface SortByState<Item> {
 
 export interface SortByColumnOptions {
 	disable?: boolean;
-	getSortValue?: (value: unknown) => string | number | (string | number)[];
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	getSortValue?: (value: any) => string | number | (string | number)[];
 }
 
 export type SortByPropSet = NewTablePropSet<{

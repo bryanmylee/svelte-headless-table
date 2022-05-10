@@ -38,7 +38,7 @@
 			cell: (i) => JSON.stringify(i),
 			plugins: {
 				sort: {
-					getSortValue: (i) => (i as any).lastName,
+					getSortValue: (i) => i.lastName,
 				},
 			},
 		}),
