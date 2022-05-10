@@ -17,7 +17,7 @@ export interface SortByState<Item> {
 export interface SortByColumnOptions {
 	disable?: boolean;
 	// TODO pass <Item> generic into column options
-	getSortValue?: (item: unknown) => string | number;
+	getSortValue?: (item: unknown) => string | number | (string | number)[];
 }
 
 export type SortByPropSet = NewTablePropSet<{
