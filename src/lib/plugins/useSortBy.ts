@@ -18,6 +18,7 @@ export interface SortByColumnOptions {
 	disable?: boolean;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	getSortValue?: (value: any) => string | number | (string | number)[];
+	invert?: boolean;
 }
 
 export type SortByPropSet = NewTablePropSet<{
@@ -111,6 +112,7 @@ export const useSortBy =
 				const _sortedRows = [...rows];
 				_sortedRows.sort((a, b) => {
 					for (const key of $sortKeys) {
+						const invert = columnOptions[key.id]?.invert ?? false;
 						const cellA = a.cellForId[key.id];
 						const cellB = b.cellForId[key.id];
 						let order = 0;
@@ -126,7 +128,17 @@ export const useSortBy =
 							order = compare(cellA.value, cellB.value as string | number);
 						}
 						if (order !== 0) {
-							return key.order === 'asc' ? order : -order;
+							let orderFactor = 1;
+							// If the current key order is `'desc'`, reverse the order.
+							if (key.order === 'desc') {
+								orderFactor *= -1;
+							}
+							// If `invert` is `true`, we want to invert the sort without
+							// affecting the view model's indication.
+							if (invert) {
+								orderFactor *= -1;
+							}
+							return order * orderFactor;
 						}
 					}
 					return 0;

@@ -25,7 +25,6 @@
 		filter: useColumnFilters(),
 		orderColumns: useColumnOrder({
 			initialColumnIdOrder: ['firstName', 'lastName'],
-			hideUnspecifiedColumns: true,
 		}),
 		hideColumns: useHiddenColumns(),
 	});
@@ -49,6 +48,9 @@
 					header: createRender(Italic, { text: 'First Name' }),
 					accessor: 'firstName',
 					plugins: {
+						sort: {
+							invert: true,
+						},
 						filter: {
 							fn: textPrefixFilter,
 							render: ({ filterValue, values }) =>
