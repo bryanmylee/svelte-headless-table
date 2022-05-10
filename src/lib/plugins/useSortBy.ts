@@ -25,7 +25,7 @@ export type SortByPropSet = NewTablePropSet<{
 	'thead.tr.th': {
 		order: 'asc' | 'desc' | undefined;
 		toggle: (event: Event) => void;
-		clear: (event: Event) => void;
+		clear: () => void;
 		disabled: boolean;
 	};
 }>;
@@ -91,7 +91,7 @@ export type WritableSortKeys = Writable<SortKey[]> & {
 	clearId: (id: string) => void;
 };
 
-const shiftClickIsMultiSortEvent = (event: Event) => {
+const isShiftClick = (event: Event) => {
 	if (!(event instanceof MouseEvent)) return false;
 	return event.shiftKey;
 };
@@ -100,7 +100,7 @@ export const useSortBy =
 	<Item>({
 		initialSortKeys = [],
 		disableMultiSort = false,
-		isMultiSortEvent = shiftClickIsMultiSortEvent,
+		isMultiSortEvent = isShiftClick,
 	}: SortByConfig = {}): UseTablePlugin<
 		Item,
 		{
@@ -177,7 +177,7 @@ export const useSortBy =
 								multiSort: disableMultiSort ? false : isMultiSortEvent(event),
 							});
 						};
-						const clear = (_: Event) => {
+						const clear = () => {
 							if (!cell.isData) return;
 							if (disabledSortIds.includes(cell.id)) return;
 							sortKeys.clearId(cell.id);
