@@ -152,6 +152,7 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	});
 
 	return {
+		dataColumns,
 		visibleColumns,
 		headerRows,
 		originalRows,
