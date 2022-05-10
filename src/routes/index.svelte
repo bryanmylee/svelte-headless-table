@@ -52,7 +52,7 @@
 							invert: true,
 						},
 						filter: {
-							match: textPrefixFilter,
+							fn: textPrefixFilter,
 							render: ({ filterValue, values }) =>
 								createRender(TextFilter, { filterValue, values }),
 						},
@@ -86,7 +86,7 @@
 					accessor: (item) => item.status,
 					plugins: {
 						filter: {
-							match: matchFilter,
+							fn: matchFilter,
 							render: ({ filterValue, preFilteredValues }) =>
 								createRender(SelectFilter, { filterValue, preFilteredValues }),
 						},
@@ -97,7 +97,7 @@
 					accessor: 'visits',
 					plugins: {
 						filter: {
-							match: numberRangeFilter,
+							fn: numberRangeFilter,
 							initFilterValue: [null, null],
 							render: ({ filterValue, values }) =>
 								createRender(NumberRangeFilter, { filterValue, values }),
