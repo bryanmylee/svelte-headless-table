@@ -12,7 +12,7 @@ export interface ColumnFiltersState<Item> {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface ColumnFiltersColumnOptions<Item, FilterValue = any> {
-	fn: ColumnFilterFn<FilterValue>;
+	match: ColumnFilterFn<FilterValue>;
 	initFilterValue?: FilterValue;
 	render: (props: ColumnRenderConfigPropArgs<Item, FilterValue>) => RenderConfig;
 }
