@@ -18,6 +18,7 @@ import { nonUndefined } from './utils/filter';
 export interface UseTableState<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	data: ReadOrWritable<Item[]>;
 	columns: Column<Item, Plugins>[];
+	dataColumns: DataColumn<Item, Plugins>[];
 	visibleColumns: Readable<DataColumn<Item, Plugins>[]>;
 	originalRows: Readable<BodyRow<Item>[]>;
 	rows: Readable<BodyRow<Item>[]>;
@@ -42,6 +43,7 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	const tableState: UseTableState<Item, Plugins> = {
 		data,
 		columns,
+		dataColumns,
 		visibleColumns: _visibleColumns,
 		originalRows,
 		rows: _rows,
