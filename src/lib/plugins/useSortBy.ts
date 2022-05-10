@@ -25,6 +25,7 @@ export type SortByPropSet = NewTablePropSet<{
 	'thead.tr.th': {
 		order: 'asc' | 'desc' | undefined;
 		toggle: (event: Event) => void;
+		clear: (event: Event) => void;
 		disabled: boolean;
 	};
 }>;
@@ -63,11 +64,21 @@ export const useSortKeys = (initKeys: SortKey[]): WritableSortKeys => {
 			return [...$sortKeys.slice(0, keyIdx), ...$sortKeys.slice(keyIdx + 1)];
 		});
 	};
+	const clearId = (id: string) => {
+		update(($sortKeys) => {
+			const keyIdx = $sortKeys.findIndex((key) => key.id === id);
+			if (keyIdx === -1) {
+				return $sortKeys;
+			}
+			return [...$sortKeys.slice(0, keyIdx), ...$sortKeys.slice(keyIdx + 1)];
+		});
+	};
 	return {
 		subscribe,
 		update,
 		set,
 		toggleId,
+		clearId,
 	};
 };
 
@@ -77,6 +88,7 @@ interface ToggleOptions {
 
 export type WritableSortKeys = Writable<SortKey[]> & {
 	toggleId: (id: string, options: ToggleOptions) => void;
+	clearId: (id: string) => void;
 };
 
 const shiftClickIsMultiSortEvent = (event: Event) => {
@@ -165,9 +177,15 @@ export const useSortBy =
 								multiSort: disableMultiSort ? false : isMultiSortEvent(event),
 							});
 						};
+						const clear = (_: Event) => {
+							if (!cell.isData) return;
+							if (disabledSortIds.includes(cell.id)) return;
+							sortKeys.clearId(cell.id);
+						};
 						return {
 							order: key?.order,
 							toggle,
+							clear,
 							disabled,
 						};
 					});
