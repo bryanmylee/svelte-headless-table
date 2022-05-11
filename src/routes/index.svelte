@@ -175,7 +175,11 @@
 			<tr>
 				{#each row.cells as cell (cell.id)}
 					<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-						<td {...attrs} class:sorted={props.sort.order !== undefined}>
+						<td
+							{...attrs}
+							class:sorted={props.sort.order !== undefined}
+							class:matches={props.globalFilter.matches}
+						>
 							<Render of={cell.render()} />
 						</td>
 					</Subscribe>
@@ -196,7 +200,7 @@
 		2
 	)}</pre>
 
-<style global>
+<style>
 	h1,
 	table {
 		font-family: sans-serif;
@@ -218,5 +222,9 @@
 
 	.sorted {
 		background: rgb(144, 191, 148);
+	}
+
+	.matches {
+		outline: 2px solid rgb(144, 191, 148);
 	}
 </style>

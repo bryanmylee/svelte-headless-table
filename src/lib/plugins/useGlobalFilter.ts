@@ -53,15 +53,17 @@ export const useGlobalFilter =
 		const filterValue = writable(initialFilterValue);
 		const preFilteredRows = writable<BodyRow<Item>[]>([]);
 		const filteredRows = writable<BodyRow<Item>[]>([]);
+		const tableCellMatches = writable<Record<string, boolean>>({});
 
 		const pluginState: GlobalFilterState<Item> = { filterValue, preFilteredRows };
 
 		const transformRowsFn = derived(filterValue, ($filterValue) => {
 			return (rows: BodyRow<Item>[]) => {
 				preFilteredRows.set(rows);
+				tableCellMatches.set({});
 				const _filteredRows = rows.filter((row) => {
 					// An array of booleans, true if the cell matches the filter.
-					const cellMatches = Object.values(row.cellForId).map((cell) => {
+					const rowCellMatches = Object.values(row.cellForId).map((cell) => {
 						const options = columnOptions[cell.id] as GlobalFilterColumnOptions | undefined;
 						if (options?.exclude === true) {
 							return false;
@@ -74,10 +76,16 @@ export const useGlobalFilter =
 						if (options?.getFilterValue !== undefined) {
 							value = options?.getFilterValue(value);
 						}
-						return fn({ value, filterValue: $filterValue });
+						const matches = fn({ value, filterValue: $filterValue });
+						tableCellMatches.update(($tableCellMatches) => ({
+							...$tableCellMatches,
+							// TODO standardize table-unique cell id.
+							[`${cell.row.id}-${cell.column.id}`]: matches,
+						}));
+						return matches;
 					});
 					// If any cell matches, include in the filtered results.
-					return cellMatches.includes(true);
+					return rowCellMatches.includes(true);
 				});
 				filteredRows.set(_filteredRows);
 				return _filteredRows;
@@ -89,11 +97,17 @@ export const useGlobalFilter =
 			transformRowsFn,
 			hooks: {
 				'tbody.tr.td': (cell) => {
-					const props = derived([], () => {
-						return {
-							matches: false,
-						};
-					});
+					const props = derived(
+						[filterValue, tableCellMatches],
+						([$filterValue, $tableCellMatches]) => {
+							return {
+								matches:
+									$filterValue !== '' &&
+									// TODO standardize table-unique cell id.
+									($tableCellMatches[`${cell.row.id}-${cell.column.id}`] ?? false),
+							};
+						}
+					);
 					return { props };
 				},
 			},
