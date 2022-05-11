@@ -43,6 +43,9 @@
 				sort: {
 					getSortValue: (i) => i.lastName,
 				},
+				globalFilter: {
+					getFilterValue: (i) => i.progress,
+				},
 			},
 		}),
 		table.group({

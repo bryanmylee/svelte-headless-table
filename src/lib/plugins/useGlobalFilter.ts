@@ -15,7 +15,8 @@ export interface GlobalFilterState<Item> {
 
 export interface GlobalFilterColumnOptions {
 	exclude?: boolean;
-	getFilterValue?: (value: unknown) => string;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	getFilterValue?: (value: any) => string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -61,7 +62,8 @@ export const useGlobalFilter =
 				const _filteredRows = rows.filter((row) => {
 					// An array of booleans, true if the cell matches the filter.
 					const cellMatches = Object.values(row.cellForId).map((cell) => {
-						if (columnOptions[cell.id]?.exclude) {
+						const options = columnOptions[cell.id] as GlobalFilterColumnOptions | undefined;
+						if (options?.exclude === true) {
 							return false;
 						}
 						const isHidden = row.cells.find((c) => c.id === cell.id) === undefined;
@@ -69,8 +71,8 @@ export const useGlobalFilter =
 							return false;
 						}
 						let value = cell.value;
-						if (columnOptions[cell.id]?.getFilterValue !== undefined) {
-							value = columnOptions[cell.id]?.getFilterValue(value);
+						if (options?.getFilterValue !== undefined) {
+							value = options?.getFilterValue(value);
 						}
 						return fn({ value, filterValue: $filterValue });
 					});
