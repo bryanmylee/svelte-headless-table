@@ -14,7 +14,7 @@ export interface GlobalFilterState<Item> {
 }
 
 export interface GlobalFilterColumnOptions {
-	disable?: boolean;
+	exclude?: boolean;
 	getFilterValue?: (value: unknown) => string;
 }
 
@@ -61,6 +61,9 @@ export const useGlobalFilter =
 				const _filteredRows = rows.filter((row) => {
 					// An array of booleans, true if the cell matches the filter.
 					const cellMatches = Object.values(row.cellForId).map((cell) => {
+						if (columnOptions[cell.id]?.exclude) {
+							return false;
+						}
 						const isHidden = row.cells.find((c) => c.id === cell.id) === undefined;
 						if (isHidden && !includeHiddenColumns) {
 							return false;

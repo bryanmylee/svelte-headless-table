@@ -69,6 +69,9 @@
 						sort: {
 							disable: true,
 						},
+						globalFilter: {
+							exclude: true,
+						},
 					},
 				}),
 			],
