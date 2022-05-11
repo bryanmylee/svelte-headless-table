@@ -1,4 +1,3 @@
-import { keyed } from 'svelte-keyed';
 import type { BodyRow } from '$lib/bodyRows';
 import type { UseTablePlugin, NewTablePropSet } from '$lib/types/UseTablePlugin';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
@@ -49,7 +48,7 @@ export const useGlobalFilter =
 			TablePropSet: GlobalFilterPropSet;
 		}
 	> =>
-	({ columnOptions, tableState }) => {
+	({ columnOptions }) => {
 		const filterValue = writable(initialFilterValue);
 		const preFilteredRows = writable<BodyRow<Item>[]>([]);
 		const filteredRows = writable<BodyRow<Item>[]>([]);
@@ -63,7 +62,7 @@ export const useGlobalFilter =
 					// An array of booleans, true if the cell matches the filter.
 					const cellMatches = Object.values(row.cellForId).map((cell) => {
 						const isHidden = row.cells.find((c) => c.id === cell.id) === undefined;
-						if (isHidden) {
+						if (isHidden && !includeHiddenColumns) {
 							return false;
 						}
 						let value = cell.value;

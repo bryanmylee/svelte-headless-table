@@ -23,7 +23,9 @@
 
 	const table = createTable(data, {
 		sort: useSortBy(),
-		globalFilter: useGlobalFilter(),
+		globalFilter: useGlobalFilter({
+			includeHiddenColumns: true,
+		}),
 		filter: useColumnFilters(),
 		orderColumns: useColumnOrder({
 			initialColumnIdOrder: ['firstName', 'lastName'],
@@ -158,7 +160,7 @@
 		{/each}
 		<tr>
 			<th colspan={$visibleColumns.length}>
-				<input type="text" bind:value={$filterValue} />
+				<input type="text" bind:value={$filterValue} placeholder="Search all data..." />
 			</th>
 		</tr>
 	</thead>
