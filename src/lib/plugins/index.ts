@@ -9,3 +9,4 @@ export {
 export { useColumnOrder } from './useColumnOrder';
 export { useHiddenColumns } from './useHiddenColumns';
 export { useSortBy } from './useSortBy';
+export { useTableFilter } from './useTableFilter';
