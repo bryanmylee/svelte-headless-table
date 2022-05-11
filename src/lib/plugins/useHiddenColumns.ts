@@ -10,19 +10,13 @@ export interface HiddenColumnsState {
 	hiddenColumnIds: Writable<string[]>;
 }
 
-export type HiddenColumnsPropSet = NewTablePropSet<{
-	'thead.tr.th': {
-		hidden: boolean;
-	};
-}>;
-
 export const useHiddenColumns =
 	<Item>({ initialHiddenColumnIds = [] }: HiddenColumnsConfig = {}): UseTablePlugin<
 		Item,
 		{
 			PluginState: HiddenColumnsState;
 			ColumnOptions: never;
-			TablePropSet: HiddenColumnsPropSet;
+			TablePropSet: NewTablePropSet<never>;
 		}
 	> =>
 	() => {
