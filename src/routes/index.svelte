@@ -14,6 +14,7 @@
 	import { getShuffled } from './_getShuffled';
 	import { createSamples } from './_createSamples';
 	import Italic from './_Italic.svelte';
+	import Profile from './_Profile.svelte';
 	import Tick from './_Tick.svelte';
 	import TextFilter from './_TextFilter.svelte';
 	import NumberRangeFilter from './_NumberRangeFilter.svelte';
@@ -35,10 +36,15 @@
 
 	const columns = table.createColumns([
 		table.column({
-			header: 'Item',
-			id: 'item',
+			header: 'Summary',
+			id: 'summary',
 			accessor: (i) => i,
-			cell: (i) => JSON.stringify(i),
+			cell: (i: any) =>
+				createRender(Profile, {
+					age: i.age,
+					progress: i.progress,
+					name: `${i.firstName} ${i.lastName}`,
+				}),
 			plugins: {
 				sort: {
 					getSortValue: (i) => i.lastName,
