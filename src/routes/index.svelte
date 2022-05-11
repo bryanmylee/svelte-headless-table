@@ -10,7 +10,7 @@
 		numberRangeFilter,
 		textPrefixFilter,
 	} from '$lib/plugins';
-	import { useGlobalFilter } from '$lib/plugins/useGlobalFilter';
+	import { useTableFilter } from '$lib/plugins/useTableFilter';
 	import { getShuffled } from './_getShuffled';
 	import { createSamples } from './_createSamples';
 	import Italic from './_Italic.svelte';
@@ -23,7 +23,7 @@
 
 	const table = createTable(data, {
 		sort: useSortBy(),
-		globalFilter: useGlobalFilter({
+		tableFilter: useTableFilter({
 			includeHiddenColumns: true,
 		}),
 		filter: useColumnFilters(),
@@ -43,7 +43,7 @@
 				sort: {
 					getSortValue: (i) => i.lastName,
 				},
-				globalFilter: {
+				tableFilter: {
 					getFilterValue: (i) => i.progress,
 				},
 			},
@@ -72,7 +72,7 @@
 						sort: {
 							disable: true,
 						},
-						globalFilter: {
+						tableFilter: {
 							exclude: true,
 						},
 					},
@@ -127,7 +127,7 @@
 	const { sortKeys } = pluginStates.sort;
 	const { filterValues } = pluginStates.filter;
 	const { columnIdOrder } = pluginStates.orderColumns;
-	const { filterValue } = pluginStates.globalFilter;
+	const { filterValue } = pluginStates.tableFilter;
 	$columnIdOrder = ['firstName', 'lastName'];
 	const { hiddenColumnIds } = pluginStates.hideColumns;
 	$hiddenColumnIds = ['progress'];
@@ -178,7 +178,7 @@
 						<td
 							{...attrs}
 							class:sorted={props.sort.order !== undefined}
-							class:matches={props.globalFilter.matches}
+							class:matches={props.tableFilter.matches}
 						>
 							<Render of={cell.render()} />
 						</td>

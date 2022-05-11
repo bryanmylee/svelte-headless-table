@@ -2,51 +2,51 @@ import type { BodyRow } from '$lib/bodyRows';
 import type { UseTablePlugin, NewTablePropSet } from '$lib/types/UseTablePlugin';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 
-export interface GlobalFilterConfig {
-	fn?: GlobalFilterFn;
+export interface TableFilterConfig {
+	fn?: TableFilterFn;
 	initialFilterValue?: string | number;
 	includeHiddenColumns?: boolean;
 }
 
-export interface GlobalFilterState<Item> {
+export interface TableFilterState<Item> {
 	filterValue: Writable<string | number>;
 	preFilteredRows: Readable<BodyRow<Item>[]>;
 }
 
-export interface GlobalFilterColumnOptions {
+export interface TableFilterColumnOptions {
 	exclude?: boolean;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	getFilterValue?: (value: any) => string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type GlobalFilterFn<FilterValue = any, Value = any> = (
-	props: GlobalFilterFnProps<FilterValue, Value>
+export type TableFilterFn<FilterValue = any, Value = any> = (
+	props: TableFilterFnProps<FilterValue, Value>
 ) => boolean;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type GlobalFilterFnProps<FilterValue = any, Value = any> = {
+export type TableFilterFnProps<FilterValue = any, Value = any> = {
 	filterValue: FilterValue;
 	value: Value;
 };
 
-export type GlobalFilterPropSet = NewTablePropSet<{
+export type TableFilterPropSet = NewTablePropSet<{
 	'tbody.tr.td': {
 		matches: boolean;
 	};
 }>;
 
-export const useGlobalFilter =
+export const useTableFilter =
 	<Item>({
 		fn = textPrefixFilter,
 		initialFilterValue = '',
 		includeHiddenColumns = false,
-	}: GlobalFilterConfig = {}): UseTablePlugin<
+	}: TableFilterConfig = {}): UseTablePlugin<
 		Item,
 		{
-			PluginState: GlobalFilterState<Item>;
-			ColumnOptions: GlobalFilterColumnOptions;
-			TablePropSet: GlobalFilterPropSet;
+			PluginState: TableFilterState<Item>;
+			ColumnOptions: TableFilterColumnOptions;
+			TablePropSet: TableFilterPropSet;
 		}
 	> =>
 	({ columnOptions }) => {
@@ -55,7 +55,7 @@ export const useGlobalFilter =
 		const filteredRows = writable<BodyRow<Item>[]>([]);
 		const tableCellMatches = writable<Record<string, boolean>>({});
 
-		const pluginState: GlobalFilterState<Item> = { filterValue, preFilteredRows };
+		const pluginState: TableFilterState<Item> = { filterValue, preFilteredRows };
 
 		const transformRowsFn = derived(filterValue, ($filterValue) => {
 			return (rows: BodyRow<Item>[]) => {
@@ -64,7 +64,7 @@ export const useGlobalFilter =
 				const _filteredRows = rows.filter((row) => {
 					// An array of booleans, true if the cell matches the filter.
 					const rowCellMatches = Object.values(row.cellForId).map((cell) => {
-						const options = columnOptions[cell.id] as GlobalFilterColumnOptions | undefined;
+						const options = columnOptions[cell.id] as TableFilterColumnOptions | undefined;
 						if (options?.exclude === true) {
 							return false;
 						}
@@ -114,7 +114,7 @@ export const useGlobalFilter =
 		};
 	};
 
-export const textPrefixFilter: GlobalFilterFn<string, string> = ({ filterValue, value }) => {
+export const textPrefixFilter: TableFilterFn<string, string> = ({ filterValue, value }) => {
 	if (filterValue === '') {
 		return true;
 	}
