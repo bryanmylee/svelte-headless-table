@@ -4,12 +4,12 @@ import { derived, writable, type Readable, type Writable } from 'svelte/store';
 
 export interface TableFilterConfig {
 	fn?: TableFilterFn;
-	initialFilterValue?: string | number;
+	initialFilterValue?: string;
 	includeHiddenColumns?: boolean;
 }
 
 export interface TableFilterState<Item> {
-	filterValue: Writable<string | number>;
+	filterValue: Writable<string>;
 	preFilteredRows: Readable<BodyRow<Item>[]>;
 }
 
@@ -20,14 +20,12 @@ export interface TableFilterColumnOptions {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type TableFilterFn<FilterValue = any, Value = any> = (
-	props: TableFilterFnProps<FilterValue, Value>
-) => boolean;
+export type TableFilterFn = (props: TableFilterFnProps) => boolean;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type TableFilterFnProps<FilterValue = any, Value = any> = {
-	filterValue: FilterValue;
-	value: Value;
+export type TableFilterFnProps = {
+	filterValue: string;
+	value: string;
 };
 
 export type TableFilterPropSet = NewTablePropSet<{
@@ -76,7 +74,7 @@ export const useTableFilter =
 						if (options?.getFilterValue !== undefined) {
 							value = options?.getFilterValue(value);
 						}
-						const matches = fn({ value, filterValue: $filterValue });
+						const matches = fn({ value: String(value), filterValue: $filterValue });
 						tableCellMatches.update(($tableCellMatches) => ({
 							...$tableCellMatches,
 							// TODO standardize table-unique cell id.
@@ -114,7 +112,7 @@ export const useTableFilter =
 		};
 	};
 
-export const textPrefixFilter: TableFilterFn<string, string> = ({ filterValue, value }) => {
+export const textPrefixFilter: TableFilterFn = ({ filterValue, value }) => {
 	if (filterValue === '') {
 		return true;
 	}
