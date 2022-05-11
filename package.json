@@ -1,6 +1,6 @@
 {
 	"name": "svelte-headless-table",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"scripts": {
 		"dev": "svelte-kit dev",
 		"build": "svelte-kit build",
