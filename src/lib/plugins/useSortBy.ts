@@ -28,6 +28,9 @@ export type SortByPropSet = NewTablePropSet<{
 		clear: () => void;
 		disabled: boolean;
 	};
+	'tbody.tr.td': {
+		order: 'asc' | 'desc' | undefined;
+	};
 }>;
 
 export interface SortKey {
@@ -187,6 +190,15 @@ export const useSortBy =
 							toggle,
 							clear,
 							disabled,
+						};
+					});
+					return { props };
+				},
+				'tbody.tr.td': (cell) => {
+					const props = derived(sortKeys, ($sortKeys) => {
+						const key = $sortKeys.find((k) => k.id === cell.id);
+						return {
+							order: key?.order,
 						};
 					});
 					return { props };

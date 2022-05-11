@@ -117,7 +117,6 @@
 	const { sortKeys } = pluginStates.sort;
 	const { filterValues } = pluginStates.filter;
 	const { columnIdOrder } = pluginStates.orderColumns;
-	// $columnIdOrder = $visibleColumns.slice(3, 5).map((c) => c.id);
 	$columnIdOrder = ['firstName', 'lastName'];
 	const { hiddenColumnIds } = pluginStates.hideColumns;
 	$hiddenColumnIds = ['progress'];
@@ -133,7 +132,11 @@
 			<tr>
 				{#each headerRow.cells as cell (cell.id)}
 					<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-						<th {...attrs} on:click={props.sort.toggle}>
+						<th
+							{...attrs}
+							on:click={props.sort.toggle}
+							class:sorted={props.sort.order !== undefined}
+						>
 							<div>
 								<Render of={cell.render()} />
 								{#if props.sort.order === 'asc'}
@@ -156,7 +159,7 @@
 			<tr>
 				{#each row.cells as cell (cell.id)}
 					<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-						<td>
+						<td {...attrs} class:sorted={props.sort.order !== undefined}>
 							<Render of={cell.render()} />
 						</td>
 					</Subscribe>
@@ -195,5 +198,9 @@
 		padding: 0.5rem;
 		border-bottom: 1px solid black;
 		border-right: 1px solid black;
+	}
+
+	.sorted {
+		background: rgb(144, 191, 148);
 	}
 </style>

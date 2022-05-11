@@ -6,11 +6,9 @@ import type { Table } from './createTable';
 import { getHeaderRows, HeaderRow } from './headerRows';
 import type {
 	AnyPlugins,
-	AnyTablePropSet,
 	PluginStates,
 	TransformFlatColumnsFn,
 	TransformRowsFn,
-	UseTablePluginInstance,
 } from './types/UseTablePlugin';
 import { nonUndefined } from './utils/filter';
 
@@ -63,16 +61,7 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 			return [pluginName, plugin({ pluginName, tableState, columnOptions })];
 		})
 	) as {
-		[K in keyof Plugins]: UseTablePluginInstance<
-			Item,
-			{
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				PluginState: any;
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				ColumnOptions: any;
-				TablePropSet: AnyTablePropSet;
-			}
-		>;
+		[K in keyof Plugins]: ReturnType<Plugins[K]>;
 	};
 
 	const pluginStates = Object.fromEntries(
@@ -117,12 +106,32 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	const rows = derived(
 		[columnedRows, ...transformRowsFns],
 		([$columnedRows, ...$transformFowsFns]) => {
-			let transformedRows: BodyRow<Item, Plugins>[] = [...$columnedRows];
+			let $rows: BodyRow<Item, Plugins>[] = [...$columnedRows];
 			$transformFowsFns.forEach((fn) => {
-				transformedRows = fn(transformedRows) as BodyRow<Item, Plugins>[];
+				$rows = fn($rows) as BodyRow<Item, Plugins>[];
 			});
-			_rows.set(transformedRows);
-			return transformedRows;
+			// Inject state.
+			$rows.forEach((row) => {
+				row.injectState(tableState);
+				row.cells.forEach((cell) => {
+					cell.injectState(tableState);
+				});
+			});
+			// Apply plugin component hooks.
+			Object.entries(pluginInstances).forEach(([pluginName, pluginInstance]) => {
+				$rows.forEach((row) => {
+					if (pluginInstance.hooks?.['tbody.tr'] !== undefined) {
+						row.applyHook(pluginName, pluginInstance.hooks['tbody.tr'](row));
+					}
+					row.cells.forEach((cell) => {
+						if (pluginInstance.hooks?.['tbody.tr.td'] !== undefined) {
+							cell.applyHook(pluginName, pluginInstance.hooks['tbody.tr.td'](cell));
+						}
+					});
+				});
+			});
+			_rows.set($rows);
+			return $rows;
 		}
 	);
 
@@ -141,6 +150,9 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		// Apply plugin component hooks.
 		Object.entries(pluginInstances).forEach(([pluginName, pluginInstance]) => {
 			$headerRows.forEach((row) => {
+				if (pluginInstance.hooks?.['thead.tr'] !== undefined) {
+					row.applyHook(pluginName, pluginInstance.hooks['thead.tr'](row));
+				}
 				row.cells.forEach((cell) => {
 					if (pluginInstance.hooks?.['thead.tr.th'] !== undefined) {
 						cell.applyHook(pluginName, pluginInstance.hooks['thead.tr.th'](cell));
