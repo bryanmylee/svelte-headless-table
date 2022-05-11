@@ -10,6 +10,7 @@
 		numberRangeFilter,
 		textPrefixFilter,
 	} from '$lib/plugins';
+	import { useGlobalFilter } from '$lib/plugins/useGlobalFilter';
 	import { getShuffled } from './_getShuffled';
 	import { createSamples } from './_createSamples';
 	import Italic from './_Italic.svelte';
@@ -22,6 +23,7 @@
 
 	const table = createTable(data, {
 		sort: useSortBy(),
+		globalFilter: useGlobalFilter(),
 		filter: useColumnFilters(),
 		orderColumns: useColumnOrder({
 			initialColumnIdOrder: ['firstName', 'lastName'],
@@ -117,6 +119,7 @@
 	const { sortKeys } = pluginStates.sort;
 	const { filterValues } = pluginStates.filter;
 	const { columnIdOrder } = pluginStates.orderColumns;
+	const { filterValue } = pluginStates.globalFilter;
 	$columnIdOrder = ['firstName', 'lastName'];
 	const { hiddenColumnIds } = pluginStates.hideColumns;
 	$hiddenColumnIds = ['progress'];
@@ -153,6 +156,11 @@
 				{/each}
 			</tr>
 		{/each}
+		<tr>
+			<th colspan={$visibleColumns.length}>
+				<input type="text" bind:value={$filterValue} />
+			</th>
+		</tr>
 	</thead>
 	<tbody>
 		{#each $rows as row (row.id)}
