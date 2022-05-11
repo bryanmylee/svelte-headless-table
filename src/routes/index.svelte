@@ -98,7 +98,7 @@
 					plugins: {
 						filter: {
 							fn: numberRangeFilter,
-							initFilterValue: [null, null],
+							initialFilterValue: [null, null],
 							render: ({ filterValue, values }) =>
 								createRender(NumberRangeFilter, { filterValue, values }),
 						},

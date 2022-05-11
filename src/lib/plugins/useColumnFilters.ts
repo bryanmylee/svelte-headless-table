@@ -13,7 +13,7 @@ export interface ColumnFiltersState<Item> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface ColumnFiltersColumnOptions<Item, FilterValue = any> {
 	fn: ColumnFilterFn<FilterValue>;
-	initFilterValue?: FilterValue;
+	initialFilterValue?: FilterValue;
 	render: (props: ColumnRenderConfigPropArgs<Item, FilterValue>) => RenderConfig;
 }
 
@@ -95,9 +95,7 @@ export const useColumnFilters =
 						if (columnOption === undefined) {
 							return undefined;
 						}
-						if (columnOption.initFilterValue !== undefined) {
-							filterValue.set(columnOption.initFilterValue);
-						}
+						filterValue.set(columnOption.initialFilterValue);
 						const preFilteredValues = derived(preFilteredRows, ($rows) =>
 							$rows.map((row) => row.cellForId[cell.id].value)
 						);
