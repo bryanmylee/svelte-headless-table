@@ -10,6 +10,7 @@
 		numberRangeFilter,
 		textPrefixFilter,
 	} from '$lib/plugins';
+	import { useGlobalFilter } from '$lib/plugins/useGlobalFilter';
 	import { getShuffled } from './_getShuffled';
 	import { createSamples } from './_createSamples';
 	import Italic from './_Italic.svelte';
@@ -22,6 +23,9 @@
 
 	const table = createTable(data, {
 		sort: useSortBy(),
+		globalFilter: useGlobalFilter({
+			includeHiddenColumns: true,
+		}),
 		filter: useColumnFilters(),
 		orderColumns: useColumnOrder({
 			initialColumnIdOrder: ['firstName', 'lastName'],
@@ -38,6 +42,9 @@
 			plugins: {
 				sort: {
 					getSortValue: (i) => i.lastName,
+				},
+				globalFilter: {
+					getFilterValue: (i) => i.progress,
 				},
 			},
 		}),
@@ -64,6 +71,9 @@
 					plugins: {
 						sort: {
 							disable: true,
+						},
+						globalFilter: {
+							exclude: true,
 						},
 					},
 				}),
@@ -117,6 +127,7 @@
 	const { sortKeys } = pluginStates.sort;
 	const { filterValues } = pluginStates.filter;
 	const { columnIdOrder } = pluginStates.orderColumns;
+	const { filterValue } = pluginStates.globalFilter;
 	$columnIdOrder = ['firstName', 'lastName'];
 	const { hiddenColumnIds } = pluginStates.hideColumns;
 	$hiddenColumnIds = ['progress'];
@@ -153,13 +164,22 @@
 				{/each}
 			</tr>
 		{/each}
+		<tr>
+			<th colspan={$visibleColumns.length}>
+				<input type="text" bind:value={$filterValue} placeholder="Search all data..." />
+			</th>
+		</tr>
 	</thead>
 	<tbody>
 		{#each $rows as row (row.id)}
 			<tr>
 				{#each row.cells as cell (cell.id)}
 					<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-						<td {...attrs} class:sorted={props.sort.order !== undefined}>
+						<td
+							{...attrs}
+							class:sorted={props.sort.order !== undefined}
+							class:matches={props.globalFilter.matches}
+						>
 							<Render of={cell.render()} />
 						</td>
 					</Subscribe>
@@ -180,7 +200,7 @@
 		2
 	)}</pre>
 
-<style global>
+<style>
 	h1,
 	table {
 		font-family: sans-serif;
@@ -202,5 +222,9 @@
 
 	.sorted {
 		background: rgb(144, 191, 148);
+	}
+
+	.matches {
+		outline: 2px solid rgb(144, 191, 148);
 	}
 </style>
