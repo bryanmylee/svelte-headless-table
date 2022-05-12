@@ -13,7 +13,7 @@ import type {
 import { nonUndefined } from './utils/filter';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export interface UseTableState<Item, Plugins extends AnyPlugins = AnyPlugins> {
+export interface TableState<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	data: ReadOrWritable<Item[]>;
 	columns: Column<Item, Plugins>[];
 	dataColumns: DataColumn<Item, Plugins>[];
@@ -38,7 +38,7 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	// _stores need to be defined first to pass into plugins for initialization.
 	const _visibleColumns = writable<DataColumn<Item, Plugins>[]>([]);
 	const _rows = writable<BodyRow<Item>[]>([]);
-	const tableState: UseTableState<Item, Plugins> = {
+	const tableState: TableState<Item, Plugins> = {
 		data,
 		columns,
 		dataColumns,

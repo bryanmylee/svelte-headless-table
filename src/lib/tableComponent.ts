@@ -6,7 +6,7 @@ import type {
 	ElementHook,
 	PluginTablePropSet,
 } from './types/TablePlugin';
-import type { UseTableState } from './useTable';
+import type { TableState } from './useTable';
 
 export interface TableComponentInit {
 	id: string;
@@ -38,8 +38,8 @@ export class TableComponent<Item, Plugins extends AnyPlugins, Key extends Compon
 		);
 	}
 
-	protected state?: UseTableState<Item, Plugins>;
-	injectState(state: UseTableState<Item, Plugins>) {
+	protected state?: TableState<Item, Plugins>;
+	injectState(state: TableState<Item, Plugins>) {
 		this.state = state;
 	}
 

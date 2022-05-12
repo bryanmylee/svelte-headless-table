@@ -3,7 +3,7 @@ import type { BodyRow, BodyRowAttributes } from '$lib/bodyRows';
 import type { DataColumn } from '$lib/columns';
 import type { HeaderCell, HeaderCellAttributes } from '$lib/headerCells';
 import type { HeaderRow, HeaderRowAttributes } from '$lib/headerRows';
-import type { UseTableState } from '$lib/useTable';
+import type { TableState } from '$lib/useTable';
 import type { Readable } from 'svelte/store';
 
 export type TablePlugin<Item, PluginState, ColumnOptions, TablePropSet extends AnyTablePropSet> = (
@@ -12,7 +12,7 @@ export type TablePlugin<Item, PluginState, ColumnOptions, TablePropSet extends A
 
 export type TablePluginInit<Item, ColumnOptions> = {
 	pluginName: string;
-	tableState: UseTableState<Item>;
+	tableState: TableState<Item>;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	columnOptions: Record<string, ColumnOptions>;
 };
@@ -95,7 +95,7 @@ export type PluginStates<Plugins extends AnyPlugins> = {
 };
 
 type TablePropSetForPluginKey<Plugins extends AnyPlugins> = {
-	// Plugins[K] does not extend UseTablePlugin<unknown, unknown, unknown, infer TablePropSet>
+	// Plugins[K] does not extend TablePlugin<unknown, unknown, unknown, infer TablePropSet>
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	[K in keyof Plugins]: Plugins[K] extends TablePlugin<any, any, any, infer TablePropSet>
 		? TablePropSet

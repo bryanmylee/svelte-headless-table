@@ -3,7 +3,7 @@ import type { BodyRow } from '$lib/bodyRows';
 import type { TablePlugin, NewTablePropSet } from '$lib/types/TablePlugin';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 import type { RenderConfig } from '$lib/render';
-import type { UseTableState } from '$lib/useTable';
+import type { TableState } from '$lib/useTable';
 
 export interface ColumnFiltersState<Item> {
 	filterValues: Writable<Record<string, unknown>>;
@@ -19,7 +19,7 @@ export interface ColumnFiltersColumnOptions<Item, FilterValue = any> {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface ColumnRenderConfigPropArgs<Item, FilterValue = any, Value = any>
-	extends UseTableState<Item> {
+	extends TableState<Item> {
 	id: string;
 	filterValue: Writable<FilterValue>;
 	values: Readable<Value[]>;
