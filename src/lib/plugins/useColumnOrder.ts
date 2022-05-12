@@ -1,5 +1,4 @@
-import type { DataColumn } from '$lib/columns';
-import type { NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
+import type { DeriveFlatColumnsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
 import { derived, writable, type Writable } from 'svelte/store';
 
 export interface ColumnOrderConfig {
@@ -26,24 +25,24 @@ export const useColumnOrder =
 
 		const pluginState: ColumnOrderState = { columnIdOrder };
 
-		const transformFlatColumnsFn = derived(columnIdOrder, ($columnIdOrder) => {
-			return (flatColumns: DataColumn<Item>[]) => {
-				const flatColumnsCopy = [...flatColumns];
-				const orderedFlatColumns: DataColumn<Item>[] = [];
+		const deriveFlatColumns: DeriveFlatColumnsFn<Item> = (flatColumns) => {
+			return derived([flatColumns, columnIdOrder], ([$flatColumns, $columnIdOrder]) => {
+				const _flatColumns = [...$flatColumns];
+				const orderedFlatColumns: typeof $flatColumns = [];
 				$columnIdOrder.forEach((id) => {
-					const colIdx = flatColumnsCopy.findIndex((c) => c.id === id);
-					orderedFlatColumns.push(...flatColumnsCopy.splice(colIdx, 1));
+					const colIdx = _flatColumns.findIndex((c) => c.id === id);
+					orderedFlatColumns.push(..._flatColumns.splice(colIdx, 1));
 				});
 				if (!hideUnspecifiedColumns) {
 					// Push the remaining unspecified columns.
-					orderedFlatColumns.push(...flatColumnsCopy);
+					orderedFlatColumns.push(..._flatColumns);
 				}
 				return orderedFlatColumns;
-			};
-		});
+			});
+		};
 
 		return {
 			pluginState,
-			transformFlatColumnsFn,
+			deriveFlatColumns,
 		};
 	};

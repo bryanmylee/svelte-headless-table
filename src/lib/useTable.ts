@@ -6,6 +6,7 @@ import type { Table } from './createTable';
 import { getHeaderRows, HeaderRow } from './headerRows';
 import type {
 	AnyPlugins,
+	DeriveFlatColumnsFn,
 	DeriveRowsFn,
 	PluginStates,
 	TransformFlatColumnsFn,
@@ -71,30 +72,26 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		])
 	) as PluginStates<Plugins>;
 
-	const transformFlatColumnsFns: Readable<TransformFlatColumnsFn<Item>>[] = Object.values(
-		pluginInstances
-	)
-		.map((pluginInstance) => pluginInstance.transformFlatColumnsFn)
+	const deriveFlatColumnsFns: DeriveFlatColumnsFn<Item>[] = Object.values(pluginInstances)
+		.map((pluginInstance) => pluginInstance.deriveFlatColumns)
 		.filter(nonUndefined);
 
-	const visibleColumns = derived(
-		[flatColumns, ...transformFlatColumnsFns],
-		([$flatColumns, ...$transformFlatColumnsFns]) => {
-			let columns: DataColumn<Item, Plugins>[] = [...$flatColumns];
-			$transformFlatColumnsFns.forEach((fn) => {
-				columns = fn(columns) as DataColumn<Item, Plugins>[];
-			});
-			_visibleColumns.set(columns);
-			return columns;
-		}
-	);
+	let visibleColumns = flatColumns;
+	deriveFlatColumnsFns.forEach((fn) => {
+		visibleColumns = fn(visibleColumns);
+	});
+
+	const injectedColumns = derived(visibleColumns, ($visibleColumns) => {
+		_visibleColumns.set($visibleColumns);
+		return $visibleColumns;
+	});
 
 	const columnedRows = derived(
-		[originalRows, visibleColumns],
-		([$originalRows, $visibleColumns]) => {
+		[originalRows, injectedColumns],
+		([$originalRows, $injectedColumns]) => {
 			return getColumnedBodyRows(
 				$originalRows,
-				$visibleColumns.map((c) => c.id)
+				$injectedColumns.map((c) => c.id)
 			);
 		}
 	);
@@ -133,10 +130,10 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		return $rows;
 	});
 
-	const headerRows = derived(visibleColumns, ($visibleColumns) => {
+	const headerRows = derived(injectedColumns, ($injectedColumns) => {
 		const $headerRows = getHeaderRows(
 			columns,
-			$visibleColumns.map((c) => c.id)
+			$injectedColumns.map((c) => c.id)
 		);
 		// Inject state.
 		$headerRows.forEach((row) => {
@@ -163,7 +160,7 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 
 	return {
 		dataColumns,
-		visibleColumns,
+		visibleColumns: injectedColumns,
 		headerRows,
 		originalRows,
 		rows: injectedRows,

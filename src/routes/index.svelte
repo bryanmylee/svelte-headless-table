@@ -29,9 +29,9 @@
 			includeHiddenColumns: true,
 		}),
 		filter: useColumnFilters(),
-		// orderColumns: useColumnOrder({
-		// 	initialColumnIdOrder: ['firstName', 'lastName'],
-		// }),
+		orderColumns: useColumnOrder({
+			initialColumnIdOrder: ['firstName', 'lastName'],
+		}),
 		// hideColumns: useHiddenColumns(),
 		page: usePagination(),
 	});
@@ -134,17 +134,16 @@
 
 	const { sortKeys } = pluginStates.sort;
 	const { filterValues } = pluginStates.filter;
-	// const { columnIdOrder } = pluginStates.orderColumns;
 	const { filterValue } = pluginStates.tableFilter;
-	// $columnIdOrder = ['firstName', 'lastName'];
-	// const { hiddenColumnIds } = pluginStates.hideColumns;
 	const { pageIndex, pageCount, pageSize, hasPreviousPage, hasNextPage } = pluginStates.page;
+	const { columnIdOrder } = pluginStates.orderColumns;
+	// const { hiddenColumnIds } = pluginStates.hideColumns;
 	// $hiddenColumnIds = ['progress'];
 </script>
 
 <h1>svelte-headless-table</h1>
 
-<!-- <button on:click={() => ($columnIdOrder = getShuffled($columnIdOrder))}>Shuffle columns</button> -->
+<button on:click={() => ($columnIdOrder = getShuffled($columnIdOrder))}>Shuffle columns</button>
 <div>
 	<button on:click={() => $pageIndex--} disabled={!$hasPreviousPage}>Previous page</button>
 	{$pageIndex + 1} of {$pageCount}
