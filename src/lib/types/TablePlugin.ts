@@ -43,7 +43,14 @@ export type AnyPluginInstances = Record<
 >;
 
 export type TransformFlatColumnsFn<Item> = (flatColumns: DataColumn<Item>[]) => DataColumn<Item>[];
-export type DeriveRowsFn<Item> = (rows: Readable<BodyRow<Item>[]>) => Readable<BodyRow<Item>[]>;
+
+export type DeriveFlatColumns<Item> = (
+	flatColumns: Readable<DataColumn<Item>[]>
+) => Readable<DataColumn<Item>[]>;
+
+export type DeriveRowsFn<Item> = <Row extends BodyRow<Item>>(
+	rows: Readable<Row[]>
+) => Readable<Row[]>;
 
 export type Components<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	'thead.tr': HeaderRow<Item, Plugins>;

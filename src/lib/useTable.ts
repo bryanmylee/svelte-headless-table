@@ -105,7 +105,7 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 
 	let rows = columnedRows;
 	deriveRowsFns.forEach((fn) => {
-		rows = fn(rows) as Readable<BodyRow<Item, Plugins>[]>;
+		rows = fn(rows);
 	});
 
 	const injectedRows = derived(rows, ($rows) => {
