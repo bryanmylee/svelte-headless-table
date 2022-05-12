@@ -1,6 +1,6 @@
 import { keyed } from 'svelte-keyed';
 import type { BodyRow } from '$lib/bodyRows';
-import type { TablePlugin, NewTablePropSet } from '$lib/types/TablePlugin';
+import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 import type { RenderConfig } from '$lib/render';
 import type { TableState } from '$lib/useTable';
@@ -60,10 +60,10 @@ export const useColumnFilters =
 
 		const pluginState: ColumnFiltersState<Item> = { filterValues, preFilteredRows };
 
-		const transformRowsFn = derived(filterValues, ($filterValues) => {
-			return (rows: BodyRow<Item>[]) => {
-				preFilteredRows.set(rows);
-				const _filteredRows = rows.filter((row) => {
+		const deriveRows: DeriveRowsFn<Item> = (rows) => {
+			return derived([rows, filterValues], ([$rows, $filterValues]) => {
+				preFilteredRows.set($rows);
+				const _filteredRows = $rows.filter((row) => {
 					for (const [columnId, columnOption] of Object.entries(columnOptions)) {
 						const { value } = row.cellForId[columnId];
 						const filterValue = $filterValues[columnId];
@@ -79,12 +79,12 @@ export const useColumnFilters =
 				});
 				filteredRows.set(_filteredRows);
 				return _filteredRows;
-			};
-		});
+			});
+		};
 
 		return {
 			pluginState,
-			transformRowsFn,
+			deriveRows,
 			hooks: {
 				'thead.tr.th': (cell) => {
 					const filterValue = keyed(filterValues, cell.id);

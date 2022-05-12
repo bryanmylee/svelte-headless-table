@@ -28,7 +28,7 @@
 		// tableFilter: useTableFilter({
 		// 	includeHiddenColumns: true,
 		// }),
-		// filter: useColumnFilters(),
+		filter: useColumnFilters(),
 		// orderColumns: useColumnOrder({
 		// 	initialColumnIdOrder: ['firstName', 'lastName'],
 		// }),
@@ -66,11 +66,11 @@
 						sort: {
 							invert: true,
 						},
-						// filter: {
-						// 	fn: textPrefixFilter,
-						// 	render: ({ filterValue, values }) =>
-						// 		createRender(TextFilter, { filterValue, values }),
-						// },
+						filter: {
+							fn: textPrefixFilter,
+							render: ({ filterValue, values }) =>
+								createRender(TextFilter, { filterValue, values }),
+						},
 					},
 				}),
 				table.column({
@@ -103,23 +103,23 @@
 					id: 'status',
 					accessor: (item) => item.status,
 					plugins: {
-						// filter: {
-						// 	fn: matchFilter,
-						// 	render: ({ filterValue, preFilteredValues }) =>
-						// 		createRender(SelectFilter, { filterValue, preFilteredValues }),
-						// },
+						filter: {
+							fn: matchFilter,
+							render: ({ filterValue, preFilteredValues }) =>
+								createRender(SelectFilter, { filterValue, preFilteredValues }),
+						},
 					},
 				}),
 				table.column({
 					header: 'Visits',
 					accessor: 'visits',
 					plugins: {
-						// filter: {
-						// 	fn: numberRangeFilter,
-						// 	initialFilterValue: [null, null],
-						// 	render: ({ filterValue, values }) =>
-						// 		createRender(NumberRangeFilter, { filterValue, values }),
-						// },
+						filter: {
+							fn: numberRangeFilter,
+							initialFilterValue: [null, null],
+							render: ({ filterValue, values }) =>
+								createRender(NumberRangeFilter, { filterValue, values }),
+						},
 					},
 				}),
 				table.column({
@@ -133,7 +133,7 @@
 	const { visibleColumns, headerRows, rows, pluginStates } = useTable(table, columns);
 
 	const { sortKeys } = pluginStates.sort;
-	// const { filterValues } = pluginStates.filter;
+	const { filterValues } = pluginStates.filter;
 	// const { columnIdOrder } = pluginStates.orderColumns;
 	// const { filterValue } = pluginStates.tableFilter;
 	// $columnIdOrder = ['firstName', 'lastName'];
@@ -172,9 +172,9 @@
 									⬆️
 								{/if}
 							</div>
-							<!-- {#if props.filter !== undefined}
+							{#if props.filter !== undefined}
 								<Render of={props.filter.render} />
-							{/if} -->
+							{/if}
 						</th>
 					</Subscribe>
 				{/each}
