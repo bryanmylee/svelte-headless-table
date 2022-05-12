@@ -6,11 +6,12 @@
 		useColumnOrder,
 		useHiddenColumns,
 		useSortBy,
+		useTableFilter,
+		usePagination,
 		matchFilter,
 		numberRangeFilter,
 		textPrefixFilter,
 	} from '$lib/plugins';
-	import { useTableFilter } from '$lib/plugins/useTableFilter';
 	import { getShuffled } from './_getShuffled';
 	import { createSamples } from './_createSamples';
 	import Italic from './_Italic.svelte';
@@ -20,7 +21,7 @@
 	import NumberRangeFilter from './_NumberRangeFilter.svelte';
 	import SelectFilter from './_SelectFilter.svelte';
 
-	const data = readable(createSamples(10));
+	const data = readable(createSamples(100));
 
 	const table = createTable(data, {
 		sort: useSortBy(),
@@ -32,6 +33,7 @@
 			initialColumnIdOrder: ['firstName', 'lastName'],
 		}),
 		hideColumns: useHiddenColumns(),
+		page: usePagination(),
 	});
 
 	const columns = table.createColumns([
@@ -136,12 +138,20 @@
 	const { filterValue } = pluginStates.tableFilter;
 	$columnIdOrder = ['firstName', 'lastName'];
 	const { hiddenColumnIds } = pluginStates.hideColumns;
+	const { pageIndex, pageCount, pageSize, hasPreviousPage, hasNextPage } = pluginStates.page;
 	$hiddenColumnIds = ['progress'];
 </script>
 
 <h1>svelte-headless-table</h1>
 
 <button on:click={() => ($columnIdOrder = getShuffled($columnIdOrder))}>Shuffle columns</button>
+<div>
+	<button on:click={() => $pageIndex--} disabled={!$hasPreviousPage}>Previous page</button>
+	{$pageIndex + 1} of {$pageCount}
+	<button on:click={() => $pageIndex++} disabled={!$hasNextPage}>Next page</button>
+	<label for="page-size">Page size</label>
+	<input id="page-size" type="number" min={1} bind:value={$pageSize} />
+</div>
 
 <table>
 	<thead>
@@ -207,9 +217,11 @@
 	)}</pre>
 
 <style>
-	h1,
-	table {
+	* {
 		font-family: sans-serif;
+	}
+	pre {
+		font-family: monospace;
 	}
 
 	table {
