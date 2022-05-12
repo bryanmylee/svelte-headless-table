@@ -1,5 +1,5 @@
 import type { DataColumn } from '$lib/columns';
-import type { NewTablePropSet, UseTablePlugin } from '$lib/types/UseTablePlugin';
+import type { NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
 import { derived, writable, type Writable } from 'svelte/store';
 
 export interface ColumnOrderConfig {
@@ -15,7 +15,7 @@ export const useColumnOrder =
 	<Item>({
 		initialColumnIdOrder = [],
 		hideUnspecifiedColumns = false,
-	}: ColumnOrderConfig = {}): UseTablePlugin<
+	}: ColumnOrderConfig = {}): TablePlugin<
 		Item,
 		ColumnOrderState,
 		Record<string, never>,

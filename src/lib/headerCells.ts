@@ -2,7 +2,7 @@ import { derived } from 'svelte/store';
 import { NBSP } from './constants';
 import { TableComponent } from './tableComponent';
 import type { HeaderLabel } from './types/Label';
-import type { AnyPlugins } from './types/UseTablePlugin';
+import type { AnyPlugins } from './types/TablePlugin';
 import type { RenderConfig } from './render';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

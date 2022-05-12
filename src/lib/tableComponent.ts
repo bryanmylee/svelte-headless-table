@@ -5,7 +5,7 @@ import type {
 	ComponentKeys,
 	ElementHook,
 	PluginTablePropSet,
-} from './types/UseTablePlugin';
+} from './types/TablePlugin';
 import type { UseTableState } from './useTable';
 
 export interface TableComponentInit {

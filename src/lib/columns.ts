@@ -1,6 +1,6 @@
 import type { HeaderLabel } from './types/Label';
 import type { Label } from './types/Label';
-import type { AnyPlugins, PluginColumnConfigs } from './types/UseTablePlugin';
+import type { AnyPlugins, PluginColumnConfigs } from './types/TablePlugin';
 
 export interface ColumnInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	header: HeaderLabel<Item>;

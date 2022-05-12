@@ -1,5 +1,5 @@
 import type { DataColumn } from '$lib/columns';
-import type { NewTablePropSet, UseTablePlugin } from '$lib/types/UseTablePlugin';
+import type { NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
 import { derived, writable, type Writable } from 'svelte/store';
 
 export interface HiddenColumnsConfig {
@@ -11,7 +11,7 @@ export interface HiddenColumnsState {
 }
 
 export const useHiddenColumns =
-	<Item>({ initialHiddenColumnIds = [] }: HiddenColumnsConfig = {}): UseTablePlugin<
+	<Item>({ initialHiddenColumnIds = [] }: HiddenColumnsConfig = {}): TablePlugin<
 		Item,
 		HiddenColumnsState,
 		Record<string, never>,

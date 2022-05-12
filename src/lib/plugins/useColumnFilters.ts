@@ -1,6 +1,6 @@
 import { keyed } from 'svelte-keyed';
 import type { BodyRow } from '$lib/bodyRows';
-import type { UseTablePlugin, NewTablePropSet } from '$lib/types/UseTablePlugin';
+import type { TablePlugin, NewTablePropSet } from '$lib/types/TablePlugin';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 import type { RenderConfig } from '$lib/render';
 import type { UseTableState } from '$lib/useTable';
@@ -47,7 +47,7 @@ export type ColumnFiltersPropSet = NewTablePropSet<{
 }>;
 
 export const useColumnFilters =
-	<Item>(): UseTablePlugin<
+	<Item>(): TablePlugin<
 		Item,
 		ColumnFiltersState<Item>,
 		ColumnFiltersColumnOptions<Item>,

@@ -9,7 +9,7 @@ import type {
 	PluginStates,
 	TransformFlatColumnsFn,
 	TransformRowsFn,
-} from './types/UseTablePlugin';
+} from './types/TablePlugin';
 import { nonUndefined } from './utils/filter';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

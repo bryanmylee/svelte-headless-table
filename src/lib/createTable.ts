@@ -10,7 +10,7 @@ import {
 	type DataColumnInitKey,
 	type GroupColumnInit,
 } from './columns';
-import type { AnyPlugins } from './types/UseTablePlugin';
+import type { AnyPlugins } from './types/TablePlugin';
 import type { ReadOrWritable } from './utils/store';
 import { getDuplicates } from './utils/array';
 

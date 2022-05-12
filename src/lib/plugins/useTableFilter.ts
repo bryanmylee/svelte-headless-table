@@ -1,5 +1,5 @@
 import type { BodyRow } from '$lib/bodyRows';
-import type { UseTablePlugin, NewTablePropSet } from '$lib/types/UseTablePlugin';
+import type { TablePlugin, NewTablePropSet } from '$lib/types/TablePlugin';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 
 export interface TableFilterConfig {
@@ -39,7 +39,7 @@ export const useTableFilter =
 		fn = textPrefixFilter,
 		initialFilterValue = '',
 		includeHiddenColumns = false,
-	}: TableFilterConfig = {}): UseTablePlugin<
+	}: TableFilterConfig = {}): TablePlugin<
 		Item,
 		TableFilterState<Item>,
 		TableFilterColumnOptions,

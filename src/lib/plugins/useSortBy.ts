@@ -1,5 +1,5 @@
 import type { BodyRow } from '$lib/bodyRows';
-import type { UseTablePlugin, NewTablePropSet } from '$lib/types/UseTablePlugin';
+import type { TablePlugin, NewTablePropSet } from '$lib/types/TablePlugin';
 import { compare } from '$lib/utils/compare';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 
@@ -104,12 +104,7 @@ export const useSortBy =
 		initialSortKeys = [],
 		disableMultiSort = false,
 		isMultiSortEvent = isShiftClick,
-	}: SortByConfig = {}): UseTablePlugin<
-		Item,
-		SortByState<Item>,
-		SortByColumnOptions,
-		SortByPropSet
-	> =>
+	}: SortByConfig = {}): TablePlugin<Item, SortByState<Item>, SortByColumnOptions, SortByPropSet> =>
 	({ columnOptions }) => {
 		const disabledSortIds = Object.entries(columnOptions)
 			.filter(([, option]) => option.disable === true)

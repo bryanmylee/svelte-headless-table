@@ -2,7 +2,7 @@ import { derived } from 'svelte/store';
 import { BodyCell } from './bodyCells';
 import type { DataColumn } from './columns';
 import { TableComponent } from './tableComponent';
-import type { AnyPlugins } from './types/UseTablePlugin';
+import type { AnyPlugins } from './types/TablePlugin';
 import { nonUndefined } from './utils/filter';
 
 export interface BodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> {

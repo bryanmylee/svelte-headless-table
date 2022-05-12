@@ -6,23 +6,18 @@ import type { HeaderRow, HeaderRowAttributes } from '$lib/headerRows';
 import type { UseTableState } from '$lib/useTable';
 import type { Readable } from 'svelte/store';
 
-export type UseTablePlugin<
-	Item,
-	PluginState,
-	ColumnOptions,
-	TablePropSet extends AnyTablePropSet
-> = (
-	init: UseTablePluginInit<Item, ColumnOptions>
-) => UseTablePluginInstance<Item, PluginState, ColumnOptions, TablePropSet>;
+export type TablePlugin<Item, PluginState, ColumnOptions, TablePropSet extends AnyTablePropSet> = (
+	init: TablePluginInit<Item, ColumnOptions>
+) => TablePluginInstance<Item, PluginState, ColumnOptions, TablePropSet>;
 
-export type UseTablePluginInit<Item, ColumnOptions> = {
+export type TablePluginInit<Item, ColumnOptions> = {
 	pluginName: string;
 	tableState: UseTableState<Item>;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	columnOptions: Record<string, ColumnOptions>;
 };
 
-export type UseTablePluginInstance<
+export type TablePluginInstance<
 	Item,
 	PluginState,
 	ColumnOptions,
@@ -38,22 +33,13 @@ export type UseTablePluginInstance<
 export type AnyPlugins = Record<
 	string,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	UseTablePlugin<any, any, any, any>
+	TablePlugin<any, any, any, any>
 >;
 
 export type AnyPluginInstances = Record<
 	string,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	UseTablePluginInstance<
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		any,
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		any,
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		any,
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		any
-	>
+	TablePluginInstance<any, any, any, any>
 >;
 
 export type TransformFlatColumnsFn<Item> = (flatColumns: DataColumn<Item>[]) => DataColumn<Item>[];
@@ -111,7 +97,7 @@ export type PluginStates<Plugins extends AnyPlugins> = {
 type TablePropSetForPluginKey<Plugins extends AnyPlugins> = {
 	// Plugins[K] does not extend UseTablePlugin<unknown, unknown, unknown, infer TablePropSet>
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	[K in keyof Plugins]: Plugins[K] extends UseTablePlugin<any, any, any, infer TablePropSet>
+	[K in keyof Plugins]: Plugins[K] extends TablePlugin<any, any, any, infer TablePropSet>
 		? TablePropSet
 		: never;
 };

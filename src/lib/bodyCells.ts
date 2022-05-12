@@ -3,7 +3,7 @@ import type { BodyRow } from './bodyRows';
 import type { DataColumn } from './columns';
 import { TableComponent } from './tableComponent';
 import type { Label } from './types/Label';
-import type { AnyPlugins } from './types/UseTablePlugin';
+import type { AnyPlugins } from './types/TablePlugin';
 import type { RenderConfig } from './render';
 
 export interface BodyCellInit<Item, Plugins extends AnyPlugins = AnyPlugins, Value = unknown> {
