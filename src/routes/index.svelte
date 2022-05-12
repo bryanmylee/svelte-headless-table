@@ -33,7 +33,7 @@
 		// 	initialColumnIdOrder: ['firstName', 'lastName'],
 		// }),
 		// hideColumns: useHiddenColumns(),
-		// page: usePagination(),
+		page: usePagination(),
 	});
 
 	const columns = table.createColumns([
@@ -138,20 +138,20 @@
 	const { filterValue } = pluginStates.tableFilter;
 	// $columnIdOrder = ['firstName', 'lastName'];
 	// const { hiddenColumnIds } = pluginStates.hideColumns;
-	// const { pageIndex, pageCount, pageSize, hasPreviousPage, hasNextPage } = pluginStates.page;
+	const { pageIndex, pageCount, pageSize, hasPreviousPage, hasNextPage } = pluginStates.page;
 	// $hiddenColumnIds = ['progress'];
 </script>
 
 <h1>svelte-headless-table</h1>
 
-<!-- <button on:click={() => ($columnIdOrder = getShuffled($columnIdOrder))}>Shuffle columns</button>
+<!-- <button on:click={() => ($columnIdOrder = getShuffled($columnIdOrder))}>Shuffle columns</button> -->
 <div>
 	<button on:click={() => $pageIndex--} disabled={!$hasPreviousPage}>Previous page</button>
 	{$pageIndex + 1} of {$pageCount}
 	<button on:click={() => $pageIndex++} disabled={!$hasNextPage}>Next page</button>
 	<label for="page-size">Page size</label>
 	<input id="page-size" type="number" min={1} bind:value={$pageSize} />
-</div> -->
+</div>
 
 <table>
 	<thead>
