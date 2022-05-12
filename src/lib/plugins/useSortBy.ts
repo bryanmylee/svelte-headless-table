@@ -1,5 +1,5 @@
 import type { BodyRow } from '$lib/bodyRows';
-import type { TablePlugin, NewTablePropSet } from '$lib/types/TablePlugin';
+import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
 import { compare } from '$lib/utils/compare';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 
@@ -114,10 +114,10 @@ export const useSortBy =
 		const preSortedRows = writable<BodyRow<Item>[]>([]);
 		const sortedRows = writable<BodyRow<Item>[]>([]);
 
-		const transformRowsFn = derived(sortKeys, ($sortKeys) => {
-			return (rows: BodyRow<Item>[]) => {
-				preSortedRows.set(rows);
-				const _sortedRows = [...rows];
+		const deriveRows: DeriveRowsFn<Item> = (rows) => {
+			return derived([rows, sortKeys], ([$rows, $sortKeys]) => {
+				preSortedRows.set($rows);
+				const _sortedRows = [...$rows];
 				_sortedRows.sort((a, b) => {
 					for (const key of $sortKeys) {
 						const invert = columnOptions[key.id]?.invert ?? false;
@@ -153,14 +153,14 @@ export const useSortBy =
 				});
 				sortedRows.set(_sortedRows);
 				return _sortedRows;
-			};
-		});
+			});
+		};
 
 		const pluginState: SortByState<Item> = { sortKeys, preSortedRows };
 
 		return {
 			pluginState,
-			transformRowsFn,
+			deriveRows,
 			hooks: {
 				'thead.tr.th': (cell) => {
 					const disabled = disabledSortIds.includes(cell.id);

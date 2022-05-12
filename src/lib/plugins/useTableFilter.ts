@@ -1,5 +1,5 @@
 import type { BodyRow } from '$lib/bodyRows';
-import type { TablePlugin, NewTablePropSet } from '$lib/types/TablePlugin';
+import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 
 export interface TableFilterConfig {
@@ -53,11 +53,11 @@ export const useTableFilter =
 
 		const pluginState: TableFilterState<Item> = { filterValue, preFilteredRows };
 
-		const transformRowsFn = derived(filterValue, ($filterValue) => {
-			return (rows: BodyRow<Item>[]) => {
-				preFilteredRows.set(rows);
+		const deriveRows: DeriveRowsFn<Item> = (rows) => {
+			return derived([rows, filterValue], ([$rows, $filterValue]) => {
+				preFilteredRows.set($rows);
 				tableCellMatches.set({});
-				const _filteredRows = rows.filter((row) => {
+				const _filteredRows = $rows.filter((row) => {
 					// An array of booleans, true if the cell matches the filter.
 					const rowCellMatches = Object.values(row.cellForId).map((cell) => {
 						const options = columnOptions[cell.id] as TableFilterColumnOptions | undefined;
@@ -85,12 +85,12 @@ export const useTableFilter =
 				});
 				filteredRows.set(_filteredRows);
 				return _filteredRows;
-			};
-		});
+			});
+		};
 
 		return {
 			pluginState,
-			transformRowsFn,
+			deriveRows,
 			hooks: {
 				'tbody.tr.td': (cell) => {
 					const props = derived(

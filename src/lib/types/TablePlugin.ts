@@ -25,7 +25,8 @@ export type TablePluginInstance<
 > = {
 	pluginState: PluginState;
 	transformFlatColumnsFn?: Readable<TransformFlatColumnsFn<Item>>;
-	transformRowsFn?: Readable<TransformRowsFn<Item>>;
+	deriveFlatColumns?: DeriveFlatColumnsFn<Item>;
+	deriveRows?: DeriveRowsFn<Item>;
 	columnOptions?: ColumnOptions;
 	hooks?: TableHooks<Item, TablePropSet>;
 };
@@ -43,7 +44,14 @@ export type AnyPluginInstances = Record<
 >;
 
 export type TransformFlatColumnsFn<Item> = (flatColumns: DataColumn<Item>[]) => DataColumn<Item>[];
-export type TransformRowsFn<Item> = (rows: BodyRow<Item>[]) => BodyRow<Item>[];
+
+export type DeriveFlatColumnsFn<Item> = <Col extends DataColumn<Item>>(
+	flatColumns: Readable<Col[]>
+) => Readable<Col[]>;
+
+export type DeriveRowsFn<Item> = <Row extends BodyRow<Item>>(
+	rows: Readable<Row[]>
+) => Readable<Row[]>;
 
 export type Components<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	'thead.tr': HeaderRow<Item, Plugins>;

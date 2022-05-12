@@ -1,5 +1,5 @@
 import type { BodyRow } from '$lib/bodyRows';
-import type { NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
+import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
 import { derived, writable, type Readable, type Updater, type Writable } from 'svelte/store';
 
 export interface PaginationConfig {
@@ -91,18 +91,18 @@ export const usePagination =
 			hasNextPage,
 		};
 
-		const transformRowsFn = derived([pageSize, pageIndex], ([$pageSize, $pageIndex]) => {
-			return (rows: BodyRow<Item>[]) => {
-				prePaginatedRows.set(rows);
+		const deriveRows: DeriveRowsFn<Item> = (rows) => {
+			return derived([rows, pageSize, pageIndex], ([$rows, $pageSize, $pageIndex]) => {
+				prePaginatedRows.set($rows);
 				const startIdx = $pageIndex * $pageSize;
-				const _paginatedRows = rows.slice(startIdx, startIdx + $pageSize);
+				const _paginatedRows = $rows.slice(startIdx, startIdx + $pageSize);
 				paginatedRows.set(_paginatedRows);
 				return _paginatedRows;
-			};
-		});
+			});
+		};
 
 		return {
 			pluginState,
-			transformRowsFn,
+			deriveRows,
 		};
 	};

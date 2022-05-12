@@ -134,11 +134,10 @@
 
 	const { sortKeys } = pluginStates.sort;
 	const { filterValues } = pluginStates.filter;
-	const { columnIdOrder } = pluginStates.orderColumns;
 	const { filterValue } = pluginStates.tableFilter;
-	$columnIdOrder = ['firstName', 'lastName'];
-	const { hiddenColumnIds } = pluginStates.hideColumns;
 	const { pageIndex, pageCount, pageSize, hasPreviousPage, hasNextPage } = pluginStates.page;
+	const { columnIdOrder } = pluginStates.orderColumns;
+	const { hiddenColumnIds } = pluginStates.hideColumns;
 	$hiddenColumnIds = ['progress'];
 </script>
 
