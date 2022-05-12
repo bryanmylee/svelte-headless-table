@@ -1,5 +1,4 @@
-import type { DataColumn } from '$lib/columns';
-import type { NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
+import type { DeriveFlatColumnsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
 import { derived, writable, type Writable } from 'svelte/store';
 
 export interface HiddenColumnsConfig {
@@ -22,17 +21,17 @@ export const useHiddenColumns =
 
 		const pluginState: HiddenColumnsState = { hiddenColumnIds };
 
-		const transformFlatColumnsFn = derived(hiddenColumnIds, ($hiddenColumnIds) => {
-			return (flatColumns: DataColumn<Item>[]) => {
+		const deriveFlatColumns: DeriveFlatColumnsFn<Item> = (flatColumns) => {
+			return derived([flatColumns, hiddenColumnIds], ([$flatColumns, $hiddenColumnIds]) => {
 				if ($hiddenColumnIds.length === 0) {
-					return flatColumns;
+					return $flatColumns;
 				}
-				return flatColumns.filter((c) => !$hiddenColumnIds.includes(c.id));
-			};
-		});
+				return $flatColumns.filter((c) => !$hiddenColumnIds.includes(c.id));
+			});
+		};
 
 		return {
 			pluginState,
-			transformFlatColumnsFn,
+			deriveFlatColumns,
 		};
 	};

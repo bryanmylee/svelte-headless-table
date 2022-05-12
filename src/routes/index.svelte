@@ -32,7 +32,7 @@
 		orderColumns: useColumnOrder({
 			initialColumnIdOrder: ['firstName', 'lastName'],
 		}),
-		// hideColumns: useHiddenColumns(),
+		hideColumns: useHiddenColumns(),
 		page: usePagination(),
 	});
 
@@ -137,8 +137,8 @@
 	const { filterValue } = pluginStates.tableFilter;
 	const { pageIndex, pageCount, pageSize, hasPreviousPage, hasNextPage } = pluginStates.page;
 	const { columnIdOrder } = pluginStates.orderColumns;
-	// const { hiddenColumnIds } = pluginStates.hideColumns;
-	// $hiddenColumnIds = ['progress'];
+	const { hiddenColumnIds } = pluginStates.hideColumns;
+	$hiddenColumnIds = ['progress'];
 </script>
 
 <h1>svelte-headless-table</h1>
@@ -204,7 +204,7 @@
 	</tbody>
 </table>
 
-<!-- <pre>{JSON.stringify(
+<pre>{JSON.stringify(
 		{
 			sortKeys: $sortKeys,
 			filterValues: $filterValues,
@@ -213,7 +213,8 @@
 		},
 		null,
 		2
-	)}</pre> -->
+	)}</pre>
+
 <style>
 	* {
 		font-family: sans-serif;

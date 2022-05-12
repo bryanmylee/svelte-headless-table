@@ -9,7 +9,6 @@ import type {
 	DeriveFlatColumnsFn,
 	DeriveRowsFn,
 	PluginStates,
-	TransformFlatColumnsFn,
 } from './types/TablePlugin';
 import { nonUndefined } from './utils/filter';
 
