@@ -13,11 +13,9 @@ export interface HiddenColumnsState {
 export const useHiddenColumns =
 	<Item>({ initialHiddenColumnIds = [] }: HiddenColumnsConfig = {}): UseTablePlugin<
 		Item,
-		{
-			PluginState: HiddenColumnsState;
-			ColumnOptions: never;
-			TablePropSet: NewTablePropSet<never>;
-		}
+		HiddenColumnsState,
+		Record<string, never>,
+		NewTablePropSet<never>
 	> =>
 	() => {
 		const hiddenColumnIds = writable<string[]>(initialHiddenColumnIds);

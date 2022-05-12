@@ -41,11 +41,9 @@ export const useTableFilter =
 		includeHiddenColumns = false,
 	}: TableFilterConfig = {}): UseTablePlugin<
 		Item,
-		{
-			PluginState: TableFilterState<Item>;
-			ColumnOptions: TableFilterColumnOptions;
-			TablePropSet: TableFilterPropSet;
-		}
+		TableFilterState<Item>,
+		TableFilterColumnOptions,
+		TableFilterPropSet
 	> =>
 	({ columnOptions }) => {
 		const filterValue = writable(initialFilterValue);

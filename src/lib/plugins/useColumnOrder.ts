@@ -17,11 +17,9 @@ export const useColumnOrder =
 		hideUnspecifiedColumns = false,
 	}: ColumnOrderConfig = {}): UseTablePlugin<
 		Item,
-		{
-			PluginState: ColumnOrderState;
-			ColumnOptions: never;
-			TablePropSet: NewTablePropSet<never>;
-		}
+		ColumnOrderState,
+		Record<string, never>,
+		NewTablePropSet<never>
 	> =>
 	() => {
 		const columnIdOrder = writable<string[]>(initialColumnIdOrder);

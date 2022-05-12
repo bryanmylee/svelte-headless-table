@@ -106,13 +106,11 @@ export const useSortBy =
 		isMultiSortEvent = isShiftClick,
 	}: SortByConfig = {}): UseTablePlugin<
 		Item,
-		{
-			PluginState: SortByState<Item>;
-			ColumnOptions: SortByColumnOptions;
-			TablePropSet: SortByPropSet;
-		}
+		SortByState<Item>,
+		SortByColumnOptions,
+		SortByPropSet
 	> =>
-	({ columnOptions }: { columnOptions: Record<string, SortByColumnOptions> }) => {
+	({ columnOptions }) => {
 		const disabledSortIds = Object.entries(columnOptions)
 			.filter(([, option]) => option.disable === true)
 			.map(([columnId]) => columnId);

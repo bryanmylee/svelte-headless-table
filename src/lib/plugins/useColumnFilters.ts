@@ -49,11 +49,9 @@ export type ColumnFiltersPropSet = NewTablePropSet<{
 export const useColumnFilters =
 	<Item>(): UseTablePlugin<
 		Item,
-		{
-			PluginState: ColumnFiltersState<Item>;
-			ColumnOptions: ColumnFiltersColumnOptions<Item>;
-			TablePropSet: ColumnFiltersPropSet;
-		}
+		ColumnFiltersState<Item>,
+		ColumnFiltersColumnOptions<Item>,
+		ColumnFiltersPropSet
 	> =>
 	({ columnOptions, tableState }) => {
 		const filterValues = writable<Record<string, unknown>>({});
