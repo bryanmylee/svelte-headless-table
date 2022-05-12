@@ -25,9 +25,9 @@
 
 	const table = createTable(data, {
 		sort: useSortBy(),
-		// tableFilter: useTableFilter({
-		// 	includeHiddenColumns: true,
-		// }),
+		tableFilter: useTableFilter({
+			includeHiddenColumns: true,
+		}),
 		filter: useColumnFilters(),
 		// orderColumns: useColumnOrder({
 		// 	initialColumnIdOrder: ['firstName', 'lastName'],
@@ -51,9 +51,9 @@
 				sort: {
 					getSortValue: (i) => i.lastName,
 				},
-				// tableFilter: {
-				// 	getFilterValue: (i) => i.progress,
-				// },
+				tableFilter: {
+					getFilterValue: (i) => i.progress,
+				},
 			},
 		}),
 		table.group({
@@ -80,9 +80,9 @@
 						sort: {
 							disable: true,
 						},
-						// tableFilter: {
-						// 	exclude: true,
-						// },
+						tableFilter: {
+							exclude: true,
+						},
 					},
 				}),
 			],
@@ -135,7 +135,7 @@
 	const { sortKeys } = pluginStates.sort;
 	const { filterValues } = pluginStates.filter;
 	// const { columnIdOrder } = pluginStates.orderColumns;
-	// const { filterValue } = pluginStates.tableFilter;
+	const { filterValue } = pluginStates.tableFilter;
 	// $columnIdOrder = ['firstName', 'lastName'];
 	// const { hiddenColumnIds } = pluginStates.hideColumns;
 	// const { pageIndex, pageCount, pageSize, hasPreviousPage, hasNextPage } = pluginStates.page;
@@ -180,19 +180,22 @@
 				{/each}
 			</tr>
 		{/each}
-		<!-- <tr>
+		<tr>
 			<th colspan={$visibleColumns.length}>
 				<input type="text" bind:value={$filterValue} placeholder="Search all data..." />
 			</th>
-		</tr> -->
+		</tr>
 	</thead>
 	<tbody>
 		{#each $rows as row (row.id)}
 			<tr>
 				{#each row.cells as cell (cell.id)}
 					<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-						<td {...attrs} class:sorted={props.sort.order !== undefined}>
-							<!-- class:matches={props.tableFilter.matches} -->
+						<td
+							{...attrs}
+							class:sorted={props.sort.order !== undefined}
+							class:matches={props.tableFilter.matches}
+						>
 							<Render of={cell.render()} />
 						</td>
 					</Subscribe>
