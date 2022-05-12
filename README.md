@@ -38,9 +38,9 @@ Svelte Headless Table is designed with extensibility in mind. Its complex featur
 - [x] [useTableFilter](https://svelte-headless-table.bryanmylee.com/docs/plugins/use-table-filter)
 - [x] [useColumnOrder](https://svelte-headless-table.bryanmylee.com/docs/plugins/use-column-order)
 - [x] [useHiddenColumns](https://svelte-headless-table.bryanmylee.com/docs/plugins/use-hidden-columns)
+- [x] [usePagination](https://svelte-headless-table.bryanmylee.com/docs/plugins/use-pagination)
 - [ ] useGroupBy
 - [ ] useExpanded
-- [ ] usePagination
 - [ ] useRowSelect
 - [ ] useResizeColumns
 - [ ] useEditable
