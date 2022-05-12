@@ -25,15 +25,15 @@
 
 	const table = createTable(data, {
 		sort: useSortBy(),
-		tableFilter: useTableFilter({
-			includeHiddenColumns: true,
-		}),
-		filter: useColumnFilters(),
-		orderColumns: useColumnOrder({
-			initialColumnIdOrder: ['firstName', 'lastName'],
-		}),
-		hideColumns: useHiddenColumns(),
-		page: usePagination(),
+		// tableFilter: useTableFilter({
+		// 	includeHiddenColumns: true,
+		// }),
+		// filter: useColumnFilters(),
+		// orderColumns: useColumnOrder({
+		// 	initialColumnIdOrder: ['firstName', 'lastName'],
+		// }),
+		// hideColumns: useHiddenColumns(),
+		// page: usePagination(),
 	});
 
 	const columns = table.createColumns([
@@ -51,9 +51,9 @@
 				sort: {
 					getSortValue: (i) => i.lastName,
 				},
-				tableFilter: {
-					getFilterValue: (i) => i.progress,
-				},
+				// tableFilter: {
+				// 	getFilterValue: (i) => i.progress,
+				// },
 			},
 		}),
 		table.group({
@@ -66,11 +66,11 @@
 						sort: {
 							invert: true,
 						},
-						filter: {
-							fn: textPrefixFilter,
-							render: ({ filterValue, values }) =>
-								createRender(TextFilter, { filterValue, values }),
-						},
+						// filter: {
+						// 	fn: textPrefixFilter,
+						// 	render: ({ filterValue, values }) =>
+						// 		createRender(TextFilter, { filterValue, values }),
+						// },
 					},
 				}),
 				table.column({
@@ -80,9 +80,9 @@
 						sort: {
 							disable: true,
 						},
-						tableFilter: {
-							exclude: true,
-						},
+						// tableFilter: {
+						// 	exclude: true,
+						// },
 					},
 				}),
 			],
@@ -103,23 +103,23 @@
 					id: 'status',
 					accessor: (item) => item.status,
 					plugins: {
-						filter: {
-							fn: matchFilter,
-							render: ({ filterValue, preFilteredValues }) =>
-								createRender(SelectFilter, { filterValue, preFilteredValues }),
-						},
+						// filter: {
+						// 	fn: matchFilter,
+						// 	render: ({ filterValue, preFilteredValues }) =>
+						// 		createRender(SelectFilter, { filterValue, preFilteredValues }),
+						// },
 					},
 				}),
 				table.column({
 					header: 'Visits',
 					accessor: 'visits',
 					plugins: {
-						filter: {
-							fn: numberRangeFilter,
-							initialFilterValue: [null, null],
-							render: ({ filterValue, values }) =>
-								createRender(NumberRangeFilter, { filterValue, values }),
-						},
+						// filter: {
+						// 	fn: numberRangeFilter,
+						// 	initialFilterValue: [null, null],
+						// 	render: ({ filterValue, values }) =>
+						// 		createRender(NumberRangeFilter, { filterValue, values }),
+						// },
 					},
 				}),
 				table.column({
@@ -133,25 +133,25 @@
 	const { visibleColumns, headerRows, rows, pluginStates } = useTable(table, columns);
 
 	const { sortKeys } = pluginStates.sort;
-	const { filterValues } = pluginStates.filter;
-	const { columnIdOrder } = pluginStates.orderColumns;
-	const { filterValue } = pluginStates.tableFilter;
-	$columnIdOrder = ['firstName', 'lastName'];
-	const { hiddenColumnIds } = pluginStates.hideColumns;
-	const { pageIndex, pageCount, pageSize, hasPreviousPage, hasNextPage } = pluginStates.page;
-	$hiddenColumnIds = ['progress'];
+	// const { filterValues } = pluginStates.filter;
+	// const { columnIdOrder } = pluginStates.orderColumns;
+	// const { filterValue } = pluginStates.tableFilter;
+	// $columnIdOrder = ['firstName', 'lastName'];
+	// const { hiddenColumnIds } = pluginStates.hideColumns;
+	// const { pageIndex, pageCount, pageSize, hasPreviousPage, hasNextPage } = pluginStates.page;
+	// $hiddenColumnIds = ['progress'];
 </script>
 
 <h1>svelte-headless-table</h1>
 
-<button on:click={() => ($columnIdOrder = getShuffled($columnIdOrder))}>Shuffle columns</button>
+<!-- <button on:click={() => ($columnIdOrder = getShuffled($columnIdOrder))}>Shuffle columns</button>
 <div>
 	<button on:click={() => $pageIndex--} disabled={!$hasPreviousPage}>Previous page</button>
 	{$pageIndex + 1} of {$pageCount}
 	<button on:click={() => $pageIndex++} disabled={!$hasNextPage}>Next page</button>
 	<label for="page-size">Page size</label>
 	<input id="page-size" type="number" min={1} bind:value={$pageSize} />
-</div>
+</div> -->
 
 <table>
 	<thead>
@@ -172,30 +172,27 @@
 									⬆️
 								{/if}
 							</div>
-							{#if props.filter !== undefined}
+							<!-- {#if props.filter !== undefined}
 								<Render of={props.filter.render} />
-							{/if}
+							{/if} -->
 						</th>
 					</Subscribe>
 				{/each}
 			</tr>
 		{/each}
-		<tr>
+		<!-- <tr>
 			<th colspan={$visibleColumns.length}>
 				<input type="text" bind:value={$filterValue} placeholder="Search all data..." />
 			</th>
-		</tr>
+		</tr> -->
 	</thead>
 	<tbody>
 		{#each $rows as row (row.id)}
 			<tr>
 				{#each row.cells as cell (cell.id)}
 					<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-						<td
-							{...attrs}
-							class:sorted={props.sort.order !== undefined}
-							class:matches={props.tableFilter.matches}
-						>
+						<td {...attrs} class:sorted={props.sort.order !== undefined}>
+							<!-- class:matches={props.tableFilter.matches} -->
 							<Render of={cell.render()} />
 						</td>
 					</Subscribe>
@@ -205,7 +202,7 @@
 	</tbody>
 </table>
 
-<pre>{JSON.stringify(
+<!-- <pre>{JSON.stringify(
 		{
 			sortKeys: $sortKeys,
 			filterValues: $filterValues,
@@ -214,8 +211,7 @@
 		},
 		null,
 		2
-	)}</pre>
-
+	)}</pre> -->
 <style>
 	* {
 		font-family: sans-serif;

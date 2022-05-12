@@ -1,5 +1,5 @@
 import type { BodyRow } from '$lib/bodyRows';
-import type { TablePlugin, NewTablePropSet } from '$lib/types/TablePlugin';
+import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
 import { compare } from '$lib/utils/compare';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 
@@ -156,11 +156,54 @@ export const useSortBy =
 			};
 		});
 
+		const deriveRows: DeriveRowsFn<Item> = (rows) => {
+			return derived([rows, sortKeys], ([$rows, $sortKeys]) => {
+				preSortedRows.set($rows);
+				const _sortedRows = [...$rows];
+				_sortedRows.sort((a, b) => {
+					for (const key of $sortKeys) {
+						const invert = columnOptions[key.id]?.invert ?? false;
+						const cellA = a.cellForId[key.id];
+						const cellB = b.cellForId[key.id];
+						let order = 0;
+						// Only need to check properties of `cellA` as both should have the same
+						// properties.
+						const getSortValue = columnOptions[cellA.id]?.getSortValue;
+						if (getSortValue !== undefined) {
+							const sortValueA = getSortValue(cellA.value);
+							const sortValueB = getSortValue(cellB.value);
+							order = compare(sortValueA, sortValueB);
+						} else if (typeof cellA.value === 'string' || typeof cellA.value === 'number') {
+							// typeof `cellB.value` is logically equal to `cellA.value`.
+							order = compare(cellA.value, cellB.value as string | number);
+						}
+						if (order !== 0) {
+							let orderFactor = 1;
+							// If the current key order is `'desc'`, reverse the order.
+							if (key.order === 'desc') {
+								orderFactor *= -1;
+							}
+							// If `invert` is `true`, we want to invert the sort without
+							// affecting the view model's indication.
+							if (invert) {
+								orderFactor *= -1;
+							}
+							return order * orderFactor;
+						}
+					}
+					return 0;
+				});
+				sortedRows.set(_sortedRows);
+				return _sortedRows;
+			});
+		};
+
 		const pluginState: SortByState<Item> = { sortKeys, preSortedRows };
 
 		return {
 			pluginState,
 			transformRowsFn,
+			deriveRows,
 			hooks: {
 				'thead.tr.th': (cell) => {
 					const disabled = disabledSortIds.includes(cell.id);
