@@ -57,7 +57,11 @@
 			},
 		}),
 		table.group({
-			header: ({ rows }) => derived(rows, (_rows) => `Name (${_rows.length} samples)`),
+			header: ({ rows, pageRows }) =>
+				derived(
+					[rows, pageRows],
+					([_rows, _pageRows]) => `Name (${_rows.length} records, ${_pageRows.length} in page)`
+				),
 			columns: [
 				table.column({
 					header: createRender(Italic, { text: 'First Name' }),

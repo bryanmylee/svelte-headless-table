@@ -20,7 +20,7 @@ export interface TableState<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	visibleColumns: Readable<DataColumn<Item, Plugins>[]>;
 	originalRows: Readable<BodyRow<Item>[]>;
 	rows: Readable<BodyRow<Item>[]>;
-	page: Readable<BodyRow<Item>[]>;
+	pageRows: Readable<BodyRow<Item>[]>;
 }
 
 export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
@@ -39,7 +39,7 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	// _stores need to be defined first to pass into plugins for initialization.
 	const _visibleColumns = writable<DataColumn<Item, Plugins>[]>([]);
 	const _rows = writable<BodyRow<Item>[]>([]);
-	const _page = writable<BodyRow<Item>[]>([]);
+	const _pageRows = writable<BodyRow<Item>[]>([]);
 	const tableState: TableState<Item, Plugins> = {
 		data,
 		columns,
@@ -47,7 +47,7 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		visibleColumns: _visibleColumns,
 		originalRows,
 		rows: _rows,
-		page: _page,
+		pageRows: _pageRows,
 	};
 
 	const pluginInstances = Object.fromEntries(
@@ -136,7 +136,8 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		.map((pluginInstance) => pluginInstance.derivePageRows)
 		.filter(nonUndefined);
 
-	let pageRows = rows;
+	// Must derive from `injectedRows` instead of `rows` to ensure that `_rows` is set.
+	let pageRows = injectedRows;
 	derivePageRowsFns.forEach((fn) => {
 		pageRows = fn(pageRows);
 	});
@@ -162,7 +163,7 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 				});
 			});
 		});
-		_rows.set($pageRows);
+		_pageRows.set($pageRows);
 		return $pageRows;
 	});
 
