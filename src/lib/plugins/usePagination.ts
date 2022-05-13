@@ -91,7 +91,7 @@ export const usePagination =
 			hasNextPage,
 		};
 
-		const deriveRows: DeriveRowsFn<Item> = (rows) => {
+		const derivePageRows: DeriveRowsFn<Item> = (rows) => {
 			return derived([rows, pageSize, pageIndex], ([$rows, $pageSize, $pageIndex]) => {
 				prePaginatedRows.set($rows);
 				const startIdx = $pageIndex * $pageSize;
@@ -103,6 +103,6 @@ export const usePagination =
 
 		return {
 			pluginState,
-			deriveRows,
+			derivePageRows,
 		};
 	};
