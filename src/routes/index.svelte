@@ -57,7 +57,11 @@
 			},
 		}),
 		table.group({
-			header: ({ rows }) => derived(rows, (_rows) => `Name (${_rows.length} samples)`),
+			header: ({ rows, pageRows }) =>
+				derived(
+					[rows, pageRows],
+					([_rows, _pageRows]) => `Name (${_rows.length} records, ${_pageRows.length} in page)`
+				),
 			columns: [
 				table.column({
 					header: createRender(Italic, { text: 'First Name' }),
@@ -130,7 +134,7 @@
 		}),
 	]);
 
-	const { visibleColumns, headerRows, rows, pluginStates } = useTable(table, columns);
+	const { visibleColumns, headerRows, rows, pageRows, pluginStates } = useTable(table, columns);
 
 	const { sortKeys } = pluginStates.sort;
 	const { filterValues } = pluginStates.filter;
@@ -186,7 +190,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		{#each $rows as row (row.id)}
+		{#each $pageRows as row (row.id)}
 			<tr>
 				{#each row.cells as cell (cell.id)}
 					<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>

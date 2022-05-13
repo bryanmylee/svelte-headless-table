@@ -20,6 +20,7 @@ export interface TableState<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	visibleColumns: Readable<DataColumn<Item, Plugins>[]>;
 	originalRows: Readable<BodyRow<Item>[]>;
 	rows: Readable<BodyRow<Item>[]>;
+	pageRows: Readable<BodyRow<Item>[]>;
 }
 
 export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
@@ -38,6 +39,7 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	// _stores need to be defined first to pass into plugins for initialization.
 	const _visibleColumns = writable<DataColumn<Item, Plugins>[]>([]);
 	const _rows = writable<BodyRow<Item>[]>([]);
+	const _pageRows = writable<BodyRow<Item>[]>([]);
 	const tableState: TableState<Item, Plugins> = {
 		data,
 		columns,
@@ -45,6 +47,7 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		visibleColumns: _visibleColumns,
 		originalRows,
 		rows: _rows,
+		pageRows: _pageRows,
 	};
 
 	const pluginInstances = Object.fromEntries(
@@ -129,6 +132,41 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		return $rows;
 	});
 
+	const derivePageRowsFns: DeriveRowsFn<Item>[] = Object.values(pluginInstances)
+		.map((pluginInstance) => pluginInstance.derivePageRows)
+		.filter(nonUndefined);
+
+	// Must derive from `injectedRows` instead of `rows` to ensure that `_rows` is set.
+	let pageRows = injectedRows;
+	derivePageRowsFns.forEach((fn) => {
+		pageRows = fn(pageRows);
+	});
+
+	const injectedPageRows = derived(pageRows, ($pageRows) => {
+		// Inject state.
+		$pageRows.forEach((row) => {
+			row.injectState(tableState);
+			row.cells.forEach((cell) => {
+				cell.injectState(tableState);
+			});
+		});
+		// Apply plugin component hooks.
+		Object.entries(pluginInstances).forEach(([pluginName, pluginInstance]) => {
+			$pageRows.forEach((row) => {
+				if (pluginInstance.hooks?.['tbody.tr'] !== undefined) {
+					row.applyHook(pluginName, pluginInstance.hooks['tbody.tr'](row));
+				}
+				row.cells.forEach((cell) => {
+					if (pluginInstance.hooks?.['tbody.tr.td'] !== undefined) {
+						cell.applyHook(pluginName, pluginInstance.hooks['tbody.tr.td'](cell));
+					}
+				});
+			});
+		});
+		_pageRows.set($pageRows);
+		return $pageRows;
+	});
+
 	const headerRows = derived(injectedColumns, ($injectedColumns) => {
 		const $headerRows = getHeaderRows(
 			columns,
@@ -163,6 +201,7 @@ export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		headerRows,
 		originalRows,
 		rows: injectedRows,
+		pageRows: injectedPageRows,
 		pluginStates,
 	};
 };

@@ -27,6 +27,7 @@ export type TablePluginInstance<
 	transformFlatColumnsFn?: Readable<TransformFlatColumnsFn<Item>>;
 	deriveFlatColumns?: DeriveFlatColumnsFn<Item>;
 	deriveRows?: DeriveRowsFn<Item>;
+	derivePageRows?: DeriveRowsFn<Item>;
 	columnOptions?: ColumnOptions;
 	hooks?: TableHooks<Item, TablePropSet>;
 };

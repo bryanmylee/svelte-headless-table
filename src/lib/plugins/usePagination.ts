@@ -31,7 +31,7 @@ export const usePageStore = ({ items, initialPageSize, initialPageIndex }: PageS
 	const pageCount = derived([pageSize, items], ([$pageSize, $items]) => {
 		const $pageCount = Math.ceil($items.length / $pageSize);
 		pageIndex.update(($pageIndex) => {
-			if ($pageIndex >= $pageCount) {
+			if ($pageCount > 0 && $pageIndex >= $pageCount) {
 				return $pageCount - 1;
 			}
 			return $pageIndex;
@@ -91,7 +91,7 @@ export const usePagination =
 			hasNextPage,
 		};
 
-		const deriveRows: DeriveRowsFn<Item> = (rows) => {
+		const derivePageRows: DeriveRowsFn<Item> = (rows) => {
 			return derived([rows, pageSize, pageIndex], ([$rows, $pageSize, $pageIndex]) => {
 				prePaginatedRows.set($rows);
 				const startIdx = $pageIndex * $pageSize;
@@ -103,6 +103,6 @@ export const usePagination =
 
 		return {
 			pluginState,
-			deriveRows,
+			derivePageRows,
 		};
 	};
