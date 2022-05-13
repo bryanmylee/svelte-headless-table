@@ -13,6 +13,7 @@ import {
 import type { AnyPlugins } from './types/TablePlugin';
 import type { ReadOrWritable } from './utils/store';
 import { getDuplicates } from './utils/array';
+import { createViewModel, type TableViewModel } from './createViewModel';
 
 export class Table<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	data: ReadOrWritable<Item[]>;
@@ -49,6 +50,10 @@ export class Table<Item, Plugins extends AnyPlugins = AnyPlugins> {
 
 	group(def: GroupColumnInit<Item, Plugins>): GroupColumn<Item, Plugins> {
 		return new GroupColumn(def);
+	}
+
+	createViewModel(columns: Column<Item, Plugins>[]): TableViewModel<Item, Plugins> {
+		return createViewModel(this, columns);
 	}
 }
 

@@ -1,4 +1,4 @@
-import type { TableState } from '$lib/useTable';
+import type { TableState } from '$lib/createViewModel';
 import type { RenderConfig } from '$lib/render';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

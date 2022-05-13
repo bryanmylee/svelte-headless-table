@@ -12,7 +12,16 @@ import type {
 } from './types/TablePlugin';
 import { nonUndefined } from './utils/filter';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export interface TableViewModel<Item, Plugins extends AnyPlugins = AnyPlugins> {
+	dataColumns: DataColumn<Item, Plugins>[];
+	visibleColumns: Readable<DataColumn<Item, Plugins>[]>;
+	headerRows: Readable<HeaderRow<Item, Plugins>[]>;
+	originalRows: Readable<BodyRow<Item, Plugins>[]>;
+	rows: Readable<BodyRow<Item, Plugins>[]>;
+	pageRows: Readable<BodyRow<Item, Plugins>[]>;
+	pluginStates: PluginStates<Plugins>;
+}
+
 export interface TableState<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	data: ReadOrWritable<Item[]>;
 	columns: Column<Item, Plugins>[];
@@ -23,10 +32,10 @@ export interface TableState<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	pageRows: Readable<BodyRow<Item>[]>;
 }
 
-export const useTable = <Item, Plugins extends AnyPlugins = AnyPlugins>(
+export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	table: Table<Item, Plugins>,
 	columns: Column<Item, Plugins>[]
-) => {
+): TableViewModel<Item, Plugins> => {
 	const { data, plugins } = table;
 
 	const dataColumns = getDataColumns(columns);
