@@ -7,11 +7,10 @@ export interface PaginationConfig {
 	initialPageSize?: number;
 }
 
-export interface PaginationState<Item> {
+export interface PaginationState {
 	pageSize: Writable<number>;
 	pageIndex: Writable<number>;
 	pageCount: Readable<number>;
-	prePaginatedRows: Readable<BodyRow<Item>[]>;
 	hasPreviousPage: Readable<boolean>;
 	hasNextPage: Readable<boolean>;
 }
@@ -70,7 +69,7 @@ export interface PageStoreConfig {
 export const usePagination =
 	<Item>({ initialPageIndex = 0, initialPageSize = 10 }: PaginationConfig = {}): TablePlugin<
 		Item,
-		PaginationState<Item>,
+		PaginationState,
 		Record<string, never>,
 		NewTablePropSet<never>
 	> =>
@@ -82,10 +81,9 @@ export const usePagination =
 			initialPageIndex,
 			initialPageSize,
 		});
-		const pluginState: PaginationState<Item> = {
+		const pluginState: PaginationState = {
 			pageSize,
 			pageIndex,
-			prePaginatedRows,
 			pageCount,
 			hasPreviousPage,
 			hasNextPage,
