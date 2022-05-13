@@ -6,7 +6,7 @@ import type {
 	ElementHook,
 	PluginTablePropSet,
 } from './types/TablePlugin';
-import type { TableState } from './useTable';
+import type { TableState } from './createViewModel';
 
 export interface TableComponentInit {
 	id: string;

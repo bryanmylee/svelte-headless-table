@@ -3,7 +3,7 @@ import type { BodyRow, BodyRowAttributes } from '$lib/bodyRows';
 import type { DataColumn } from '$lib/columns';
 import type { HeaderCell, HeaderCellAttributes } from '$lib/headerCells';
 import type { HeaderRow, HeaderRowAttributes } from '$lib/headerRows';
-import type { TableState } from '$lib/useTable';
+import type { TableState } from '$lib/createViewModel';
 import type { Readable } from 'svelte/store';
 
 export type TablePlugin<Item, PluginState, ColumnOptions, TablePropSet extends AnyTablePropSet> = (

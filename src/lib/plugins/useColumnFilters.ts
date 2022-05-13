@@ -3,7 +3,7 @@ import type { BodyRow } from '$lib/bodyRows';
 import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 import type { RenderConfig } from '$lib/render';
-import type { TableState } from '$lib/useTable';
+import type { TableState } from '$lib/createViewModel';
 
 export interface ColumnFiltersState<Item> {
 	filterValues: Writable<Record<string, unknown>>;

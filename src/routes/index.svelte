@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { derived, readable } from 'svelte/store';
-	import { Render, Subscribe, createTable, createRender, useTable } from '$lib';
+	import { Render, Subscribe, createTable, createRender } from '$lib';
 	import {
 		useColumnFilters,
 		useColumnOrder,
@@ -134,7 +134,7 @@
 		}),
 	]);
 
-	const { visibleColumns, headerRows, rows, pageRows, pluginStates } = useTable(table, columns);
+	const { visibleColumns, headerRows, pageRows, pluginStates } = table.createViewModel(columns);
 
 	const { sortKeys } = pluginStates.sort;
 	const { filterValues } = pluginStates.filter;
