@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { DataBodyCell } from './bodyCells';
+import { DataBodyCell, DisplayBodyCell } from './bodyCells';
 import { BodyRow, getBodyRows, getColumnedBodyRows, getSubRows } from './bodyRows';
 import { createTable } from './createTable';
 
@@ -67,7 +67,7 @@ it('transforms empty data', () => {
 	expect(actual).toStrictEqual(expected);
 });
 
-it('derives the correct cells for data columns', () => {
+it('derives the correct cells for parent with data columns', () => {
 	const actual = getSubRows(data, parentRow);
 
 	const expected = getBodyRows(data, dataColumns);
@@ -113,6 +113,43 @@ it('derives the correct cellForId when parent has hidden cells', () => {
 				throw new Error('Incorrect instance type');
 			}
 			expect(cell.value).toStrictEqual(expectedCell.value);
+		});
+	});
+});
+
+const checkedLabel = () => 'check';
+const expandedLabel = () => 'expanded';
+const displayColumns = [
+	table.display({
+		id: 'checked',
+		header: 'Checked',
+		cell: checkedLabel,
+	}),
+	table.display({
+		id: 'expanded',
+		header: 'Expanded',
+		cell: expandedLabel,
+	}),
+];
+
+const displayParentRow = getBodyRows([parentData], displayColumns)[0];
+
+it('derives the correct cells for parent with columns', () => {
+	const actual = getSubRows(data, displayParentRow);
+
+	const expected = getBodyRows(data, displayColumns);
+
+	[0, 1].forEach((rowIdx) => {
+		expect(actual[rowIdx].original).toStrictEqual(expected[rowIdx].original);
+		expect(actual[rowIdx].cells.length).toStrictEqual(expected[rowIdx].cells.length);
+		actual[rowIdx].cells.forEach((_, colIdx) => {
+			const cell = actual[rowIdx].cells[colIdx];
+			expect(cell).toBeInstanceOf(DisplayBodyCell);
+			const expectedCell = expected[rowIdx].cells[colIdx];
+			if (!(cell instanceof DisplayBodyCell && expectedCell instanceof DisplayBodyCell)) {
+				throw new Error('Incorrect instance type');
+			}
+			expect(cell.label).toEqual(expectedCell.label);
 		});
 	});
 });
