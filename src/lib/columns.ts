@@ -3,15 +3,15 @@ import type { DataLabel } from './types/Label';
 import type { AnyPlugins, PluginColumnConfigs } from './types/TablePlugin';
 
 export interface ColumnInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
-	header: HeaderLabel<Item>;
-	footer?: HeaderLabel<Item>;
+	header: HeaderLabel<Item, Plugins>;
+	footer?: HeaderLabel<Item, Plugins>;
 	height: number;
 	plugins?: PluginColumnConfigs<Plugins>;
 }
 
 export class Column<Item, Plugins extends AnyPlugins = AnyPlugins> {
-	header: HeaderLabel<Item>;
-	footer?: HeaderLabel<Item>;
+	header: HeaderLabel<Item, Plugins>;
+	footer?: HeaderLabel<Item, Plugins>;
 	height: number;
 	plugins?: PluginColumnConfigs<Plugins>;
 	constructor({ header, footer, height, plugins }: ColumnInit<Item, Plugins>) {
@@ -162,7 +162,9 @@ export class GroupColumn<Item, Plugins extends AnyPlugins = AnyPlugins> extends 
 	}
 }
 
-export const getFlatColumnIds = <Item>(columns: Column<Item>[]): string[] =>
+export const getFlatColumnIds = <Item, Plugins extends AnyPlugins = AnyPlugins>(
+	columns: Column<Item, Plugins>[]
+): string[] =>
 	columns.flatMap((c) =>
 		c instanceof FlatColumn ? [c.id] : c instanceof GroupColumn ? c.ids : []
 	);

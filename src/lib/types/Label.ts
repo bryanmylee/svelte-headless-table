@@ -1,11 +1,14 @@
-import type { PluginInitTableState } from '$lib/createViewModel';
+import type { TableState } from '$lib/createViewModel';
 import type { RenderConfig } from '$lib/render';
+import type { AnyPlugins } from './TablePlugin';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export type DataLabel<Item, Value> = (value: Value) => RenderConfig;
+export type DataLabel<Item, Value, Plugins extends AnyPlugins = AnyPlugins> = (
+	value: Value
+) => RenderConfig;
 
 // If the function type is removed from the union, generics will not be
 // inferred for subtypes.
-export type HeaderLabel<Item> =
+export type HeaderLabel<Item, Plugins extends AnyPlugins = AnyPlugins> =
 	| RenderConfig
-	| ((props: PluginInitTableState<Item>) => RenderConfig);
+	| ((props: TableState<Item, Plugins>) => RenderConfig);

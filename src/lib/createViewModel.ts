@@ -22,14 +22,16 @@ export interface TableViewModel<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	pluginStates: PluginStates<Plugins>;
 }
 
-export interface PluginInitTableState<Item, Plugins extends AnyPlugins = AnyPlugins> {
+export interface PluginInitTableState<Item, Plugins extends AnyPlugins = AnyPlugins>
+	extends Omit<TableViewModel<Item, Plugins>, 'pluginStates'> {
 	data: ReadOrWritable<Item[]>;
 	columns: Column<Item, Plugins>[];
-	flatColumns: FlatColumn<Item, Plugins>[];
-	visibleColumns: Readable<FlatColumn<Item, Plugins>[]>;
-	originalRows: Readable<BodyRow<Item>[]>;
-	rows: Readable<BodyRow<Item>[]>;
-	pageRows: Readable<BodyRow<Item>[]>;
+}
+
+export interface TableState<Item, Plugins extends AnyPlugins = AnyPlugins>
+	extends TableViewModel<Item, Plugins> {
+	data: ReadOrWritable<Item[]>;
+	columns: Column<Item, Plugins>[];
 }
 
 export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
@@ -47,13 +49,15 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 
 	// _stores need to be defined first to pass into plugins for initialization.
 	const _visibleColumns = writable<FlatColumn<Item, Plugins>[]>([]);
-	const _rows = writable<BodyRow<Item>[]>([]);
-	const _pageRows = writable<BodyRow<Item>[]>([]);
-	const tableState: PluginInitTableState<Item, Plugins> = {
+	const _headerRows = writable<HeaderRow<Item, Plugins>[]>();
+	const _rows = writable<BodyRow<Item, Plugins>[]>([]);
+	const _pageRows = writable<BodyRow<Item, Plugins>[]>([]);
+	const pluginInitTableState: PluginInitTableState<Item, Plugins> = {
 		data,
 		columns,
 		flatColumns: $flatColumns,
 		visibleColumns: _visibleColumns,
+		headerRows: _headerRows,
 		originalRows,
 		rows: _rows,
 		pageRows: _pageRows,
@@ -70,7 +74,7 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 					})
 					.filter(nonUndefined)
 			);
-			return [pluginName, plugin({ pluginName, tableState, columnOptions })];
+			return [pluginName, plugin({ pluginName, tableState: pluginInitTableState, columnOptions })];
 		})
 	) as {
 		[K in keyof Plugins]: ReturnType<Plugins[K]>;
@@ -82,6 +86,18 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 			pluginInstance.pluginState,
 		])
 	) as PluginStates<Plugins>;
+
+	const tableState: TableState<Item, Plugins> = {
+		data,
+		columns,
+		flatColumns: $flatColumns,
+		visibleColumns: _visibleColumns,
+		headerRows: _headerRows,
+		originalRows,
+		rows: _rows,
+		pageRows: _pageRows,
+		pluginStates,
+	};
 
 	const deriveFlatColumnsFns: DeriveFlatColumnsFn<Item>[] = Object.values(pluginInstances)
 		.map((pluginInstance) => pluginInstance.deriveFlatColumns)
@@ -201,7 +217,8 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 				});
 			});
 		});
-		return $headerRows as HeaderRow<Item, Plugins>[];
+		_headerRows.set($headerRows);
+		return $headerRows;
 	});
 
 	return {
