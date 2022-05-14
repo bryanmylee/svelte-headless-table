@@ -6,7 +6,7 @@ import type {
 	ElementHook,
 	PluginTablePropSet,
 } from './types/TablePlugin';
-import type { TableState } from './createViewModel';
+import type { PluginInitTableState } from './createViewModel';
 
 export interface TableComponentInit {
 	id: string;
@@ -38,8 +38,8 @@ export class TableComponent<Item, Plugins extends AnyPlugins, Key extends Compon
 		);
 	}
 
-	protected state?: TableState<Item, Plugins>;
-	injectState(state: TableState<Item, Plugins>) {
+	protected state?: PluginInitTableState<Item, Plugins>;
+	injectState(state: PluginInitTableState<Item, Plugins>) {
 		this.state = state;
 	}
 

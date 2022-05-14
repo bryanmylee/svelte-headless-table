@@ -3,7 +3,7 @@ import type { BodyRow, BodyRowAttributes } from '$lib/bodyRows';
 import type { DataColumn, FlatColumn } from '$lib/columns';
 import type { HeaderCell, HeaderCellAttributes } from '$lib/headerCells';
 import type { HeaderRow, HeaderRowAttributes } from '$lib/headerRows';
-import type { TableState } from '$lib/createViewModel';
+import type { PluginInitTableState } from '$lib/createViewModel';
 import type { Readable } from 'svelte/store';
 
 export type TablePlugin<Item, PluginState, ColumnOptions, TablePropSet extends AnyTablePropSet> = (
@@ -12,7 +12,7 @@ export type TablePlugin<Item, PluginState, ColumnOptions, TablePropSet extends A
 
 export type TablePluginInit<Item, ColumnOptions> = {
 	pluginName: string;
-	tableState: TableState<Item>;
+	tableState: PluginInitTableState<Item>;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	columnOptions: Record<string, ColumnOptions>;
 };

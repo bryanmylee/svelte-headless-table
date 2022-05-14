@@ -25,7 +25,7 @@
 	const data = readable(createSamples(10, 10));
 
 	const table = createTable(data, {
-		// sort: useSortBy(),
+		sort: useSortBy(),
 		// tableFilter: useTableFilter({
 		// 	includeHiddenColumns: true,
 		// }),
@@ -147,7 +147,7 @@
 			id: 'expanded',
 		}),
 		table.column({
-			header: 'Name',
+			header: () => `${{}} Name`,
 			accessor: 'firstName',
 		}),
 	]);

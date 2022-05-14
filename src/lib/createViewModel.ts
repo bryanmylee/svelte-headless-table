@@ -22,7 +22,7 @@ export interface TableViewModel<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	pluginStates: PluginStates<Plugins>;
 }
 
-export interface TableState<Item, Plugins extends AnyPlugins = AnyPlugins> {
+export interface PluginInitTableState<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	data: ReadOrWritable<Item[]>;
 	columns: Column<Item, Plugins>[];
 	flatColumns: FlatColumn<Item, Plugins>[];
@@ -49,7 +49,7 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	const _visibleColumns = writable<FlatColumn<Item, Plugins>[]>([]);
 	const _rows = writable<BodyRow<Item>[]>([]);
 	const _pageRows = writable<BodyRow<Item>[]>([]);
-	const tableState: TableState<Item, Plugins> = {
+	const tableState: PluginInitTableState<Item, Plugins> = {
 		data,
 		columns,
 		flatColumns: $flatColumns,
