@@ -1,4 +1,4 @@
-import type { DataBodyCell, DataBodyCellAttributes } from '$lib/bodyCells';
+import type { BodyCell, BodyCellAttributes } from '$lib/bodyCells';
 import type { BodyRow, BodyRowAttributes } from '$lib/bodyRows';
 import type { DataColumn } from '$lib/columns';
 import type { HeaderCell, HeaderCellAttributes } from '$lib/headerCells';
@@ -58,14 +58,14 @@ export type Components<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	'thead.tr': HeaderRow<Item, Plugins>;
 	'thead.tr.th': HeaderCell<Item, Plugins>;
 	'tbody.tr': BodyRow<Item, Plugins>;
-	'tbody.tr.td': DataBodyCell<Item, Plugins>;
+	'tbody.tr.td': BodyCell<Item, Plugins>;
 };
 
 export type AttributesForKey<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	'thead.tr': HeaderRowAttributes<Item, Plugins>;
 	'thead.tr.th': HeaderCellAttributes<Item, Plugins>;
 	'tbody.tr': BodyRowAttributes<Item, Plugins>;
-	'tbody.tr.td': DataBodyCellAttributes<Item, Plugins>;
+	'tbody.tr.td': BodyCellAttributes<Item, Plugins>;
 };
 
 export type ComponentKeys = keyof Components<unknown>;
