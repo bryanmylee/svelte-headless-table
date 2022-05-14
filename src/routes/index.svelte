@@ -41,11 +41,15 @@
 
 	const columns = table.createColumns([
 		table.display({
+			id: 'expanded',
 			header: ({ pluginStates }) =>
 				derived(pluginStates.expand.expandedIds, (_expandedIds) =>
 					_expandedIds === {} ? '👉' : '👇'
 				),
-			id: 'expanded',
+			cell: (rowId, { pluginStates }) =>
+				derived(pluginStates.expand.expandedIds, (_expandedIds) =>
+					_expandedIds[rowId] === true ? '👇' : '👉'
+				),
 		}),
 		table.column({
 			header: 'Summary',

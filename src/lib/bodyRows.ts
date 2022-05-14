@@ -72,7 +72,7 @@ export const getBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 				return new DataBodyCell({ row: rows[rowIdx], column: col, label: col.cell, value });
 			}
 			if (col instanceof DisplayColumn) {
-				return new DisplayBodyCell({ row: rows[rowIdx], column: col });
+				return new DisplayBodyCell({ row: rows[rowIdx], column: col, label: col.cell });
 			}
 			throw new Error('Unrecognized `FlatColumn` implementation');
 		});
@@ -159,7 +159,10 @@ export const getSubRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 					];
 				}
 				if (column instanceof DisplayColumn) {
-					return [column.id, new DisplayBodyCell({ row: subRows[rowIdx], column })];
+					return [
+						column.id,
+						new DisplayBodyCell({ row: subRows[rowIdx], column, label: column.cell }),
+					];
 				}
 				throw new Error('Unrecognized `FlatColumn` implementation');
 			})

@@ -1,4 +1,4 @@
-import type { HeaderLabel } from './types/Label';
+import type { DisplayLabel, HeaderLabel } from './types/Label';
 import type { DataLabel } from './types/Label';
 import type { AnyPlugins, PluginColumnConfigs } from './types/TablePlugin';
 
@@ -128,7 +128,9 @@ export type DisplayColumnInit<
 	Plugins extends AnyPlugins = AnyPlugins,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	Id extends string = any
-> = FlatColumnInit<Item, Plugins, Id>;
+> = FlatColumnInit<Item, Plugins, Id> & {
+	cell: DisplayLabel<Item, Plugins>;
+};
 
 export class DisplayColumn<
 	Item,
@@ -136,8 +138,10 @@ export class DisplayColumn<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	Id extends string = any
 > extends FlatColumn<Item, Plugins, Id> {
-	constructor({ header, footer, plugins, id }: DisplayColumnInit<Item, Plugins, Id>) {
+	cell: DisplayLabel<Item, Plugins>;
+	constructor({ header, footer, plugins, id, cell }: DisplayColumnInit<Item, Plugins, Id>) {
 		super({ header, footer, plugins, id });
+		this.cell = cell;
 	}
 }
 

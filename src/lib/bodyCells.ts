@@ -2,7 +2,7 @@ import { derived, type Readable } from 'svelte/store';
 import type { BodyRow } from './bodyRows';
 import type { DataColumn, DisplayColumn, FlatColumn } from './columns';
 import { TableComponent } from './tableComponent';
-import type { DataLabel } from './types/Label';
+import type { DataLabel, DisplayLabel } from './types/Label';
 import type { AnyPlugins } from './types/TablePlugin';
 import type { RenderConfig } from './render';
 
@@ -81,6 +81,7 @@ export type DisplayBodyCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> =
 	'id'
 > & {
 	column: DisplayColumn<Item, Plugins>;
+	label: DisplayLabel<Item, Plugins>;
 };
 
 export class DisplayBodyCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends BodyCell<
@@ -88,13 +89,18 @@ export class DisplayBodyCell<Item, Plugins extends AnyPlugins = AnyPlugins> exte
 	Plugins
 > {
 	column: DisplayColumn<Item, Plugins>;
-	constructor({ row, column }: DisplayBodyCellInit<Item, Plugins>) {
+	label: DisplayLabel<Item, Plugins>;
+	constructor({ row, column, label }: DisplayBodyCellInit<Item, Plugins>) {
 		super({ id: column.id, row });
 		this.column = column;
+		this.label = label;
 	}
 
 	render(): RenderConfig {
-		return 'WIP';
+		if (this.state === undefined) {
+			throw new Error('Missing `state` reference');
+		}
+		return this.label(this.row.id, this.state);
 	}
 
 	attrs() {
