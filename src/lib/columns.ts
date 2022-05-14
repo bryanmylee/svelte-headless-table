@@ -91,10 +91,12 @@ export class DataColumn<
 	}
 }
 
-export interface GroupColumnInit<Item, Plugins extends AnyPlugins = AnyPlugins>
-	extends Omit<ColumnInit<Item, Plugins>, 'height'> {
+export type GroupColumnInit<Item, Plugins extends AnyPlugins = AnyPlugins> = Omit<
+	ColumnInit<Item, Plugins>,
+	'height'
+> & {
 	columns: Column<Item, Plugins>[];
-}
+};
 
 export class GroupColumn<Item, Plugins extends AnyPlugins = AnyPlugins> extends Column<
 	Item,
@@ -106,19 +108,45 @@ export class GroupColumn<Item, Plugins extends AnyPlugins = AnyPlugins> extends 
 		const height = Math.max(...columns.map((c) => c.height)) + 1;
 		super({ header, footer, height, plugins });
 		this.columns = columns;
-		this.ids = getDataColumnIds(columns);
+		this.ids = getFlatColumnIds(columns);
 	}
 }
 
-export const getDataColumnIds = <Item>(columns: Column<Item>[]): string[] =>
+export type DisplayColumnInit<Item, Plugins extends AnyPlugins = AnyPlugins> = Omit<
+	ColumnInit<Item, Plugins>,
+	'height'
+> & {
+	id: string;
+};
+
+export class DisplayColumn<Item, Plugins extends AnyPlugins = AnyPlugins> extends Column<
+	Item,
+	Plugins
+> {
+	id: string;
+	constructor({ header, footer, plugins, id }: DisplayColumnInit<Item, Plugins>) {
+		super({ header, footer, height: 1, plugins });
+		this.id = id;
+	}
+}
+
+export const getFlatColumnIds = <Item>(columns: Column<Item>[]): string[] =>
 	columns.flatMap((c) =>
-		c instanceof DataColumn ? [c.id] : c instanceof GroupColumn ? c.ids : []
+		c instanceof DataColumn || c instanceof DisplayColumn
+			? [c.id]
+			: c instanceof GroupColumn
+			? c.ids
+			: []
 	);
 
-export const getDataColumns = <Item, Plugins extends AnyPlugins = AnyPlugins>(
+export const getFlatColumns = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	columns: Column<Item, Plugins>[]
-): DataColumn<Item, Plugins>[] => {
+): (DataColumn<Item, Plugins> | DisplayColumn<Item, Plugins>)[] => {
 	return columns.flatMap((c) =>
-		c instanceof DataColumn ? [c] : c instanceof GroupColumn ? getDataColumns(c.columns) : []
+		c instanceof DataColumn || c instanceof DisplayColumn
+			? [c]
+			: c instanceof GroupColumn
+			? getFlatColumns(c.columns)
+			: []
 	);
 };

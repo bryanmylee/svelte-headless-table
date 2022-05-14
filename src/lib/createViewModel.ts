@@ -1,7 +1,7 @@
 import type { ReadOrWritable } from 'svelte-subscribe/derivedKeys';
 import { derived, readable, writable, type Readable } from 'svelte/store';
 import { BodyRow, getBodyRows, getColumnedBodyRows } from './bodyRows';
-import { DataColumn, getDataColumns, type Column } from './columns';
+import { DataColumn, getFlatColumns, type Column } from './columns';
 import type { Table } from './createTable';
 import { getHeaderRows, HeaderRow } from './headerRows';
 import type {
@@ -25,7 +25,7 @@ export interface TableViewModel<Item, Plugins extends AnyPlugins = AnyPlugins> {
 export interface TableState<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	data: ReadOrWritable<Item[]>;
 	columns: Column<Item, Plugins>[];
-	dataColumns: DataColumn<Item, Plugins>[];
+	flatColumns: DataColumn<Item, Plugins>[];
 	visibleColumns: Readable<DataColumn<Item, Plugins>[]>;
 	originalRows: Readable<BodyRow<Item>[]>;
 	rows: Readable<BodyRow<Item>[]>;
@@ -38,8 +38,8 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 ): TableViewModel<Item, Plugins> => {
 	const { data, plugins } = table;
 
-	const dataColumns = getDataColumns(columns);
-	const flatColumns = readable(dataColumns);
+	const $flatColumns = getFlatColumns(columns);
+	const flatColumns = readable($flatColumns);
 
 	const originalRows = derived([data, flatColumns], ([$data, $flatColumns]) => {
 		return getBodyRows($data, $flatColumns);
@@ -52,7 +52,7 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	const tableState: TableState<Item, Plugins> = {
 		data,
 		columns,
-		dataColumns,
+		flatColumns: $flatColumns,
 		visibleColumns: _visibleColumns,
 		originalRows,
 		rows: _rows,
@@ -62,7 +62,7 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	const pluginInstances = Object.fromEntries(
 		Object.entries(plugins).map(([pluginName, plugin]) => {
 			const columnOptions = Object.fromEntries(
-				dataColumns
+				$flatColumns
 					.map((c) => {
 						const option = c.plugins?.[pluginName];
 						if (option === undefined) return undefined;
@@ -205,7 +205,7 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	});
 
 	return {
-		dataColumns,
+		dataColumns: $flatColumns,
 		visibleColumns: injectedColumns,
 		headerRows,
 		originalRows,

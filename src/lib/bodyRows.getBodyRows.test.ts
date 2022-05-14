@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { BodyCell } from './bodyCells';
+import { DataBodyCell } from './bodyCells';
 import { BodyRow, getBodyRows } from './bodyRows';
 import { createTable } from './createTable';
 
@@ -61,17 +61,17 @@ it('transforms data', () => {
 
 	const row0 = new BodyRow<User>({ id: '0', original: data[0], cells: [], cellForId: {} });
 	const cells0 = [
-		new BodyCell<User>({
+		new DataBodyCell<User>({
 			row: row0,
 			column: columns[0],
 			value: 'Adam',
 		}),
-		new BodyCell<User>({
+		new DataBodyCell<User>({
 			row: row0,
 			column: columns[1],
 			value: 'West',
 		}),
-		new BodyCell<User>({
+		new DataBodyCell<User>({
 			row: row0,
 			column: columns[2],
 			value: 75,
@@ -87,17 +87,17 @@ it('transforms data', () => {
 
 	const row1 = new BodyRow<User>({ id: '1', original: data[1], cells: [], cellForId: {} });
 	const cells1 = [
-		new BodyCell<User>({
+		new DataBodyCell<User>({
 			row: row1,
 			column: columns[0],
 			value: 'Becky',
 		}),
-		new BodyCell<User>({
+		new DataBodyCell<User>({
 			row: row1,
 			column: columns[1],
 			value: 'White',
 		}),
-		new BodyCell<User>({
+		new DataBodyCell<User>({
 			row: row1,
 			column: columns[2],
 			value: 43,

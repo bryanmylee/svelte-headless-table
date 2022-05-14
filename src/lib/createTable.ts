@@ -1,6 +1,7 @@
 import {
 	DataColumn,
-	getDataColumnIds,
+	DisplayColumn,
+	getFlatColumnIds,
 	GroupColumn,
 	type Column,
 	type DataColumnInit,
@@ -8,6 +9,7 @@ import {
 	type DataColumnInitFnAndId,
 	type DataColumnInitIdAndKey,
 	type DataColumnInitKey,
+	type DisplayColumnInit,
 	type GroupColumnInit,
 } from './columns';
 import type { AnyPlugins } from './types/TablePlugin';
@@ -24,7 +26,7 @@ export class Table<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	}
 
 	createColumns(columns: Column<Item, Plugins>[]): Column<Item, Plugins>[] {
-		const ids = getDataColumnIds(columns);
+		const ids = getFlatColumnIds(columns);
 		const duplicateIds = getDuplicates(ids);
 		if (duplicateIds.length !== 0) {
 			throw new Error(`Duplicate column ids not allowed: "${duplicateIds.join('", "')}"`);
@@ -50,6 +52,10 @@ export class Table<Item, Plugins extends AnyPlugins = AnyPlugins> {
 
 	group(def: GroupColumnInit<Item, Plugins>): GroupColumn<Item, Plugins> {
 		return new GroupColumn(def);
+	}
+
+	display(def: DisplayColumnInit<Item, Plugins>): DisplayColumn<Item, Plugins> {
+		return new DisplayColumn(def);
 	}
 
 	createViewModel(columns: Column<Item, Plugins>[]): TableViewModel<Item, Plugins> {

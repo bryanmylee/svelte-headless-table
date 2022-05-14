@@ -1,5 +1,5 @@
 import { derived } from 'svelte/store';
-import { BodyCell } from './bodyCells';
+import { DataBodyCell } from './bodyCells';
 import type { DataColumn } from './columns';
 import { TableComponent } from './tableComponent';
 import type { AnyPlugins } from './types/TablePlugin';
@@ -8,8 +8,8 @@ import { nonUndefined } from './utils/filter';
 export interface BodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	id: string;
 	original: Item;
-	cells: BodyCell<Item, Plugins>[];
-	cellForId: Record<string, BodyCell<Item, Plugins>>;
+	cells: DataBodyCell<Item, Plugins>[];
+	cellForId: Record<string, DataBodyCell<Item, Plugins>>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-interface
@@ -21,13 +21,13 @@ export class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends Tabl
 	'tbody.tr'
 > {
 	original: Item;
-	cells: BodyCell<Item, Plugins>[];
+	cells: DataBodyCell<Item, Plugins>[];
 	/**
 	 * Get the cell with a given column id.
 	 *
 	 * **This includes hidden cells.**
 	 */
-	cellForId: Record<string, BodyCell<Item, Plugins>>;
+	cellForId: Record<string, DataBodyCell<Item, Plugins>>;
 	constructor({ id, original, cells, cellForId }: BodyRowInit<Item, Plugins>) {
 		super({ id });
 		this.original = original;
@@ -51,7 +51,7 @@ export class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends Tabl
 export const getBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	data: Item[],
 	/**
-	 * Represents data columns before column transformations.
+	 * Flat columns before column transformations.
 	 */
 	flatColumns: DataColumn<Item, Plugins>[]
 ): BodyRow<Item, Plugins>[] => {
@@ -71,7 +71,7 @@ export const getBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 					: c.accessorKey !== undefined
 					? item[c.accessorKey]
 					: undefined;
-			return new BodyCell({ row: rows[rowIdx], column: c, label: c.cell, value });
+			return new DataBodyCell({ row: rows[rowIdx], column: c, label: c.cell, value });
 		});
 		rows[rowIdx].cells = cells;
 		flatColumns.forEach((c, colIdx) => {
@@ -103,7 +103,7 @@ export const getColumnedBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugin
 		// Create a shallow copy of `row.cells` to reassign each `cell`'s `row`
 		// reference.
 		const cells = row.cells.map((cell) => {
-			return new BodyCell({
+			return new DataBodyCell({
 				row: columnedRows[rowIdx],
 				column: cell.column,
 				value: cell.value,
@@ -158,7 +158,7 @@ export const getSubRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 						: undefined;
 				return [
 					column.id,
-					new BodyCell({ row: subRows[rowIdx], column, label: column.cell, value }),
+					new DataBodyCell({ row: subRows[rowIdx], column, label: column.cell, value }),
 				];
 			})
 		);

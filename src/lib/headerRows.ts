@@ -35,6 +35,7 @@ export const getHeaderRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	// Perform all column operations on the transposed columnMatrix. This helps
 	// to reduce the number of expensive transpose operations required.
 	let columnMatrix = getTransposed(rowMatrix);
+	console.log(columnMatrix);
 	columnMatrix = getOrderedColumnMatrix(columnMatrix, flatColumnIds);
 	populateGroupHeaderCellIds(columnMatrix);
 	return headerRowsForRowMatrix(getTransposed(columnMatrix));
@@ -102,14 +103,16 @@ export const getOrderedColumnMatrix = <Item, Plugins extends AnyPlugins = AnyPlu
 	}
 	const orderedColumnMatrix: Matrix<HeaderCell<Item, Plugins>> = [];
 	// Each row of the transposed matrix represents a column.
-	// The `DataHeaderCell` is the last cell of each column.
+	// The `DataHeaderCell` or `DisplayHeaderCell` is the last cell of each column.
 	flatColumnIds.forEach((key) => {
 		const nextColumn = columnMatrix.find((columnCells) => {
-			const dataCell = columnCells[columnCells.length - 1];
-			if (!(dataCell instanceof DataHeaderCell)) {
-				throw new Error('The last element of each column must be `DataHeaderCell`');
+			const lastCell = columnCells[columnCells.length - 1];
+			if (!(lastCell instanceof DataHeaderCell || lastCell instanceof DisplayHeaderCell)) {
+				throw new Error(
+					'The last element of each column must either be `DataHeaderCell` or `DisplayHeaderCell`'
+				);
 			}
-			return dataCell.id === key;
+			return lastCell.id === key;
 		});
 		if (nextColumn !== undefined) {
 			orderedColumnMatrix.push(nextColumn);
@@ -120,13 +123,15 @@ export const getOrderedColumnMatrix = <Item, Plugins extends AnyPlugins = AnyPlu
 
 const populateGroupHeaderCellIds = <Item>(columnMatrix: Matrix<HeaderCell<Item>>) => {
 	columnMatrix.forEach((columnCells) => {
-		const dataCell = columnCells[columnCells.length - 1];
-		if (!(dataCell instanceof DataHeaderCell)) {
-			throw new Error('The last element of each column must be `DataHeaderCell`');
+		const lastCell = columnCells[columnCells.length - 1];
+		if (!(lastCell instanceof DataHeaderCell || lastCell instanceof DisplayHeaderCell)) {
+			throw new Error(
+				'The last element of each column must either be `DataHeaderCell` or `DisplayHeaderCell`'
+			);
 		}
 		columnCells.forEach((c) => {
 			if (c instanceof GroupHeaderCell) {
-				c.pushId(dataCell.id);
+				c.pushId(lastCell.id);
 			}
 		});
 	});

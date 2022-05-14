@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { BodyCell } from './bodyCells';
+import { DataBodyCell } from './bodyCells';
 import { BodyRow, getBodyRows, getColumnedBodyRows, getSubRows } from './bodyRows';
 import { createTable } from './createTable';
 

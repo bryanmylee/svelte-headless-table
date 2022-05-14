@@ -6,7 +6,7 @@ import type { Label } from './types/Label';
 import type { AnyPlugins } from './types/TablePlugin';
 import type { RenderConfig } from './render';
 
-export interface BodyCellInit<Item, Plugins extends AnyPlugins = AnyPlugins, Value = unknown> {
+export interface DataBodyCellInit<Item, Plugins extends AnyPlugins = AnyPlugins, Value = unknown> {
 	row: BodyRow<Item, Plugins>;
 	column: DataColumn<Item, Plugins>;
 	label?: Label<Item, Value>;
@@ -14,9 +14,9 @@ export interface BodyCellInit<Item, Plugins extends AnyPlugins = AnyPlugins, Val
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-interface
-export interface BodyCellAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> {}
+export interface DataBodyCellAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> {}
 
-export class BodyCell<
+export class DataBodyCell<
 	Item,
 	Plugins extends AnyPlugins = AnyPlugins,
 	Value = unknown
@@ -25,7 +25,7 @@ export class BodyCell<
 	column: DataColumn<Item, Plugins>;
 	label?: Label<Item, Value>;
 	value: Value;
-	constructor({ row, column, label, value }: BodyCellInit<Item, Plugins, Value>) {
+	constructor({ row, column, label, value }: DataBodyCellInit<Item, Plugins, Value>) {
 		super({ id: column.id });
 		this.row = row;
 		this.column = column;
