@@ -11,6 +11,7 @@ export interface BodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	original: Item;
 	cells: BodyCell<Item, Plugins>[];
 	cellForId: Record<string, BodyCell<Item, Plugins>>;
+	level?: number;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-interface
@@ -29,11 +30,13 @@ export class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends Tabl
 	 * **This includes hidden cells.**
 	 */
 	cellForId: Record<string, BodyCell<Item, Plugins>>;
-	constructor({ id, original, cells, cellForId }: BodyRowInit<Item, Plugins>) {
+	level: number;
+	constructor({ id, original, cells, cellForId, level = 0 }: BodyRowInit<Item, Plugins>) {
 		super({ id });
 		this.original = original;
 		this.cells = cells;
 		this.cellForId = cellForId;
+		this.level = level;
 	}
 
 	attrs() {
@@ -142,6 +145,7 @@ export const getSubRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 			original: item,
 			cells: [],
 			cellForId: {},
+			level: parentRow.level + 1,
 		});
 	});
 	subItems.forEach((item, rowIdx) => {

@@ -42,7 +42,7 @@ const data: User[] = [
 
 const table = createTable(writable(data));
 
-const columns = [
+const dataColumns = [
 	table.column({
 		accessor: 'firstName',
 		header: 'First Name',
@@ -57,28 +57,32 @@ const columns = [
 	}),
 ];
 
-const parentRow = getBodyRows([parentData], columns)[0];
+const parentRow = getBodyRows([parentData], dataColumns)[0];
 
 it('transforms empty data', () => {
-	const actual = getSubRows(data, parentRow);
+	const actual = getSubRows([], parentRow);
 
 	const expected: BodyRow<User>[] = [];
 
 	expect(actual).toStrictEqual(expected);
 });
 
-it('derives the correct cells', () => {
+it('derives the correct cells for data columns', () => {
 	const actual = getSubRows(data, parentRow);
 
-	const expected = getBodyRows(data, columns);
+	const expected = getBodyRows(data, dataColumns);
 
 	[0, 1].forEach((rowIdx) => {
 		expect(actual[rowIdx].original).toStrictEqual(expected[rowIdx].original);
 		expect(actual[rowIdx].cells.length).toStrictEqual(expected[rowIdx].cells.length);
 		actual[rowIdx].cells.forEach((_, colIdx) => {
-			expect(actual[rowIdx].cells[colIdx].value).toStrictEqual(
-				expected[rowIdx].cells[colIdx].value
-			);
+			const cell = actual[rowIdx].cells[colIdx];
+			expect(cell).toBeInstanceOf(DataBodyCell);
+			const expectedCell = expected[rowIdx].cells[colIdx];
+			if (!(cell instanceof DataBodyCell && expectedCell instanceof DataBodyCell)) {
+				throw new Error('Incorrect instance type');
+			}
+			expect(cell.value).toStrictEqual(expectedCell.value);
 		});
 	});
 });
@@ -87,20 +91,28 @@ it('derives the correct cellForId when parent has hidden cells', () => {
 	const columnedParentRow = getColumnedBodyRows([parentRow], ['firstName'])[0];
 	const actual = getSubRows(data, columnedParentRow);
 
-	const expected = getColumnedBodyRows(getBodyRows(data, columns), ['firstName']);
+	const expected = getColumnedBodyRows(getBodyRows(data, dataColumns), ['firstName']);
 
 	[0, 1].forEach((rowIdx) => {
 		expect(actual[rowIdx].original).toStrictEqual(expected[rowIdx].original);
 		expect(actual[rowIdx].cells.length).toStrictEqual(expected[rowIdx].cells.length);
 		actual[rowIdx].cells.forEach((_, colIdx) => {
-			expect(actual[rowIdx].cells[colIdx].value).toStrictEqual(
-				expected[rowIdx].cells[colIdx].value
-			);
+			const cell = actual[rowIdx].cells[colIdx];
+			expect(cell).toBeInstanceOf(DataBodyCell);
+			const expectedCell = expected[rowIdx].cells[colIdx];
+			if (!(cell instanceof DataBodyCell && expectedCell instanceof DataBodyCell)) {
+				throw new Error('Incorrect instance type');
+			}
+			expect(cell.value).toStrictEqual(expectedCell.value);
 		});
 		['firstName', 'lastName', 'progress'].forEach((id) => {
-			expect(actual[rowIdx].cellForId[id].value).toStrictEqual(
-				expected[rowIdx].cellForId[id].value
-			);
+			const cell = actual[rowIdx].cellForId[id];
+			expect(cell).toBeInstanceOf(DataBodyCell);
+			const expectedCell = expected[rowIdx].cellForId[id];
+			if (!(cell instanceof DataBodyCell && expectedCell instanceof DataBodyCell)) {
+				throw new Error('Incorrect instance type');
+			}
+			expect(cell.value).toStrictEqual(expectedCell.value);
 		});
 	});
 });
