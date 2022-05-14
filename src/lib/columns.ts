@@ -171,10 +171,6 @@ export const getFlatColumns = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	columns: Column<Item, Plugins>[]
 ): FlatColumn<Item, Plugins>[] => {
 	return columns.flatMap((c) =>
-		c instanceof DataColumn || c instanceof DisplayColumn
-			? [c]
-			: c instanceof GroupColumn
-			? getFlatColumns(c.columns)
-			: []
+		c instanceof FlatColumn ? [c] : c instanceof GroupColumn ? getFlatColumns(c.columns) : []
 	);
 };

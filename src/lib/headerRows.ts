@@ -41,7 +41,6 @@ export const getHeaderRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	// Perform all column operations on the transposed columnMatrix. This helps
 	// to reduce the number of expensive transpose operations required.
 	let columnMatrix = getTransposed(rowMatrix);
-	console.log(columnMatrix);
 	columnMatrix = getOrderedColumnMatrix(columnMatrix, flatColumnIds);
 	populateGroupHeaderCellIds(columnMatrix);
 	return headerRowsForRowMatrix(getTransposed(columnMatrix));
