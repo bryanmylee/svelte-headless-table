@@ -1,4 +1,4 @@
-import { DataColumn, GroupColumn, type Column } from './columns';
+import { DataColumn, DisplayColumn, GroupColumn, type Column } from './columns';
 import {
 	DataHeaderCell,
 	DisplayHeaderCell,
@@ -80,6 +80,13 @@ const loadHeaderRowMatrix = <Item>(
 		});
 		return;
 	}
+	if (column instanceof DisplayColumn) {
+		rowMatrix[rowMatrix.length - 1][cellOffset] = new DisplayHeaderCell({
+			id: column.id,
+			label: column.header,
+		});
+		return;
+	}
 	if (column instanceof GroupColumn) {
 		// Fill multi-colspan cells.
 		for (let i = 0; i < column.ids.length; i++) {
@@ -108,14 +115,12 @@ export const getOrderedColumnMatrix = <Item, Plugins extends AnyPlugins = AnyPlu
 	}
 	const orderedColumnMatrix: Matrix<HeaderCell<Item, Plugins>> = [];
 	// Each row of the transposed matrix represents a column.
-	// The `DataHeaderCell` or `DisplayHeaderCell` is the last cell of each column.
+	// The `FlatHeaderCell` should be the last cell of each column.
 	flatColumnIds.forEach((key) => {
 		const nextColumn = columnMatrix.find((columnCells) => {
 			const flatCell = columnCells[columnCells.length - 1];
 			if (!(flatCell instanceof FlatHeaderCell)) {
-				throw new Error(
-					'The last element of each column must either be `DataHeaderCell` or `DisplayHeaderCell`'
-				);
+				throw new Error('The last element of each column must be a `FlatHeaderCell`');
 			}
 			return flatCell.id === key;
 		});
@@ -130,9 +135,7 @@ const populateGroupHeaderCellIds = <Item>(columnMatrix: Matrix<HeaderCell<Item>>
 	columnMatrix.forEach((columnCells) => {
 		const lastCell = columnCells[columnCells.length - 1];
 		if (!(lastCell instanceof FlatHeaderCell)) {
-			throw new Error(
-				'The last element of each column must either be `DataHeaderCell` or `DisplayHeaderCell`'
-			);
+			throw new Error('The last element of each column must be a `FlatHeaderCell`');
 		}
 		columnCells.forEach((c) => {
 			if (c instanceof GroupHeaderCell) {

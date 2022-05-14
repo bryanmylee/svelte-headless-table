@@ -75,9 +75,6 @@ export class FlatHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exten
 	}
 }
 
-/**
- * `DataHeaderCellInit` should match non-inherited `DataColumn` class properties.
- */
 export type DataHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = Omit<
 	FlatHeaderCellInit<Item, Plugins>,
 	'isData'
