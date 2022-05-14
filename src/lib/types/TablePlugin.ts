@@ -1,6 +1,6 @@
 import type { BodyCell, BodyCellAttributes } from '$lib/bodyCells';
 import type { BodyRow, BodyRowAttributes } from '$lib/bodyRows';
-import type { DataColumn } from '$lib/columns';
+import type { DataColumn, FlatColumn } from '$lib/columns';
 import type { HeaderCell, HeaderCellAttributes } from '$lib/headerCells';
 import type { HeaderRow, HeaderRowAttributes } from '$lib/headerRows';
 import type { TableState } from '$lib/createViewModel';
@@ -46,7 +46,7 @@ export type AnyPluginInstances = Record<
 
 export type TransformFlatColumnsFn<Item> = (flatColumns: DataColumn<Item>[]) => DataColumn<Item>[];
 
-export type DeriveFlatColumnsFn<Item> = <Col extends DataColumn<Item>>(
+export type DeriveFlatColumnsFn<Item> = <Col extends FlatColumn<Item>>(
 	flatColumns: Readable<Col[]>
 ) => Readable<Col[]>;
 

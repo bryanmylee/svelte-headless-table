@@ -1,7 +1,7 @@
 import type { ReadOrWritable } from 'svelte-subscribe/derivedKeys';
 import { derived, readable, writable, type Readable } from 'svelte/store';
 import { BodyRow, getBodyRows, getColumnedBodyRows } from './bodyRows';
-import { DataColumn, getFlatColumns, type Column } from './columns';
+import { FlatColumn, getFlatColumns, type Column } from './columns';
 import type { Table } from './createTable';
 import { getHeaderRows, HeaderRow } from './headerRows';
 import type {
@@ -13,8 +13,8 @@ import type {
 import { nonUndefined } from './utils/filter';
 
 export interface TableViewModel<Item, Plugins extends AnyPlugins = AnyPlugins> {
-	dataColumns: DataColumn<Item, Plugins>[];
-	visibleColumns: Readable<DataColumn<Item, Plugins>[]>;
+	flatColumns: FlatColumn<Item, Plugins>[];
+	visibleColumns: Readable<FlatColumn<Item, Plugins>[]>;
 	headerRows: Readable<HeaderRow<Item, Plugins>[]>;
 	originalRows: Readable<BodyRow<Item, Plugins>[]>;
 	rows: Readable<BodyRow<Item, Plugins>[]>;
@@ -25,8 +25,8 @@ export interface TableViewModel<Item, Plugins extends AnyPlugins = AnyPlugins> {
 export interface TableState<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	data: ReadOrWritable<Item[]>;
 	columns: Column<Item, Plugins>[];
-	flatColumns: DataColumn<Item, Plugins>[];
-	visibleColumns: Readable<DataColumn<Item, Plugins>[]>;
+	flatColumns: FlatColumn<Item, Plugins>[];
+	visibleColumns: Readable<FlatColumn<Item, Plugins>[]>;
 	originalRows: Readable<BodyRow<Item>[]>;
 	rows: Readable<BodyRow<Item>[]>;
 	pageRows: Readable<BodyRow<Item>[]>;
@@ -46,7 +46,7 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	});
 
 	// _stores need to be defined first to pass into plugins for initialization.
-	const _visibleColumns = writable<DataColumn<Item, Plugins>[]>([]);
+	const _visibleColumns = writable<FlatColumn<Item, Plugins>[]>([]);
 	const _rows = writable<BodyRow<Item>[]>([]);
 	const _pageRows = writable<BodyRow<Item>[]>([]);
 	const tableState: TableState<Item, Plugins> = {
@@ -205,7 +205,7 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	});
 
 	return {
-		dataColumns: $flatColumns,
+		flatColumns: $flatColumns,
 		visibleColumns: injectedColumns,
 		headerRows,
 		originalRows,

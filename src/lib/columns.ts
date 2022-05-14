@@ -164,16 +164,12 @@ export class GroupColumn<Item, Plugins extends AnyPlugins = AnyPlugins> extends 
 
 export const getFlatColumnIds = <Item>(columns: Column<Item>[]): string[] =>
 	columns.flatMap((c) =>
-		c instanceof DataColumn || c instanceof DisplayColumn
-			? [c.id]
-			: c instanceof GroupColumn
-			? c.ids
-			: []
+		c instanceof FlatColumn ? [c.id] : c instanceof GroupColumn ? c.ids : []
 	);
 
 export const getFlatColumns = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	columns: Column<Item, Plugins>[]
-): (DataColumn<Item, Plugins> | DisplayColumn<Item, Plugins>)[] => {
+): FlatColumn<Item, Plugins>[] => {
 	return columns.flatMap((c) =>
 		c instanceof DataColumn || c instanceof DisplayColumn
 			? [c]
