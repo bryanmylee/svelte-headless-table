@@ -6,27 +6,30 @@ import type { AnyPlugins } from './types/TablePlugin';
 import type { RenderConfig } from './render';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export interface HeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
+export type HeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	id: string;
+	isFlat?: boolean;
 	isData?: boolean;
 	label: HeaderLabel<Item>;
 	colspan: number;
-}
+};
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export interface HeaderCellAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> {
+export type HeaderCellAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	colspan: number;
-}
+};
 export class HeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends TableComponent<
 	Item,
 	Plugins,
 	'thead.tr.th'
 > {
+	isFlat: boolean;
 	isData: boolean;
 	label: HeaderLabel<Item>;
 	colspan: number;
-	constructor({ id, label, colspan, isData = false }: HeaderCellInit<Item>) {
+	constructor({ id, label, colspan, isFlat = false, isData = false }: HeaderCellInit<Item>) {
 		super({ id });
+		this.isFlat = isFlat;
 		this.isData = isData;
 		this.label = label;
 		this.colspan = colspan;
@@ -51,33 +54,74 @@ export class HeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends T
 	}
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type FlatHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = Omit<
+	HeaderCellInit<Item, Plugins>,
+	'isFlat' | 'colspan'
+>;
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type FlatHeaderCellAttributes<
+	Item,
+	Plugins extends AnyPlugins = AnyPlugins
+> = HeaderCellAttributes<Item, Plugins>;
+
+export class FlatHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends HeaderCell<
+	Item,
+	Plugins
+> {
+	constructor({ id, label, isData }: FlatHeaderCellInit<Item, Plugins>) {
+		super({ id, label, isData, colspan: 1, isFlat: true });
+	}
+}
+
 /**
  * `DataHeaderCellInit` should match non-inherited `DataColumn` class properties.
  */
-export interface DataHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins>
-	extends Omit<HeaderCellInit<Item, Plugins>, 'isDataColumn' | 'colspan'> {
+export type DataHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = Omit<
+	FlatHeaderCellInit<Item, Plugins>,
+	'isData'
+> & {
 	accessorKey?: keyof Item;
 	accessorFn?: (item: Item) => unknown;
-}
+};
 
-export class DataHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends HeaderCell<
+export class DataHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends FlatHeaderCell<
 	Item,
 	Plugins
 > {
 	accessorKey?: keyof Item;
 	accessorFn?: (item: Item) => unknown;
 	constructor({ id, label, accessorKey, accessorFn }: DataHeaderCellInit<Item, Plugins>) {
-		super({ id, isData: true, label, colspan: 1 });
+		super({ id, label, isData: true });
 		this.accessorKey = accessorKey;
 		this.accessorFn = accessorFn;
 	}
 }
 
-export interface GroupHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins>
-	extends Omit<HeaderCellInit<Item, Plugins>, 'id'> {
+export type DisplayHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = Omit<
+	FlatHeaderCellInit<Item, Plugins>,
+	'isData' | 'label'
+> & {
+	label?: HeaderLabel<Item>;
+};
+
+export class DisplayHeaderCell<
+	Item,
+	Plugins extends AnyPlugins = AnyPlugins
+> extends FlatHeaderCell<Item, Plugins> {
+	constructor({ id, label = NBSP }: DisplayHeaderCellInit<Item, Plugins>) {
+		super({ id, label });
+	}
+}
+
+export type GroupHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = Omit<
+	HeaderCellInit<Item, Plugins>,
+	'id'
+> & {
 	ids: string[];
 	allIds: string[];
-}
+};
 
 export class GroupHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends HeaderCell<
 	Item,
@@ -99,19 +143,5 @@ export class GroupHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exte
 	pushId(id: string) {
 		this.ids = [...this.ids, id];
 		this.id = `[${this.ids.join(',')}]`;
-	}
-}
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface DisplayHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins>
-	extends Pick<HeaderCellInit<Item, Plugins>, 'id'>,
-		Partial<Omit<HeaderCellInit<Item, Plugins>, 'id'>> {}
-
-export class DisplayHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends HeaderCell<
-	Item,
-	Plugins
-> {
-	constructor({ id, label = NBSP, colspan = 1 }: DisplayHeaderCellInit<Item, Plugins>) {
-		super({ id, label, colspan });
 	}
 }

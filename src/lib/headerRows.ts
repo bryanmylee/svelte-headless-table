@@ -1,5 +1,11 @@
 import { DataColumn, GroupColumn, type Column } from './columns';
-import { DataHeaderCell, DisplayHeaderCell, GroupHeaderCell, type HeaderCell } from './headerCells';
+import {
+	DataHeaderCell,
+	DisplayHeaderCell,
+	FlatHeaderCell,
+	GroupHeaderCell,
+	type HeaderCell,
+} from './headerCells';
 import { TableComponent } from './tableComponent';
 import type { Matrix } from './types/Matrix';
 import type { AnyPlugins } from './types/TablePlugin';
@@ -106,13 +112,13 @@ export const getOrderedColumnMatrix = <Item, Plugins extends AnyPlugins = AnyPlu
 	// The `DataHeaderCell` or `DisplayHeaderCell` is the last cell of each column.
 	flatColumnIds.forEach((key) => {
 		const nextColumn = columnMatrix.find((columnCells) => {
-			const lastCell = columnCells[columnCells.length - 1];
-			if (!(lastCell instanceof DataHeaderCell || lastCell instanceof DisplayHeaderCell)) {
+			const flatCell = columnCells[columnCells.length - 1];
+			if (!(flatCell instanceof FlatHeaderCell)) {
 				throw new Error(
 					'The last element of each column must either be `DataHeaderCell` or `DisplayHeaderCell`'
 				);
 			}
-			return lastCell.id === key;
+			return flatCell.id === key;
 		});
 		if (nextColumn !== undefined) {
 			orderedColumnMatrix.push(nextColumn);
@@ -124,7 +130,7 @@ export const getOrderedColumnMatrix = <Item, Plugins extends AnyPlugins = AnyPlu
 const populateGroupHeaderCellIds = <Item>(columnMatrix: Matrix<HeaderCell<Item>>) => {
 	columnMatrix.forEach((columnCells) => {
 		const lastCell = columnCells[columnCells.length - 1];
-		if (!(lastCell instanceof DataHeaderCell || lastCell instanceof DisplayHeaderCell)) {
+		if (!(lastCell instanceof FlatHeaderCell)) {
 			throw new Error(
 				'The last element of each column must either be `DataHeaderCell` or `DisplayHeaderCell`'
 			);
