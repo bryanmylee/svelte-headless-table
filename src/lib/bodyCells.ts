@@ -1,6 +1,6 @@
 import { derived, type Readable } from 'svelte/store';
 import type { BodyRow } from './bodyRows';
-import type { DataColumn, DisplayColumn } from './columns';
+import type { DataColumn, DisplayColumn, FlatColumn } from './columns';
 import { TableComponent } from './tableComponent';
 import type { DataLabel } from './types/Label';
 import type { AnyPlugins } from './types/TablePlugin';
@@ -21,6 +21,7 @@ export abstract class BodyCell<
 	Item,
 	Plugins extends AnyPlugins = AnyPlugins
 > extends TableComponent<Item, Plugins, 'tbody.tr.td'> {
+	abstract column: FlatColumn<Item, Plugins>;
 	row: BodyRow<Item, Plugins>;
 	constructor({ id, row }: BodyCellInit<Item, Plugins>) {
 		super({ id });

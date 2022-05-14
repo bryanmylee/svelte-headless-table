@@ -1,15 +1,16 @@
 import { derived } from 'svelte/store';
-import { DataBodyCell } from './bodyCells';
-import type { DataColumn } from './columns';
+import { BodyCell, DataBodyCell, DisplayBodyCell } from './bodyCells';
+import { DataColumn, DisplayColumn, type FlatColumn } from './columns';
 import { TableComponent } from './tableComponent';
 import type { AnyPlugins } from './types/TablePlugin';
+import { getCloned } from './utils/clone';
 import { nonUndefined } from './utils/filter';
 
 export interface BodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	id: string;
 	original: Item;
-	cells: DataBodyCell<Item, Plugins>[];
-	cellForId: Record<string, DataBodyCell<Item, Plugins>>;
+	cells: BodyCell<Item, Plugins>[];
+	cellForId: Record<string, BodyCell<Item, Plugins>>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-interface
@@ -21,13 +22,13 @@ export class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends Tabl
 	'tbody.tr'
 > {
 	original: Item;
-	cells: DataBodyCell<Item, Plugins>[];
+	cells: BodyCell<Item, Plugins>[];
 	/**
 	 * Get the cell with a given column id.
 	 *
 	 * **This includes hidden cells.**
 	 */
-	cellForId: Record<string, DataBodyCell<Item, Plugins>>;
+	cellForId: Record<string, BodyCell<Item, Plugins>>;
 	constructor({ id, original, cells, cellForId }: BodyRowInit<Item, Plugins>) {
 		super({ id });
 		this.original = original;
@@ -53,7 +54,7 @@ export const getBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	/**
 	 * Flat columns before column transformations.
 	 */
-	flatColumns: DataColumn<Item, Plugins>[]
+	flatColumns: FlatColumn<Item, Plugins>[]
 ): BodyRow<Item, Plugins>[] => {
 	const rows: BodyRow<Item, Plugins>[] = data.map((item, idx) => {
 		return new BodyRow({
@@ -64,14 +65,16 @@ export const getBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		});
 	});
 	data.forEach((item, rowIdx) => {
-		const cells = flatColumns.map((c) => {
-			const value =
-				c.accessorFn !== undefined
-					? c.accessorFn(item)
-					: c.accessorKey !== undefined
-					? item[c.accessorKey]
-					: undefined;
-			return new DataBodyCell({ row: rows[rowIdx], column: c, label: c.cell, value });
+		const cells = flatColumns.map((col) => {
+			if (col instanceof DataColumn) {
+				const dataCol = col as DataColumn<Item, Plugins>;
+				const value = dataCol.getValue(item);
+				return new DataBodyCell({ row: rows[rowIdx], column: col, label: col.cell, value });
+			}
+			if (col instanceof DisplayColumn) {
+				return new DisplayBodyCell({ row: rows[rowIdx], column: col });
+			}
+			throw new Error('Unrecognized `FlatColumn` implementation');
 		});
 		rows[rowIdx].cells = cells;
 		flatColumns.forEach((c, colIdx) => {
@@ -103,11 +106,8 @@ export const getColumnedBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugin
 		// Create a shallow copy of `row.cells` to reassign each `cell`'s `row`
 		// reference.
 		const cells = row.cells.map((cell) => {
-			return new DataBodyCell({
+			return getCloned(cell, {
 				row: columnedRows[rowIdx],
-				column: cell.column,
-				value: cell.value,
-				label: cell.label,
 			});
 		});
 		const visibleCells = columnIdOrder
@@ -150,16 +150,18 @@ export const getSubRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		const cellForId = Object.fromEntries(
 			Object.values(parentRow.cellForId).map((cell) => {
 				const { column } = cell;
-				const value =
-					column.accessorFn !== undefined
-						? column.accessorFn(item)
-						: column.accessorKey !== undefined
-						? item[column.accessorKey]
-						: undefined;
-				return [
-					column.id,
-					new DataBodyCell({ row: subRows[rowIdx], column, label: column.cell, value }),
-				];
+				if (column instanceof DataColumn) {
+					const dataCol = column as DataColumn<Item, Plugins>;
+					const value = dataCol.getValue(item);
+					return [
+						column.id,
+						new DataBodyCell({ row: subRows[rowIdx], column, label: column.cell, value }),
+					];
+				}
+				if (column instanceof DisplayColumn) {
+					return [column.id, new DisplayBodyCell({ row: subRows[rowIdx], column })];
+				}
+				throw new Error('Unrecognized `FlatColumn` implementation');
 			})
 		);
 		subRows[rowIdx].cellForId = cellForId;
