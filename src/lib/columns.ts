@@ -110,6 +110,17 @@ export class DataColumn<
 		}
 		this.id = (id ?? `${this.accessorKey}`) as Id;
 	}
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	getValue(item: Item): any {
+		if (this.accessorFn !== undefined) {
+			return this.accessorFn(item);
+		}
+		if (this.accessorKey !== undefined) {
+			return item[this.accessorKey];
+		}
+		return undefined;
+	}
 }
 
 export type DisplayColumnInit<
