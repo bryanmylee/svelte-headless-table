@@ -1,5 +1,4 @@
 import { writable } from 'svelte/store';
-import { BodyCell } from './bodyCells';
 import { BodyRow, getBodyRows, getColumnedBodyRows } from './bodyRows';
 import { createTable } from './createTable';
 
@@ -75,5 +74,8 @@ it('hides columns', () => {
 		expect(actual[rowIdx].cells.length).toBe(2);
 		expect(actual[rowIdx].cells[0].column.id).toBe('firstName');
 		expect(actual[rowIdx].cells[1].column.id).toBe('progress');
+		expect(actual[rowIdx].cellForId['firstName']).not.toBeUndefined();
+		expect(actual[rowIdx].cellForId['lastName']).not.toBeUndefined();
+		expect(actual[rowIdx].cellForId['progress']).not.toBeUndefined();
 	});
 });

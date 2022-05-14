@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 import { BodyCell } from './bodyCells';
-import { BodyRow, getBodyRows } from './bodyRows';
+import { BodyRow, getBodyRows, getColumnedBodyRows, getSubRows } from './bodyRows';
 import { createTable } from './createTable';
 
 interface User {
@@ -11,6 +11,15 @@ interface User {
 	progress: number;
 	status: string;
 }
+
+const parentData: User = {
+	firstName: 'Charlie',
+	lastName: 'Brown',
+	age: 30,
+	progress: 75,
+	status: 'completed',
+	visits: 32,
+};
 
 const data: User[] = [
 	{
@@ -48,70 +57,37 @@ const columns = [
 	}),
 ];
 
+const parentRow = getBodyRows([parentData], columns)[0];
+
 it('transforms empty data', () => {
-	const actual = getBodyRows([], columns);
+	const actual = getSubRows(data, parentRow);
 
 	const expected: BodyRow<User>[] = [];
 
 	expect(actual).toStrictEqual(expected);
 });
 
-it('transforms data', () => {
-	const actual = getBodyRows(data, columns);
+it('derives the correct cells', () => {
+	const actual = getSubRows(data, parentRow);
 
-	const row0 = new BodyRow<User>({ id: '0', original: data[0], cells: [], cellForId: {} });
-	const cells0 = [
-		new BodyCell<User>({
-			row: row0,
-			column: columns[0],
-			value: 'Adam',
-		}),
-		new BodyCell<User>({
-			row: row0,
-			column: columns[1],
-			value: 'West',
-		}),
-		new BodyCell<User>({
-			row: row0,
-			column: columns[2],
-			value: 75,
-		}),
-	];
-	row0.cells = cells0;
-	const cellForId0 = {
-		firstName: cells0[0],
-		lastName: cells0[1],
-		progress: cells0[2],
-	};
-	row0.cellForId = cellForId0;
+	const expected = getBodyRows(data, columns);
 
-	const row1 = new BodyRow<User>({ id: '1', original: data[1], cells: [], cellForId: {} });
-	const cells1 = [
-		new BodyCell<User>({
-			row: row1,
-			column: columns[0],
-			value: 'Becky',
-		}),
-		new BodyCell<User>({
-			row: row1,
-			column: columns[1],
-			value: 'White',
-		}),
-		new BodyCell<User>({
-			row: row1,
-			column: columns[2],
-			value: 43,
-		}),
-	];
-	row1.cells = cells1;
-	const cellForId1 = {
-		firstName: cells1[0],
-		lastName: cells1[1],
-		progress: cells1[2],
-	};
-	row1.cellForId = cellForId1;
+	[0, 1].forEach((rowIdx) => {
+		expect(actual[rowIdx].original).toStrictEqual(expected[rowIdx].original);
+		expect(actual[rowIdx].cells.length).toStrictEqual(expected[rowIdx].cells.length);
+		actual[rowIdx].cells.forEach((_, colIdx) => {
+			expect(actual[rowIdx].cells[colIdx].value).toStrictEqual(
+				expected[rowIdx].cells[colIdx].value
+			);
+		});
+	});
+});
 
-	const expected: BodyRow<User>[] = [row0, row1];
+it('derives the correct cellForId when parent has hidden cells', () => {
+	const columnedParentRow = getColumnedBodyRows([parentRow], ['firstName'])[0];
+	const actual = getSubRows(data, columnedParentRow);
+
+	const expected = getColumnedBodyRows(getBodyRows(data, columns), ['firstName']);
 
 	[0, 1].forEach((rowIdx) => {
 		expect(actual[rowIdx].original).toStrictEqual(expected[rowIdx].original);

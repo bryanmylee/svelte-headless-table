@@ -42,6 +42,12 @@ export class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends Tabl
 	}
 }
 
+/**
+ * Converts an array of items into an array of table `BodyRow`s based on the column structure.
+ * @param data The data to display.
+ * @param flatColumns The column structure.
+ * @returns An array of `BodyRow`s representing the table structure.
+ */
 export const getBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	data: Item[],
 	/**
@@ -75,6 +81,16 @@ export const getBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	return rows;
 };
 
+/**
+ * Arranges and hides columns in an array of `BodyRow`s based on
+ * `columnIdOrder` by transforming the `cells` property of each row.
+ *
+ * `cellForId` should remain unaffected.
+ *
+ * @param rows The rows to transform.
+ * @param columnIdOrder The column order to transform to.
+ * @returns A new array of `BodyRow`s with corrected row references.
+ */
 export const getColumnedBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	rows: BodyRow<Item, Plugins>[],
 	columnIdOrder: string[]
@@ -109,6 +125,12 @@ export const getColumnedBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugin
 	return columnedRows;
 };
 
+/**
+ * Converts an array of items into an array of table `BodyRow`s based on a parent row.
+ * @param subItems The sub data to display.
+ * @param parentRow The parent row.
+ * @returns An array of `BodyRow`s representing the child rows of `parentRow`.
+ */
 export const getSubRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	subItems: Item[],
 	parentRow: BodyRow<Item, Plugins>
