@@ -4,6 +4,8 @@ import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/Tabl
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 import type { RenderConfig } from '$lib/render';
 import type { PluginInitTableState } from '$lib/createViewModel';
+import { DataBodyCell } from '$lib/bodyCells';
+import { DataHeaderCell } from '$lib/headerCells';
 
 export interface ColumnFiltersState<Item> {
 	filterValues: Writable<Record<string, unknown>>;
@@ -65,7 +67,11 @@ export const useColumnFilters =
 				preFilteredRows.set($rows);
 				const _filteredRows = $rows.filter((row) => {
 					for (const [columnId, columnOption] of Object.entries(columnOptions)) {
-						const { value } = row.cellForId[columnId];
+						const bodyCell = row.cellForId[columnId];
+						if (!(bodyCell instanceof DataBodyCell)) {
+							continue;
+						}
+						const value = bodyCell.value;
 						const filterValue = $filterValues[columnId];
 						if (filterValue === undefined) {
 							continue;
@@ -86,22 +92,34 @@ export const useColumnFilters =
 			pluginState,
 			deriveRows,
 			hooks: {
-				'thead.tr.th': (cell) => {
-					const filterValue = keyed(filterValues, cell.id);
+				'thead.tr.th': (headerCell) => {
+					const filterValue = keyed(filterValues, headerCell.id);
 					const props = derived([], () => {
-						const columnOption = columnOptions[cell.id];
+						const columnOption = columnOptions[headerCell.id];
 						if (columnOption === undefined) {
 							return undefined;
 						}
 						filterValue.set(columnOption.initialFilterValue);
-						const preFilteredValues = derived(preFilteredRows, ($rows) =>
-							$rows.map((row) => row.cellForId[cell.id].value)
-						);
-						const values = derived(filteredRows, ($rows) =>
-							$rows.map((row) => row.cellForId[cell.id].value)
-						);
+						const preFilteredValues = derived(preFilteredRows, ($rows) => {
+							if (headerCell instanceof DataHeaderCell) {
+								return $rows.map((row) => {
+									const cell = row.cellForId[headerCell.id] as DataBodyCell<Item>;
+									return cell.value;
+								});
+							}
+							return [];
+						});
+						const values = derived(filteredRows, ($rows) => {
+							if (headerCell instanceof DataHeaderCell) {
+								return $rows.map((row) => {
+									const cell = row.cellForId[headerCell.id] as DataBodyCell<Item>;
+									return cell.value;
+								});
+							}
+							return [];
+						});
 						const render = columnOption.render({
-							id: cell.id,
+							id: headerCell.id,
 							filterValue,
 							...tableState,
 							values,
