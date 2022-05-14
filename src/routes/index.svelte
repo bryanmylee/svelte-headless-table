@@ -26,185 +26,147 @@
 
 	const table = createTable(data, {
 		sort: useSortBy(),
-		// tableFilter: useTableFilter({
-		// 	includeHiddenColumns: true,
-		// }),
-		// filter: useColumnFilters(),
-		// expand: useExpandedRows({
-		// 	children: 'children',
-		// 	initialExpandedIds: { 1: true },
-		// }),
-		// orderColumns: useColumnOrder(),
-		// hideColumns: useHiddenColumns(),
-		// page: usePagination(),
+		tableFilter: useTableFilter({
+			includeHiddenColumns: true,
+		}),
+		filter: useColumnFilters(),
+		expand: useExpandedRows({
+			children: 'children',
+			initialExpandedIds: { 1: true },
+		}),
+		orderColumns: useColumnOrder(),
+		hideColumns: useHiddenColumns(),
+		page: usePagination(),
 	});
-
-	// const columns = table.createColumns([
-	// 	table.display({
-	// 		header: '👉',
-	// 		id: 'expanded',
-	// 	}),
-	// 	table.column({
-	// 		header: 'Summary',
-	// 		id: 'summary',
-	// 		accessor: (i) => i,
-	// 		cell: (i: any) =>
-	// 			createRender(Profile, {
-	// 				age: i.age,
-	// 				progress: i.progress,
-	// 				name: `${i.firstName} ${i.lastName}`,
-	// 			}),
-	// 		plugins: {
-	// 			sort: {
-	// 				getSortValue: (i) => i.lastName,
-	// 			},
-	// 			tableFilter: {
-	// 				getFilterValue: (i) => i.progress,
-	// 			},
-	// 		},
-	// 	}),
-	// 	table.group({
-	// 		header: ({ rows, pageRows }) =>
-	// 			derived(
-	// 				[rows, pageRows],
-	// 				([_rows, _pageRows]) => `Name (${_rows.length} records, ${_pageRows.length} in page)`
-	// 			),
-	// 		columns: [
-	// 			table.column({
-	// 				header: createRender(Italic, { text: 'First Name' }),
-	// 				accessor: 'firstName',
-	// 				plugins: {
-	// 					sort: {
-	// 						invert: true,
-	// 					},
-	// 					filter: {
-	// 						fn: textPrefixFilter,
-	// 						render: ({ filterValue, values }) =>
-	// 							createRender(TextFilter, { filterValue, values }),
-	// 					},
-	// 				},
-	// 			}),
-	// 			table.column({
-	// 				header: () => 'Last Name',
-	// 				accessor: 'lastName',
-	// 				plugins: {
-	// 					sort: {
-	// 						disable: true,
-	// 					},
-	// 					tableFilter: {
-	// 						exclude: true,
-	// 					},
-	// 				},
-	// 			}),
-	// 		],
-	// 	}),
-	// 	table.group({
-	// 		header: ({ rows }) =>
-	// 			createRender(
-	// 				Italic,
-	// 				derived(rows, (_rows) => ({ text: `Info (${_rows.length} samples)` }))
-	// 			),
-	// 		columns: [
-	// 			table.column({
-	// 				header: 'Age',
-	// 				accessor: 'age',
-	// 			}),
-	// 			table.column({
-	// 				header: createRender(Tick),
-	// 				id: 'status',
-	// 				accessor: (item) => item.status,
-	// 				plugins: {
-	// 					filter: {
-	// 						fn: matchFilter,
-	// 						render: ({ filterValue, preFilteredValues }) =>
-	// 							createRender(SelectFilter, { filterValue, preFilteredValues }),
-	// 					},
-	// 				},
-	// 			}),
-	// 			table.column({
-	// 				header: 'Visits',
-	// 				accessor: 'visits',
-	// 				plugins: {
-	// 					filter: {
-	// 						fn: numberRangeFilter,
-	// 						initialFilterValue: [null, null],
-	// 						render: ({ filterValue, values }) =>
-	// 							createRender(NumberRangeFilter, { filterValue, values }),
-	// 					},
-	// 				},
-	// 			}),
-	// 			table.column({
-	// 				header: 'Profile Progress',
-	// 				accessor: 'progress',
-	// 			}),
-	// 		],
-	// 	}),
-	// ]);
 
 	const columns = table.createColumns([
 		table.display({
-			header: '👉',
+			header: ({ pluginStates }) =>
+				derived(pluginStates.expand.expandedIds, (_expandedIds) =>
+					_expandedIds === {} ? '👉' : '👇'
+				),
 			id: 'expanded',
 		}),
 		table.column({
-			header: ({ pluginStates }) =>
-				derived([pluginStates.sort.sortKeys], ([_sortKeys]) => `${JSON.stringify(_sortKeys)} Name`),
-			accessor: 'firstName',
+			header: 'Summary',
+			id: 'summary',
+			accessor: (i) => i,
+			cell: (i: any) =>
+				createRender(Profile, {
+					age: i.age,
+					progress: i.progress,
+					name: `${i.firstName} ${i.lastName}`,
+				}),
+			plugins: {
+				sort: {
+					getSortValue: (i) => i.lastName,
+				},
+				tableFilter: {
+					getFilterValue: (i) => i.progress,
+				},
+			},
+		}),
+		table.group({
+			header: ({ rows, pageRows }) =>
+				derived(
+					[rows, pageRows],
+					([_rows, _pageRows]) => `Name (${_rows.length} records, ${_pageRows.length} in page)`
+				),
+			columns: [
+				table.column({
+					header: createRender(Italic, { text: 'First Name' }),
+					accessor: 'firstName',
+					plugins: {
+						sort: {
+							invert: true,
+						},
+						filter: {
+							fn: textPrefixFilter,
+							render: ({ filterValue, values }) =>
+								createRender(TextFilter, { filterValue, values }),
+						},
+					},
+				}),
+				table.column({
+					header: () => 'Last Name',
+					accessor: 'lastName',
+					plugins: {
+						sort: {
+							disable: true,
+						},
+						tableFilter: {
+							exclude: true,
+						},
+					},
+				}),
+			],
+		}),
+		table.group({
+			header: ({ rows }) =>
+				createRender(
+					Italic,
+					derived(rows, (_rows) => ({ text: `Info (${_rows.length} samples)` }))
+				),
+			columns: [
+				table.column({
+					header: 'Age',
+					accessor: 'age',
+				}),
+				table.column({
+					header: createRender(Tick),
+					id: 'status',
+					accessor: (item) => item.status,
+					plugins: {
+						filter: {
+							fn: matchFilter,
+							render: ({ filterValue, preFilteredValues }) =>
+								createRender(SelectFilter, { filterValue, preFilteredValues }),
+						},
+					},
+				}),
+				table.column({
+					header: 'Visits',
+					accessor: 'visits',
+					plugins: {
+						filter: {
+							fn: numberRangeFilter,
+							initialFilterValue: [null, null],
+							render: ({ filterValue, values }) =>
+								createRender(NumberRangeFilter, { filterValue, values }),
+						},
+					},
+				}),
+				table.column({
+					header: 'Profile Progress',
+					accessor: 'progress',
+				}),
+			],
 		}),
 	]);
 
 	const { visibleColumns, headerRows, pageRows, pluginStates } = table.createViewModel(columns);
 
-	// const { sortKeys } = pluginStates.sort;
-	// const { filterValues } = pluginStates.filter;
-	// const { filterValue } = pluginStates.tableFilter;
-	// const { pageIndex, pageCount, pageSize, hasPreviousPage, hasNextPage } = pluginStates.page;
-	// const { columnIdOrder } = pluginStates.orderColumns;
-	// const { hiddenColumnIds } = pluginStates.hideColumns;
-	// $hiddenColumnIds = ['progress'];
+	const { sortKeys } = pluginStates.sort;
+	const { filterValues } = pluginStates.filter;
+	const { filterValue } = pluginStates.tableFilter;
+	const { pageIndex, pageCount, pageSize, hasPreviousPage, hasNextPage } = pluginStates.page;
+	const { columnIdOrder } = pluginStates.orderColumns;
+	const { hiddenColumnIds } = pluginStates.hideColumns;
+	$hiddenColumnIds = ['progress'];
 </script>
 
 <h1>svelte-headless-table</h1>
 
-<table>
-	<thead>
-		{#each $headerRows as headerRow (headerRow.id)}
-			<tr>
-				{#each headerRow.cells as cell (cell.id)}
-					<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-						<th {...attrs} on:click={props.sort.toggle}>
-							<Render of={cell.render()} />
-						</th>
-					</Subscribe>
-				{/each}
-			</tr>
-		{/each}
-	</thead>
-	<tbody>
-		{#each $pageRows as row (row.id)}
-			<tr>
-				{#each row.cells as cell (cell.id)}
-					<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-						<td {...attrs}>
-							<Render of={cell.render()} />
-						</td>
-					</Subscribe>
-				{/each}
-			</tr>
-		{/each}
-	</tbody>
-</table>
-
-<!-- <button on:click={() => ($columnIdOrder = getShuffled($columnIdOrder))}>Shuffle columns</button>
+<button on:click={() => ($columnIdOrder = getShuffled($columnIdOrder))}>Shuffle columns</button>
 <div>
 	<button on:click={() => $pageIndex--} disabled={!$hasPreviousPage}>Previous page</button>
 	{$pageIndex + 1} of {$pageCount}
 	<button on:click={() => $pageIndex++} disabled={!$hasNextPage}>Next page</button>
 	<label for="page-size">Page size</label>
 	<input id="page-size" type="number" min={1} bind:value={$pageSize} />
-</div> -->
+</div>
 
-<!-- <table>
+<table>
 	<thead>
 		{#each $headerRows as headerRow (headerRow.id)}
 			<tr>
@@ -254,9 +216,9 @@
 			</tr>
 		{/each}
 	</tbody>
-</table> -->
+</table>
 
-<!-- <pre>{JSON.stringify(
+<pre>{JSON.stringify(
 		{
 			sortKeys: $sortKeys,
 			filterValues: $filterValues,
@@ -265,7 +227,8 @@
 		},
 		null,
 		2
-	)}</pre> -->
+	)}</pre>
+
 <style>
 	* {
 		font-family: sans-serif;
