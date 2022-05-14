@@ -44,19 +44,19 @@ export class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends Tabl
 
 export const getBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	data: Item[],
+	/**
+	 * Represents data columns before column transformations.
+	 */
 	flatColumns: DataColumn<Item, Plugins>[]
 ): BodyRow<Item, Plugins>[] => {
-	const rows: BodyRow<Item, Plugins>[] = [];
-	for (let rowIdx = 0; rowIdx < data.length; rowIdx++) {
-		rows.push(
-			new BodyRow({
-				id: rowIdx.toString(),
-				original: data[rowIdx],
-				cells: [],
-				cellForId: {},
-			})
-		);
-	}
+	const rows: BodyRow<Item, Plugins>[] = data.map((item, idx) => {
+		return new BodyRow({
+			id: idx.toString(),
+			original: item,
+			cells: [],
+			cellForId: {},
+		});
+	});
 	data.forEach((item, rowIdx) => {
 		const cells = flatColumns.map((c) => {
 			const value =
@@ -107,4 +107,44 @@ export const getColumnedBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugin
 		});
 	});
 	return columnedRows;
+};
+
+export const getSubRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
+	subItems: Item[],
+	parentRow: BodyRow<Item, Plugins>
+): BodyRow<Item, Plugins>[] => {
+	const subRows = subItems.map((item, idx) => {
+		const id = `${parentRow.id}.${idx}`;
+		return new BodyRow<Item, Plugins>({
+			id,
+			original: item,
+			cells: [],
+			cellForId: {},
+		});
+	});
+	subItems.forEach((item, rowIdx) => {
+		// parentRow.cells only include visible cells.
+		// We have to derive all cells from parentRow.cellForId
+		const cellForId = Object.fromEntries(
+			Object.values(parentRow.cellForId).map((cell) => {
+				const { column } = cell;
+				const value =
+					column.accessorFn !== undefined
+						? column.accessorFn(item)
+						: column.accessorKey !== undefined
+						? item[column.accessorKey]
+						: undefined;
+				return [
+					column.id,
+					new BodyCell({ row: subRows[rowIdx], column, label: column.cell, value }),
+				];
+			})
+		);
+		subRows[rowIdx].cellForId = cellForId;
+		const cells = parentRow.cells.map((cell) => {
+			return cellForId[cell.id];
+		});
+		subRows[rowIdx].cells = cells;
+	});
+	return subRows;
 };

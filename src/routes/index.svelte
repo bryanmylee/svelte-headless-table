@@ -8,6 +8,7 @@
 		useSortBy,
 		useTableFilter,
 		usePagination,
+		useExpandedRows,
 		matchFilter,
 		numberRangeFilter,
 		textPrefixFilter,
@@ -21,7 +22,7 @@
 	import NumberRangeFilter from './_NumberRangeFilter.svelte';
 	import SelectFilter from './_SelectFilter.svelte';
 
-	const data = readable(createSamples(100));
+	const data = readable(createSamples(10, 10));
 
 	const table = createTable(data, {
 		sort: useSortBy(),
@@ -29,6 +30,10 @@
 			includeHiddenColumns: true,
 		}),
 		filter: useColumnFilters(),
+		expand: useExpandedRows({
+			children: 'children',
+			initialExpandedIds: { 1: true },
+		}),
 		orderColumns: useColumnOrder({
 			initialColumnIdOrder: ['firstName', 'lastName'],
 		}),
@@ -191,7 +196,7 @@
 	</thead>
 	<tbody>
 		{#each $pageRows as row (row.id)}
-			<tr>
+			<tr id={row.id}>
 				{#each row.cells as cell (cell.id)}
 					<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
 						<td
