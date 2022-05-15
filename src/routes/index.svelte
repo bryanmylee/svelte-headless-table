@@ -26,10 +26,10 @@
 
 	const table = createTable(data, {
 		sort: useSortBy(),
+		filter: useColumnFilters(),
 		tableFilter: useTableFilter({
 			includeHiddenColumns: true,
 		}),
-		filter: useColumnFilters(),
 		expand: useExpandedRows({
 			children: 'children',
 			initialExpandedIds: { 1: true },
@@ -84,6 +84,9 @@
 						sort: {
 							invert: true,
 						},
+						tableFilter: {
+							exclude: true,
+						},
 						filter: {
 							fn: textPrefixFilter,
 							render: ({ filterValue, values }) =>
@@ -97,9 +100,6 @@
 					plugins: {
 						sort: {
 							disable: true,
-						},
-						tableFilter: {
-							exclude: true,
 						},
 					},
 				}),
