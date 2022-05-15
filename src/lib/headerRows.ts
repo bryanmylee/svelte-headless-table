@@ -64,9 +64,9 @@ export const getHeaderRowMatrix = <Item, Plugins extends AnyPlugins = AnyPlugins
 	);
 };
 
-const loadHeaderRowMatrix = <Item>(
-	rowMatrix: Matrix<HeaderCell<Item> | undefined | null>,
-	column: Column<Item>,
+const loadHeaderRowMatrix = <Item, Plugins extends AnyPlugins = AnyPlugins>(
+	rowMatrix: Matrix<HeaderCell<Item, Plugins> | undefined | null>,
+	column: Column<Item, Plugins>,
 	rowOffset: number,
 	cellOffset: number
 ) => {

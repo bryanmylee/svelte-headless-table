@@ -105,7 +105,7 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 
 	let visibleColumns = flatColumns;
 	deriveFlatColumnsFns.forEach((fn) => {
-		visibleColumns = fn(visibleColumns);
+		visibleColumns = fn(visibleColumns) as Readable<FlatColumn<Item, Plugins>[]>;
 	});
 
 	const injectedColumns = derived(visibleColumns, ($visibleColumns) => {
