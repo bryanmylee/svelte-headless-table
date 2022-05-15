@@ -18,11 +18,10 @@ export type HeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 export type HeaderCellAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	colspan: number;
 };
-export class HeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends TableComponent<
+export abstract class HeaderCell<
 	Item,
-	Plugins,
-	'thead.tr.th'
-> {
+	Plugins extends AnyPlugins = AnyPlugins
+> extends TableComponent<Item, Plugins, 'thead.tr.th'> {
 	isFlat: boolean;
 	isData: boolean;
 	label: HeaderLabel<Item>;

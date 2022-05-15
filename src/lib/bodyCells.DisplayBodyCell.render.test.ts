@@ -36,7 +36,7 @@ const column = new DisplayColumn({
 
 const state = {} as TableState<User>;
 
-it('renders label with state', () => {
+it('renders dynamic label with state', () => {
 	const actual = new DisplayBodyCell<User>({
 		column,
 		row,
@@ -48,7 +48,7 @@ it('renders label with state', () => {
 	expect(actual.render()).toBe('row 0 checked');
 });
 
-it('throws if rendering without state', () => {
+it('throws if rendering dynamically without state', () => {
 	const actual = new DisplayBodyCell<User>({
 		column,
 		row,
