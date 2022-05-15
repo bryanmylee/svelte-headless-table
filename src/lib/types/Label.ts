@@ -4,7 +4,8 @@ import type { AnyPlugins } from './TablePlugin';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type DataLabel<Item, Value, Plugins extends AnyPlugins = AnyPlugins> = (
-	value: Value
+	value: Value,
+	state: TableState<Item, Plugins>
 ) => RenderConfig;
 
 export type DisplayLabel<Item, Plugins extends AnyPlugins = AnyPlugins> = (

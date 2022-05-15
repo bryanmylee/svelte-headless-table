@@ -66,7 +66,10 @@ export class DataBodyCell<
 		if (this.label === undefined) {
 			return `${this.value}`;
 		}
-		return this.label(this.value);
+		if (this.state === undefined) {
+			throw new Error('Missing `state` reference');
+		}
+		return this.label(this.value, this.state);
 	}
 
 	attrs(): Readable<DataBodyCellAttributes<Item, Plugins>> {
