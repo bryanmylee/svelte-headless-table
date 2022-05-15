@@ -22,7 +22,7 @@
 	import NumberRangeFilter from './_NumberRangeFilter.svelte';
 	import SelectFilter from './_SelectFilter.svelte';
 
-	const data = readable(createSamples(10, 10));
+	const data = readable(createSamples(10, 5));
 
 	const table = createTable(data, {
 		sort: useSortBy(),
@@ -46,20 +46,20 @@
 				derived(pluginStates.expand.expandedIds, (_expandedIds) =>
 					_expandedIds === {} ? '👉' : '👇'
 				),
-			cell: (rowId, { pluginStates }) =>
+			cell: ({ row }, { pluginStates }) =>
 				derived(pluginStates.expand.expandedIds, (_expandedIds) =>
-					_expandedIds[rowId] === true ? '👇' : '👉'
+					_expandedIds[row.id] === true ? '👇' : '👉'
 				),
 		}),
 		table.column({
 			header: 'Summary',
 			id: 'summary',
-			accessor: (i) => i,
-			cell: (i: any) =>
+			accessor: (item) => item,
+			cell: ({ value }) =>
 				createRender(Profile, {
-					age: i.age,
-					progress: i.progress,
-					name: `${i.firstName} ${i.lastName}`,
+					age: value.age,
+					progress: value.progress,
+					name: `${value.firstName} ${value.lastName}`,
 				}),
 			plugins: {
 				sort: {

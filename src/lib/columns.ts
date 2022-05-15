@@ -61,7 +61,7 @@ export type DataColumnInitBase<
 	Plugins extends AnyPlugins = AnyPlugins,
 	Value = unknown
 > = Omit<ColumnInit<Item, Plugins>, 'height'> & {
-	cell?: DataLabel<Item, Value>;
+	cell?: DataLabel<Item, Plugins, Value>;
 };
 
 export type DataColumnInitKey<Item, Id extends keyof Item> = {
@@ -87,7 +87,7 @@ export class DataColumn<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	Value = any
 > extends FlatColumn<Item, Plugins, Id> {
-	cell?: DataLabel<Item, Value>;
+	cell?: DataLabel<Item, Plugins, Value>;
 	accessorKey?: keyof Item;
 	accessorFn?: (item: Item) => Value;
 	constructor({

@@ -38,7 +38,7 @@ export type DataBodyCellInit<Item, Plugins extends AnyPlugins = AnyPlugins, Valu
 	'id'
 > & {
 	column: DataColumn<Item, Plugins>;
-	label?: DataLabel<Item, Value>;
+	label?: DataLabel<Item, Plugins, Value>;
 	value: Value;
 };
 
@@ -53,7 +53,7 @@ export class DataBodyCell<
 	Value = unknown
 > extends BodyCell<Item, Plugins> {
 	column: DataColumn<Item, Plugins>;
-	label?: DataLabel<Item, Value>;
+	label?: DataLabel<Item, Plugins, Value>;
 	value: Value;
 	constructor({ row, column, label, value }: DataBodyCellInit<Item, Plugins, Value>) {
 		super({ id: column.id, row });
@@ -69,7 +69,7 @@ export class DataBodyCell<
 		if (this.state === undefined) {
 			throw new Error('Missing `state` reference');
 		}
-		return this.label(this.value, this.state);
+		return this.label({ id: this.id, row: this.row, value: this.value }, this.state);
 	}
 
 	attrs(): Readable<DataBodyCellAttributes<Item, Plugins>> {
@@ -103,7 +103,7 @@ export class DisplayBodyCell<Item, Plugins extends AnyPlugins = AnyPlugins> exte
 		if (this.state === undefined) {
 			throw new Error('Missing `state` reference');
 		}
-		return this.label(this.row.id, this.state);
+		return this.label({ id: this.id, row: this.row }, this.state);
 	}
 
 	attrs() {
