@@ -37,6 +37,7 @@
 	},
 	"homepage": "https://svelte-headless-table.bryanmylee.com",
 	"devDependencies": {
+		"@babel/preset-env": "^7.17.10",
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/kit": "next",
 		"@testing-library/jest-dom": "^5.16.4",
