@@ -13,7 +13,7 @@ export interface TableComponentInit {
 	id: string;
 }
 
-export class TableComponent<Item, Plugins extends AnyPlugins, Key extends ComponentKeys> {
+export abstract class TableComponent<Item, Plugins extends AnyPlugins, Key extends ComponentKeys> {
 	id: string;
 	constructor({ id }: TableComponentInit) {
 		this.id = id;
