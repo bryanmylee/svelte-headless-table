@@ -12,6 +12,7 @@
 		matchFilter,
 		numberRangeFilter,
 		textPrefixFilter,
+		useSubRows,
 	} from '$lib/plugins';
 	import { getShuffled } from './_getShuffled';
 	import { createSamples } from './_createSamples';
@@ -23,16 +24,18 @@
 	import SelectFilter from './_SelectFilter.svelte';
 	import ExpandIndicator from './_ExpandIndicator.svelte';
 
-	const data = readable(createSamples(10, 5, 5));
+	const data = readable(createSamples(10, 5));
 
 	const table = createTable(data, {
+		subRows: useSubRows({
+			children: 'children',
+		}),
 		sort: useSortBy(),
 		filter: useColumnFilters(),
 		tableFilter: useTableFilter({
 			includeHiddenColumns: true,
 		}),
 		expand: useExpandedRows({
-			children: 'children',
 			initialExpandedIds: { 1: true },
 		}),
 		orderColumns: useColumnOrder(),

@@ -118,6 +118,7 @@ export const useSortBy =
 		const deriveRows: DeriveRowsFn<Item> = (rows) => {
 			return derived([rows, sortKeys], ([$rows, $sortKeys]) => {
 				preSortedRows.set($rows);
+				console.log($rows);
 				const _sortedRows = [...$rows] as typeof $rows;
 				_sortedRows.sort((a, b) => {
 					for (const key of $sortKeys) {

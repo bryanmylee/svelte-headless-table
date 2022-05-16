@@ -1,16 +1,10 @@
-import { BodyRow, getSubRows } from '$lib/bodyRows';
+import type { BodyRow } from '$lib/bodyRows';
 import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
 import { keyed } from 'svelte-keyed';
 import { derived, readable, writable, type Readable, type Writable } from 'svelte/store';
 
-export type ValidChildrenKey<Item> = {
-	[Key in keyof Item]: Item[Key] extends Item[] ? Key : never;
-}[keyof Item];
-
-export type ValidChildrenFn<Item> = (item: Item) => Item[] | undefined;
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface ExpandedRowsConfig<Item> {
-	children: ValidChildrenKey<Item> | ValidChildrenFn<Item>;
 	initialExpandedIds?: Record<string, boolean>;
 }
 
@@ -25,29 +19,24 @@ export interface ExpandedRowsRowState {
 	isAllSubRowsExpanded: Readable<boolean>;
 }
 
-const _getExpandedRows = <Item, Row extends BodyRow<Item>>(
+const withExpandedRows = <Item, Row extends BodyRow<Item>>(
 	row: Row,
-	getChildren: ValidChildrenFn<Item>,
 	expandedIds: Record<string, boolean>
 ): Row[] => {
-	const subItems = getChildren(row.original);
-	if (subItems === undefined) {
+	if (row.subRows === undefined) {
 		return [row];
 	}
-	const subRows = getSubRows(subItems, row) as typeof row[];
-	row.subRows = subRows;
-	const expandedSubRows = subRows.flatMap((subRow) =>
-		_getExpandedRows(subRow, getChildren, expandedIds)
-	);
 	if (expandedIds[row.id] !== true) {
 		return [row];
 	}
+	const expandedSubRows = row.subRows.flatMap((subRow) =>
+		withExpandedRows<Item, Row>(subRow as Row, expandedIds)
+	);
 	return [row, ...expandedSubRows];
 };
 
 export const useExpandedRows =
 	<Item>({
-		children: subRows,
 		initialExpandedIds = {},
 	}: ExpandedRowsConfig<Item>): TablePlugin<
 		Item,
@@ -84,13 +73,10 @@ export const useExpandedRows =
 		};
 		const pluginState = { expandedIds, getRowState };
 
-		const getChildren: ValidChildrenFn<Item> =
-			subRows instanceof Function ? subRows : (item) => item[subRows] as unknown as Item[];
-
 		const deriveRows: DeriveRowsFn<Item> = (rows) => {
 			return derived([rows, expandedIds], ([$rows, $expandedIds]) => {
 				return $rows.flatMap((row) => {
-					return _getExpandedRows(row, getChildren, $expandedIds);
+					return withExpandedRows<Item, typeof row>(row, $expandedIds);
 				});
 			});
 		};
