@@ -15,7 +15,7 @@ export const createSamples = (...lengths: number[]) => {
 		const length = lengths[depth];
 		return [...Array(length)].map(() => {
 			return {
-				...getSample(depth),
+				...getSample(),
 				...(lengths[depth + 1] !== undefined ? { children: createSamplesLevel(depth + 1) } : {}),
 			};
 		});
@@ -23,10 +23,10 @@ export const createSamples = (...lengths: number[]) => {
 	return createSamplesLevel();
 };
 
-const getSample = (depth = 0): Sample => {
+const getSample = (): Sample => {
 	const statusChance = Math.random();
 	return {
-		firstName: `${depth}, ${name.firstName()}`,
+		firstName: name.firstName(),
 		lastName: name.lastName(),
 		age: Math.floor(Math.random() * 30),
 		visits: Math.floor(Math.random() * 100),
