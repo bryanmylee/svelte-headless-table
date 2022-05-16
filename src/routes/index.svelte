@@ -47,9 +47,10 @@
 			id: 'expanded',
 			header: '',
 			cell: ({ row }, { pluginStates }) => {
-				const rowState = pluginStates.expand.getRowState(row);
+				const { isExpanded, canExpand } = pluginStates.expand.getRowState(row);
 				return createRender(ExpandIndicator, {
-					isExpanded: rowState.isExpanded,
+					isExpanded,
+					canExpand,
 				});
 			},
 		}),

@@ -1,7 +1,7 @@
 import { BodyRow, getSubRows } from '$lib/bodyRows';
 import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
 import { keyed } from 'svelte-keyed';
-import { derived, writable, type Writable } from 'svelte/store';
+import { derived, readable, writable, type Readable, type Writable } from 'svelte/store';
 
 export type ValidChildrenKey<Item> = {
 	[Key in keyof Item]: Item[Key] extends Item[] ? Key : never;
@@ -21,6 +21,7 @@ export interface ExpandedRowsState<Item> {
 
 export interface ExpandedRowsRowState {
 	isExpanded: Writable<boolean>;
+	canExpand: Readable<boolean>;
 }
 
 export const useExpandedRows =
@@ -37,8 +38,10 @@ export const useExpandedRows =
 		const expandedIds = writable(initialExpandedIds);
 		const getRowState = (row: BodyRow<Item>): ExpandedRowsRowState => {
 			const isExpanded = keyed(expandedIds, row.id) as Writable<boolean>;
+			const canExpand = readable((row.subRows?.length ?? 0) > 0);
 			return {
 				isExpanded,
+				canExpand,
 			};
 		};
 		const pluginState = { expandedIds, getRowState };
@@ -49,14 +52,16 @@ export const useExpandedRows =
 		const deriveRows: DeriveRowsFn<Item> = (rows) => {
 			return derived([rows, expandedIds], ([$rows, $expandedIds]) => {
 				return $rows.flatMap((row) => {
-					if ($expandedIds[row.id] !== true) {
-						return [row];
-					}
 					const subItems = getChildren(row.original);
 					if (subItems === undefined) {
 						return [row];
 					}
-					return [row, ...(getSubRows(subItems, row) as typeof row[])];
+					const subRows = getSubRows(subItems, row) as typeof row[];
+					row.subRows = subRows;
+					if ($expandedIds[row.id] !== true) {
+						return [row];
+					}
+					return [row, ...subRows];
 				});
 			});
 		};

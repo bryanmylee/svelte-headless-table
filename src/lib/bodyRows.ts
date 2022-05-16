@@ -31,6 +31,7 @@ export class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends Tabl
 	 */
 	cellForId: Record<string, BodyCell<Item, Plugins>>;
 	depth: number;
+	subRows?: BodyRow<Item, Plugins>[];
 	constructor({ id, original, cells, cellForId, depth = 0 }: BodyRowInit<Item, Plugins>) {
 		super({ id });
 		this.original = original;
