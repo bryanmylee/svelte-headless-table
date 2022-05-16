@@ -10,7 +10,7 @@ export interface ColumnOrderState {
 	columnIdOrder: Writable<string[]>;
 }
 
-export const useColumnOrder =
+export const addColumnOrder =
 	<Item>({
 		initialColumnIdOrder = [],
 		hideUnspecifiedColumns = false,

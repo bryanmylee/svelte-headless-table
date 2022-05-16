@@ -17,7 +17,7 @@ export interface PaginationState {
 
 const MIN_PAGE_SIZE = 1;
 
-export const usePageStore = ({ items, initialPageSize, initialPageIndex }: PageStoreConfig) => {
+export const createPageStore = ({ items, initialPageSize, initialPageIndex }: PageStoreConfig) => {
 	const pageSize = writable(initialPageSize);
 	const updatePageSize = (fn: Updater<number>) => {
 		pageSize.update(($pageSize) => {
@@ -66,7 +66,7 @@ export interface PageStoreConfig {
 	initialPageIndex?: number;
 }
 
-export const usePagination =
+export const addPagination =
 	<Item>({ initialPageIndex = 0, initialPageSize = 10 }: PaginationConfig = {}): TablePlugin<
 		Item,
 		PaginationState,
@@ -76,7 +76,7 @@ export const usePagination =
 	() => {
 		const prePaginatedRows = writable<BodyRow<Item>[]>([]);
 		const paginatedRows = writable<BodyRow<Item>[]>([]);
-		const { pageSize, pageCount, pageIndex, hasPreviousPage, hasNextPage } = usePageStore({
+		const { pageSize, pageCount, pageIndex, hasPreviousPage, hasNextPage } = createPageStore({
 			items: prePaginatedRows,
 			initialPageIndex,
 			initialPageSize,

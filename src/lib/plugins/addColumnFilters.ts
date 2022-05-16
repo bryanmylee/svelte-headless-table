@@ -90,7 +90,7 @@ const getFilteredRows = <Item, Row extends BodyRow<Item>>(
 	return _filteredRows;
 };
 
-export const useColumnFilters =
+export const addColumnFilters =
 	<Item>(): TablePlugin<
 		Item,
 		ColumnFiltersState<Item>,

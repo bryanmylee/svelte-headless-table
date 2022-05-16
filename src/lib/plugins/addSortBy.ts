@@ -157,7 +157,7 @@ const getSortedRows = <Item, Row extends BodyRow<Item>>(
 	return _sortedRows;
 };
 
-export const useSortBy =
+export const addSortBy =
 	<Item>({
 		initialSortKeys = [],
 		disableMultiSort = false,

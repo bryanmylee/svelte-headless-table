@@ -100,7 +100,7 @@ const getFilteredRows = <Item, Row extends BodyRow<Item>>(
 	return _filteredRows;
 };
 
-export const useTableFilter =
+export const addTableFilter =
 	<Item>({
 		fn = textPrefixFilter,
 		initialFilterValue = '',

@@ -25,7 +25,7 @@ const withSubRows = <Item, Row extends BodyRow<Item>>(
 	return row;
 };
 
-export const useSubRows =
+export const addSubRows =
 	<Item>({
 		children,
 	}: SubRowsConfig<Item>): TablePlugin<
