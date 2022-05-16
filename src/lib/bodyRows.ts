@@ -150,7 +150,7 @@ export const getSubRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	parentRow: BodyRow<Item, Plugins>
 ): BodyRow<Item, Plugins>[] => {
 	const subRows = subItems.map((item, idx) => {
-		const id = `${parentRow.id}.${idx}`;
+		const id = `${parentRow.id}>${idx}`;
 		return new BodyRow<Item, Plugins>({
 			id,
 			original: item,

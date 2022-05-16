@@ -23,7 +23,7 @@
 	import SelectFilter from './_SelectFilter.svelte';
 	import ExpandIndicator from './_ExpandIndicator.svelte';
 
-	const data = readable(createSamples(10, 5));
+	const data = readable(createSamples(10, 5, 5));
 
 	const table = createTable(data, {
 		sort: useSortBy(),
