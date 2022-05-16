@@ -5,7 +5,6 @@
 ![license](https://img.shields.io/npm/l/svelte-headless-table)
 ![build](https://img.shields.io/github/workflow/status/bryanmylee/svelte-headless-table/publish)
 [![coverage](https://coveralls.io/repos/github/bryanmylee/svelte-headless-table/badge.svg?branch=main)](https://coveralls.io/github/bryanmylee/svelte-headless-table?branch=main)
-[![size](https://img.shields.io/bundlephobia/min/svelte-headless-table)](https://bundlephobia.com/result?p=svelte-headless-table)
 
 **Unopinionated and extensible data tables for Svelte**
 
