@@ -40,7 +40,7 @@ export interface SortKey {
 	order: 'asc' | 'desc';
 }
 
-export const useSortKeys = (initKeys: SortKey[]): WritableSortKeys => {
+export const createSortKeysStore = (initKeys: SortKey[]): WritableSortKeys => {
 	const { subscribe, update, set } = writable(initKeys);
 	const toggleId = (id: string, { multiSort = true }: ToggleOptions = {}) => {
 		update(($sortKeys) => {
@@ -168,7 +168,7 @@ export const useSortBy =
 			.filter(([, option]) => option.disable === true)
 			.map(([columnId]) => columnId);
 
-		const sortKeys = useSortKeys(initialSortKeys);
+		const sortKeys = createSortKeysStore(initialSortKeys);
 		const preSortedRows = writable<BodyRow<Item>[]>([]);
 		const sortedRows = writable<BodyRow<Item>[]>([]);
 
