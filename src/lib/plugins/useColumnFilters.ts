@@ -49,7 +49,7 @@ export type ColumnFiltersPropSet = NewTablePropSet<{
 		| undefined;
 }>;
 
-export const getFilteredRows = <Item, Row extends BodyRow<Item>>(
+const getFilteredRows = <Item, Row extends BodyRow<Item>>(
 	rows: Row[],
 	filterValues: Record<string, unknown>,
 	columnOptions: Record<string, ColumnFiltersColumnOptions<Item>>
