@@ -1,3 +1,4 @@
+import { DataBodyCell } from '$lib/bodyCells';
 import type { BodyRow } from '$lib/bodyRows';
 import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
@@ -68,6 +69,9 @@ export const useTableFilter =
 						if (isHidden && !includeHiddenColumns) {
 							return false;
 						}
+						if (!(cell instanceof DataBodyCell)) {
+							return false;
+						}
 						let value = cell.value;
 						if (options?.getFilterValue !== undefined) {
 							value = options?.getFilterValue(value);
@@ -75,8 +79,7 @@ export const useTableFilter =
 						const matches = fn({ value: String(value), filterValue: $filterValue });
 						tableCellMatches.update(($tableCellMatches) => ({
 							...$tableCellMatches,
-							// TODO standardize table-unique cell id.
-							[`${cell.row.id}-${cell.column.id}`]: matches,
+							[cell.rowColId()]: matches,
 						}));
 						return matches;
 					});
@@ -97,10 +100,7 @@ export const useTableFilter =
 						[filterValue, tableCellMatches],
 						([$filterValue, $tableCellMatches]) => {
 							return {
-								matches:
-									$filterValue !== '' &&
-									// TODO standardize table-unique cell id.
-									($tableCellMatches[`${cell.row.id}-${cell.column.id}`] ?? false),
+								matches: $filterValue !== '' && ($tableCellMatches[cell.rowColId()] ?? false),
 							};
 						}
 					);

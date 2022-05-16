@@ -31,6 +31,10 @@ export abstract class BodyCell<
 	abstract render(): RenderConfig;
 
 	abstract attrs(): Readable<BodyCellAttributes<Item, Plugins>>;
+
+	rowColId(): string {
+		return `${this.row.id}-${this.column.id}`;
+	}
 }
 
 export type DataBodyCellInit<Item, Plugins extends AnyPlugins = AnyPlugins, Value = unknown> = Omit<
