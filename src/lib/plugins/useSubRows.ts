@@ -40,11 +40,9 @@ export const useSubRows =
 
 		const deriveRows: DeriveRowsFn<Item> = (rows) => {
 			return derived(rows, ($rows) => {
-				const r = $rows.map((row) => {
+				return $rows.map((row) => {
 					return withSubRows(row, getChildren);
 				});
-				console.log(r);
-				return r;
 			});
 		};
 
