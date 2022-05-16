@@ -72,10 +72,20 @@ export const getBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 			if (col instanceof DataColumn) {
 				const dataCol = col as DataColumn<Item, Plugins>;
 				const value = dataCol.getValue(item);
-				return new DataBodyCell({ row: rows[rowIdx], column: col, label: col.cell, value });
+				return new DataBodyCell<Item, Plugins>({
+					row: rows[rowIdx],
+					column: dataCol,
+					label: col.cell,
+					value,
+				});
 			}
 			if (col instanceof DisplayColumn) {
-				return new DisplayBodyCell({ row: rows[rowIdx], column: col, label: col.cell });
+				const displayCol = col as DisplayColumn<Item, Plugins>;
+				return new DisplayBodyCell<Item, Plugins>({
+					row: rows[rowIdx],
+					column: displayCol,
+					label: col.cell,
+				});
 			}
 			throw new Error('Unrecognized `FlatColumn` implementation');
 		});
