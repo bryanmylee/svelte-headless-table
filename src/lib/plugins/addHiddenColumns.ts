@@ -9,7 +9,7 @@ export interface HiddenColumnsState {
 	hiddenColumnIds: Writable<string[]>;
 }
 
-export const useHiddenColumns =
+export const addHiddenColumns =
 	<Item>({ initialHiddenColumnIds = [] }: HiddenColumnsConfig = {}): TablePlugin<
 		Item,
 		HiddenColumnsState,

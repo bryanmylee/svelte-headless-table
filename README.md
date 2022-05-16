@@ -33,15 +33,16 @@ Svelte Headless Table is designed with extensibility in mind. Its complex featur
 
 ### Plugin roadmap
 
-- [x] [useSortBy](https://svelte-headless-table.bryanmylee.com/docs/plugins/use-sort-by)
-- [x] [useColumnFilters](https://svelte-headless-table.bryanmylee.com/docs/plugins/use-column-filters)
-- [x] [useTableFilter](https://svelte-headless-table.bryanmylee.com/docs/plugins/use-table-filter)
-- [x] [useColumnOrder](https://svelte-headless-table.bryanmylee.com/docs/plugins/use-column-order)
-- [x] [useHiddenColumns](https://svelte-headless-table.bryanmylee.com/docs/plugins/use-hidden-columns)
-- [x] [usePagination](https://svelte-headless-table.bryanmylee.com/docs/plugins/use-pagination)
-- [ ] useGroupBy
-- [ ] useExpanded
-- [ ] useRowSelect
-- [ ] useResizeColumns
-- [ ] useEditable
-- [ ] useRowLabel
+- [x] [addSortBy](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-sort-by)
+- [x] [addColumnFilters](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-column-filters)
+- [x] [addTableFilter](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-table-filter)
+- [x] [addColumnOrder](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-column-order)
+- [x] [addHiddenColumns](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-hidden-columns)
+- [x] [addPagination](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-pagination)
+- [x] [addSubRows](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-sub-rows)
+- [x] [addExpandedRows](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-expanded-rows)
+- [ ] addGroupBy
+- [ ] addRowSelect
+- [ ] addResizeColumns
+- [ ] addEditable
+- [ ] addRowLabel

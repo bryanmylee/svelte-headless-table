@@ -2,17 +2,17 @@
 	import { derived, readable } from 'svelte/store';
 	import { Render, Subscribe, createTable, createRender } from '$lib';
 	import {
-		useColumnFilters,
-		useColumnOrder,
-		useHiddenColumns,
-		useSortBy,
-		useTableFilter,
-		usePagination,
-		useExpandedRows,
+		addColumnFilters,
+		addColumnOrder,
+		addHiddenColumns,
+		addSortBy,
+		addTableFilter,
+		addPagination,
+		addExpandedRows,
 		matchFilter,
 		numberRangeFilter,
 		textPrefixFilter,
-		useSubRows,
+		addSubRows,
 	} from '$lib/plugins';
 	import { getShuffled } from './_getShuffled';
 	import { createSamples } from './_createSamples';
@@ -27,20 +27,20 @@
 	const data = readable(createSamples(10, 5, 5));
 
 	const table = createTable(data, {
-		subRows: useSubRows({
+		subRows: addSubRows({
 			children: 'children',
 		}),
-		sort: useSortBy(),
-		filter: useColumnFilters(),
-		tableFilter: useTableFilter({
+		sort: addSortBy(),
+		filter: addColumnFilters(),
+		tableFilter: addTableFilter({
 			includeHiddenColumns: true,
 		}),
-		expand: useExpandedRows({
+		expand: addExpandedRows({
 			initialExpandedIds: { 1: true },
 		}),
-		orderColumns: useColumnOrder(),
-		hideColumns: useHiddenColumns(),
-		page: usePagination({
+		orderColumns: addColumnOrder(),
+		hideColumns: addHiddenColumns(),
+		page: addPagination({
 			initialPageSize: 20,
 		}),
 	});

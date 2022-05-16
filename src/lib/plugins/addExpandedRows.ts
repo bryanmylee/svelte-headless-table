@@ -35,7 +35,7 @@ const withExpandedRows = <Item, Row extends BodyRow<Item>>(
 	return [row, ...expandedSubRows];
 };
 
-export const useExpandedRows =
+export const addExpandedRows =
 	<Item>({
 		initialExpandedIds = {},
 	}: ExpandedRowsConfig<Item>): TablePlugin<
