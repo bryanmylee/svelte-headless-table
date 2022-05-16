@@ -1,7 +1,7 @@
 import { BodyRow, getSubRows } from '$lib/bodyRows';
 import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
 import { keyed } from 'svelte-keyed';
-import { derived, get, readable, writable, type Readable, type Writable } from 'svelte/store';
+import { derived, readable, writable, type Readable, type Writable } from 'svelte/store';
 
 export type ValidChildrenKey<Item> = {
 	[Key in keyof Item]: Item[Key] extends Item[] ? Key : never;
@@ -22,6 +22,7 @@ export interface ExpandedRowsState<Item> {
 export interface ExpandedRowsRowState {
 	isExpanded: Writable<boolean>;
 	canExpand: Readable<boolean>;
+	isAllSubRowsExpanded: Readable<boolean>;
 }
 
 const _getExpandedRows = <Item, Row extends BodyRow<Item>>(
@@ -59,9 +60,26 @@ export const useExpandedRows =
 		const getRowState = (row: BodyRow<Item>): ExpandedRowsRowState => {
 			const isExpanded = keyed(expandedIds, row.id) as Writable<boolean>;
 			const canExpand = readable((row.subRows?.length ?? 0) > 0);
+			const subRowExpandedIds = derived(expandedIds, ($expandedIds) => {
+				// Check prefix with '>' to match child ids while ignoring this row's id.
+				return Object.entries($expandedIds).filter(
+					([id, expanded]) => id.startsWith(`${row.id}>`) && expanded
+				);
+			});
+			// If the number of expanded subRows is equal to the number of subRows
+			// that can expand, then all subRows are expanded.
+			const isAllSubRowsExpanded = derived(subRowExpandedIds, ($subRowExpandedIds) => {
+				if (row.subRows === undefined) {
+					return true;
+				}
+				// canExpand is derived from the presence of the `subRows` property.
+				const expandableSubRows = row.subRows.filter((subRow) => subRow.subRows !== undefined);
+				return $subRowExpandedIds.length === expandableSubRows.length;
+			});
 			return {
 				isExpanded,
 				canExpand,
+				isAllSubRowsExpanded,
 			};
 		};
 		const pluginState = { expandedIds, getRowState };
