@@ -21,6 +21,7 @@
 	import TextFilter from './_TextFilter.svelte';
 	import NumberRangeFilter from './_NumberRangeFilter.svelte';
 	import SelectFilter from './_SelectFilter.svelte';
+	import ExpandIndicator from './_ExpandIndicator.svelte';
 
 	const data = readable(createSamples(10, 5));
 
@@ -36,20 +37,21 @@
 		}),
 		orderColumns: useColumnOrder(),
 		hideColumns: useHiddenColumns(),
-		page: usePagination(),
+		page: usePagination({
+			initialPageSize: 20,
+		}),
 	});
 
 	const columns = table.createColumns([
 		table.display({
 			id: 'expanded',
-			header: ({ pluginStates }) =>
-				derived(pluginStates.expand.expandedIds, (_expandedIds) =>
-					_expandedIds === {} ? '👉' : '👇'
-				),
-			cell: ({ row }, { pluginStates }) =>
-				derived(pluginStates.expand.expandedIds, (_expandedIds) =>
-					_expandedIds[row.id] === true ? '👇' : '👉'
-				),
+			header: '',
+			cell: ({ row }, { pluginStates }) => {
+				const rowState = pluginStates.expand.getRowState(row);
+				return createRender(ExpandIndicator, {
+					isExpanded: rowState.isExpanded,
+				});
+			},
 		}),
 		table.column({
 			header: 'Summary',
