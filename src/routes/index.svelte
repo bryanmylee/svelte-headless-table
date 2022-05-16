@@ -53,6 +53,7 @@
 					isExpanded,
 					canExpand,
 					isAllSubRowsExpanded,
+					depth: row.depth,
 				});
 			},
 		}),
