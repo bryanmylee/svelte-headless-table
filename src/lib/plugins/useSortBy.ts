@@ -1,3 +1,4 @@
+import { DataBodyCell } from '$lib/bodyCells';
 import type { BodyRow } from '$lib/bodyRows';
 import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
 import { compare } from '$lib/utils/compare';
@@ -117,7 +118,7 @@ export const useSortBy =
 		const deriveRows: DeriveRowsFn<Item> = (rows) => {
 			return derived([rows, sortKeys], ([$rows, $sortKeys]) => {
 				preSortedRows.set($rows);
-				const _sortedRows = [...$rows];
+				const _sortedRows = [...$rows] as typeof $rows;
 				_sortedRows.sort((a, b) => {
 					for (const key of $sortKeys) {
 						const invert = columnOptions[key.id]?.invert ?? false;
@@ -127,13 +128,18 @@ export const useSortBy =
 						// Only need to check properties of `cellA` as both should have the same
 						// properties.
 						const getSortValue = columnOptions[cellA.id]?.getSortValue;
+						if (!(cellA instanceof DataBodyCell)) {
+							return 0;
+						}
+						const valueA = cellA.value;
+						const valueB = (cellB as DataBodyCell<Item>).value;
 						if (getSortValue !== undefined) {
-							const sortValueA = getSortValue(cellA.value);
-							const sortValueB = getSortValue(cellB.value);
+							const sortValueA = getSortValue(valueA);
+							const sortValueB = getSortValue(valueB);
 							order = compare(sortValueA, sortValueB);
-						} else if (typeof cellA.value === 'string' || typeof cellA.value === 'number') {
+						} else if (typeof valueA === 'string' || typeof valueA === 'number') {
 							// typeof `cellB.value` is logically equal to `cellA.value`.
-							order = compare(cellA.value, cellB.value as string | number);
+							order = compare(valueA, valueB as string | number);
 						}
 						if (order !== 0) {
 							let orderFactor = 1;
