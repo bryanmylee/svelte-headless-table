@@ -1,3 +1,5 @@
+const esModules = ['svelte-subscribe'].join('|');
+
 module.exports = {
 	transform: {
 		'^.+\\.svelte$': [
@@ -7,7 +9,9 @@ module.exports = {
 			},
 		],
 		'^.+\\.ts$': 'ts-jest',
+		[`(${esModules}).+\\.js$`]: 'babel-jest',
 	},
+	transformIgnorePatterns: [`/node_modules/(?!${esModules})`],
 	moduleFileExtensions: ['js', 'ts', 'svelte'],
 	moduleNameMapper: {
 		'^\\$lib/(.*)$': '<rootDir>/src/lib/$1',

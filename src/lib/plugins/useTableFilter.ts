@@ -1,5 +1,7 @@
+import { DataBodyCell } from '$lib/bodyCells';
 import type { BodyRow } from '$lib/bodyRows';
 import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
+import { getCloned } from '$lib/utils/clone';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 
 export interface TableFilterConfig {
@@ -13,7 +15,9 @@ export interface TableFilterState<Item> {
 	preFilteredRows: Readable<BodyRow<Item>[]>;
 }
 
-export interface TableFilterColumnOptions {
+// Item generic needed to infer type on `getFilteredRows`
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export interface TableFilterColumnOptions<Item> {
 	exclude?: boolean;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	getFilterValue?: (value: any) => string;
@@ -34,6 +38,68 @@ export type TableFilterPropSet = NewTablePropSet<{
 	};
 }>;
 
+interface GetFilteredRowsProps {
+	tableCellMatches: Writable<Record<string, boolean>>;
+	fn: TableFilterFn;
+	includeHiddenColumns: boolean;
+}
+
+const getFilteredRows = <Item, Row extends BodyRow<Item>>(
+	rows: Row[],
+	filterValue: string,
+	columnOptions: Record<string, TableFilterColumnOptions<Item>>,
+	{ tableCellMatches, fn, includeHiddenColumns }: GetFilteredRowsProps
+): Row[] => {
+	const _filteredRows = rows
+		// Filter `subRows`
+		.map((row) => {
+			const { subRows } = row;
+			if (subRows === undefined) {
+				return row;
+			}
+			const filteredSubRows = getFilteredRows(subRows, filterValue, columnOptions, {
+				tableCellMatches,
+				fn,
+				includeHiddenColumns,
+			});
+			return getCloned(row, {
+				subRows: filteredSubRows,
+			} as unknown as Row);
+		})
+		.filter((row) => {
+			if ((row.subRows?.length ?? 0) !== 0) {
+				return true;
+			}
+			// An array of booleans, true if the cell matches the filter.
+			const rowCellMatches = Object.values(row.cellForId).map((cell) => {
+				const options = columnOptions[cell.id] as TableFilterColumnOptions<Item> | undefined;
+				if (options?.exclude === true) {
+					return false;
+				}
+				const isHidden = row.cells.find((c) => c.id === cell.id) === undefined;
+				if (isHidden && !includeHiddenColumns) {
+					return false;
+				}
+				if (!(cell instanceof DataBodyCell)) {
+					return false;
+				}
+				let value = cell.value;
+				if (options?.getFilterValue !== undefined) {
+					value = options?.getFilterValue(value);
+				}
+				const matches = fn({ value: String(value), filterValue });
+				tableCellMatches.update(($tableCellMatches) => ({
+					...$tableCellMatches,
+					[cell.rowColId()]: matches,
+				}));
+				return matches;
+			});
+			// If any cell matches, include in the filtered results.
+			return rowCellMatches.includes(true);
+		});
+	return _filteredRows;
+};
+
 export const useTableFilter =
 	<Item>({
 		fn = textPrefixFilter,
@@ -42,7 +108,7 @@ export const useTableFilter =
 	}: TableFilterConfig = {}): TablePlugin<
 		Item,
 		TableFilterState<Item>,
-		TableFilterColumnOptions,
+		TableFilterColumnOptions<Item>,
 		TableFilterPropSet
 	> =>
 	({ columnOptions }) => {
@@ -57,31 +123,10 @@ export const useTableFilter =
 			return derived([rows, filterValue], ([$rows, $filterValue]) => {
 				preFilteredRows.set($rows);
 				tableCellMatches.set({});
-				const _filteredRows = $rows.filter((row) => {
-					// An array of booleans, true if the cell matches the filter.
-					const rowCellMatches = Object.values(row.cellForId).map((cell) => {
-						const options = columnOptions[cell.id] as TableFilterColumnOptions | undefined;
-						if (options?.exclude === true) {
-							return false;
-						}
-						const isHidden = row.cells.find((c) => c.id === cell.id) === undefined;
-						if (isHidden && !includeHiddenColumns) {
-							return false;
-						}
-						let value = cell.value;
-						if (options?.getFilterValue !== undefined) {
-							value = options?.getFilterValue(value);
-						}
-						const matches = fn({ value: String(value), filterValue: $filterValue });
-						tableCellMatches.update(($tableCellMatches) => ({
-							...$tableCellMatches,
-							// TODO standardize table-unique cell id.
-							[`${cell.row.id}-${cell.column.id}`]: matches,
-						}));
-						return matches;
-					});
-					// If any cell matches, include in the filtered results.
-					return rowCellMatches.includes(true);
+				const _filteredRows = getFilteredRows($rows, $filterValue, columnOptions, {
+					tableCellMatches,
+					fn,
+					includeHiddenColumns,
 				});
 				filteredRows.set(_filteredRows);
 				return _filteredRows;
@@ -97,10 +142,7 @@ export const useTableFilter =
 						[filterValue, tableCellMatches],
 						([$filterValue, $tableCellMatches]) => {
 							return {
-								matches:
-									$filterValue !== '' &&
-									// TODO standardize table-unique cell id.
-									($tableCellMatches[`${cell.row.id}-${cell.column.id}`] ?? false),
+								matches: $filterValue !== '' && ($tableCellMatches[cell.rowColId()] ?? false),
 							};
 						}
 					);

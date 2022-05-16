@@ -1,5 +1,11 @@
-import { DataColumn, GroupColumn, type Column } from './columns';
-import { DataHeaderCell, DisplayHeaderCell, GroupHeaderCell, type HeaderCell } from './headerCells';
+import { DataColumn, DisplayColumn, GroupColumn, type Column } from './columns';
+import {
+	DataHeaderCell,
+	DisplayHeaderCell,
+	FlatHeaderCell,
+	GroupHeaderCell,
+	type HeaderCell,
+} from './headerCells';
 import { TableComponent } from './tableComponent';
 import type { Matrix } from './types/Matrix';
 import type { AnyPlugins } from './types/TablePlugin';
@@ -58,9 +64,9 @@ export const getHeaderRowMatrix = <Item, Plugins extends AnyPlugins = AnyPlugins
 	);
 };
 
-const loadHeaderRowMatrix = <Item>(
-	rowMatrix: Matrix<HeaderCell<Item> | undefined | null>,
-	column: Column<Item>,
+const loadHeaderRowMatrix = <Item, Plugins extends AnyPlugins = AnyPlugins>(
+	rowMatrix: Matrix<HeaderCell<Item, Plugins> | undefined | null>,
+	column: Column<Item, Plugins>,
 	rowOffset: number,
 	cellOffset: number
 ) => {
@@ -71,6 +77,13 @@ const loadHeaderRowMatrix = <Item>(
 			accessorFn: column.accessorFn,
 			accessorKey: column.accessorKey as keyof Item,
 			id: column.id,
+		});
+		return;
+	}
+	if (column instanceof DisplayColumn) {
+		rowMatrix[rowMatrix.length - 1][cellOffset] = new DisplayHeaderCell({
+			id: column.id,
+			label: column.header,
 		});
 		return;
 	}
@@ -102,14 +115,14 @@ export const getOrderedColumnMatrix = <Item, Plugins extends AnyPlugins = AnyPlu
 	}
 	const orderedColumnMatrix: Matrix<HeaderCell<Item, Plugins>> = [];
 	// Each row of the transposed matrix represents a column.
-	// The `DataHeaderCell` is the last cell of each column.
+	// The `FlatHeaderCell` should be the last cell of each column.
 	flatColumnIds.forEach((key) => {
 		const nextColumn = columnMatrix.find((columnCells) => {
-			const dataCell = columnCells[columnCells.length - 1];
-			if (!(dataCell instanceof DataHeaderCell)) {
-				throw new Error('The last element of each column must be `DataHeaderCell`');
+			const flatCell = columnCells[columnCells.length - 1];
+			if (!(flatCell instanceof FlatHeaderCell)) {
+				throw new Error('The last element of each column must be a `FlatHeaderCell`');
 			}
-			return dataCell.id === key;
+			return flatCell.id === key;
 		});
 		if (nextColumn !== undefined) {
 			orderedColumnMatrix.push(nextColumn);
@@ -120,13 +133,13 @@ export const getOrderedColumnMatrix = <Item, Plugins extends AnyPlugins = AnyPlu
 
 const populateGroupHeaderCellIds = <Item>(columnMatrix: Matrix<HeaderCell<Item>>) => {
 	columnMatrix.forEach((columnCells) => {
-		const dataCell = columnCells[columnCells.length - 1];
-		if (!(dataCell instanceof DataHeaderCell)) {
-			throw new Error('The last element of each column must be `DataHeaderCell`');
+		const lastCell = columnCells[columnCells.length - 1];
+		if (!(lastCell instanceof FlatHeaderCell)) {
+			throw new Error('The last element of each column must be a `FlatHeaderCell`');
 		}
 		columnCells.forEach((c) => {
 			if (c instanceof GroupHeaderCell) {
-				c.pushId(dataCell.id);
+				c.pushId(lastCell.id);
 			}
 		});
 	});

@@ -11,3 +11,5 @@ export { useHiddenColumns } from './useHiddenColumns';
 export { usePagination } from './usePagination';
 export { useSortBy } from './useSortBy';
 export { useTableFilter } from './useTableFilter';
+export { useExpandedRows } from './useExpandedRows';
+export { useSubRows } from './useSubRows';

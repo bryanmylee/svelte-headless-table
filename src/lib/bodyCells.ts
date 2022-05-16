@@ -1,33 +1,66 @@
-import { derived } from 'svelte/store';
+import { derived, type Readable } from 'svelte/store';
 import type { BodyRow } from './bodyRows';
-import type { DataColumn } from './columns';
+import type { DataColumn, DisplayColumn, FlatColumn } from './columns';
 import { TableComponent } from './tableComponent';
-import type { Label } from './types/Label';
+import type { DataLabel, DisplayLabel } from './types/Label';
 import type { AnyPlugins } from './types/TablePlugin';
 import type { RenderConfig } from './render';
 
-export interface BodyCellInit<Item, Plugins extends AnyPlugins = AnyPlugins, Value = unknown> {
+export type BodyCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = {
+	id: string;
 	row: BodyRow<Item, Plugins>;
-	column: DataColumn<Item, Plugins>;
-	label?: Label<Item, Value>;
-	value: Value;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type BodyCellAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = Record<
+	string,
+	never
+>;
+
+export abstract class BodyCell<
+	Item,
+	Plugins extends AnyPlugins = AnyPlugins
+> extends TableComponent<Item, Plugins, 'tbody.tr.td'> {
+	abstract column: FlatColumn<Item, Plugins>;
+	row: BodyRow<Item, Plugins>;
+	constructor({ id, row }: BodyCellInit<Item, Plugins>) {
+		super({ id });
+		this.row = row;
+	}
+
+	abstract render(): RenderConfig;
+
+	abstract attrs(): Readable<BodyCellAttributes<Item, Plugins>>;
+
+	rowColId(): string {
+		return `${this.row.id}-${this.column.id}`;
+	}
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-interface
-export interface BodyCellAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> {}
+export type DataBodyCellInit<Item, Plugins extends AnyPlugins = AnyPlugins, Value = unknown> = Omit<
+	BodyCellInit<Item, Plugins>,
+	'id'
+> & {
+	column: DataColumn<Item, Plugins>;
+	label?: DataLabel<Item, Plugins, Value>;
+	value: Value;
+};
 
-export class BodyCell<
+export type DataBodyCellAttributes<
+	Item,
+	Plugins extends AnyPlugins = AnyPlugins
+> = BodyCellAttributes<Item, Plugins>;
+
+export class DataBodyCell<
 	Item,
 	Plugins extends AnyPlugins = AnyPlugins,
 	Value = unknown
-> extends TableComponent<Item, Plugins, 'tbody.tr.td'> {
-	row: BodyRow<Item, Plugins>;
+> extends BodyCell<Item, Plugins> {
 	column: DataColumn<Item, Plugins>;
-	label?: Label<Item, Value>;
+	label?: DataLabel<Item, Plugins, Value>;
 	value: Value;
-	constructor({ row, column, label, value }: BodyCellInit<Item, Plugins, Value>) {
-		super({ id: column.id });
-		this.row = row;
+	constructor({ row, column, label, value }: DataBodyCellInit<Item, Plugins, Value>) {
+		super({ id: column.id, row });
 		this.column = column;
 		this.label = label;
 		this.value = value;
@@ -37,7 +70,44 @@ export class BodyCell<
 		if (this.label === undefined) {
 			return `${this.value}`;
 		}
-		return this.label(this.value);
+		if (this.state === undefined) {
+			throw new Error('Missing `state` reference');
+		}
+		return this.label({ column: this.column, row: this.row, value: this.value }, this.state);
+	}
+
+	attrs(): Readable<DataBodyCellAttributes<Item, Plugins>> {
+		return derived([], () => {
+			return {};
+		});
+	}
+}
+
+export type DisplayBodyCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = Omit<
+	BodyCellInit<Item, Plugins>,
+	'id'
+> & {
+	column: DisplayColumn<Item, Plugins>;
+	label: DisplayLabel<Item, Plugins>;
+};
+
+export class DisplayBodyCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends BodyCell<
+	Item,
+	Plugins
+> {
+	column: DisplayColumn<Item, Plugins>;
+	label: DisplayLabel<Item, Plugins>;
+	constructor({ row, column, label }: DisplayBodyCellInit<Item, Plugins>) {
+		super({ id: column.id, row });
+		this.column = column;
+		this.label = label;
+	}
+
+	render(): RenderConfig {
+		if (this.state === undefined) {
+			throw new Error('Missing `state` reference');
+		}
+		return this.label({ column: this.column, row: this.row }, this.state);
 	}
 
 	attrs() {

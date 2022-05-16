@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { BodyCell } from './bodyCells';
+import { DataBodyCell, DisplayBodyCell } from './bodyCells';
 import { BodyRow, getBodyRows } from './bodyRows';
 import { createTable } from './createTable';
 
@@ -33,7 +33,7 @@ const data: User[] = [
 
 const table = createTable(writable(data));
 
-const columns = [
+const dataColumns = [
 	table.column({
 		accessor: 'firstName',
 		header: 'First Name',
@@ -49,31 +49,31 @@ const columns = [
 ];
 
 it('transforms empty data', () => {
-	const actual = getBodyRows([], columns);
+	const actual = getBodyRows([], dataColumns);
 
 	const expected: BodyRow<User>[] = [];
 
 	expect(actual).toStrictEqual(expected);
 });
 
-it('transforms data', () => {
-	const actual = getBodyRows(data, columns);
+it('transforms data for data columns', () => {
+	const actual = getBodyRows(data, dataColumns);
 
 	const row0 = new BodyRow<User>({ id: '0', original: data[0], cells: [], cellForId: {} });
 	const cells0 = [
-		new BodyCell<User>({
+		new DataBodyCell<User>({
 			row: row0,
-			column: columns[0],
+			column: dataColumns[0],
 			value: 'Adam',
 		}),
-		new BodyCell<User>({
+		new DataBodyCell<User>({
 			row: row0,
-			column: columns[1],
+			column: dataColumns[1],
 			value: 'West',
 		}),
-		new BodyCell<User>({
+		new DataBodyCell<User>({
 			row: row0,
-			column: columns[2],
+			column: dataColumns[2],
 			value: 75,
 		}),
 	];
@@ -87,19 +87,19 @@ it('transforms data', () => {
 
 	const row1 = new BodyRow<User>({ id: '1', original: data[1], cells: [], cellForId: {} });
 	const cells1 = [
-		new BodyCell<User>({
+		new DataBodyCell<User>({
 			row: row1,
-			column: columns[0],
+			column: dataColumns[0],
 			value: 'Becky',
 		}),
-		new BodyCell<User>({
+		new DataBodyCell<User>({
 			row: row1,
-			column: columns[1],
+			column: dataColumns[1],
 			value: 'White',
 		}),
-		new BodyCell<User>({
+		new DataBodyCell<User>({
 			row: row1,
-			column: columns[2],
+			column: dataColumns[2],
 			value: 43,
 		}),
 	];
@@ -117,9 +117,107 @@ it('transforms data', () => {
 		expect(actual[rowIdx].original).toStrictEqual(expected[rowIdx].original);
 		expect(actual[rowIdx].cells.length).toStrictEqual(expected[rowIdx].cells.length);
 		actual[rowIdx].cells.forEach((_, colIdx) => {
-			expect(actual[rowIdx].cells[colIdx].value).toStrictEqual(
-				expected[rowIdx].cells[colIdx].value
-			);
+			const cell = actual[rowIdx].cells[colIdx];
+			expect(cell).toBeInstanceOf(DataBodyCell);
+			const expectedCell = expected[rowIdx].cells[colIdx];
+			if (!(cell instanceof DataBodyCell && expectedCell instanceof DataBodyCell)) {
+				throw new Error('Incorrect instance type');
+			}
+			expect(cell.value).toStrictEqual(expectedCell.value);
+		});
+		['firstName', 'lastName', 'progress'].forEach((id) => {
+			const cell = actual[rowIdx].cellForId[id];
+			expect(cell).toBeInstanceOf(DataBodyCell);
+			const expectedCell = expected[rowIdx].cellForId[id];
+			if (!(cell instanceof DataBodyCell && expectedCell instanceof DataBodyCell)) {
+				throw new Error('Incorrect instance type');
+			}
+			expect(cell.value).toStrictEqual(expectedCell.value);
+		});
+	});
+});
+
+const checkedLabel = () => 'check';
+const expandedLabel = () => 'expanded';
+const displayColumns = [
+	table.display({
+		id: 'checked',
+		header: 'Checked',
+		cell: checkedLabel,
+	}),
+	table.display({
+		id: 'expanded',
+		header: 'Expanded',
+		cell: expandedLabel,
+	}),
+];
+
+it('transforms data with display columns', () => {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const actual = getBodyRows(data, displayColumns as any);
+
+	const row0 = new BodyRow<User>({ id: '0', original: data[0], cells: [], cellForId: {} });
+	const cells0 = [
+		new DisplayBodyCell<User>({
+			row: row0,
+			column: displayColumns[0],
+			label: checkedLabel,
+		}),
+		new DisplayBodyCell<User>({
+			row: row0,
+			column: displayColumns[1],
+			label: expandedLabel,
+		}),
+	];
+	row0.cells = cells0;
+	const cellForId0 = {
+		checked: cells0[0],
+		expanded: cells0[1],
+	};
+	row0.cellForId = cellForId0;
+
+	const row1 = new BodyRow<User>({ id: '1', original: data[1], cells: [], cellForId: {} });
+	const cells1 = [
+		new DisplayBodyCell<User>({
+			row: row1,
+			column: displayColumns[0],
+			label: checkedLabel,
+		}),
+		new DisplayBodyCell<User>({
+			row: row1,
+			column: displayColumns[1],
+			label: expandedLabel,
+		}),
+	];
+	row1.cells = cells1;
+	const cellForId1 = {
+		checked: cells1[0],
+		expanded: cells1[1],
+	};
+	row1.cellForId = cellForId1;
+
+	const expected: BodyRow<User>[] = [row0, row1];
+
+	[0, 1].forEach((rowIdx) => {
+		expect(actual[rowIdx].original).toStrictEqual(expected[rowIdx].original);
+		expect(actual[rowIdx].cells.length).toStrictEqual(expected[rowIdx].cells.length);
+		actual[rowIdx].cells.forEach((_, colIdx) => {
+			const cell = actual[rowIdx].cells[colIdx];
+			expect(cell).toBeInstanceOf(DisplayBodyCell);
+			const expectedCell = expected[rowIdx].cells[colIdx];
+			if (!(cell instanceof DisplayBodyCell && expectedCell instanceof DisplayBodyCell)) {
+				throw new Error('Incorrect instance type');
+			}
+			expect(cell.label).toEqual(expectedCell.label);
+		});
+		['checked', 'expanded'].forEach((id) => {
+			const cell = actual[rowIdx].cellForId[id];
+			expect(cell).toBeInstanceOf(DisplayBodyCell);
+			const expectedCell = expected[rowIdx].cellForId[id];
+			if (!(cell instanceof DisplayBodyCell && expectedCell instanceof DisplayBodyCell)) {
+				throw new Error('Incorrect instance type');
+			}
+			expect(cell.label).toEqual(expectedCell.label);
 		});
 	});
 });

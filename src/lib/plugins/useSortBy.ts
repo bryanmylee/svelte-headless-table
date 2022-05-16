@@ -1,5 +1,7 @@
+import { DataBodyCell } from '$lib/bodyCells';
 import type { BodyRow } from '$lib/bodyRows';
 import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
+import { getCloned } from '$lib/utils/clone';
 import { compare } from '$lib/utils/compare';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 
@@ -38,7 +40,7 @@ export interface SortKey {
 	order: 'asc' | 'desc';
 }
 
-export const useSortKeys = (initKeys: SortKey[]): WritableSortKeys => {
+export const createSortKeysStore = (initKeys: SortKey[]): WritableSortKeys => {
 	const { subscribe, update, set } = writable(initKeys);
 	const toggleId = (id: string, { multiSort = true }: ToggleOptions = {}) => {
 		update(($sortKeys) => {
@@ -99,6 +101,62 @@ const isShiftClick = (event: Event) => {
 	return event.shiftKey;
 };
 
+const getSortedRows = <Item, Row extends BodyRow<Item>>(
+	rows: Row[],
+	sortKeys: SortKey[],
+	columnOptions: Record<string, SortByColumnOptions>
+): Row[] => {
+	// Shallow clone to prevent sort affecting `preSortedRows`.
+	const _sortedRows = [...rows] as typeof rows;
+	_sortedRows.sort((a, b) => {
+		for (const key of sortKeys) {
+			const invert = columnOptions[key.id]?.invert ?? false;
+			const cellA = a.cellForId[key.id];
+			const cellB = b.cellForId[key.id];
+			let order = 0;
+			// Only need to check properties of `cellA` as both should have the same
+			// properties.
+			const getSortValue = columnOptions[cellA.id]?.getSortValue;
+			if (!(cellA instanceof DataBodyCell)) {
+				return 0;
+			}
+			const valueA = cellA.value;
+			const valueB = (cellB as DataBodyCell<Item>).value;
+			if (getSortValue !== undefined) {
+				const sortValueA = getSortValue(valueA);
+				const sortValueB = getSortValue(valueB);
+				order = compare(sortValueA, sortValueB);
+			} else if (typeof valueA === 'string' || typeof valueA === 'number') {
+				// typeof `cellB.value` is logically equal to `cellA.value`.
+				order = compare(valueA, valueB as string | number);
+			}
+			if (order !== 0) {
+				let orderFactor = 1;
+				// If the current key order is `'desc'`, reverse the order.
+				if (key.order === 'desc') {
+					orderFactor *= -1;
+				}
+				// If `invert` is `true`, we want to invert the sort without
+				// affecting the view model's indication.
+				if (invert) {
+					orderFactor *= -1;
+				}
+				return order * orderFactor;
+			}
+		}
+		return 0;
+	});
+	for (let i = 0; i < _sortedRows.length; i++) {
+		const { subRows } = _sortedRows[i];
+		if (subRows === undefined) {
+			continue;
+		}
+		const sortedSubRows = getSortedRows<Item, Row>(subRows as Row[], sortKeys, columnOptions);
+		_sortedRows[i] = getCloned(_sortedRows[i], { subRows: sortedSubRows } as unknown as Row);
+	}
+	return _sortedRows;
+};
+
 export const useSortBy =
 	<Item>({
 		initialSortKeys = [],
@@ -110,47 +168,18 @@ export const useSortBy =
 			.filter(([, option]) => option.disable === true)
 			.map(([columnId]) => columnId);
 
-		const sortKeys = useSortKeys(initialSortKeys);
+		const sortKeys = createSortKeysStore(initialSortKeys);
 		const preSortedRows = writable<BodyRow<Item>[]>([]);
 		const sortedRows = writable<BodyRow<Item>[]>([]);
 
 		const deriveRows: DeriveRowsFn<Item> = (rows) => {
 			return derived([rows, sortKeys], ([$rows, $sortKeys]) => {
 				preSortedRows.set($rows);
-				const _sortedRows = [...$rows];
-				_sortedRows.sort((a, b) => {
-					for (const key of $sortKeys) {
-						const invert = columnOptions[key.id]?.invert ?? false;
-						const cellA = a.cellForId[key.id];
-						const cellB = b.cellForId[key.id];
-						let order = 0;
-						// Only need to check properties of `cellA` as both should have the same
-						// properties.
-						const getSortValue = columnOptions[cellA.id]?.getSortValue;
-						if (getSortValue !== undefined) {
-							const sortValueA = getSortValue(cellA.value);
-							const sortValueB = getSortValue(cellB.value);
-							order = compare(sortValueA, sortValueB);
-						} else if (typeof cellA.value === 'string' || typeof cellA.value === 'number') {
-							// typeof `cellB.value` is logically equal to `cellA.value`.
-							order = compare(cellA.value, cellB.value as string | number);
-						}
-						if (order !== 0) {
-							let orderFactor = 1;
-							// If the current key order is `'desc'`, reverse the order.
-							if (key.order === 'desc') {
-								orderFactor *= -1;
-							}
-							// If `invert` is `true`, we want to invert the sort without
-							// affecting the view model's indication.
-							if (invert) {
-								orderFactor *= -1;
-							}
-							return order * orderFactor;
-						}
-					}
-					return 0;
-				});
+				const _sortedRows = getSortedRows<Item, typeof $rows[number]>(
+					$rows,
+					$sortKeys,
+					columnOptions
+				);
 				sortedRows.set(_sortedRows);
 				return _sortedRows;
 			});

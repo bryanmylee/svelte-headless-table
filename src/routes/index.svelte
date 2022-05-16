@@ -8,9 +8,11 @@
 		useSortBy,
 		useTableFilter,
 		usePagination,
+		useExpandedRows,
 		matchFilter,
 		numberRangeFilter,
 		textPrefixFilter,
+		useSubRows,
 	} from '$lib/plugins';
 	import { getShuffled } from './_getShuffled';
 	import { createSamples } from './_createSamples';
@@ -20,32 +22,53 @@
 	import TextFilter from './_TextFilter.svelte';
 	import NumberRangeFilter from './_NumberRangeFilter.svelte';
 	import SelectFilter from './_SelectFilter.svelte';
+	import ExpandIndicator from './_ExpandIndicator.svelte';
 
-	const data = readable(createSamples(100));
+	const data = readable(createSamples(10, 5, 5));
 
 	const table = createTable(data, {
+		subRows: useSubRows({
+			children: 'children',
+		}),
 		sort: useSortBy(),
+		filter: useColumnFilters(),
 		tableFilter: useTableFilter({
 			includeHiddenColumns: true,
 		}),
-		filter: useColumnFilters(),
-		orderColumns: useColumnOrder({
-			initialColumnIdOrder: ['firstName', 'lastName'],
+		expand: useExpandedRows({
+			initialExpandedIds: { 1: true },
 		}),
+		orderColumns: useColumnOrder(),
 		hideColumns: useHiddenColumns(),
-		page: usePagination(),
+		page: usePagination({
+			initialPageSize: 20,
+		}),
 	});
 
 	const columns = table.createColumns([
+		table.display({
+			id: 'expanded',
+			header: '',
+			cell: ({ row }, { pluginStates }) => {
+				const { isExpanded, canExpand, isAllSubRowsExpanded } =
+					pluginStates.expand.getRowState(row);
+				return createRender(ExpandIndicator, {
+					isExpanded,
+					canExpand,
+					isAllSubRowsExpanded,
+					depth: row.depth,
+				});
+			},
+		}),
 		table.column({
 			header: 'Summary',
 			id: 'summary',
-			accessor: (i) => i,
-			cell: (i: any) =>
+			accessor: (item) => item,
+			cell: ({ value }) =>
 				createRender(Profile, {
-					age: i.age,
-					progress: i.progress,
-					name: `${i.firstName} ${i.lastName}`,
+					age: value.age,
+					progress: value.progress,
+					name: `${value.firstName} ${value.lastName}`,
 				}),
 			plugins: {
 				sort: {
@@ -70,6 +93,9 @@
 						sort: {
 							invert: true,
 						},
+						tableFilter: {
+							exclude: true,
+						},
 						filter: {
 							fn: textPrefixFilter,
 							render: ({ filterValue, values }) =>
@@ -83,9 +109,6 @@
 					plugins: {
 						sort: {
 							disable: true,
-						},
-						tableFilter: {
-							exclude: true,
 						},
 					},
 				}),
@@ -191,7 +214,7 @@
 	</thead>
 	<tbody>
 		{#each $pageRows as row (row.id)}
-			<tr>
+			<tr id={row.id}>
 				{#each row.cells as cell (cell.id)}
 					<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
 						<td

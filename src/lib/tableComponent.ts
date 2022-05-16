@@ -1,4 +1,5 @@
-import { derived, type Readable } from 'svelte/store';
+import type { Readable } from 'svelte/store';
+import { derivedKeys } from 'svelte-subscribe';
 import type {
 	AnyPlugins,
 	AttributesForKey,
@@ -12,7 +13,7 @@ export interface TableComponentInit {
 	id: string;
 }
 
-export class TableComponent<Item, Plugins extends AnyPlugins, Key extends ComponentKeys> {
+export abstract class TableComponent<Item, Plugins extends AnyPlugins, Key extends ComponentKeys> {
 	id: string;
 	constructor({ id }: TableComponentInit) {
 		this.id = id;
@@ -24,18 +25,7 @@ export class TableComponent<Item, Plugins extends AnyPlugins, Key extends Compon
 
 	private propsForName: Record<string, Readable<Record<string, unknown>>> = {};
 	props(): Readable<PluginTablePropSet<Plugins>[Key]> {
-		const propsEntries = Object.entries(this.propsForName);
-		const pluginNames = propsEntries.map(([pluginName]) => pluginName);
-		return derived(
-			propsEntries.map(([, props]) => props),
-			($propsArray) => {
-				const props: Record<string, Record<string, unknown>> = {};
-				$propsArray.forEach((p, idx) => {
-					props[pluginNames[idx]] = p;
-				});
-				return props as PluginTablePropSet<Plugins>[Key];
-			}
-		);
+		return derivedKeys(this.propsForName) as Readable<PluginTablePropSet<Plugins>[Key]>;
 	}
 
 	protected state?: TableState<Item, Plugins>;
