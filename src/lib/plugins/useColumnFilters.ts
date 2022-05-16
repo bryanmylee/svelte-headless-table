@@ -6,6 +6,7 @@ import type { RenderConfig } from '$lib/render';
 import type { PluginInitTableState } from '$lib/createViewModel';
 import { DataBodyCell } from '$lib/bodyCells';
 import { DataHeaderCell } from '$lib/headerCells';
+import { getCloned } from '$lib/utils/clone';
 
 export interface ColumnFiltersState<Item> {
 	filterValues: Writable<Record<string, unknown>>;
@@ -48,6 +49,47 @@ export type ColumnFiltersPropSet = NewTablePropSet<{
 		| undefined;
 }>;
 
+export const getFilteredRows = <Item, Row extends BodyRow<Item>>(
+	rows: Row[],
+	filterValues: Record<string, unknown>,
+	columnOptions: Record<string, ColumnFiltersColumnOptions<Item>>
+): Row[] => {
+	const _filteredRows = rows
+		// Filter `subRows`
+		.map((row) => {
+			const { subRows } = row;
+			if (subRows === undefined) {
+				return row;
+			}
+			const filteredSubRows = getFilteredRows(subRows, filterValues, columnOptions);
+			return getCloned(row, {
+				subRows: filteredSubRows,
+			} as unknown as Row);
+		})
+		.filter((row) => {
+			if ((row.subRows?.length ?? 0) !== 0) {
+				return true;
+			}
+			for (const [columnId, columnOption] of Object.entries(columnOptions)) {
+				const bodyCell = row.cellForId[columnId];
+				if (!(bodyCell instanceof DataBodyCell)) {
+					continue;
+				}
+				const { value } = bodyCell;
+				const filterValue = filterValues[columnId];
+				if (filterValue === undefined) {
+					continue;
+				}
+				const isMatch = columnOption.fn({ value, filterValue });
+				if (!isMatch) {
+					return false;
+				}
+			}
+			return true;
+		});
+	return _filteredRows;
+};
+
 export const useColumnFilters =
 	<Item>(): TablePlugin<
 		Item,
@@ -65,24 +107,7 @@ export const useColumnFilters =
 		const deriveRows: DeriveRowsFn<Item> = (rows) => {
 			return derived([rows, filterValues], ([$rows, $filterValues]) => {
 				preFilteredRows.set($rows);
-				const _filteredRows = $rows.filter((row) => {
-					for (const [columnId, columnOption] of Object.entries(columnOptions)) {
-						const bodyCell = row.cellForId[columnId];
-						if (!(bodyCell instanceof DataBodyCell)) {
-							continue;
-						}
-						const value = bodyCell.value;
-						const filterValue = $filterValues[columnId];
-						if (filterValue === undefined) {
-							continue;
-						}
-						const isMatch = columnOption.fn({ value, filterValue });
-						if (!isMatch) {
-							return false;
-						}
-					}
-					return true;
-				});
+				const _filteredRows = getFilteredRows($rows, $filterValues, columnOptions);
 				filteredRows.set(_filteredRows);
 				return _filteredRows;
 			});
