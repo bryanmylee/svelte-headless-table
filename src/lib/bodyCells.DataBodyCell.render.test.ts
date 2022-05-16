@@ -28,7 +28,7 @@ const row = new BodyRow({
 	cellForId: {},
 });
 
-const column = new DataColumn({
+const column = new DataColumn<User>({
 	header: '',
 	accessor: 'firstName',
 });
@@ -52,7 +52,8 @@ it('renders dynamic label with state', () => {
 		column,
 		row,
 		value: 'Adam',
-		label: (value, { columns }) => `${String(value).toLowerCase()} with ${columns.length} columns`,
+		label: ({ value }, { columns }) =>
+			`${String(value).toLowerCase()} with ${columns.length} columns`,
 	});
 
 	actual.injectState(state);
@@ -65,7 +66,8 @@ it('throws if rendering dynamically without state', () => {
 		column,
 		row,
 		value: 'Adam',
-		label: (value, { columns }) => `${String(value).toLowerCase()} with ${columns.length} columns`,
+		label: ({ value }, { columns }) =>
+			`${String(value).toLowerCase()} with ${columns.length} columns`,
 	});
 
 	expect(() => {

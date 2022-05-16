@@ -28,7 +28,7 @@ const row = new BodyRow({
 	cellForId: {},
 });
 
-const column = new DisplayColumn({
+const column = new DisplayColumn<User>({
 	header: '',
 	cell: () => '',
 	id: 'checked',
@@ -40,7 +40,7 @@ it('renders dynamic label with state', () => {
 	const actual = new DisplayBodyCell<User>({
 		column,
 		row,
-		label: (rowId) => `row ${rowId} checked`,
+		label: ({ row }) => `row ${row.id} checked`,
 	});
 
 	actual.injectState(state);
@@ -52,7 +52,7 @@ it('throws if rendering dynamically without state', () => {
 	const actual = new DisplayBodyCell<User>({
 		column,
 		row,
-		label: (rowId) => `row ${rowId} checked`,
+		label: ({ row }) => `row ${row.id} checked`,
 	});
 
 	expect(() => {
