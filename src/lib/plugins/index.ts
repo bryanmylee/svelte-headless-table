@@ -13,3 +13,4 @@ export { addSortBy } from './addSortBy';
 export { addTableFilter } from './addTableFilter';
 export { addExpandedRows } from './addExpandedRows';
 export { addSubRows } from './addSubRows';
+export { addGroupBy } from './addGroupBy';

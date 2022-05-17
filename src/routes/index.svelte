@@ -13,7 +13,9 @@
 		numberRangeFilter,
 		textPrefixFilter,
 		addSubRows,
+		addGroupBy,
 	} from '$lib/plugins';
+	import { mean, sum } from '$lib/utils/math';
 	import { getShuffled } from './_getShuffled';
 	import { createSamples } from './_createSamples';
 	import Italic from './_Italic.svelte';
@@ -23,12 +25,16 @@
 	import NumberRangeFilter from './_NumberRangeFilter.svelte';
 	import SelectFilter from './_SelectFilter.svelte';
 	import ExpandIndicator from './_ExpandIndicator.svelte';
+	import { getDistinct } from '$lib/utils/array';
 
-	const data = readable(createSamples(10, 5, 5));
+	const data = readable(createSamples(50));
 
 	const table = createTable(data, {
 		subRows: addSubRows({
 			children: 'children',
+		}),
+		group: addGroupBy({
+			initialGroupByIds: ['status'],
 		}),
 		sort: addSortBy(),
 		filter: addColumnFilters(),
@@ -90,6 +96,9 @@
 					header: createRender(Italic, { text: 'First Name' }),
 					accessor: 'firstName',
 					plugins: {
+						group: {
+							getAggregateValue: (values) => `${getDistinct(values).length} unique`,
+						},
 						sort: {
 							invert: true,
 						},
@@ -107,8 +116,8 @@
 					header: () => 'Last Name',
 					accessor: 'lastName',
 					plugins: {
-						sort: {
-							disable: true,
+						group: {
+							getAggregateValue: (values) => `${getDistinct(values).length} unique`,
 						},
 					},
 				}),
@@ -124,12 +133,24 @@
 				table.column({
 					header: 'Age',
 					accessor: 'age',
+					plugins: {
+						group: {
+							getAggregateValue: (values) => mean(values),
+							cell: ({ value }) => (value as number).toFixed(2),
+						},
+					},
 				}),
 				table.column({
 					header: createRender(Tick),
 					id: 'status',
 					accessor: (item) => item.status,
 					plugins: {
+						sort: {
+							disable: true,
+						},
+						group: {
+							getAggregateValue: (values) => `${getDistinct(values).length} unique`,
+						},
 						filter: {
 							fn: matchFilter,
 							render: ({ filterValue, preFilteredValues }) =>
@@ -141,6 +162,10 @@
 					header: 'Visits',
 					accessor: 'visits',
 					plugins: {
+						group: {
+							getAggregateValue: (values) => sum(values),
+							cell: ({ value }) => `Total visits: ${value}`,
+						},
 						filter: {
 							fn: numberRangeFilter,
 							initialFilterValue: [null, null],
@@ -152,6 +177,11 @@
 				table.column({
 					header: 'Profile Progress',
 					accessor: 'progress',
+					plugins: {
+						group: {
+							getAggregateValue: (values) => mean(values),
+						},
+					},
 				}),
 			],
 		}),
