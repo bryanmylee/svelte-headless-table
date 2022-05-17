@@ -128,8 +128,9 @@ export const addColumnFilters =
 						const preFilteredValues = derived(preFilteredRows, ($rows) => {
 							if (headerCell instanceof DataHeaderCell) {
 								return $rows.map((row) => {
+									// TODO check and handle different BodyCell types
 									const cell = row.cellForId[headerCell.id] as DataBodyCell<Item>;
-									return cell.value;
+									return cell?.value;
 								});
 							}
 							return [];
@@ -137,8 +138,9 @@ export const addColumnFilters =
 						const values = derived(filteredRows, ($rows) => {
 							if (headerCell instanceof DataHeaderCell) {
 								return $rows.map((row) => {
+									// TODO check and handle different BodyCell types
 									const cell = row.cellForId[headerCell.id] as DataBodyCell<Item>;
-									return cell.value;
+									return cell?.value;
 								});
 							}
 							return [];
