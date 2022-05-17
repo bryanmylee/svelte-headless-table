@@ -91,7 +91,6 @@ export const getGroupedRows = <
 					column: cell.column as DataColumn<Item>,
 					row: groupRow,
 					value: groupOnValue,
-					label,
 				});
 			}
 			const columnCells = subRows.map((row) => row.cellForId[id]).filter(nonUndefined);
