@@ -36,9 +36,7 @@ const withExpandedRows = <Item, Row extends BodyRow<Item>>(
 };
 
 export const addExpandedRows =
-	<Item>({
-		initialExpandedIds = {},
-	}: ExpandedRowsConfig<Item>): TablePlugin<
+	<Item>({ initialExpandedIds = {} }: ExpandedRowsConfig<Item> = {}): TablePlugin<
 		Item,
 		ExpandedRowsState<Item>,
 		Record<string, never>,
