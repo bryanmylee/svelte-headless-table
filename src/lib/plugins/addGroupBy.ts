@@ -136,6 +136,13 @@ export const getGroupedRows = <
 				aggregateCellIds[cell.rowColId()] = true;
 			}
 		});
+		subRows.forEach((subRow) => {
+			subRow.cells.forEach((cell) => {
+				if (cell.id === groupById) {
+					repeatCellIds[cell.rowColId()] = true;
+				}
+			});
+		});
 	}
 	return groupedRows;
 };
