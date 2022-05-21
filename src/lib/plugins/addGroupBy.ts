@@ -79,8 +79,8 @@ export const getGroupedRows = <
 		const { getGroupOn } = columnOption;
 		const groupOnValue = getGroupOn === undefined ? cell.value : getGroupOn(cell.value);
 		if (typeof groupOnValue === 'function' || typeof groupOnValue === 'object') {
-			throw new Error(
-				`Missing \`getGroupOn\` column option to aggregate column ${groupById} with object values`
+			console.warn(
+				`Missing \`getGroupOn\` column option to aggregate column "${groupById}" with object values`
 			);
 		}
 		const subRows = subRowsForGroupOnValue.get(groupOnValue) ?? [];
