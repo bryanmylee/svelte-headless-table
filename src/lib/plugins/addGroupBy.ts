@@ -3,7 +3,7 @@ import { BodyRow } from '$lib/bodyRows';
 import type { DataColumn } from '$lib/columns';
 import type { DataLabel } from '$lib/types/Label';
 import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
-import { getCloned } from '$lib/utils/clone';
+import { getCloned, getClonedRow } from '$lib/utils/clone';
 import { isShiftClick } from '$lib/utils/event';
 import { nonUndefined } from '$lib/utils/filter';
 import { arraySetStore } from '$lib/utils/store';
@@ -110,9 +110,8 @@ export const getGroupedRows = <
 				});
 			}
 			const columnCells = subRows.map((row) => row.cellForId[id]).filter(nonUndefined);
-			const firstColumnCell = columnCells[0];
-			if (!(firstColumnCell instanceof DataBodyCell)) {
-				return getCloned(firstColumnCell, {
+			if (!(columnCells[0] instanceof DataBodyCell)) {
+				return getCloned(columnCells[0], {
 					row: groupRow,
 				});
 			}
@@ -127,14 +126,12 @@ export const getGroupedRows = <
 			});
 		});
 		groupRow.cells = groupRowCells;
-		// FIXME How do we get a copy of subRows and cells with updated depth and
-		// id, while preserving the `cells` and `cellForId` relationships?
-		// Temporarily modify the subRow properties in place.
-		subRows.forEach((subRow) => {
-			subRow.id = `${groupRow.id}>${subRow.id}`;
-			subRow.depth = subRow.depth + 1;
+		groupRow.subRows = subRows.map((subRow) => {
+			return getClonedRow(subRow, {
+				id: `${groupRow.id}>${subRow.id}`,
+				depth: subRow.depth + 1,
+			} as Partial<typeof subRow>);
 		});
-		groupRow.subRows = subRows;
 		groupedRows.push(groupRow as Row);
 		groupRow.cells.forEach((cell) => {
 			if (cell.id === groupById) {
@@ -143,7 +140,7 @@ export const getGroupedRows = <
 				aggregateCellIds[cell.rowColId()] = true;
 			}
 		});
-		subRows.forEach((subRow) => {
+		groupRow.subRows.forEach((subRow) => {
 			subRow.cells.forEach((cell) => {
 				if (cell.id === groupById) {
 					repeatCellIds[cell.rowColId()] = true;
