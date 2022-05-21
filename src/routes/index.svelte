@@ -265,7 +265,9 @@
 							class:aggregate={props.group.aggregated}
 							class:repeat={props.group.repeated}
 						>
-							<Render of={cell.render()} />
+							{#if !props.group.repeated}
+								<Render of={cell.render()} />
+							{/if}
 						</td>
 					</Subscribe>
 				{/each}

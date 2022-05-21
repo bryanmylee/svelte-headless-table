@@ -47,10 +47,11 @@ export type GroupByPropSet = NewTablePropSet<{
 	};
 }>;
 
-interface CellMetadata {
+interface GetGroupedRowsMetadata {
 	repeatCellIds: Record<string, boolean>;
 	aggregateCellIds: Record<string, boolean>;
 	groupCellIds: Record<string, boolean>;
+	allGroupByIds: string[];
 }
 
 const getIdPrefix = (id: string): string => {
@@ -76,7 +77,7 @@ export const getGroupedRows = <
 	rows: Row[],
 	groupByIds: string[],
 	columnOptions: Record<string, GroupByColumnOptions<Item>>,
-	{ repeatCellIds, aggregateCellIds, groupCellIds }: CellMetadata
+	{ repeatCellIds, aggregateCellIds, groupCellIds, allGroupByIds }: GetGroupedRowsMetadata
 ): Row[] => {
 	if (groupByIds.length === 0) {
 		return rows;
@@ -162,6 +163,7 @@ export const getGroupedRows = <
 			repeatCellIds,
 			aggregateCellIds,
 			groupCellIds,
+			allGroupByIds,
 		});
 		groupedRows.push(groupRow as Row);
 		groupRow.cells.forEach((cell) => {
@@ -173,7 +175,7 @@ export const getGroupedRows = <
 		});
 		groupRow.subRows.forEach((subRow) => {
 			subRow.cells.forEach((cell) => {
-				if (cell.id === groupById) {
+				if (allGroupByIds.includes(cell.id) && groupCellIds[cell.rowColId()] !== true) {
 					repeatCellIds[cell.rowColId()] = true;
 				}
 			});
@@ -217,6 +219,7 @@ export const addGroupBy =
 					repeatCellIds: $repeatCellIds,
 					aggregateCellIds: $aggregateCellIds,
 					groupCellIds: $groupCellIds,
+					allGroupByIds: $groupByIds,
 				});
 				repeatCellIds.set($repeatCellIds);
 				aggregateCellIds.set($aggregateCellIds);
