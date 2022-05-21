@@ -53,6 +53,14 @@ interface CellMetadata {
 	groupCellIds: Record<string, boolean>;
 }
 
+const getIdPrefix = (id: string) => {
+	const prefixTokens = id.split('>').slice(0, -1);
+	if (prefixTokens.length === 0) {
+		return '';
+	}
+	return `${prefixTokens.join('>')}>`;
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getGroupedRows = <
 	Item,
@@ -68,6 +76,10 @@ export const getGroupedRows = <
 	if (groupByIds.length === 0) {
 		return rows;
 	}
+	if (rows.length === 0) {
+		return rows;
+	}
+	const idPrefix = getIdPrefix(rows[0].id);
 	const [groupById, ...restIds] = groupByIds;
 
 	const subRowsForGroupOnValue = new Map<GroupOn, Row[]>();
@@ -94,37 +106,46 @@ export const getGroupedRows = <
 		// Guaranteed to have at least one subRow.
 		const firstRow = subRows[0];
 		const groupRow = new BodyRow({
-			id: `${groupRowIdx++}`,
+			id: `${idPrefix}${groupRowIdx++}`,
+			// TODO Differentiate data rows and grouped rows.
 			original: firstRow.original,
 			depth: firstRow.depth,
 			cells: [],
 			cellForId: {},
 		});
-		const groupRowCells = firstRow.cells.map((cell) => {
-			const { id } = cell.column;
-			if (id === groupById) {
-				return new DataBodyCell({
+		const groupRowCellForId = Object.fromEntries(
+			Object.entries(firstRow.cellForId).map(([id, cell]) => {
+				if (id === groupById) {
+					const newCell = new DataBodyCell({
+						column: cell.column as DataColumn<Item>,
+						row: groupRow,
+						value: groupOnValue,
+					});
+					return [id, newCell];
+				}
+				const columnCells = subRows.map((row) => row.cellForId[id]).filter(nonUndefined);
+				if (!(columnCells[0] instanceof DataBodyCell)) {
+					const newCell = getCloned(columnCells[0], {
+						row: groupRow,
+					});
+					return [id, newCell];
+				}
+				const { cell: label, getAggregateValue } = columnOptions[id] ?? {};
+				const columnValues = (columnCells as DataBodyCell<Item>[]).map((cell) => cell.value);
+				const value = getAggregateValue === undefined ? '' : getAggregateValue(columnValues);
+				const newCell = new DataBodyCell({
 					column: cell.column as DataColumn<Item>,
 					row: groupRow,
-					value: groupOnValue,
+					value,
+					label,
 				});
-			}
-			const columnCells = subRows.map((row) => row.cellForId[id]).filter(nonUndefined);
-			if (!(columnCells[0] instanceof DataBodyCell)) {
-				return getCloned(columnCells[0], {
-					row: groupRow,
-				});
-			}
-			const { cell: label, getAggregateValue } = columnOptions[id] ?? {};
-			const columnValues = (columnCells as DataBodyCell<Item>[]).map((cell) => cell.value);
-			const value = getAggregateValue === undefined ? '' : getAggregateValue(columnValues);
-			return new DataBodyCell({
-				column: cell.column as DataColumn<Item>,
-				row: groupRow,
-				value,
-				label,
-			});
+				return [id, newCell];
+			})
+		);
+		const groupRowCells = firstRow.cells.map((cell) => {
+			return groupRowCellForId[cell.id];
 		});
+		groupRow.cellForId = groupRowCellForId;
 		groupRow.cells = groupRowCells;
 		groupRow.subRows = subRows.map((subRow) => {
 			return getClonedRow(subRow, {
