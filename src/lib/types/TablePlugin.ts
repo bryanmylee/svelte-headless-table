@@ -33,13 +33,15 @@ export type TablePluginInstance<
 };
 
 export type AnyPlugins = Record<
-	string,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	any,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	TablePlugin<any, any, any, any>
 >;
 
 export type AnyPluginInstances = Record<
-	string,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	any,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	TablePluginInstance<any, any, any, any>
 >;
