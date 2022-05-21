@@ -33,7 +33,7 @@ export abstract class BodyCell<
 	abstract attrs(): Readable<BodyCellAttributes<Item, Plugins>>;
 
 	rowColId(): string {
-		return `${this.row.id}-${this.column.id}`;
+		return `${this.row.id}:${this.column.id}`;
 	}
 }
 
