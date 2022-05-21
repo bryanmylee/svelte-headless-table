@@ -27,15 +27,19 @@ export type ReadOrWritableKeys<T> = {
 export const Undefined = readable(undefined);
 export const UndefinedAs = <T>() => Undefined as unknown as Readable<T>;
 
+export interface ToggleOptions {
+	clearOthers?: boolean;
+}
+
 export interface ArraySetStoreOptions<T> {
 	isEqual?: (a: T, b: T) => boolean;
 }
 
 export interface ArraySetStore<T> extends Writable<T[]> {
-	toggle: (item: T) => void;
+	toggle: (item: T, options?: ToggleOptions) => void;
 	add: (item: T) => void;
 	remove: (item: T) => void;
-	reset: () => void;
+	clear: () => void;
 }
 
 export const arraySetStore = <T>(
@@ -43,11 +47,17 @@ export const arraySetStore = <T>(
 	{ isEqual = (a, b) => a === b }: ArraySetStoreOptions<T> = {}
 ): ArraySetStore<T> => {
 	const { subscribe, update, set } = writable(initial);
-	const toggle = (item: T) => {
+	const toggle = (item: T, { clearOthers = false }: ToggleOptions = {}) => {
 		update(($arraySet) => {
 			const index = $arraySet.findIndex(($item) => isEqual($item, item));
 			if (index === -1) {
+				if (clearOthers) {
+					return [item];
+				}
 				return [...$arraySet, item];
+			}
+			if (clearOthers) {
+				return [];
 			}
 			return [...$arraySet.slice(0, index), ...$arraySet.slice(index + 1)];
 		});
@@ -70,7 +80,7 @@ export const arraySetStore = <T>(
 			return [...$arraySet.slice(0, index), ...$arraySet.slice(index + 1)];
 		});
 	};
-	const reset = () => {
+	const clear = () => {
 		set([]);
 	};
 	return {
@@ -80,7 +90,7 @@ export const arraySetStore = <T>(
 		toggle,
 		add,
 		remove,
-		reset,
+		clear,
 	};
 };
 
@@ -88,7 +98,7 @@ export interface RecordSetStore<T extends string | number> extends Writable<Reco
 	toggle: (item: T) => void;
 	add: (item: T) => void;
 	remove: (item: T) => void;
-	reset: () => void;
+	clear: () => void;
 }
 
 export const recordSetStore = <T extends string | number>(
@@ -119,7 +129,7 @@ export const recordSetStore = <T extends string | number>(
 			return $recordSet;
 		});
 	};
-	const reset = () => {
+	const clear = () => {
 		set({} as Record<T, boolean>);
 	};
 	return {
@@ -129,6 +139,6 @@ export const recordSetStore = <T extends string | number>(
 		toggle,
 		add,
 		remove,
-		reset,
+		clear,
 	};
 };

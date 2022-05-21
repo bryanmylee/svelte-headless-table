@@ -157,7 +157,7 @@ it('resets the set', () => {
 		3: true,
 	});
 
-	actual.reset();
+	actual.clear();
 
 	const expected = {};
 

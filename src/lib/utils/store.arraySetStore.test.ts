@@ -47,6 +47,36 @@ it('toggles a non-existing value to add it', () => {
 	expect(get(actual)).toStrictEqual(expected);
 });
 
+it('toggles an existing value to remove it and clears others', () => {
+	const actual = arraySetStore([1, 2, 3]);
+
+	actual.toggle(1, { clearOthers: true });
+
+	const expected: number[] = [];
+
+	expect(get(actual)).toStrictEqual(expected);
+});
+
+it('toggles the last value to remove it', () => {
+	const actual = arraySetStore([1, 2, 3]);
+
+	actual.toggle(3, { clearOthers: true });
+
+	const expected: number[] = [];
+
+	expect(get(actual)).toStrictEqual(expected);
+});
+
+it('toggles a non-existing value to add it', () => {
+	const actual = arraySetStore([1, 2, 3]);
+
+	actual.toggle(4, { clearOthers: true });
+
+	const expected: number[] = [4];
+
+	expect(get(actual)).toStrictEqual(expected);
+});
+
 it('adds a value', () => {
 	const actual = arraySetStore([1, 2, 3]);
 
@@ -90,7 +120,7 @@ it('removes a non-existing value and changes nothing', () => {
 it('resets the set', () => {
 	const actual = arraySetStore([1, 2, 3]);
 
-	actual.reset();
+	actual.clear();
 
 	const expected: number[] = [];
 
