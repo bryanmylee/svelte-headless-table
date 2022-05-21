@@ -27,7 +27,7 @@
 	import ExpandIndicator from './_ExpandIndicator.svelte';
 	import { getDistinct } from '$lib/utils/array';
 
-	const data = readable(createSamples(10));
+	const data = readable(createSamples(50));
 
 	const table = createTable(data, {
 		subRows: addSubRows({
@@ -265,7 +265,6 @@
 							class:aggregate={props.group.aggregated}
 							class:repeat={props.group.repeated}
 						>
-							{cell.rowColId()}
 							<Render of={cell.render()} />
 						</td>
 					</Subscribe>

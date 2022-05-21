@@ -53,12 +53,17 @@ interface CellMetadata {
 	groupCellIds: Record<string, boolean>;
 }
 
-const getIdPrefix = (id: string) => {
+const getIdPrefix = (id: string): string => {
 	const prefixTokens = id.split('>').slice(0, -1);
 	if (prefixTokens.length === 0) {
 		return '';
 	}
 	return `${prefixTokens.join('>')}>`;
+};
+
+const getIdLeaf = (id: string): string => {
+	const tokens = id.split('>');
+	return tokens[tokens.length - 1] ?? '';
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -147,11 +152,16 @@ export const getGroupedRows = <
 		});
 		groupRow.cellForId = groupRowCellForId;
 		groupRow.cells = groupRowCells;
-		groupRow.subRows = subRows.map((subRow) => {
+		const groupRowSubRows = subRows.map((subRow) => {
 			return getClonedRow(subRow, {
-				id: `${groupRow.id}>${subRow.id}`,
+				id: `${groupRow.id}>${getIdLeaf(subRow.id)}`,
 				depth: subRow.depth + 1,
 			} as Partial<typeof subRow>);
+		});
+		groupRow.subRows = getGroupedRows(groupRowSubRows, restIds, columnOptions, {
+			repeatCellIds,
+			aggregateCellIds,
+			groupCellIds,
 		});
 		groupedRows.push(groupRow as Row);
 		groupRow.cells.forEach((cell) => {
