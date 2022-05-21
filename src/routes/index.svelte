@@ -27,7 +27,7 @@
 	import ExpandIndicator from './_ExpandIndicator.svelte';
 	import { getDistinct } from '$lib/utils/array';
 
-	const data = readable(createSamples(50));
+	const data = readable(createSamples(10));
 
 	const table = createTable(data, {
 		subRows: addSubRows({
@@ -97,7 +97,8 @@
 					accessor: 'firstName',
 					plugins: {
 						group: {
-							getAggregateValue: (values) => `${getDistinct(values).length} unique`,
+							getAggregateValue: (values) => getDistinct(values).length,
+							cell: ({ value }) => `${value} unique`,
 						},
 						sort: {
 							invert: true,
@@ -117,7 +118,8 @@
 					accessor: 'lastName',
 					plugins: {
 						group: {
-							getAggregateValue: (values) => `${getDistinct(values).length} unique`,
+							getAggregateValue: (values) => getDistinct(values).length,
+							cell: ({ value }) => `${value} unique`,
 						},
 					},
 				}),
@@ -136,7 +138,7 @@
 					plugins: {
 						group: {
 							getAggregateValue: (values) => mean(values),
-							cell: ({ value }) => (value as number).toFixed(2),
+							cell: ({ value }) => `${(value as number).toFixed(2)} (avg)`,
 						},
 					},
 				}),
@@ -147,9 +149,6 @@
 					plugins: {
 						sort: {
 							disable: true,
-						},
-						group: {
-							getAggregateValue: (values) => `${getDistinct(values).length} unique`,
 						},
 						filter: {
 							fn: matchFilter,
@@ -164,7 +163,7 @@
 					plugins: {
 						group: {
 							getAggregateValue: (values) => sum(values),
-							cell: ({ value }) => `Total visits: ${value}`,
+							cell: ({ value }) => `${value} (total)`,
 						},
 						filter: {
 							fn: numberRangeFilter,
@@ -180,6 +179,7 @@
 					plugins: {
 						group: {
 							getAggregateValue: (values) => mean(values),
+							cell: ({ value }) => `${(value as number).toFixed(2)} (avg)`,
 						},
 					},
 				}),
@@ -189,11 +189,14 @@
 
 	const { visibleColumns, headerRows, pageRows, pluginStates } = table.createViewModel(columns);
 
+	const { groupByIds } = pluginStates.group;
 	const { sortKeys } = pluginStates.sort;
 	const { filterValues } = pluginStates.filter;
 	const { filterValue } = pluginStates.tableFilter;
 	const { pageIndex, pageCount, pageSize, hasPreviousPage, hasNextPage } = pluginStates.page;
+	const { expandedIds } = pluginStates.expand;
 	const { columnIdOrder } = pluginStates.orderColumns;
+	$: $columnIdOrder = ['expanded', ...$groupByIds];
 	const { hiddenColumnIds } = pluginStates.hideColumns;
 	$hiddenColumnIds = ['progress'];
 </script>
@@ -251,7 +254,11 @@
 							{...attrs}
 							class:sorted={props.sort.order !== undefined}
 							class:matches={props.tableFilter.matches}
+							class:group={props.group.isGroup}
+							class:aggregate={props.group.isAggregate}
+							class:repeat={props.group.isRepeat}
 						>
+							{cell.rowColId()}
 							<Render of={cell.render()} />
 						</td>
 					</Subscribe>
@@ -267,6 +274,7 @@
 			filterValues: $filterValues,
 			columnIdOrder: $columnIdOrder,
 			hiddenColumnIds: $hiddenColumnIds,
+			expandedIds: $expandedIds,
 		},
 		null,
 		2
@@ -300,5 +308,15 @@
 
 	.matches {
 		outline: 2px solid rgb(144, 191, 148);
+	}
+
+	.group {
+		background: rgb(144, 191, 148);
+	}
+	.aggregate {
+		background: rgb(238, 212, 100);
+	}
+	.repeat {
+		background: rgb(255, 139, 139);
 	}
 </style>

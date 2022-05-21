@@ -1,11 +1,10 @@
-import { DataBodyCell } from '$lib/bodyCells';
+import { DataBodyCell, DisplayBodyCell } from '$lib/bodyCells';
 import { BodyRow } from '$lib/bodyRows';
 import type { DataColumn } from '$lib/columns';
 import type { DataLabel } from '$lib/types/Label';
 import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
-import { getCloned } from '$lib/utils/clone';
 import { nonUndefined } from '$lib/utils/filter';
-import { derived, writable, type Writable } from 'svelte/store';
+import { derived, writable, type Readable, type Writable } from 'svelte/store';
 
 export interface GroupByConfig {
 	initialGroupByIds?: string[];
@@ -38,6 +37,12 @@ export type GroupByPropSet = NewTablePropSet<{
 	};
 }>;
 
+interface CellMetadata {
+	repeatCellIds: Record<string, boolean>;
+	aggregateCellIds: Record<string, boolean>;
+	groupCellIds: Record<string, boolean>;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getGroupedRows = <
 	Item,
@@ -47,12 +52,14 @@ export const getGroupedRows = <
 >(
 	rows: Row[],
 	groupByIds: string[],
-	columnOptions: Record<string, GroupByColumnOptions<Item>>
+	columnOptions: Record<string, GroupByColumnOptions<Item>>,
+	{ repeatCellIds, aggregateCellIds, groupCellIds }: CellMetadata
 ): Row[] => {
 	if (groupByIds.length === 0) {
 		return rows;
 	}
 	const [groupById, ...restIds] = groupByIds;
+
 	const subRowsForGroupOnValue = new Map<GroupOn, Row[]>();
 	for (const row of rows) {
 		const cell = row.cellForId[groupById];
@@ -71,6 +78,7 @@ export const getGroupedRows = <
 		// TODO track which cells are repeat, aggregate, and group
 		subRowsForGroupOnValue.set(groupOnValue, [...subRows, row]);
 	}
+
 	const groupedRows: Row[] = [];
 	let groupRowIdx = 0;
 	for (const [groupOnValue, subRows] of subRowsForGroupOnValue.entries()) {
@@ -83,9 +91,8 @@ export const getGroupedRows = <
 			cells: [],
 			cellForId: {},
 		});
-		const cells = firstRow.cells.map((cell) => {
+		const groupRowCells = firstRow.cells.map((cell) => {
 			const { id } = cell.column;
-			const { cell: label, getAggregateValue } = columnOptions[id] ?? {};
 			if (id === groupById) {
 				return new DataBodyCell({
 					column: cell.column as DataColumn<Item>,
@@ -95,11 +102,14 @@ export const getGroupedRows = <
 			}
 			const columnCells = subRows.map((row) => row.cellForId[id]).filter(nonUndefined);
 			const firstColumnCell = columnCells[0];
-			if (!(firstColumnCell instanceof DataBodyCell)) {
-				return getCloned(firstColumnCell, {
+			if (firstColumnCell instanceof DisplayBodyCell) {
+				return new DisplayBodyCell({
 					row: groupRow,
-				} as Partial<typeof firstColumnCell>);
+					column: firstColumnCell.column,
+					label: firstColumnCell.label,
+				});
 			}
+			const { cell: label, getAggregateValue } = columnOptions[id] ?? {};
 			const columnValues = (columnCells as DataBodyCell<Item>[]).map((cell) => cell.value);
 			const value = getAggregateValue === undefined ? '' : getAggregateValue(columnValues);
 			return new DataBodyCell({
@@ -109,14 +119,23 @@ export const getGroupedRows = <
 				label,
 			});
 		});
-		groupRow.cells = cells;
-		groupRow.subRows = subRows.map((row) =>
-			getCloned(row, {
-				id: `${groupRow.id}>${row.id}`,
-				depth: row.depth + 1,
-			} as Partial<Row>)
-		);
+		groupRow.cells = groupRowCells;
+		// FIXME How do we get a copy of subRows and cells with updated depth and
+		// id, while preserving the `cells` and `cellForId` relationships?
+		// Temporarily modify the subRow properties in place.
+		subRows.forEach((subRow) => {
+			subRow.id = `${groupRow.id}>${subRow.id}`;
+			subRow.depth = subRow.depth + 1;
+		});
+		groupRow.subRows = subRows;
 		groupedRows.push(groupRow as Row);
+		groupRow.cells.forEach((cell) => {
+			if (cell.id === groupById) {
+				groupCellIds[cell.rowColId()] = true;
+			} else {
+				aggregateCellIds[cell.rowColId()] = true;
+			}
+		});
 	}
 	return groupedRows;
 };
@@ -131,19 +150,49 @@ export const addGroupBy =
 	({ columnOptions }) => {
 		const groupByIds = writable(initialGroupByIds);
 
+		const repeatCellIds = writable<Record<string, boolean>>({});
+		const aggregateCellIds = writable<Record<string, boolean>>({});
+		const groupCellIds = writable<Record<string, boolean>>({});
+
 		const pluginState: GroupByState = {
 			groupByIds,
 		};
 
 		const deriveRows: DeriveRowsFn<Item> = (rows) => {
 			return derived([rows, groupByIds], ([$rows, $groupByIds]) => {
-				const _groupedRows = getGroupedRows($rows, $groupByIds, columnOptions);
-				return _groupedRows;
+				const $repeatCellIds = {};
+				const $aggregateCellIds = {};
+				const $groupCellIds = {};
+				const $groupedRows = getGroupedRows($rows, $groupByIds, columnOptions, {
+					repeatCellIds: $repeatCellIds,
+					aggregateCellIds: $aggregateCellIds,
+					groupCellIds: $groupCellIds,
+				});
+				repeatCellIds.set($repeatCellIds);
+				aggregateCellIds.set($aggregateCellIds);
+				groupCellIds.set($groupCellIds);
+				return $groupedRows;
 			});
 		};
 
 		return {
 			pluginState,
 			deriveRows,
+			hooks: {
+				'tbody.tr.td': (cell) => {
+					const props: Readable<GroupByPropSet['tbody.tr.td']> = derived(
+						[repeatCellIds, aggregateCellIds, groupCellIds],
+						([$repeatCellIds, $aggregateCellIds, $groupCellIds]) => {
+							const p = {
+								isRepeat: $repeatCellIds[cell.rowColId()] === true,
+								isAggregate: $aggregateCellIds[cell.rowColId()] === true,
+								isGroup: $groupCellIds[cell.rowColId()] === true,
+							};
+							return p;
+						}
+					);
+					return { props };
+				},
+			},
 		};
 	};
