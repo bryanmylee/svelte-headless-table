@@ -107,12 +107,13 @@ const getSortedRows = <Item, Row extends BodyRow<Item>>(
 	_sortedRows.sort((a, b) => {
 		for (const key of sortKeys) {
 			const invert = columnOptions[key.id]?.invert ?? false;
+			// TODO check why cellForId returns `undefined`.
 			const cellA = a.cellForId[key.id];
 			const cellB = b.cellForId[key.id];
 			let order = 0;
 			// Only need to check properties of `cellA` as both should have the same
 			// properties.
-			const getSortValue = columnOptions[cellA.id]?.getSortValue;
+			const getSortValue = columnOptions[key.id]?.getSortValue;
 			if (!(cellA instanceof DataBodyCell)) {
 				return 0;
 			}
