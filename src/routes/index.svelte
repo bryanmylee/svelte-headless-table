@@ -231,7 +231,13 @@
 									⬆️
 								{/if}
 							</div>
-							<span on:click|stopPropagation={props.group.toggle}>group</span>
+							<button on:click|stopPropagation={props.group.toggle}>
+								{#if props.group.grouped}
+									ungroup
+								{:else}
+									group
+								{/if}
+							</button>
 							{#if props.filter !== undefined}
 								<Render of={props.filter.render} />
 							{/if}
@@ -248,7 +254,7 @@
 	</thead>
 	<tbody>
 		{#each $pageRows as row (row.id)}
-			<tr id={row.id}>
+			<tr>
 				{#each row.cells as cell (cell.id)}
 					<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
 						<td
@@ -259,6 +265,7 @@
 							class:aggregate={props.group.aggregated}
 							class:repeat={props.group.repeated}
 						>
+							{cell.rowColId()}
 							<Render of={cell.render()} />
 						</td>
 					</Subscribe>
