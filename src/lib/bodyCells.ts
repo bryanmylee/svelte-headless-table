@@ -81,6 +81,15 @@ export class DataBodyCell<
 			return {};
 		});
 	}
+
+	clone(): DataBodyCell<Item, Plugins> {
+		return new DataBodyCell({
+			row: this.row,
+			column: this.column,
+			label: this.label,
+			value: this.value,
+		});
+	}
 }
 
 export type DisplayBodyCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = Omit<
@@ -113,6 +122,14 @@ export class DisplayBodyCell<Item, Plugins extends AnyPlugins = AnyPlugins> exte
 	attrs() {
 		return derived([], () => {
 			return {};
+		});
+	}
+
+	clone(): DisplayBodyCell<Item, Plugins> {
+		return new DisplayBodyCell({
+			row: this.row,
+			column: this.column,
+			label: this.label,
 		});
 	}
 }

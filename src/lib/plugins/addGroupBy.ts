@@ -1,8 +1,9 @@
-import { DataBodyCell, DisplayBodyCell } from '$lib/bodyCells';
+import { DataBodyCell } from '$lib/bodyCells';
 import { BodyRow } from '$lib/bodyRows';
 import type { DataColumn } from '$lib/columns';
 import type { DataLabel } from '$lib/types/Label';
 import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
+import { getCloned } from '$lib/utils/clone';
 import { isShiftClick } from '$lib/utils/event';
 import { nonUndefined } from '$lib/utils/filter';
 import { arraySetStore } from '$lib/utils/store';
@@ -84,7 +85,6 @@ export const getGroupedRows = <
 			);
 		}
 		const subRows = subRowsForGroupOnValue.get(groupOnValue) ?? [];
-		// TODO track which cells are repeat, aggregate, and group
 		subRowsForGroupOnValue.set(groupOnValue, [...subRows, row]);
 	}
 
@@ -111,11 +111,9 @@ export const getGroupedRows = <
 			}
 			const columnCells = subRows.map((row) => row.cellForId[id]).filter(nonUndefined);
 			const firstColumnCell = columnCells[0];
-			if (firstColumnCell instanceof DisplayBodyCell) {
-				return new DisplayBodyCell({
+			if (!(firstColumnCell instanceof DataBodyCell)) {
+				return getCloned(firstColumnCell, {
 					row: groupRow,
-					column: firstColumnCell.column,
-					label: firstColumnCell.label,
 				});
 			}
 			const { cell: label, getAggregateValue } = columnOptions[id] ?? {};

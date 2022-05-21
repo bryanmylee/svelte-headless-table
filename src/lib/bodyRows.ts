@@ -45,6 +45,16 @@ export class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends Tabl
 			return {};
 		});
 	}
+
+	clone(): BodyRow<Item, Plugins> {
+		return new BodyRow({
+			id: this.id,
+			cellForId: this.cellForId,
+			cells: this.cells,
+			original: this.original,
+			depth: this.depth,
+		});
+	}
 }
 
 /**

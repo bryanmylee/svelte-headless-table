@@ -31,6 +31,13 @@ export class HeaderRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends Ta
 		super({ id });
 		this.cells = cells;
 	}
+
+	clone(): HeaderRow<Item, Plugins> {
+		return new HeaderRow({
+			id: this.id,
+			cells: this.cells,
+		});
+	}
 }
 
 export const getHeaderRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
