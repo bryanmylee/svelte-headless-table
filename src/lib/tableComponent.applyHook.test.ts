@@ -2,7 +2,13 @@ import { get, readable } from 'svelte/store';
 import { TableComponent } from './tableComponent';
 import type { AnyPlugins } from './types/TablePlugin';
 
-class TestComponent<Item> extends TableComponent<Item, AnyPlugins, 'tbody.tr'> {}
+class TestComponent<Item> extends TableComponent<Item, AnyPlugins, 'tbody.tr'> {
+	clone(): TableComponent<Item, AnyPlugins, 'tbody.tr'> {
+		return new TestComponent({
+			id: this.id,
+		});
+	}
+}
 
 it('hooks plugin props', () => {
 	const component = new TestComponent({ id: '0' });
