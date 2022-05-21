@@ -258,7 +258,6 @@
 							class:aggregate={props.group.isAggregate}
 							class:repeat={props.group.isRepeat}
 						>
-							{cell.rowColId()}
 							<Render of={cell.render()} />
 						</td>
 					</Subscribe>
