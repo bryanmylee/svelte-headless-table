@@ -3,6 +3,7 @@ import type { BodyRow } from '$lib/bodyRows';
 import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
 import { getCloned } from '$lib/utils/clone';
 import { compare } from '$lib/utils/compare';
+import { isShiftClick } from '$lib/utils/event';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 
 export interface SortByConfig {
@@ -94,11 +95,6 @@ interface ToggleOptions {
 export type WritableSortKeys = Writable<SortKey[]> & {
 	toggleId: (id: string, options: ToggleOptions) => void;
 	clearId: (id: string) => void;
-};
-
-const isShiftClick = (event: Event) => {
-	if (!(event instanceof MouseEvent)) return false;
-	return event.shiftKey;
 };
 
 const getSortedRows = <Item, Row extends BodyRow<Item>>(
@@ -197,7 +193,7 @@ export const addSortBy =
 						const key = $sortKeys.find((k) => k.id === cell.id);
 						const toggle = (event: Event) => {
 							if (!cell.isData) return;
-							if (disabledSortIds.includes(cell.id)) return;
+							if (disabled) return;
 							sortKeys.toggleId(cell.id, {
 								multiSort: disableMultiSort ? false : isMultiSortEvent(event),
 							});

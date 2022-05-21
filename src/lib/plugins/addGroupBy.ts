@@ -3,11 +3,15 @@ import { BodyRow } from '$lib/bodyRows';
 import type { DataColumn } from '$lib/columns';
 import type { DataLabel } from '$lib/types/Label';
 import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
+import { isShiftClick } from '$lib/utils/event';
 import { nonUndefined } from '$lib/utils/filter';
+import { arraySetStore } from '$lib/utils/store';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 
 export interface GroupByConfig {
 	initialGroupByIds?: string[];
+	disableMultiGroup?: boolean;
+	isMultiGroupEvent?: (event: Event) => boolean;
 }
 
 export interface GroupByState {
@@ -30,10 +34,15 @@ export interface GroupByColumnOptions<
 }
 
 export type GroupByPropSet = NewTablePropSet<{
+	'thead.tr.th': {
+		grouped: boolean;
+		toggle: (event: Event) => void;
+		clear: () => void;
+	};
 	'tbody.tr.td': {
-		isRepeat: boolean;
-		isAggregate: boolean;
-		isGroup: boolean;
+		repeated: boolean;
+		aggregated: boolean;
+		grouped: boolean;
 	};
 }>;
 
@@ -148,14 +157,22 @@ export const getGroupedRows = <
 };
 
 export const addGroupBy =
-	<Item>({ initialGroupByIds = [] }: GroupByConfig = {}): TablePlugin<
+	<Item>({
+		initialGroupByIds = [],
+		disableMultiGroup = false,
+		isMultiGroupEvent = isShiftClick,
+	}: GroupByConfig = {}): TablePlugin<
 		Item,
 		GroupByState,
 		GroupByColumnOptions<Item>,
 		GroupByPropSet
 	> =>
 	({ columnOptions }) => {
-		const groupByIds = writable(initialGroupByIds);
+		const disabledGroupIds = Object.entries(columnOptions)
+			.filter(([, option]) => option.disable === true)
+			.map(([columnId]) => columnId);
+
+		const groupByIds = arraySetStore(initialGroupByIds);
 
 		const repeatCellIds = writable<Record<string, boolean>>({});
 		const aggregateCellIds = writable<Record<string, boolean>>({});
@@ -186,16 +203,37 @@ export const addGroupBy =
 			pluginState,
 			deriveRows,
 			hooks: {
+				'thead.tr.th': (cell) => {
+					const disabled = disabledGroupIds.includes(cell.id);
+					const props = derived(groupByIds, ($groupByIds) => {
+						const grouped = $groupByIds.includes(cell.id);
+						const toggle = (event: Event) => {
+							if (!cell.isData) return;
+							if (disabled) return;
+							groupByIds.toggle(cell.id, {
+								clearOthers: disableMultiGroup || !isMultiGroupEvent(event),
+							});
+						};
+						const clear = () => {
+							groupByIds.remove(cell.id);
+						};
+						return {
+							grouped,
+							toggle,
+							clear,
+						};
+					});
+					return { props };
+				},
 				'tbody.tr.td': (cell) => {
 					const props: Readable<GroupByPropSet['tbody.tr.td']> = derived(
 						[repeatCellIds, aggregateCellIds, groupCellIds],
 						([$repeatCellIds, $aggregateCellIds, $groupCellIds]) => {
-							const p = {
-								isRepeat: $repeatCellIds[cell.rowColId()] === true,
-								isAggregate: $aggregateCellIds[cell.rowColId()] === true,
-								isGroup: $groupCellIds[cell.rowColId()] === true,
+							return {
+								repeated: $repeatCellIds[cell.rowColId()] === true,
+								aggregated: $aggregateCellIds[cell.rowColId()] === true,
+								grouped: $groupCellIds[cell.rowColId()] === true,
 							};
-							return p;
 						}
 					);
 					return { props };

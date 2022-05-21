@@ -196,7 +196,7 @@
 	const { pageIndex, pageCount, pageSize, hasPreviousPage, hasNextPage } = pluginStates.page;
 	const { expandedIds } = pluginStates.expand;
 	const { columnIdOrder } = pluginStates.orderColumns;
-	$: $columnIdOrder = ['expanded', ...$groupByIds];
+	// $: $columnIdOrder = ['expanded', ...$groupByIds];
 	const { hiddenColumnIds } = pluginStates.hideColumns;
 	$hiddenColumnIds = ['progress'];
 </script>
@@ -231,6 +231,7 @@
 									⬆️
 								{/if}
 							</div>
+							<span on:click|stopPropagation={props.group.toggle}>group</span>
 							{#if props.filter !== undefined}
 								<Render of={props.filter.render} />
 							{/if}
@@ -254,9 +255,9 @@
 							{...attrs}
 							class:sorted={props.sort.order !== undefined}
 							class:matches={props.tableFilter.matches}
-							class:group={props.group.isGroup}
-							class:aggregate={props.group.isAggregate}
-							class:repeat={props.group.isRepeat}
+							class:group={props.group.grouped}
+							class:aggregate={props.group.aggregated}
+							class:repeat={props.group.repeated}
 						>
 							<Render of={cell.render()} />
 						</td>
@@ -269,6 +270,7 @@
 
 <pre>{JSON.stringify(
 		{
+			groupByIds: $groupByIds,
 			sortKeys: $sortKeys,
 			filterValues: $filterValues,
 			columnIdOrder: $columnIdOrder,
