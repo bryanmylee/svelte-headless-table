@@ -33,14 +33,14 @@
 		subRows: addSubRows({
 			children: 'children',
 		}),
-		group: addGroupBy({
-			initialGroupByIds: ['status'],
-		}),
-		sort: addSortBy(),
 		filter: addColumnFilters(),
 		tableFilter: addTableFilter({
 			includeHiddenColumns: true,
 		}),
+		group: addGroupBy({
+			initialGroupByIds: ['status'],
+		}),
+		sort: addSortBy(),
 		expand: addExpandedRows({
 			initialExpandedIds: { 1: true },
 		}),
@@ -103,9 +103,6 @@
 						sort: {
 							invert: true,
 						},
-						tableFilter: {
-							exclude: true,
-						},
 						filter: {
 							fn: textPrefixFilter,
 							render: ({ filterValue, values }) =>
@@ -154,6 +151,9 @@
 							fn: matchFilter,
 							render: ({ filterValue, preFilteredValues }) =>
 								createRender(SelectFilter, { filterValue, preFilteredValues }),
+						},
+						tableFilter: {
+							exclude: true,
 						},
 					},
 				}),
