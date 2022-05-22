@@ -39,8 +39,8 @@ Svelte Headless Table is designed with extensibility in mind. Its complex featur
 - [x] [addHiddenColumns](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-hidden-columns)
 - [x] [addPagination](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-pagination)
 - [x] [addSubRows](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-sub-rows)
+- [x] [addGroupBy](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-group-by)
 - [x] [addExpandedRows](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-expanded-rows)
-- [ ] addGroupBy
 - [ ] addRowSelect
 - [ ] addResizeColumns
 - [ ] addEditable
