@@ -51,6 +51,8 @@ export abstract class HeaderCell<
 			};
 		});
 	}
+
+	abstract clone(): HeaderCell<Item, Plugins>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -32,6 +32,8 @@ export abstract class BodyCell<
 
 	abstract attrs(): Readable<BodyCellAttributes<Item, Plugins>>;
 
+	abstract clone(): BodyCell<Item, Plugins>;
+
 	rowColId(): string {
 		return `${this.row.id}:${this.column.id}`;
 	}
@@ -83,14 +85,14 @@ export class DataBodyCell<
 	}
 
 	clone(): DataBodyCell<Item, Plugins> {
-		const cell = new DataBodyCell({
+		const clonedCell = new DataBodyCell({
 			row: this.row,
 			column: this.column,
 			label: this.label,
 			value: this.value,
 		});
-		cell.metadataForName = this.metadataForName;
-		return cell;
+		clonedCell.metadataForName = this.metadataForName;
+		return clonedCell;
 	}
 }
 
@@ -128,10 +130,12 @@ export class DisplayBodyCell<Item, Plugins extends AnyPlugins = AnyPlugins> exte
 	}
 
 	clone(): DisplayBodyCell<Item, Plugins> {
-		return new DisplayBodyCell({
+		const clonedCell = new DisplayBodyCell({
 			row: this.row,
 			column: this.column,
 			label: this.label,
 		});
+		clonedCell.metadataForName = this.metadataForName;
+		return clonedCell;
 	}
 }

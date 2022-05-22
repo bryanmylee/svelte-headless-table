@@ -3,7 +3,6 @@ import { BodyCell, DataBodyCell, DisplayBodyCell } from './bodyCells';
 import { DataColumn, DisplayColumn, type FlatColumn } from './columns';
 import { TableComponent } from './tableComponent';
 import type { AnyPlugins } from './types/TablePlugin';
-import { getCloned } from './utils/clone';
 import { nonUndefined } from './utils/filter';
 
 export interface BodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
@@ -16,6 +15,10 @@ export interface BodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-interface
 export interface BodyRowAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> {}
+
+interface BodyRowCloneProps {
+	includeCells?: boolean;
+}
 
 export class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends TableComponent<
 	Item,
@@ -46,14 +49,29 @@ export class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends Tabl
 		});
 	}
 
-	clone(): BodyRow<Item, Plugins> {
-		return new BodyRow({
+	clone({ includeCells = false }: BodyRowCloneProps = {}): BodyRow<Item, Plugins> {
+		const clonedRow = new BodyRow({
 			id: this.id,
 			cellForId: this.cellForId,
 			cells: this.cells,
 			original: this.original,
 			depth: this.depth,
 		});
+		clonedRow.metadataForName = this.metadataForName;
+		if (!includeCells) {
+			return clonedRow;
+		}
+		const clonedCellsForId = Object.fromEntries(
+			Object.entries(clonedRow.cellForId).map(([id, cell]) => {
+				const clonedCell = cell.clone();
+				clonedCell.row = clonedRow;
+				return [id, clonedCell];
+			})
+		);
+		const clonedCells = clonedRow.cells.map(({ id }) => clonedCellsForId[id]);
+		clonedRow.cellForId = clonedCellsForId;
+		clonedRow.cells = clonedCells;
+		return clonedRow;
 	}
 }
 
@@ -130,9 +148,9 @@ export const getColumnedBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugin
 		// Create a shallow copy of `row.cells` to reassign each `cell`'s `row`
 		// reference.
 		const cells = row.cells.map((cell) => {
-			return getCloned(cell, {
-				row: columnedRows[rowIdx],
-			});
+			const clonedCell = cell.clone();
+			clonedCell.row = columnedRows[rowIdx];
+			return clonedCell;
 		});
 		const visibleCells = columnIdOrder
 			.map((cid) => {

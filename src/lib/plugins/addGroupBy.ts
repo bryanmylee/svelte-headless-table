@@ -3,7 +3,6 @@ import { BodyRow } from '$lib/bodyRows';
 import type { DataColumn } from '$lib/columns';
 import type { DataLabel } from '$lib/types/Label';
 import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
-import { getCloned, getClonedRow } from '$lib/utils/clone';
 import { isShiftClick } from '$lib/utils/event';
 import { nonUndefined } from '$lib/utils/filter';
 import { arraySetStore } from '$lib/utils/store';
@@ -131,10 +130,9 @@ export const getGroupedRows = <
 				}
 				const columnCells = subRows.map((row) => row.cellForId[id]).filter(nonUndefined);
 				if (!(columnCells[0] instanceof DataBodyCell)) {
-					const newCell = getCloned(columnCells[0], {
-						row: groupRow,
-					});
-					return [id, newCell];
+					const clonedCell = columnCells[0].clone();
+					clonedCell.row = groupRow;
+					return [id, clonedCell];
 				}
 				const { cell: label, getAggregateValue } = columnOptions[id] ?? {};
 				const columnValues = (columnCells as DataBodyCell<Item>[]).map((cell) => cell.value);
@@ -154,10 +152,10 @@ export const getGroupedRows = <
 		groupRow.cellForId = groupRowCellForId;
 		groupRow.cells = groupRowCells;
 		const groupRowSubRows = subRows.map((subRow) => {
-			return getClonedRow(subRow, {
-				id: `${groupRow.id}>${getIdLeaf(subRow.id)}`,
-				depth: subRow.depth + 1,
-			} as Partial<typeof subRow>);
+			const clonedRow = subRow.clone({ includeCells: true });
+			clonedRow.id = `${groupRow.id}>${getIdLeaf(subRow.id)}`;
+			clonedRow.depth = subRow.depth + 1;
+			return clonedRow;
 		});
 		groupRow.subRows = getGroupedRows(groupRowSubRows, restIds, columnOptions, {
 			repeatCellIds,

@@ -316,7 +316,7 @@
 	}
 
 	.matches {
-		outline: 2px solid rgb(144, 191, 148);
+		font-weight: 700;
 	}
 
 	.group {

@@ -6,7 +6,6 @@ import type { RenderConfig } from '$lib/render';
 import type { PluginInitTableState } from '$lib/createViewModel';
 import { DataBodyCell } from '$lib/bodyCells';
 import { DataHeaderCell } from '$lib/headerCells';
-import { getCloned } from '$lib/utils/clone';
 
 export interface ColumnFiltersState<Item> {
 	filterValues: Writable<Record<string, unknown>>;
@@ -54,7 +53,7 @@ const getFilteredRows = <Item, Row extends BodyRow<Item>>(
 	filterValues: Record<string, unknown>,
 	columnOptions: Record<string, ColumnFiltersColumnOptions<Item>>
 ): Row[] => {
-	const _filteredRows = rows
+	const $filteredRows = rows
 		// Filter `subRows`
 		.map((row) => {
 			const { subRows } = row;
@@ -62,9 +61,9 @@ const getFilteredRows = <Item, Row extends BodyRow<Item>>(
 				return row;
 			}
 			const filteredSubRows = getFilteredRows(subRows, filterValues, columnOptions);
-			return getCloned(row, {
-				subRows: filteredSubRows,
-			} as unknown as Row);
+			const clonedRow = row.clone() as Row;
+			clonedRow.subRows = filteredSubRows;
+			return clonedRow;
 		})
 		.filter((row) => {
 			if ((row.subRows?.length ?? 0) !== 0) {
@@ -87,7 +86,7 @@ const getFilteredRows = <Item, Row extends BodyRow<Item>>(
 			}
 			return true;
 		});
-	return _filteredRows;
+	return $filteredRows;
 };
 
 export const addColumnFilters =

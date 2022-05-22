@@ -1,7 +1,6 @@
 import { DataBodyCell } from '$lib/bodyCells';
 import type { BodyRow } from '$lib/bodyRows';
 import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
-import { getCloned } from '$lib/utils/clone';
 import { recordSetStore } from '$lib/utils/store';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 
@@ -55,7 +54,7 @@ const getFilteredRows = <Item, Row extends BodyRow<Item>>(
 	columnOptions: Record<string, TableFilterColumnOptions<Item>>,
 	{ tableCellMatches, fn, includeHiddenColumns }: GetFilteredRowsOptions
 ): Row[] => {
-	const _filteredRows = rows
+	const $filteredRows = rows
 		// Filter `subRows`
 		.map((row) => {
 			const { subRows } = row;
@@ -67,9 +66,9 @@ const getFilteredRows = <Item, Row extends BodyRow<Item>>(
 				fn,
 				includeHiddenColumns,
 			});
-			return getCloned(row, {
-				subRows: filteredSubRows,
-			} as unknown as Row);
+			const clonedRow = row.clone() as Row;
+			clonedRow.subRows = filteredSubRows;
+			return clonedRow;
 		})
 		.filter((row) => {
 			if ((row.subRows?.length ?? 0) !== 0) {
@@ -101,7 +100,7 @@ const getFilteredRows = <Item, Row extends BodyRow<Item>>(
 			// If any cell matches, include in the filtered results.
 			return rowCellMatches.includes(true);
 		});
-	return _filteredRows;
+	return $filteredRows;
 };
 
 export const addTableFilter =

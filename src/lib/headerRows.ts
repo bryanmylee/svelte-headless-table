@@ -9,7 +9,6 @@ import {
 import { TableComponent } from './tableComponent';
 import type { Matrix } from './types/Matrix';
 import type { AnyPlugins } from './types/TablePlugin';
-import { getCloned } from './utils/clone';
 import { sum } from './utils/math';
 import { getNullMatrix, getTransposed } from './utils/matrix';
 
@@ -180,7 +179,7 @@ export const getMergedRow = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	let startIdx = 0;
 	let endIdx = 1;
 	while (startIdx < cells.length) {
-		const cell = getCloned(cells[startIdx]);
+		const cell = cells[startIdx].clone();
 		if (!(cell instanceof GroupHeaderCell)) {
 			mergedCells.push(cell);
 			startIdx++;

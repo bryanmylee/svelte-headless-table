@@ -1,7 +1,6 @@
 import { DataBodyCell } from '$lib/bodyCells';
 import type { BodyRow } from '$lib/bodyRows';
 import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
-import { getCloned } from '$lib/utils/clone';
 import { compare } from '$lib/utils/compare';
 import { isShiftClick } from '$lib/utils/event';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
@@ -103,8 +102,8 @@ const getSortedRows = <Item, Row extends BodyRow<Item>>(
 	columnOptions: Record<string, SortByColumnOptions>
 ): Row[] => {
 	// Shallow clone to prevent sort affecting `preSortedRows`.
-	const _sortedRows = [...rows] as typeof rows;
-	_sortedRows.sort((a, b) => {
+	const $sortedRows = [...rows] as typeof rows;
+	$sortedRows.sort((a, b) => {
 		for (const key of sortKeys) {
 			const invert = columnOptions[key.id]?.invert ?? false;
 			// TODO check why cellForId returns `undefined`.
@@ -143,15 +142,17 @@ const getSortedRows = <Item, Row extends BodyRow<Item>>(
 		}
 		return 0;
 	});
-	for (let i = 0; i < _sortedRows.length; i++) {
-		const { subRows } = _sortedRows[i];
+	for (let i = 0; i < $sortedRows.length; i++) {
+		const { subRows } = $sortedRows[i];
 		if (subRows === undefined) {
 			continue;
 		}
 		const sortedSubRows = getSortedRows<Item, Row>(subRows as Row[], sortKeys, columnOptions);
-		_sortedRows[i] = getCloned(_sortedRows[i], { subRows: sortedSubRows } as unknown as Row);
+		const clonedRow = $sortedRows[i].clone() as Row;
+		clonedRow.subRows = sortedSubRows;
+		$sortedRows[i] = clonedRow;
 	}
-	return _sortedRows;
+	return $sortedRows;
 };
 
 export const addSortBy =
