@@ -10,7 +10,17 @@ interface User {
 	status: string;
 }
 
-class TestHeaderCell<Item> extends HeaderCell<Item> {}
+class TestHeaderCell<Item> extends HeaderCell<Item> {
+	clone(): TestHeaderCell<Item> {
+		return new TestHeaderCell({
+			id: this.id,
+			colspan: this.colspan,
+			label: this.label,
+			isData: this.isData,
+			isFlat: this.isFlat,
+		});
+	}
+}
 
 it('renders string label', () => {
 	const actual = new TestHeaderCell({

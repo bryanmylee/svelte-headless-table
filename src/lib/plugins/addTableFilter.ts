@@ -1,7 +1,7 @@
 import { DataBodyCell } from '$lib/bodyCells';
 import type { BodyRow } from '$lib/bodyRows';
 import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
-import { getCloned } from '$lib/utils/clone';
+import { recordSetStore } from '$lib/utils/store';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 
 export interface TableFilterConfig {
@@ -38,8 +38,12 @@ export type TableFilterPropSet = NewTablePropSet<{
 	};
 }>;
 
-interface GetFilteredRowsProps {
-	tableCellMatches: Writable<Record<string, boolean>>;
+type TableFilterBodyCellMetadata = {
+	uuid: string;
+};
+
+interface GetFilteredRowsOptions {
+	tableCellMatches: Record<string, boolean>;
 	fn: TableFilterFn;
 	includeHiddenColumns: boolean;
 }
@@ -48,9 +52,9 @@ const getFilteredRows = <Item, Row extends BodyRow<Item>>(
 	rows: Row[],
 	filterValue: string,
 	columnOptions: Record<string, TableFilterColumnOptions<Item>>,
-	{ tableCellMatches, fn, includeHiddenColumns }: GetFilteredRowsProps
+	{ tableCellMatches, fn, includeHiddenColumns }: GetFilteredRowsOptions
 ): Row[] => {
-	const _filteredRows = rows
+	const $filteredRows = rows
 		// Filter `subRows`
 		.map((row) => {
 			const { subRows } = row;
@@ -62,9 +66,9 @@ const getFilteredRows = <Item, Row extends BodyRow<Item>>(
 				fn,
 				includeHiddenColumns,
 			});
-			return getCloned(row, {
-				subRows: filteredSubRows,
-			} as unknown as Row);
+			const clonedRow = row.clone() as Row;
+			clonedRow.subRows = filteredSubRows;
+			return clonedRow;
 		})
 		.filter((row) => {
 			if ((row.subRows?.length ?? 0) !== 0) {
@@ -88,16 +92,15 @@ const getFilteredRows = <Item, Row extends BodyRow<Item>>(
 					value = options?.getFilterValue(value);
 				}
 				const matches = fn({ value: String(value), filterValue });
-				tableCellMatches.update(($tableCellMatches) => ({
-					...$tableCellMatches,
-					[cell.rowColId()]: matches,
-				}));
+				if (matches) {
+					tableCellMatches[cell.rowColId()] = matches;
+				}
 				return matches;
 			});
 			// If any cell matches, include in the filtered results.
 			return rowCellMatches.includes(true);
 		});
-	return _filteredRows;
+	return $filteredRows;
 };
 
 export const addTableFilter =
@@ -111,25 +114,35 @@ export const addTableFilter =
 		TableFilterColumnOptions<Item>,
 		TableFilterPropSet
 	> =>
-	({ columnOptions }) => {
+	({ pluginName, columnOptions }) => {
 		const filterValue = writable(initialFilterValue);
 		const preFilteredRows = writable<BodyRow<Item>[]>([]);
 		const filteredRows = writable<BodyRow<Item>[]>([]);
-		const tableCellMatches = writable<Record<string, boolean>>({});
+		const tableCellMatches = recordSetStore();
 
 		const pluginState: TableFilterState<Item> = { filterValue, preFilteredRows };
 
 		const deriveRows: DeriveRowsFn<Item> = (rows) => {
 			return derived([rows, filterValue], ([$rows, $filterValue]) => {
+				// Set invariant metadata to track rowColId through other transformations.
+				$rows.forEach((row) => {
+					Object.values(row.cellForId).forEach((cell) => {
+						cell.metadataForName[pluginName] = {
+							uuid: cell.rowColId(),
+						} as TableFilterBodyCellMetadata;
+					});
+				});
 				preFilteredRows.set($rows);
-				tableCellMatches.set({});
-				const _filteredRows = getFilteredRows($rows, $filterValue, columnOptions, {
-					tableCellMatches,
+				tableCellMatches.clear();
+				const $tableCellMatches: Record<string, boolean> = {};
+				const $filteredRows = getFilteredRows($rows, $filterValue, columnOptions, {
+					tableCellMatches: $tableCellMatches,
 					fn,
 					includeHiddenColumns,
 				});
-				filteredRows.set(_filteredRows);
-				return _filteredRows;
+				tableCellMatches.set($tableCellMatches);
+				filteredRows.set($filteredRows);
+				return $filteredRows;
 			});
 		};
 
@@ -141,8 +154,15 @@ export const addTableFilter =
 					const props = derived(
 						[filterValue, tableCellMatches],
 						([$filterValue, $tableCellMatches]) => {
+							// Get invariant metadata to track rowColId through other transformations.
+							const metadata = cell.metadataForName[pluginName] as TableFilterBodyCellMetadata;
+							if (metadata === undefined) {
+								return {
+									matches: false,
+								};
+							}
 							return {
-								matches: $filterValue !== '' && ($tableCellMatches[cell.rowColId()] ?? false),
+								matches: $filterValue !== '' && ($tableCellMatches[metadata.uuid] ?? false),
 							};
 						}
 					);

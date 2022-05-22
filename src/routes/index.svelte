@@ -13,7 +13,9 @@
 		numberRangeFilter,
 		textPrefixFilter,
 		addSubRows,
+		addGroupBy,
 	} from '$lib/plugins';
+	import { mean, sum } from '$lib/utils/math';
 	import { getShuffled } from './_getShuffled';
 	import { createSamples } from './_createSamples';
 	import Italic from './_Italic.svelte';
@@ -23,18 +25,22 @@
 	import NumberRangeFilter from './_NumberRangeFilter.svelte';
 	import SelectFilter from './_SelectFilter.svelte';
 	import ExpandIndicator from './_ExpandIndicator.svelte';
+	import { getDistinct } from '$lib/utils/array';
 
-	const data = readable(createSamples(10, 5, 5));
+	const data = readable(createSamples(50));
 
 	const table = createTable(data, {
 		subRows: addSubRows({
 			children: 'children',
 		}),
-		sort: addSortBy(),
 		filter: addColumnFilters(),
 		tableFilter: addTableFilter({
 			includeHiddenColumns: true,
 		}),
+		group: addGroupBy({
+			initialGroupByIds: ['status'],
+		}),
+		sort: addSortBy(),
 		expand: addExpandedRows({
 			initialExpandedIds: { 1: true },
 		}),
@@ -90,11 +96,12 @@
 					header: createRender(Italic, { text: 'First Name' }),
 					accessor: 'firstName',
 					plugins: {
+						group: {
+							getAggregateValue: (values) => getDistinct(values).length,
+							cell: ({ value }) => `${value} unique`,
+						},
 						sort: {
 							invert: true,
-						},
-						tableFilter: {
-							exclude: true,
 						},
 						filter: {
 							fn: textPrefixFilter,
@@ -107,8 +114,9 @@
 					header: () => 'Last Name',
 					accessor: 'lastName',
 					plugins: {
-						sort: {
-							disable: true,
+						group: {
+							getAggregateValue: (values) => getDistinct(values).length,
+							cell: ({ value }) => `${value} unique`,
 						},
 					},
 				}),
@@ -124,16 +132,28 @@
 				table.column({
 					header: 'Age',
 					accessor: 'age',
+					plugins: {
+						group: {
+							getAggregateValue: (values) => mean(values),
+							cell: ({ value }) => `${(value as number).toFixed(2)} (avg)`,
+						},
+					},
 				}),
 				table.column({
 					header: createRender(Tick),
 					id: 'status',
 					accessor: (item) => item.status,
 					plugins: {
+						sort: {
+							disable: true,
+						},
 						filter: {
 							fn: matchFilter,
 							render: ({ filterValue, preFilteredValues }) =>
 								createRender(SelectFilter, { filterValue, preFilteredValues }),
+						},
+						tableFilter: {
+							exclude: true,
 						},
 					},
 				}),
@@ -141,6 +161,10 @@
 					header: 'Visits',
 					accessor: 'visits',
 					plugins: {
+						group: {
+							getAggregateValue: (values) => sum(values),
+							cell: ({ value }) => `${value} (total)`,
+						},
 						filter: {
 							fn: numberRangeFilter,
 							initialFilterValue: [null, null],
@@ -152,6 +176,12 @@
 				table.column({
 					header: 'Profile Progress',
 					accessor: 'progress',
+					plugins: {
+						group: {
+							getAggregateValue: (values) => mean(values),
+							cell: ({ value }) => `${(value as number).toFixed(2)} (avg)`,
+						},
+					},
 				}),
 			],
 		}),
@@ -159,11 +189,14 @@
 
 	const { visibleColumns, headerRows, pageRows, pluginStates } = table.createViewModel(columns);
 
+	const { groupByIds } = pluginStates.group;
 	const { sortKeys } = pluginStates.sort;
 	const { filterValues } = pluginStates.filter;
 	const { filterValue } = pluginStates.tableFilter;
 	const { pageIndex, pageCount, pageSize, hasPreviousPage, hasNextPage } = pluginStates.page;
+	const { expandedIds } = pluginStates.expand;
 	const { columnIdOrder } = pluginStates.orderColumns;
+	// $: $columnIdOrder = ['expanded', ...$groupByIds];
 	const { hiddenColumnIds } = pluginStates.hideColumns;
 	$hiddenColumnIds = ['progress'];
 </script>
@@ -198,6 +231,13 @@
 									⬆️
 								{/if}
 							</div>
+							<button on:click|stopPropagation={props.group.toggle}>
+								{#if props.group.grouped}
+									ungroup
+								{:else}
+									group
+								{/if}
+							</button>
 							{#if props.filter !== undefined}
 								<Render of={props.filter.render} />
 							{/if}
@@ -214,15 +254,20 @@
 	</thead>
 	<tbody>
 		{#each $pageRows as row (row.id)}
-			<tr id={row.id}>
+			<tr>
 				{#each row.cells as cell (cell.id)}
 					<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
 						<td
 							{...attrs}
 							class:sorted={props.sort.order !== undefined}
 							class:matches={props.tableFilter.matches}
+							class:group={props.group.grouped}
+							class:aggregate={props.group.aggregated}
+							class:repeat={props.group.repeated}
 						>
-							<Render of={cell.render()} />
+							{#if !props.group.repeated}
+								<Render of={cell.render()} />
+							{/if}
 						</td>
 					</Subscribe>
 				{/each}
@@ -233,10 +278,12 @@
 
 <pre>{JSON.stringify(
 		{
+			groupByIds: $groupByIds,
 			sortKeys: $sortKeys,
 			filterValues: $filterValues,
 			columnIdOrder: $columnIdOrder,
 			hiddenColumnIds: $hiddenColumnIds,
+			expandedIds: $expandedIds,
 		},
 		null,
 		2
@@ -269,6 +316,16 @@
 	}
 
 	.matches {
-		outline: 2px solid rgb(144, 191, 148);
+		font-weight: 700;
+	}
+
+	.group {
+		background: rgb(144, 191, 148);
+	}
+	.aggregate {
+		background: rgb(238, 212, 100);
+	}
+	.repeat {
+		background: rgb(255, 139, 139);
 	}
 </style>

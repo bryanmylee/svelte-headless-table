@@ -32,8 +32,10 @@ export abstract class BodyCell<
 
 	abstract attrs(): Readable<BodyCellAttributes<Item, Plugins>>;
 
+	abstract clone(): BodyCell<Item, Plugins>;
+
 	rowColId(): string {
-		return `${this.row.id}-${this.column.id}`;
+		return `${this.row.id}:${this.column.id}`;
 	}
 }
 
@@ -81,6 +83,17 @@ export class DataBodyCell<
 			return {};
 		});
 	}
+
+	clone(): DataBodyCell<Item, Plugins> {
+		const clonedCell = new DataBodyCell({
+			row: this.row,
+			column: this.column,
+			label: this.label,
+			value: this.value,
+		});
+		clonedCell.metadataForName = this.metadataForName;
+		return clonedCell;
+	}
 }
 
 export type DisplayBodyCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = Omit<
@@ -114,5 +127,15 @@ export class DisplayBodyCell<Item, Plugins extends AnyPlugins = AnyPlugins> exte
 		return derived([], () => {
 			return {};
 		});
+	}
+
+	clone(): DisplayBodyCell<Item, Plugins> {
+		const clonedCell = new DisplayBodyCell({
+			row: this.row,
+			column: this.column,
+			label: this.label,
+		});
+		clonedCell.metadataForName = this.metadataForName;
+		return clonedCell;
 	}
 }

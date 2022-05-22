@@ -51,6 +51,8 @@ export abstract class HeaderCell<
 			};
 		});
 	}
+
+	abstract clone(): HeaderCell<Item, Plugins>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -71,6 +73,14 @@ export class FlatHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exten
 > {
 	constructor({ id, label, isData }: FlatHeaderCellInit<Item, Plugins>) {
 		super({ id, label, isData, colspan: 1, isFlat: true });
+	}
+
+	clone(): FlatHeaderCell<Item, Plugins> {
+		return new FlatHeaderCell({
+			id: this.id,
+			label: this.label,
+			isData: this.isData,
+		});
 	}
 }
 
@@ -93,6 +103,15 @@ export class DataHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exten
 		this.accessorKey = accessorKey;
 		this.accessorFn = accessorFn;
 	}
+
+	clone(): DataHeaderCell<Item, Plugins> {
+		return new DataHeaderCell({
+			id: this.id,
+			label: this.label,
+			accessorFn: this.accessorFn,
+			accessorKey: this.accessorKey,
+		});
+	}
 }
 
 export type DisplayHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = Omit<
@@ -108,6 +127,13 @@ export class DisplayHeaderCell<
 > extends FlatHeaderCell<Item, Plugins> {
 	constructor({ id, label = NBSP }: DisplayHeaderCellInit<Item, Plugins>) {
 		super({ id, label });
+	}
+
+	clone(): DisplayHeaderCell<Item, Plugins> {
+		return new DisplayHeaderCell({
+			id: this.id,
+			label: this.label,
+		});
 	}
 }
 
@@ -132,12 +158,23 @@ export class GroupHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exte
 		this.allId = `[${allIds.join(',')}]`;
 		this.allIds = allIds;
 	}
+
 	setIds(ids: string[]) {
 		this.ids = ids;
 		this.id = `[${this.ids.join(',')}]`;
 	}
+
 	pushId(id: string) {
 		this.ids = [...this.ids, id];
 		this.id = `[${this.ids.join(',')}]`;
+	}
+
+	clone(): GroupHeaderCell<Item, Plugins> {
+		return new GroupHeaderCell({
+			label: this.label,
+			colspan: this.colspan,
+			ids: this.ids,
+			allIds: this.allIds,
+		});
 	}
 }

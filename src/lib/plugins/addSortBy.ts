@@ -1,8 +1,8 @@
 import { DataBodyCell } from '$lib/bodyCells';
 import type { BodyRow } from '$lib/bodyRows';
 import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
-import { getCloned } from '$lib/utils/clone';
 import { compare } from '$lib/utils/compare';
+import { isShiftClick } from '$lib/utils/event';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 
 export interface SortByConfig {
@@ -96,27 +96,23 @@ export type WritableSortKeys = Writable<SortKey[]> & {
 	clearId: (id: string) => void;
 };
 
-const isShiftClick = (event: Event) => {
-	if (!(event instanceof MouseEvent)) return false;
-	return event.shiftKey;
-};
-
 const getSortedRows = <Item, Row extends BodyRow<Item>>(
 	rows: Row[],
 	sortKeys: SortKey[],
 	columnOptions: Record<string, SortByColumnOptions>
 ): Row[] => {
 	// Shallow clone to prevent sort affecting `preSortedRows`.
-	const _sortedRows = [...rows] as typeof rows;
-	_sortedRows.sort((a, b) => {
+	const $sortedRows = [...rows] as typeof rows;
+	$sortedRows.sort((a, b) => {
 		for (const key of sortKeys) {
 			const invert = columnOptions[key.id]?.invert ?? false;
+			// TODO check why cellForId returns `undefined`.
 			const cellA = a.cellForId[key.id];
 			const cellB = b.cellForId[key.id];
 			let order = 0;
 			// Only need to check properties of `cellA` as both should have the same
 			// properties.
-			const getSortValue = columnOptions[cellA.id]?.getSortValue;
+			const getSortValue = columnOptions[key.id]?.getSortValue;
 			if (!(cellA instanceof DataBodyCell)) {
 				return 0;
 			}
@@ -146,15 +142,17 @@ const getSortedRows = <Item, Row extends BodyRow<Item>>(
 		}
 		return 0;
 	});
-	for (let i = 0; i < _sortedRows.length; i++) {
-		const { subRows } = _sortedRows[i];
+	for (let i = 0; i < $sortedRows.length; i++) {
+		const { subRows } = $sortedRows[i];
 		if (subRows === undefined) {
 			continue;
 		}
 		const sortedSubRows = getSortedRows<Item, Row>(subRows as Row[], sortKeys, columnOptions);
-		_sortedRows[i] = getCloned(_sortedRows[i], { subRows: sortedSubRows } as unknown as Row);
+		const clonedRow = $sortedRows[i].clone() as Row;
+		clonedRow.subRows = sortedSubRows;
+		$sortedRows[i] = clonedRow;
 	}
-	return _sortedRows;
+	return $sortedRows;
 };
 
 export const addSortBy =
@@ -197,7 +195,7 @@ export const addSortBy =
 						const key = $sortKeys.find((k) => k.id === cell.id);
 						const toggle = (event: Event) => {
 							if (!cell.isData) return;
-							if (disabledSortIds.includes(cell.id)) return;
+							if (disabled) return;
 							sortKeys.toggleId(cell.id, {
 								multiSort: disableMultiSort ? false : isMultiSortEvent(event),
 							});

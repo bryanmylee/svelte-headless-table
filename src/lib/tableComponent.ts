@@ -8,12 +8,15 @@ import type {
 	PluginTablePropSet,
 } from './types/TablePlugin';
 import type { TableState } from './createViewModel';
+import type { Clonable } from './utils/clone';
 
 export interface TableComponentInit {
 	id: string;
 }
 
-export abstract class TableComponent<Item, Plugins extends AnyPlugins, Key extends ComponentKeys> {
+export abstract class TableComponent<Item, Plugins extends AnyPlugins, Key extends ComponentKeys>
+	implements Clonable<TableComponent<Item, Plugins, Key>>
+{
 	id: string;
 	constructor({ id }: TableComponentInit) {
 		this.id = id;
@@ -23,6 +26,7 @@ export abstract class TableComponent<Item, Plugins extends AnyPlugins, Key exten
 		throw Error('Missing `attrs` implementation');
 	}
 
+	metadataForName: Record<string, Record<string, unknown>> = {};
 	private propsForName: Record<string, Readable<Record<string, unknown>>> = {};
 	props(): Readable<PluginTablePropSet<Plugins>[Key]> {
 		return derivedKeys(this.propsForName) as Readable<PluginTablePropSet<Plugins>[Key]>;
@@ -38,4 +42,6 @@ export abstract class TableComponent<Item, Plugins extends AnyPlugins, Key exten
 			this.propsForName[pluginName] = hook.props;
 		}
 	}
+
+	abstract clone(): TableComponent<Item, Plugins, Key>;
 }
