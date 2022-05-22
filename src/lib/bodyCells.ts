@@ -83,12 +83,14 @@ export class DataBodyCell<
 	}
 
 	clone(): DataBodyCell<Item, Plugins> {
-		return new DataBodyCell({
+		const cell = new DataBodyCell({
 			row: this.row,
 			column: this.column,
 			label: this.label,
 			value: this.value,
 		});
+		cell.metadataForName = this.metadataForName;
+		return cell;
 	}
 }
 
