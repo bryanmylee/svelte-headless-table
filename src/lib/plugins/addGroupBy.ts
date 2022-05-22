@@ -5,8 +5,8 @@ import type { DataLabel } from '$lib/types/Label';
 import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
 import { isShiftClick } from '$lib/utils/event';
 import { nonUndefined } from '$lib/utils/filter';
-import { arraySetStore } from '$lib/utils/store';
-import { derived, writable, type Readable, type Writable } from 'svelte/store';
+import { arraySetStore, type ArraySetStore } from '$lib/utils/store';
+import { derived, writable, type Readable } from 'svelte/store';
 
 export interface GroupByConfig {
 	initialGroupByIds?: string[];
@@ -15,7 +15,7 @@ export interface GroupByConfig {
 }
 
 export interface GroupByState {
-	groupByIds: Writable<string[]>;
+	groupByIds: ArraySetStore<string>;
 }
 
 export interface GroupByColumnOptions<
