@@ -13,7 +13,11 @@
 
 > Build and design powerful datagrid experiences while retaining 100% control over styles and markup.
 
-Get started with the [quick start guide](https://svelte-headless-table.bryanmylee.com/docs/getting-started/quick-start)!
+Visit the [documentation](https://svelte-headless-table.bryanmylee.com/) for code examples and API reference, and get started with the [quick start guide](https://svelte-headless-table.bryanmylee.com/docs/getting-started/quick-start)!
+
+Svelte Headless Table has **full TypeScript support** and is compatible with **SvelteKit**!
+
+## Why Svelte Headless Table?
 
 ### Headless
 
@@ -31,7 +35,7 @@ Svelte Headless Table comes with a stable plugin system that allows you to trans
 
 Svelte Headless Table is designed with extensibility in mind. Its complex features are provided by an extensive suite of plugins.
 
-> The Plugin API is still in development and may change while Svelte Headless Table works towards v1.0.
+Svelte Headless Table allows you to perform complex sorting, filtering, grouping, pagination, and more.
 
 ### Plugin roadmap
 
@@ -48,3 +52,61 @@ Svelte Headless Table is designed with extensibility in mind. Its complex featur
 - [ ] addResizeColumns
 - [ ] addEditable
 - [ ] addRowLabel
+
+## Examples
+
+```svelte
+<script>
+  const data = readable([
+    { name: 'Ada Lovelace', age: 21 },
+    { name: 'Barbara Liskov', age: 52 },
+    { name: 'Richard Hamming', age: 38 },
+  ]);
+
+  const table = createTable(data);
+
+  const columns = table.createColumns([
+    table.column({
+      header: 'Name',
+      accessor: 'name',
+    }),
+    table.column({
+      header: 'Age',
+      accessor: 'age',
+    }),
+  ]);
+
+  const { headerRows, rows } = table.createViewModel(columns);
+</script>
+
+<table>
+  <thead>
+    {#each $headerRows as headerRow (headerRow.id)}
+      <tr>
+        {#each headerRow.cells as cell (cell.id)}
+          <Subscribe attrs={cell.attrs()} let:attrs>
+            <th {...attrs}>
+              <Render of={cell.render()} />
+            </th>
+          </Subscribe>
+        {/each}
+      </tr>
+    {/each}
+  </thead>
+  <tbody>
+    {#each $rows as row (row.id)}
+      <tr>
+        {#each row.cells as cell (cell.id)}
+          <Subscribe attrs={cell.attrs()} let:attrs>
+            <td {...attrs}>
+              <Render of={cell.render()} />
+            </td>
+          </Subscribe>
+        {/each}
+      </tr>
+    {/each}
+  </tbody>
+</table>
+```
+
+For more complex examples with advanced features, visit the [documentation site](https://svelte-headless-table.bryanmylee.com/docs/plugins/overview).
