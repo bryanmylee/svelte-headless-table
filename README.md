@@ -1,4 +1,7 @@
-# Svelte Headless Table
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/42545742/169733428-295e2678-e509-4175-aeb3-cb3a9c9894e1.svg" alt="svelte-headless-table" width="400px"/>
+</p>
+<h1 align="center">Svelte Headless Table</h1>
 
 [![npm version](http://img.shields.io/npm/v/svelte-headless-table.svg)](https://www.npmjs.com/package/svelte-headless-table)
 [![npm downloads](https://img.shields.io/npm/dm/svelte-headless-table.svg)](https://www.npmjs.com/package/svelte-headless-table)
