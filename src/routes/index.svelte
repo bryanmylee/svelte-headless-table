@@ -14,6 +14,7 @@
 		textPrefixFilter,
 		addSubRows,
 		addGroupBy,
+		addSelectedRows,
 	} from '$lib/plugins';
 	import { mean, sum } from '$lib/utils/math';
 	import { getShuffled } from './_getShuffled';
@@ -26,6 +27,7 @@
 	import SelectFilter from './_SelectFilter.svelte';
 	import ExpandIndicator from './_ExpandIndicator.svelte';
 	import { getDistinct } from '$lib/utils/array';
+	import SelectIndicator from './_SelectIndicator.svelte';
 
 	const data = readable(createSamples(50));
 
@@ -38,11 +40,14 @@
 			includeHiddenColumns: true,
 		}),
 		group: addGroupBy({
-			initialGroupByIds: ['status'],
+			initialGroupByIds: [],
 		}),
 		sort: addSortBy(),
 		expand: addExpandedRows({
 			initialExpandedIds: { 1: true },
+		}),
+		select: addSelectedRows({
+			initialSelectedIds: { 1: true },
 		}),
 		orderColumns: addColumnOrder(),
 		hideColumns: addHiddenColumns(),
@@ -52,6 +57,17 @@
 	});
 
 	const columns = table.createColumns([
+		table.display({
+			id: 'selected',
+			header: '',
+			cell: ({ row }, { pluginStates }) => {
+				const { isSelected, isAllSubRowsSelected } = pluginStates.select.getRowState(row);
+				return createRender(SelectIndicator, {
+					isSelected,
+					isAllSubRowsSelected,
+				});
+			},
+		}),
 		table.display({
 			id: 'expanded',
 			header: '',
@@ -254,24 +270,26 @@
 	</thead>
 	<tbody>
 		{#each $pageRows as row (row.id)}
-			<tr>
-				{#each row.cells as cell (cell.id)}
-					<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-						<td
-							{...attrs}
-							class:sorted={props.sort.order !== undefined}
-							class:matches={props.tableFilter.matches}
-							class:group={props.group.grouped}
-							class:aggregate={props.group.aggregated}
-							class:repeat={props.group.repeated}
-						>
-							{#if !props.group.repeated}
-								<Render of={cell.render()} />
-							{/if}
-						</td>
-					</Subscribe>
-				{/each}
-			</tr>
+			<Subscribe rowProps={row.props()} let:rowProps>
+				<tr class:selected={rowProps.select.selected}>
+					{#each row.cells as cell (cell.id)}
+						<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
+							<td
+								{...attrs}
+								class:sorted={props.sort.order !== undefined}
+								class:matches={props.tableFilter.matches}
+								class:group={props.group.grouped}
+								class:aggregate={props.group.aggregated}
+								class:repeat={props.group.repeated}
+							>
+								{#if !props.group.repeated}
+									<Render of={cell.render()} />
+								{/if}
+							</td>
+						</Subscribe>
+					{/each}
+				</tr>
+			</Subscribe>
 		{/each}
 	</tbody>
 </table>
@@ -327,5 +345,9 @@
 	}
 	.repeat {
 		background: rgb(255, 139, 139);
+	}
+
+	.selected {
+		background: rgb(148, 205, 255);
 	}
 </style>
