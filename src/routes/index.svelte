@@ -47,7 +47,7 @@
 			initialExpandedIds: { 1: true },
 		}),
 		select: addSelectedRows({
-			initialSelectedIds: { 1: true },
+			initialSelectedDataIds: { 1: true },
 		}),
 		orderColumns: addColumnOrder(),
 		hideColumns: addHiddenColumns(),
@@ -209,6 +209,7 @@
 	const { sortKeys } = pluginStates.sort;
 	const { filterValues } = pluginStates.filter;
 	const { filterValue } = pluginStates.tableFilter;
+	const { selectedDataIds } = pluginStates.select;
 	const { pageIndex, pageCount, pageSize, hasPreviousPage, hasNextPage } = pluginStates.page;
 	const { expandedIds } = pluginStates.expand;
 	const { columnIdOrder } = pluginStates.orderColumns;
@@ -299,6 +300,7 @@
 			groupByIds: $groupByIds,
 			sortKeys: $sortKeys,
 			filterValues: $filterValues,
+			selectedDataIds: $selectedDataIds,
 			columnIdOrder: $columnIdOrder,
 			hiddenColumnIds: $hiddenColumnIds,
 			expandedIds: $expandedIds,
