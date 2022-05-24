@@ -248,13 +248,15 @@
 									⬆️
 								{/if}
 							</div>
-							<button on:click|stopPropagation={props.group.toggle}>
-								{#if props.group.grouped}
-									ungroup
-								{:else}
-									group
-								{/if}
-							</button>
+							{#if !props.group.disabled}
+								<button on:click|stopPropagation={props.group.toggle}>
+									{#if props.group.grouped}
+										ungroup
+									{:else}
+										group
+									{/if}
+								</button>
+							{/if}
 							{#if props.filter !== undefined}
 								<Render of={props.filter.render} />
 							{/if}

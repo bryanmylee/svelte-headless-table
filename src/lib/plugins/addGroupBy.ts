@@ -39,6 +39,7 @@ export type GroupByPropSet = NewTablePropSet<{
 		grouped: boolean;
 		toggle: (event: Event) => void;
 		clear: () => void;
+		disabled: boolean;
 	};
 	'tbody.tr.td': {
 		repeated: boolean;
@@ -231,7 +232,7 @@ export const addGroupBy =
 			deriveRows,
 			hooks: {
 				'thead.tr.th': (cell) => {
-					const disabled = disabledGroupIds.includes(cell.id);
+					const disabled = disabledGroupIds.includes(cell.id) || !(cell instanceof DataHeaderCell);
 					const props = derived(groupByIds, ($groupByIds) => {
 						const grouped = $groupByIds.includes(cell.id);
 						const toggle = (event: Event) => {
@@ -248,6 +249,7 @@ export const addGroupBy =
 							grouped,
 							toggle,
 							clear,
+							disabled,
 						};
 					});
 					return { props };
