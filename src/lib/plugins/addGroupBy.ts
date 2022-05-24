@@ -1,6 +1,7 @@
 import { DataBodyCell } from '$lib/bodyCells';
 import { BodyRow } from '$lib/bodyRows';
 import type { DataColumn } from '$lib/columns';
+import { DataHeaderCell } from '$lib/headerCells';
 import type { DataLabel } from '$lib/types/Label';
 import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
 import { isShiftClick } from '$lib/utils/event';
@@ -235,7 +236,7 @@ export const addGroupBy =
 					const props = derived(groupByIds, ($groupByIds) => {
 						const grouped = $groupByIds.includes(cell.id);
 						const toggle = (event: Event) => {
-							if (!cell.isData) return;
+							if (!(cell instanceof DataHeaderCell)) return;
 							if (disabled) return;
 							groupByIds.toggle(cell.id, {
 								clearOthers: disableMultiGroup || !isMultiGroupEvent(event),

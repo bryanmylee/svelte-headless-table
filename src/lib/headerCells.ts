@@ -8,8 +8,6 @@ import type { RenderConfig } from './render';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type HeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	id: string;
-	isFlat?: boolean;
-	isData?: boolean;
 	label: HeaderLabel<Item>;
 	colspan: number;
 };
@@ -22,14 +20,10 @@ export abstract class HeaderCell<
 	Item,
 	Plugins extends AnyPlugins = AnyPlugins
 > extends TableComponent<Item, Plugins, 'thead.tr.th'> {
-	isFlat: boolean;
-	isData: boolean;
 	label: HeaderLabel<Item>;
 	colspan: number;
-	constructor({ id, label, colspan, isFlat = false, isData = false }: HeaderCellInit<Item>) {
+	constructor({ id, label, colspan }: HeaderCellInit<Item>) {
 		super({ id });
-		this.isFlat = isFlat;
-		this.isData = isData;
 		this.label = label;
 		this.colspan = colspan;
 	}
@@ -58,7 +52,7 @@ export abstract class HeaderCell<
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type FlatHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = Omit<
 	HeaderCellInit<Item, Plugins>,
-	'isFlat' | 'colspan'
+	'colspan'
 >;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -71,22 +65,21 @@ export class FlatHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exten
 	Item,
 	Plugins
 > {
-	constructor({ id, label, isData }: FlatHeaderCellInit<Item, Plugins>) {
-		super({ id, label, isData, colspan: 1, isFlat: true });
+	constructor({ id, label }: FlatHeaderCellInit<Item, Plugins>) {
+		super({ id, label, colspan: 1 });
 	}
 
 	clone(): FlatHeaderCell<Item, Plugins> {
 		return new FlatHeaderCell({
 			id: this.id,
 			label: this.label,
-			isData: this.isData,
 		});
 	}
 }
 
-export type DataHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = Omit<
-	FlatHeaderCellInit<Item, Plugins>,
-	'isData'
+export type DataHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = FlatHeaderCellInit<
+	Item,
+	Plugins
 > & {
 	accessorKey?: keyof Item;
 	accessorFn?: (item: Item) => unknown;
@@ -99,7 +92,7 @@ export class DataHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exten
 	accessorKey?: keyof Item;
 	accessorFn?: (item: Item) => unknown;
 	constructor({ id, label, accessorKey, accessorFn }: DataHeaderCellInit<Item, Plugins>) {
-		super({ id, label, isData: true });
+		super({ id, label });
 		this.accessorKey = accessorKey;
 		this.accessorFn = accessorFn;
 	}
@@ -116,7 +109,7 @@ export class DataHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exten
 
 export type DisplayHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = Omit<
 	FlatHeaderCellInit<Item, Plugins>,
-	'isData' | 'label'
+	'label'
 > & {
 	label?: HeaderLabel<Item>;
 };
