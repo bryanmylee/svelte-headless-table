@@ -23,6 +23,10 @@ Svelte Headless Table has **full TypeScript support** and is compatible with **S
 
 ## Why Svelte Headless Table?
 
+### Svelte First
+
+Svelte Headless Table is designed to work **seamlessly** with Svelte. If you love Svelte, you will love Svelte Headless Table.
+
 ### Headless
 
 Beauty is subjective – everybody wants components to match their own theme! That's why Svelte Headless Table is **headless** by design. You are in full control of how your table looks, down to the very last component, class, and style.
@@ -34,10 +38,6 @@ Just describe how you want your tables to behave and let Svelte Headless Table h
 ### Extensible
 
 Svelte Headless Table comes with a stable plugin system that allows you to transform and modify every step under the hood. If you want extra functionality, you can build it!
-
-### Svelte-Native
-
-Svelte Headless Table is designed to work **seamlessly** with Svelte. If you love Svelte, you will love Svelte Headless Table.
 
 ## The Plugin System
 
