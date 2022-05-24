@@ -134,8 +134,12 @@ export const addSelectedRows =
 					const props = derived(selectedDataIds, ($selectedDataIds) => {
 						const someSubRowsSelected = isSomeSubRowsSelectedForRow(row, $selectedDataIds);
 						const allSubRowsSelected = isAllSubRowsSelectedForRow(row, $selectedDataIds);
+						const selected =
+							row instanceof DataBodyRow
+								? $selectedDataIds[row.dataId] === true
+								: allSubRowsSelected;
 						return {
-							selected: allSubRowsSelected,
+							selected,
 							someSubRowsSelected,
 							allSubRowsSelected,
 						};
