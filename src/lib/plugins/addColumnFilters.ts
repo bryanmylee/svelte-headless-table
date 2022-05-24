@@ -1,5 +1,5 @@
 import { keyed } from 'svelte-keyed';
-import type { BodyRow } from '$lib/bodyRows';
+import type { DataBodyRow } from '$lib/bodyRows';
 import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 import type { RenderConfig } from '$lib/render';
@@ -9,7 +9,7 @@ import { DataHeaderCell } from '$lib/headerCells';
 
 export interface ColumnFiltersState<Item> {
 	filterValues: Writable<Record<string, unknown>>;
-	preFilteredRows: Readable<BodyRow<Item>[]>;
+	preFilteredRows: Readable<DataBodyRow<Item>[]>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -25,7 +25,7 @@ interface ColumnRenderConfigPropArgs<Item, FilterValue = any, Value = any>
 	id: string;
 	filterValue: Writable<FilterValue>;
 	values: Readable<Value[]>;
-	preFilteredRows: Readable<BodyRow<Item>[]>;
+	preFilteredRows: Readable<DataBodyRow<Item>[]>;
 	preFilteredValues: Readable<Value[]>;
 }
 
@@ -48,7 +48,7 @@ export type ColumnFiltersPropSet = NewTablePropSet<{
 		| undefined;
 }>;
 
-const getFilteredRows = <Item, Row extends BodyRow<Item>>(
+const getFilteredRows = <Item, Row extends DataBodyRow<Item>>(
 	rows: Row[],
 	filterValues: Record<string, unknown>,
 	columnOptions: Record<string, ColumnFiltersColumnOptions<Item>>
@@ -98,8 +98,8 @@ export const addColumnFilters =
 	> =>
 	({ columnOptions, tableState }) => {
 		const filterValues = writable<Record<string, unknown>>({});
-		const preFilteredRows = writable<BodyRow<Item>[]>([]);
-		const filteredRows = writable<BodyRow<Item>[]>([]);
+		const preFilteredRows = writable<DataBodyRow<Item>[]>([]);
+		const filteredRows = writable<DataBodyRow<Item>[]>([]);
 
 		const pluginState: ColumnFiltersState<Item> = { filterValues, preFilteredRows };
 

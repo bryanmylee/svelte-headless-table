@@ -5,7 +5,7 @@ import { TableComponent } from './tableComponent';
 import type { AnyPlugins } from './types/TablePlugin';
 import { nonUndefined } from './utils/filter';
 
-export interface BodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
+export interface DataBodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	id: string;
 	original: Item;
 	cells: BodyCell<Item, Plugins>[];
@@ -14,13 +14,13 @@ export interface BodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-interface
-export interface BodyRowAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> {}
+export interface DataBodyRowAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> {}
 
 interface BodyRowCloneProps {
 	includeCells?: boolean;
 }
 
-export class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends TableComponent<
+export class DataBodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends TableComponent<
 	Item,
 	Plugins,
 	'tbody.tr'
@@ -34,8 +34,8 @@ export class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends Tabl
 	 */
 	cellForId: Record<string, BodyCell<Item, Plugins>>;
 	depth: number;
-	subRows?: BodyRow<Item, Plugins>[];
-	constructor({ id, original, cells, cellForId, depth = 0 }: BodyRowInit<Item, Plugins>) {
+	subRows?: DataBodyRow<Item, Plugins>[];
+	constructor({ id, original, cells, cellForId, depth = 0 }: DataBodyRowInit<Item, Plugins>) {
 		super({ id });
 		this.original = original;
 		this.cells = cells;
@@ -49,8 +49,8 @@ export class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends Tabl
 		});
 	}
 
-	clone({ includeCells = false }: BodyRowCloneProps = {}): BodyRow<Item, Plugins> {
-		const clonedRow = new BodyRow({
+	clone({ includeCells = false }: BodyRowCloneProps = {}): DataBodyRow<Item, Plugins> {
+		const clonedRow = new DataBodyRow({
 			id: this.id,
 			cellForId: this.cellForId,
 			cells: this.cells,
@@ -87,9 +87,9 @@ export const getBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	 * Flat columns before column transformations.
 	 */
 	flatColumns: FlatColumn<Item, Plugins>[]
-): BodyRow<Item, Plugins>[] => {
-	const rows: BodyRow<Item, Plugins>[] = data.map((item, idx) => {
-		return new BodyRow({
+): DataBodyRow<Item, Plugins>[] => {
+	const rows: DataBodyRow<Item, Plugins>[] = data.map((item, idx) => {
+		return new DataBodyRow({
 			id: idx.toString(),
 			original: item,
 			cells: [],
@@ -137,11 +137,11 @@ export const getBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
  * @returns A new array of `BodyRow`s with corrected row references.
  */
 export const getColumnedBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
-	rows: BodyRow<Item, Plugins>[],
+	rows: DataBodyRow<Item, Plugins>[],
 	columnIdOrder: string[]
-): BodyRow<Item, Plugins>[] => {
-	const columnedRows: BodyRow<Item, Plugins>[] = rows.map(
-		({ id, original }) => new BodyRow({ id, original, cells: [], cellForId: {} })
+): DataBodyRow<Item, Plugins>[] => {
+	const columnedRows: DataBodyRow<Item, Plugins>[] = rows.map(
+		({ id, original }) => new DataBodyRow({ id, original, cells: [], cellForId: {} })
 	);
 	if (rows.length === 0 || columnIdOrder.length === 0) return rows;
 	rows.forEach((row, rowIdx) => {
@@ -175,11 +175,11 @@ export const getColumnedBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugin
  */
 export const getSubRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	subItems: Item[],
-	parentRow: BodyRow<Item, Plugins>
-): BodyRow<Item, Plugins>[] => {
+	parentRow: DataBodyRow<Item, Plugins>
+): DataBodyRow<Item, Plugins>[] => {
 	const subRows = subItems.map((item, idx) => {
 		const id = `${parentRow.id}>${idx}`;
-		return new BodyRow<Item, Plugins>({
+		return new DataBodyRow<Item, Plugins>({
 			id,
 			original: item,
 			cells: [],

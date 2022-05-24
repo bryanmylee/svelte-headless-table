@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 import { DataBodyCell, DisplayBodyCell } from './bodyCells';
-import { BodyRow, getBodyRows, getColumnedBodyRows, getSubRows } from './bodyRows';
+import { DataBodyRow, getBodyRows, getColumnedBodyRows, getSubRows } from './bodyRows';
 import { createTable } from './createTable';
 
 interface User {
@@ -62,7 +62,7 @@ const parentRow = getBodyRows([parentData], dataColumns)[0];
 it('transforms empty data', () => {
 	const actual = getSubRows([], parentRow);
 
-	const expected: BodyRow<User>[] = [];
+	const expected: DataBodyRow<User>[] = [];
 
 	expect(actual).toStrictEqual(expected);
 });

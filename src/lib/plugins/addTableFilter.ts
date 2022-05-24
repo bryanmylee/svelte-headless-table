@@ -1,5 +1,5 @@
 import { DataBodyCell } from '$lib/bodyCells';
-import type { BodyRow } from '$lib/bodyRows';
+import type { DataBodyRow } from '$lib/bodyRows';
 import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
 import { recordSetStore } from '$lib/utils/store';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
@@ -12,7 +12,7 @@ export interface TableFilterConfig {
 
 export interface TableFilterState<Item> {
 	filterValue: Writable<string>;
-	preFilteredRows: Readable<BodyRow<Item>[]>;
+	preFilteredRows: Readable<DataBodyRow<Item>[]>;
 }
 
 // Item generic needed to infer type on `getFilteredRows`
@@ -48,7 +48,7 @@ interface GetFilteredRowsOptions {
 	includeHiddenColumns: boolean;
 }
 
-const getFilteredRows = <Item, Row extends BodyRow<Item>>(
+const getFilteredRows = <Item, Row extends DataBodyRow<Item>>(
 	rows: Row[],
 	filterValue: string,
 	columnOptions: Record<string, TableFilterColumnOptions<Item>>,
@@ -116,8 +116,8 @@ export const addTableFilter =
 	> =>
 	({ pluginName, columnOptions }) => {
 		const filterValue = writable(initialFilterValue);
-		const preFilteredRows = writable<BodyRow<Item>[]>([]);
-		const filteredRows = writable<BodyRow<Item>[]>([]);
+		const preFilteredRows = writable<DataBodyRow<Item>[]>([]);
+		const filteredRows = writable<DataBodyRow<Item>[]>([]);
 		const tableCellMatches = recordSetStore();
 
 		const pluginState: TableFilterState<Item> = { filterValue, preFilteredRows };

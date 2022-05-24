@@ -1,4 +1,4 @@
-import type { BodyRow } from '$lib/bodyRows';
+import type { DataBodyRow } from '$lib/bodyRows';
 import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
 import { derived, writable, type Readable, type Updater, type Writable } from 'svelte/store';
 
@@ -74,8 +74,8 @@ export const addPagination =
 		NewTablePropSet<never>
 	> =>
 	() => {
-		const prePaginatedRows = writable<BodyRow<Item>[]>([]);
-		const paginatedRows = writable<BodyRow<Item>[]>([]);
+		const prePaginatedRows = writable<DataBodyRow<Item>[]>([]);
+		const paginatedRows = writable<DataBodyRow<Item>[]>([]);
 		const { pageSize, pageCount, pageIndex, hasPreviousPage, hasNextPage } = createPageStore({
 			items: prePaginatedRows,
 			initialPageIndex,

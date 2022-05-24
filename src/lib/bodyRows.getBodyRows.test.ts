@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 import { DataBodyCell, DisplayBodyCell } from './bodyCells';
-import { BodyRow, getBodyRows } from './bodyRows';
+import { DataBodyRow, getBodyRows } from './bodyRows';
 import { createTable } from './createTable';
 
 interface User {
@@ -51,7 +51,7 @@ const dataColumns = [
 it('transforms empty data', () => {
 	const actual = getBodyRows([], dataColumns);
 
-	const expected: BodyRow<User>[] = [];
+	const expected: DataBodyRow<User>[] = [];
 
 	expect(actual).toStrictEqual(expected);
 });
@@ -59,7 +59,7 @@ it('transforms empty data', () => {
 it('transforms data for data columns', () => {
 	const actual = getBodyRows(data, dataColumns);
 
-	const row0 = new BodyRow<User>({ id: '0', original: data[0], cells: [], cellForId: {} });
+	const row0 = new DataBodyRow<User>({ id: '0', original: data[0], cells: [], cellForId: {} });
 	const cells0 = [
 		new DataBodyCell<User>({
 			row: row0,
@@ -85,7 +85,7 @@ it('transforms data for data columns', () => {
 	};
 	row0.cellForId = cellForId0;
 
-	const row1 = new BodyRow<User>({ id: '1', original: data[1], cells: [], cellForId: {} });
+	const row1 = new DataBodyRow<User>({ id: '1', original: data[1], cells: [], cellForId: {} });
 	const cells1 = [
 		new DataBodyCell<User>({
 			row: row1,
@@ -111,7 +111,7 @@ it('transforms data for data columns', () => {
 	};
 	row1.cellForId = cellForId1;
 
-	const expected: BodyRow<User>[] = [row0, row1];
+	const expected: DataBodyRow<User>[] = [row0, row1];
 
 	[0, 1].forEach((rowIdx) => {
 		expect(actual[rowIdx].original).toStrictEqual(expected[rowIdx].original);
@@ -156,7 +156,7 @@ it('transforms data with display columns', () => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const actual = getBodyRows(data, displayColumns as any);
 
-	const row0 = new BodyRow<User>({ id: '0', original: data[0], cells: [], cellForId: {} });
+	const row0 = new DataBodyRow<User>({ id: '0', original: data[0], cells: [], cellForId: {} });
 	const cells0 = [
 		new DisplayBodyCell<User>({
 			row: row0,
@@ -176,7 +176,7 @@ it('transforms data with display columns', () => {
 	};
 	row0.cellForId = cellForId0;
 
-	const row1 = new BodyRow<User>({ id: '1', original: data[1], cells: [], cellForId: {} });
+	const row1 = new DataBodyRow<User>({ id: '1', original: data[1], cells: [], cellForId: {} });
 	const cells1 = [
 		new DisplayBodyCell<User>({
 			row: row1,
@@ -196,7 +196,7 @@ it('transforms data with display columns', () => {
 	};
 	row1.cellForId = cellForId1;
 
-	const expected: BodyRow<User>[] = [row0, row1];
+	const expected: DataBodyRow<User>[] = [row0, row1];
 
 	[0, 1].forEach((rowIdx) => {
 		expect(actual[rowIdx].original).toStrictEqual(expected[rowIdx].original);

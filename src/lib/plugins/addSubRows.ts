@@ -1,4 +1,4 @@
-import { BodyRow, getSubRows } from '$lib/bodyRows';
+import { DataBodyRow, getSubRows } from '$lib/bodyRows';
 import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
 import { derived } from 'svelte/store';
 
@@ -12,7 +12,7 @@ export interface SubRowsConfig<Item> {
 	children: ValidChildrenKey<Item> | ValidChildrenFn<Item>;
 }
 
-const withSubRows = <Item, Row extends BodyRow<Item>>(
+const withSubRows = <Item, Row extends DataBodyRow<Item>>(
 	row: Row,
 	getChildren: ValidChildrenFn<Item>
 ): Row => {

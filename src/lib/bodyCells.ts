@@ -1,5 +1,5 @@
 import { derived, type Readable } from 'svelte/store';
-import type { BodyRow } from './bodyRows';
+import type { DataBodyRow } from './bodyRows';
 import type { DataColumn, DisplayColumn, FlatColumn } from './columns';
 import { TableComponent } from './tableComponent';
 import type { DataLabel, DisplayLabel } from './types/Label';
@@ -8,7 +8,7 @@ import type { RenderConfig } from './render';
 
 export type BodyCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	id: string;
-	row: BodyRow<Item, Plugins>;
+	row: DataBodyRow<Item, Plugins>;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -22,7 +22,7 @@ export abstract class BodyCell<
 	Plugins extends AnyPlugins = AnyPlugins
 > extends TableComponent<Item, Plugins, 'tbody.tr.td'> {
 	abstract column: FlatColumn<Item, Plugins>;
-	row: BodyRow<Item, Plugins>;
+	row: DataBodyRow<Item, Plugins>;
 	constructor({ id, row }: BodyCellInit<Item, Plugins>) {
 		super({ id });
 		this.row = row;

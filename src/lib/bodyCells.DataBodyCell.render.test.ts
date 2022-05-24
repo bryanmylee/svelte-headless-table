@@ -1,5 +1,5 @@
 import { DataBodyCell } from './bodyCells';
-import { BodyRow } from './bodyRows';
+import { DataBodyRow } from './bodyRows';
 import { DataColumn } from './columns';
 import type { TableState } from './createViewModel';
 
@@ -21,7 +21,7 @@ const user: User = {
 	status: 'complicated',
 };
 
-const row = new BodyRow({
+const row = new DataBodyRow({
 	id: '0',
 	original: user,
 	cells: [],
