@@ -3,7 +3,6 @@
 
 	export let isSelected: Writable<boolean>;
 	export let isSomeSubRowsSelected: Readable<boolean>;
-	export let isAllSubRowsSelected: Readable<boolean>;
 </script>
 
 <input type="checkbox" bind:checked={$isSelected} indeterminate={$isSomeSubRowsSelected} />

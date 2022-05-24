@@ -61,11 +61,10 @@
 			id: 'selected',
 			header: '',
 			cell: ({ row }, { pluginStates }) => {
-				const { isSelected, isSomeSubRowsSelected, isAllSubRowsSelected } = pluginStates.select.getRowState(row);
+				const { isSelected, isSomeSubRowsSelected } = pluginStates.select.getRowState(row);
 				return createRender(SelectIndicator, {
 					isSelected,
 					isSomeSubRowsSelected,
-					isAllSubRowsSelected,
 				});
 			},
 		}),
