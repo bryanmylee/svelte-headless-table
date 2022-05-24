@@ -38,10 +38,6 @@ export type TableFilterPropSet = NewTablePropSet<{
 	};
 }>;
 
-type TableFilterBodyCellMetadata = {
-	uuid: string;
-};
-
 interface GetFilteredRowsOptions {
 	tableCellMatches: Record<string, boolean>;
 	fn: TableFilterFn;
@@ -93,7 +89,10 @@ const getFilteredRows = <Item, Row extends BodyRow<Item>>(
 				}
 				const matches = fn({ value: String(value), filterValue });
 				if (matches) {
-					tableCellMatches[cell.rowColId()] = matches;
+					const dataRowColId = cell.dataRowColId();
+					if (dataRowColId !== undefined) {
+						tableCellMatches[dataRowColId] = matches;
+					}
 				}
 				return matches;
 			});
@@ -114,7 +113,7 @@ export const addTableFilter =
 		TableFilterColumnOptions<Item>,
 		TableFilterPropSet
 	> =>
-	({ pluginName, columnOptions }) => {
+	({ columnOptions }) => {
 		const filterValue = writable(initialFilterValue);
 		const preFilteredRows = writable<BodyRow<Item>[]>([]);
 		const filteredRows = writable<BodyRow<Item>[]>([]);
@@ -124,14 +123,6 @@ export const addTableFilter =
 
 		const deriveRows: DeriveRowsFn<Item> = (rows) => {
 			return derived([rows, filterValue], ([$rows, $filterValue]) => {
-				// Set invariant metadata to track rowColId through other transformations.
-				$rows.forEach((row) => {
-					Object.values(row.cellForId).forEach((cell) => {
-						cell.metadataForName[pluginName] = {
-							uuid: cell.rowColId(),
-						} as TableFilterBodyCellMetadata;
-					});
-				});
 				preFilteredRows.set($rows);
 				tableCellMatches.clear();
 				const $tableCellMatches: Record<string, boolean> = {};
@@ -154,15 +145,9 @@ export const addTableFilter =
 					const props = derived(
 						[filterValue, tableCellMatches],
 						([$filterValue, $tableCellMatches]) => {
-							// Get invariant metadata to track rowColId through other transformations.
-							const metadata = cell.metadataForName[pluginName] as TableFilterBodyCellMetadata;
-							if (metadata === undefined) {
-								return {
-									matches: false,
-								};
-							}
+							const dataRowColId = cell.dataRowColId();
 							return {
-								matches: $filterValue !== '' && ($tableCellMatches[metadata.uuid] ?? false),
+								matches: $filterValue !== '' && dataRowColId !== undefined && ($tableCellMatches[dataRowColId] ?? false),
 							};
 						}
 					);

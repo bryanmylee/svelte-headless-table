@@ -1,31 +1,25 @@
-import { derived } from 'svelte/store';
+import { derived, type Readable } from 'svelte/store';
 import { BodyCell, DataBodyCell, DisplayBodyCell } from './bodyCells';
 import { DataColumn, DisplayColumn, type FlatColumn } from './columns';
 import { TableComponent } from './tableComponent';
 import type { AnyPlugins } from './types/TablePlugin';
 import { nonUndefined } from './utils/filter';
 
-export interface BodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
+export type BodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	id: string;
-	original: Item;
 	cells: BodyCell<Item, Plugins>[];
 	cellForId: Record<string, BodyCell<Item, Plugins>>;
 	depth?: number;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-interface
-export interface BodyRowAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> {}
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type BodyRowAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = Record<string, never>
 
-interface BodyRowCloneProps {
-	includeCells?: boolean;
-}
-
-export class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends TableComponent<
+export abstract class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends TableComponent<
 	Item,
 	Plugins,
 	'tbody.tr'
 > {
-	original: Item;
 	cells: BodyCell<Item, Plugins>[];
 	/**
 	 * Get the cell with a given column id.
@@ -35,29 +29,81 @@ export class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends Tabl
 	cellForId: Record<string, BodyCell<Item, Plugins>>;
 	depth: number;
 	subRows?: BodyRow<Item, Plugins>[];
-	constructor({ id, original, cells, cellForId, depth = 0 }: BodyRowInit<Item, Plugins>) {
+	constructor({ id, cells, cellForId, depth = 0 }: BodyRowInit<Item, Plugins>) {
 		super({ id });
-		this.original = original;
 		this.cells = cells;
 		this.cellForId = cellForId;
 		this.depth = depth;
 	}
 
-	attrs() {
+	attrs(): Readable<BodyRowAttributes<Item, Plugins>> {
 		return derived([], () => {
 			return {};
 		});
 	}
+	
+	abstract clone(props?: BodyRowCloneProps): BodyRow<Item, Plugins>;
+}
 
-	clone({ includeCells = false }: BodyRowCloneProps = {}): BodyRow<Item, Plugins> {
-		const clonedRow = new BodyRow({
+type BodyRowCloneProps = {
+	includeCells?: boolean;
+}
+
+export type DataBodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> = BodyRowInit<Item, Plugins> & {
+	original: Item;
+}
+
+export class DataBodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends BodyRow<
+	Item,
+	Plugins
+> {
+	dataId: string;
+	original: Item;
+	constructor({ id, original, cells, cellForId, depth = 0 }: DataBodyRowInit<Item, Plugins>) {
+		super({ id, cells, cellForId, depth });
+		this.dataId = id;
+		this.original = original;
+	}
+
+	clone({ includeCells = false }: BodyRowCloneProps = {}): DataBodyRow<Item, Plugins> {
+		const clonedRow = new DataBodyRow({
 			id: this.id,
 			cellForId: this.cellForId,
 			cells: this.cells,
 			original: this.original,
 			depth: this.depth,
 		});
-		clonedRow.metadataForName = this.metadataForName;
+		if (!includeCells) {
+			return clonedRow;
+		}
+		const clonedCellsForId = Object.fromEntries(
+			Object.entries(clonedRow.cellForId).map(([id, cell]) => {
+				const clonedCell = cell.clone();
+				clonedCell.row = clonedRow;
+				return [id, clonedCell];
+			})
+		);
+		const clonedCells = clonedRow.cells.map(({ id }) => clonedCellsForId[id]);
+		clonedRow.cellForId = clonedCellsForId;
+		clonedRow.cells = clonedCells;
+		return clonedRow;
+	}
+}
+
+export type DisplayBodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> = BodyRowInit<Item, Plugins>
+
+export class DisplayBodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends BodyRow<Item, Plugins> {
+	constructor({ id, cells, cellForId, depth = 0 }: DisplayBodyRowInit<Item, Plugins>) {
+		super({ id, cells, cellForId, depth });
+	}
+	
+	clone({ includeCells = false }: BodyRowCloneProps = {}): DisplayBodyRow<Item, Plugins> {
+		const clonedRow = new DisplayBodyRow({
+			id: this.id,
+			cellForId: this.cellForId,
+			cells: this.cells,
+			depth: this.depth,
+		});
 		if (!includeCells) {
 			return clonedRow;
 		}
@@ -89,7 +135,7 @@ export const getBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	flatColumns: FlatColumn<Item, Plugins>[]
 ): BodyRow<Item, Plugins>[] => {
 	const rows: BodyRow<Item, Plugins>[] = data.map((item, idx) => {
-		return new BodyRow({
+		return new DataBodyRow({
 			id: idx.toString(),
 			original: item,
 			cells: [],
@@ -141,7 +187,12 @@ export const getColumnedBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugin
 	columnIdOrder: string[]
 ): BodyRow<Item, Plugins>[] => {
 	const columnedRows: BodyRow<Item, Plugins>[] = rows.map(
-		({ id, original }) => new BodyRow({ id, original, cells: [], cellForId: {} })
+		row => {
+			const clonedRow = row.clone()
+			clonedRow.cells = [];
+			clonedRow.cellForId = {};
+			return clonedRow;
+		}
 	);
 	if (rows.length === 0 || columnIdOrder.length === 0) return rows;
 	rows.forEach((row, rowIdx) => {
@@ -179,7 +230,7 @@ export const getSubRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 ): BodyRow<Item, Plugins>[] => {
 	const subRows = subItems.map((item, idx) => {
 		const id = `${parentRow.id}>${idx}`;
-		return new BodyRow<Item, Plugins>({
+		return new DataBodyRow<Item, Plugins>({
 			id,
 			original: item,
 			cells: [],

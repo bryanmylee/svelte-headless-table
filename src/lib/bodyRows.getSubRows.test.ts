@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 import { DataBodyCell, DisplayBodyCell } from './bodyCells';
-import { BodyRow, getBodyRows, getColumnedBodyRows, getSubRows } from './bodyRows';
+import { BodyRow, DataBodyRow, getBodyRows, getColumnedBodyRows, getSubRows } from './bodyRows';
 import { createTable } from './createTable';
 
 interface User {
@@ -70,10 +70,15 @@ it('transforms empty data', () => {
 it('derives the correct cells for parent with data columns', () => {
 	const actual = getSubRows(data, parentRow);
 
-	const expected = getBodyRows(data, dataColumns);
+	const expected = getBodyRows(data, dataColumns) as DataBodyRow<User>[];
 
 	[0, 1].forEach((rowIdx) => {
-		expect(actual[rowIdx].original).toStrictEqual(expected[rowIdx].original);
+		const row = actual[rowIdx];
+		expect(row).toBeInstanceOf(DataBodyRow);
+		if (!(row instanceof DataBodyRow)) {
+			throw new Error('Incorrect instance type');
+		}
+		expect(row.original).toStrictEqual(expected[rowIdx].original);
 		expect(actual[rowIdx].cells.length).toStrictEqual(expected[rowIdx].cells.length);
 		actual[rowIdx].cells.forEach((_, colIdx) => {
 			const cell = actual[rowIdx].cells[colIdx];
@@ -91,10 +96,15 @@ it('derives the correct cellForId when parent has hidden cells', () => {
 	const columnedParentRow = getColumnedBodyRows([parentRow], ['firstName'])[0];
 	const actual = getSubRows(data, columnedParentRow);
 
-	const expected = getColumnedBodyRows(getBodyRows(data, dataColumns), ['firstName']);
+	const expected = getColumnedBodyRows(getBodyRows(data, dataColumns), ['firstName']) as DataBodyRow<User>[];
 
 	[0, 1].forEach((rowIdx) => {
-		expect(actual[rowIdx].original).toStrictEqual(expected[rowIdx].original);
+		const row = actual[rowIdx];
+		expect(row).toBeInstanceOf(DataBodyRow);
+		if (!(row instanceof DataBodyRow)) {
+			throw new Error('Incorrect instance type');
+		}
+		expect(row.original).toStrictEqual(expected[rowIdx].original);
 		expect(actual[rowIdx].cells.length).toStrictEqual(expected[rowIdx].cells.length);
 		actual[rowIdx].cells.forEach((_, colIdx) => {
 			const cell = actual[rowIdx].cells[colIdx];
@@ -137,10 +147,15 @@ const displayParentRow = getBodyRows([parentData], displayColumns)[0];
 it('derives the correct cells for parent with columns', () => {
 	const actual = getSubRows(data, displayParentRow);
 
-	const expected = getBodyRows(data, displayColumns);
+	const expected = getBodyRows(data, displayColumns) as DataBodyRow<User>[];
 
 	[0, 1].forEach((rowIdx) => {
-		expect(actual[rowIdx].original).toStrictEqual(expected[rowIdx].original);
+		const row = actual[rowIdx];
+		expect(row).toBeInstanceOf(DataBodyRow);
+		if (!(row instanceof DataBodyRow)) {
+			throw new Error('Incorrect instance type');
+		}
+		expect(row.original).toStrictEqual(expected[rowIdx].original);
 		expect(actual[rowIdx].cells.length).toStrictEqual(expected[rowIdx].cells.length);
 		actual[rowIdx].cells.forEach((_, colIdx) => {
 			const cell = actual[rowIdx].cells[colIdx];

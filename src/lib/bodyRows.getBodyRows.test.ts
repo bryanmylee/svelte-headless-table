@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 import { DataBodyCell, DisplayBodyCell } from './bodyCells';
-import { BodyRow, getBodyRows } from './bodyRows';
+import { BodyRow, DataBodyRow, getBodyRows } from './bodyRows';
 import { createTable } from './createTable';
 
 interface User {
@@ -59,7 +59,7 @@ it('transforms empty data', () => {
 it('transforms data for data columns', () => {
 	const actual = getBodyRows(data, dataColumns);
 
-	const row0 = new BodyRow<User>({ id: '0', original: data[0], cells: [], cellForId: {} });
+	const row0 = new DataBodyRow<User>({ id: '0', original: data[0], cells: [], cellForId: {} });
 	const cells0 = [
 		new DataBodyCell<User>({
 			row: row0,
@@ -85,7 +85,7 @@ it('transforms data for data columns', () => {
 	};
 	row0.cellForId = cellForId0;
 
-	const row1 = new BodyRow<User>({ id: '1', original: data[1], cells: [], cellForId: {} });
+	const row1 = new DataBodyRow<User>({ id: '1', original: data[1], cells: [], cellForId: {} });
 	const cells1 = [
 		new DataBodyCell<User>({
 			row: row1,
@@ -111,11 +111,16 @@ it('transforms data for data columns', () => {
 	};
 	row1.cellForId = cellForId1;
 
-	const expected: BodyRow<User>[] = [row0, row1];
+	const expected: DataBodyRow<User>[] = [row0, row1];
 
 	[0, 1].forEach((rowIdx) => {
-		expect(actual[rowIdx].original).toStrictEqual(expected[rowIdx].original);
-		expect(actual[rowIdx].cells.length).toStrictEqual(expected[rowIdx].cells.length);
+		const row = actual[rowIdx];
+		expect(row).toBeInstanceOf(DataBodyRow);
+		if (!(row instanceof DataBodyRow)) {
+			throw new Error('Incorrect BodyRow subtype');
+		}
+		expect(row.original).toStrictEqual(expected[rowIdx].original);
+		expect(row.cells.length).toStrictEqual(expected[rowIdx].cells.length);
 		actual[rowIdx].cells.forEach((_, colIdx) => {
 			const cell = actual[rowIdx].cells[colIdx];
 			expect(cell).toBeInstanceOf(DataBodyCell);
@@ -156,7 +161,7 @@ it('transforms data with display columns', () => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const actual = getBodyRows(data, displayColumns as any);
 
-	const row0 = new BodyRow<User>({ id: '0', original: data[0], cells: [], cellForId: {} });
+	const row0 = new DataBodyRow<User>({ id: '0', original: data[0], cells: [], cellForId: {} });
 	const cells0 = [
 		new DisplayBodyCell<User>({
 			row: row0,
@@ -176,7 +181,7 @@ it('transforms data with display columns', () => {
 	};
 	row0.cellForId = cellForId0;
 
-	const row1 = new BodyRow<User>({ id: '1', original: data[1], cells: [], cellForId: {} });
+	const row1 = new DataBodyRow<User>({ id: '1', original: data[1], cells: [], cellForId: {} });
 	const cells1 = [
 		new DisplayBodyCell<User>({
 			row: row1,
@@ -196,13 +201,18 @@ it('transforms data with display columns', () => {
 	};
 	row1.cellForId = cellForId1;
 
-	const expected: BodyRow<User>[] = [row0, row1];
+	const expected: DataBodyRow<User>[] = [row0, row1];
 
 	[0, 1].forEach((rowIdx) => {
-		expect(actual[rowIdx].original).toStrictEqual(expected[rowIdx].original);
-		expect(actual[rowIdx].cells.length).toStrictEqual(expected[rowIdx].cells.length);
-		actual[rowIdx].cells.forEach((_, colIdx) => {
-			const cell = actual[rowIdx].cells[colIdx];
+		const row = actual[rowIdx];
+		expect(actual[rowIdx]).toBeInstanceOf(DataBodyRow);
+		if (!(row instanceof DataBodyRow)) {
+			throw new Error('Incorrect BodyRow subtype');
+		}
+		expect(row.original).toStrictEqual(expected[rowIdx].original);
+		expect(row.cells.length).toStrictEqual(expected[rowIdx].cells.length);
+		row.cells.forEach((_, colIdx) => {
+			const cell = row.cells[colIdx];
 			expect(cell).toBeInstanceOf(DisplayBodyCell);
 			const expectedCell = expected[rowIdx].cells[colIdx];
 			if (!(cell instanceof DisplayBodyCell && expectedCell instanceof DisplayBodyCell)) {
@@ -211,7 +221,7 @@ it('transforms data with display columns', () => {
 			expect(cell.label).toEqual(expectedCell.label);
 		});
 		['checked', 'expanded'].forEach((id) => {
-			const cell = actual[rowIdx].cellForId[id];
+			const cell = row.cellForId[id];
 			expect(cell).toBeInstanceOf(DisplayBodyCell);
 			const expectedCell = expected[rowIdx].cellForId[id];
 			if (!(cell instanceof DisplayBodyCell && expectedCell instanceof DisplayBodyCell)) {

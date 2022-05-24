@@ -1,5 +1,5 @@
 import { derived, type Readable } from 'svelte/store';
-import type { BodyRow } from './bodyRows';
+import { DataBodyRow, type BodyRow } from './bodyRows';
 import type { DataColumn, DisplayColumn, FlatColumn } from './columns';
 import { TableComponent } from './tableComponent';
 import type { DataLabel, DisplayLabel } from './types/Label';
@@ -36,6 +36,13 @@ export abstract class BodyCell<
 
 	rowColId(): string {
 		return `${this.row.id}:${this.column.id}`;
+	}
+	
+	dataRowColId(): string | undefined {
+		if (!(this.row instanceof DataBodyRow)) {
+			return undefined;
+		}
+		return `${this.row.dataId}:${this.column.id}`;
 	}
 }
 
@@ -91,7 +98,6 @@ export class DataBodyCell<
 			label: this.label,
 			value: this.value,
 		});
-		clonedCell.metadataForName = this.metadataForName;
 		return clonedCell;
 	}
 }
@@ -135,7 +141,6 @@ export class DisplayBodyCell<Item, Plugins extends AnyPlugins = AnyPlugins> exte
 			column: this.column,
 			label: this.label,
 		});
-		clonedCell.metadataForName = this.metadataForName;
 		return clonedCell;
 	}
 }

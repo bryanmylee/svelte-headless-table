@@ -1,6 +1,7 @@
 import { DataBodyCell } from '$lib/bodyCells';
-import { BodyRow } from '$lib/bodyRows';
+import { BodyRow, DisplayBodyRow } from '$lib/bodyRows';
 import type { DataColumn } from '$lib/columns';
+import { DataHeaderCell } from '$lib/headerCells';
 import type { DataLabel } from '$lib/types/Label';
 import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
 import { isShiftClick } from '$lib/utils/event';
@@ -46,7 +47,7 @@ export type GroupByPropSet = NewTablePropSet<{
 	};
 }>;
 
-interface GetGroupedRowsMetadata {
+interface GetGroupedRowsProps {
 	repeatCellIds: Record<string, boolean>;
 	aggregateCellIds: Record<string, boolean>;
 	groupCellIds: Record<string, boolean>;
@@ -76,7 +77,7 @@ export const getGroupedRows = <
 	rows: Row[],
 	groupByIds: string[],
 	columnOptions: Record<string, GroupByColumnOptions<Item>>,
-	{ repeatCellIds, aggregateCellIds, groupCellIds, allGroupByIds }: GetGroupedRowsMetadata
+	{ repeatCellIds, aggregateCellIds, groupCellIds, allGroupByIds }: GetGroupedRowsProps
 ): Row[] => {
 	if (groupByIds.length === 0) {
 		return rows;
@@ -110,10 +111,9 @@ export const getGroupedRows = <
 	for (const [groupOnValue, subRows] of subRowsForGroupOnValue.entries()) {
 		// Guaranteed to have at least one subRow.
 		const firstRow = subRows[0];
-		const groupRow = new BodyRow({
+		const groupRow = new DisplayBodyRow<Item>({
 			id: `${idPrefix}${groupRowIdx++}`,
 			// TODO Differentiate data rows and grouped rows.
-			original: firstRow.original,
 			depth: firstRow.depth,
 			cells: [],
 			cellForId: {},
@@ -235,7 +235,7 @@ export const addGroupBy =
 					const props = derived(groupByIds, ($groupByIds) => {
 						const grouped = $groupByIds.includes(cell.id);
 						const toggle = (event: Event) => {
-							if (!cell.isData) return;
+							if (!(cell instanceof DataHeaderCell)) return;
 							if (disabled) return;
 							groupByIds.toggle(cell.id, {
 								clearOthers: disableMultiGroup || !isMultiGroupEvent(event),
