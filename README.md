@@ -35,6 +35,10 @@ Just describe how you want your tables to behave and let Svelte Headless Table h
 
 Svelte Headless Table comes with a stable plugin system that allows you to transform and modify every step under the hood. If you want extra functionality, you can build it!
 
+### Svelte-Native
+
+Svelte Headless Table is designed to work **seamlessly** with Svelte. If you love Svelte, you will love Svelte Headless Table.
+
 ## The Plugin System
 
 Svelte Headless Table is designed with extensibility in mind. Its complex features are provided by an extensive suite of plugins.
