@@ -1,5 +1,5 @@
 import { derived, type Readable } from 'svelte/store';
-import type { BodyRow } from './bodyRows';
+import { DataBodyRow, type BodyRow } from './bodyRows';
 import type { DataColumn, DisplayColumn, FlatColumn } from './columns';
 import { TableComponent } from './tableComponent';
 import type { DataLabel, DisplayLabel } from './types/Label';
@@ -36,6 +36,13 @@ export abstract class BodyCell<
 
 	rowColId(): string {
 		return `${this.row.id}:${this.column.id}`;
+	}
+	
+	originalRowColId(): string {
+		if (!(this.row instanceof DataBodyRow)) {
+			return this.rowColId();
+		}
+		return `${this.row.originalId}:${this.column.id}`;
 	}
 }
 

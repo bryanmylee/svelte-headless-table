@@ -1,5 +1,5 @@
 import { DataBodyCell } from '$lib/bodyCells';
-import { BodyRow, DataBodyRow, DisplayBodyRow } from '$lib/bodyRows';
+import { BodyRow, DisplayBodyRow } from '$lib/bodyRows';
 import type { DataColumn } from '$lib/columns';
 import { DataHeaderCell } from '$lib/headerCells';
 import type { DataLabel } from '$lib/types/Label';

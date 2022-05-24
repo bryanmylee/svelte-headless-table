@@ -105,7 +105,9 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 
 	let visibleColumns = flatColumns;
 	deriveFlatColumnsFns.forEach((fn) => {
-		visibleColumns = fn(visibleColumns) as Readable<FlatColumn<Item, Plugins>[]>;
+		// Variance of generic type here is unstable. Not sure how to fix.
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		visibleColumns = fn(visibleColumns as any) as any;
 	});
 
 	const injectedColumns = derived(visibleColumns, ($visibleColumns) => {
@@ -189,6 +191,7 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 			});
 		});
 		_pageRows.set($pageRows);
+		console.log($pageRows);
 		return $pageRows;
 	});
 

@@ -1,5 +1,5 @@
 import { DataBodyCell } from '$lib/bodyCells';
-import type { BodyRow } from '$lib/bodyRows';
+import { DataBodyRow, type BodyRow } from '$lib/bodyRows';
 import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
 import { recordSetStore } from '$lib/utils/store';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
@@ -37,10 +37,6 @@ export type TableFilterPropSet = NewTablePropSet<{
 		matches: boolean;
 	};
 }>;
-
-type TableFilterBodyCellMetadata = {
-	uuid: string;
-};
 
 interface GetFilteredRowsOptions {
 	tableCellMatches: Record<string, boolean>;
@@ -114,7 +110,7 @@ export const addTableFilter =
 		TableFilterColumnOptions<Item>,
 		TableFilterPropSet
 	> =>
-	({ pluginName, columnOptions }) => {
+	({ columnOptions }) => {
 		const filterValue = writable(initialFilterValue);
 		const preFilteredRows = writable<BodyRow<Item>[]>([]);
 		const filteredRows = writable<BodyRow<Item>[]>([]);
@@ -124,14 +120,6 @@ export const addTableFilter =
 
 		const deriveRows: DeriveRowsFn<Item> = (rows) => {
 			return derived([rows, filterValue], ([$rows, $filterValue]) => {
-				// Set invariant metadata to track rowColId through other transformations.
-				$rows.forEach((row) => {
-					Object.values(row.cellForId).forEach((cell) => {
-						cell.metadataForName[pluginName] = {
-							uuid: cell.rowColId(),
-						} as TableFilterBodyCellMetadata;
-					});
-				});
 				preFilteredRows.set($rows);
 				tableCellMatches.clear();
 				const $tableCellMatches: Record<string, boolean> = {};
@@ -154,15 +142,13 @@ export const addTableFilter =
 					const props = derived(
 						[filterValue, tableCellMatches],
 						([$filterValue, $tableCellMatches]) => {
-							// Get invariant metadata to track rowColId through other transformations.
-							const metadata = cell.metadataForName[pluginName] as TableFilterBodyCellMetadata;
-							if (metadata === undefined) {
+							if (!(cell.row instanceof DataBodyRow)) {
 								return {
 									matches: false,
-								};
-							}
+								}
+							};
 							return {
-								matches: $filterValue !== '' && ($tableCellMatches[metadata.uuid] ?? false),
+								matches: $filterValue !== '' && ($tableCellMatches[cell.originalRowColId()] ?? false),
 							};
 						}
 					);
