@@ -1,12 +1,12 @@
 import { DataBodyRow, type BodyRow } from '$lib/bodyRows';
 import type { NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
 import { recordSetStore, type RecordSetStore } from '$lib/utils/store';
-import { keyed } from 'svelte-keyed';
 import { derived, type Readable, type Updater, type Writable } from 'svelte/store';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface SelectedRowsConfig<Item> {
 	initialSelectedDataIds?: Record<string, boolean>;
+	linkDataSubRows?: boolean;
 }
 
 export interface SelectedRowsState<Item> {
@@ -30,58 +30,88 @@ export type SelectedRowsPropSet = NewTablePropSet<{
 
 const isAllSubRowsSelectedForRow = <Item>(
 	row: BodyRow<Item>,
-	$selectedDataIds: Record<string, boolean>
+	$selectedDataIds: Record<string, boolean>,
+	linkDataSubRows: boolean
 ): boolean => {
 	if (row instanceof DataBodyRow) {
-		return $selectedDataIds[row.dataId] === true;
+		if (!linkDataSubRows || row.subRows === undefined) {
+			return $selectedDataIds[row.dataId] === true;
+		}
 	}
 	if (row.subRows === undefined) {
 		return false;
 	}
-	return row.subRows.every((subRow) => isAllSubRowsSelectedForRow(subRow, $selectedDataIds));
+	return row.subRows.every((subRow) =>
+		isAllSubRowsSelectedForRow(subRow, $selectedDataIds, linkDataSubRows)
+	);
 };
 
 const isSomeSubRowsSelectedForRow = <Item>(
 	row: BodyRow<Item>,
-	$selectedDataIds: Record<string, boolean>
+	$selectedDataIds: Record<string, boolean>,
+	linkDataSubRows: boolean
 ): boolean => {
 	if (row instanceof DataBodyRow) {
-		return $selectedDataIds[row.dataId] === true;
+		if (!linkDataSubRows || row.subRows === undefined) {
+			return $selectedDataIds[row.dataId] === true;
+		}
 	}
 	if (row.subRows === undefined) {
 		return false;
 	}
-	return row.subRows.some((subRow) => isAllSubRowsSelectedForRow(subRow, $selectedDataIds));
+	return row.subRows.some((subRow) =>
+		isAllSubRowsSelectedForRow(subRow, $selectedDataIds, linkDataSubRows)
+	);
 };
 
-const updateSelectedDataIds = <Item>(
+const writeSelectedDataIds = <Item>(
 	row: BodyRow<Item>,
 	value: boolean,
-	$selectedDataIds: Record<string, boolean>
+	$selectedDataIds: Record<string, boolean>,
+	linkDataSubRows: boolean
 ): void => {
 	if (row instanceof DataBodyRow) {
 		$selectedDataIds[row.dataId] = value;
+		if (!linkDataSubRows) {
+			return;
+		}
 	}
 	if (row.subRows === undefined) {
 		return;
 	}
 	row.subRows.forEach((subRow) => {
-		updateSelectedDataIds(subRow, value, $selectedDataIds);
+		writeSelectedDataIds(subRow, value, $selectedDataIds, linkDataSubRows);
 	});
 };
 
-const getIsSelectedStoreForDisplayRow = <Item>(
+const getRowIsSelectedStore = <Item>(
 	row: BodyRow<Item>,
-	selectedDataIds: RecordSetStore<string>
+	selectedDataIds: RecordSetStore<string>,
+	linkDataSubRows: boolean
 ): Writable<boolean> => {
-	const { subscribe } = derived(selectedDataIds, ($selectedDataIds) =>
-		isAllSubRowsSelectedForRow(row, $selectedDataIds)
-	);
+	const { subscribe } = derived(selectedDataIds, ($selectedDataIds) => {
+		if (row instanceof DataBodyRow) {
+			if (!linkDataSubRows) {
+				return $selectedDataIds[row.dataId] === true;
+			}
+			if ($selectedDataIds[row.dataId] === true) {
+				return true;
+			}
+		}
+		return isAllSubRowsSelectedForRow(row, $selectedDataIds, linkDataSubRows);
+	});
 	const update = (fn: Updater<boolean>) => {
 		selectedDataIds.update(($selectedDataIds) => {
-			const oldValue = isAllSubRowsSelectedForRow(row, $selectedDataIds);
+			const oldValue = isAllSubRowsSelectedForRow(row, $selectedDataIds, linkDataSubRows);
 			const $updatedSelectedDataIds = { ...$selectedDataIds };
-			updateSelectedDataIds(row, fn(oldValue), $updatedSelectedDataIds);
+			writeSelectedDataIds(row, fn(oldValue), $updatedSelectedDataIds, linkDataSubRows);
+			if (row.parentRow !== undefined && row.parentRow instanceof DataBodyRow) {
+				$updatedSelectedDataIds[row.parentRow.dataId] = isAllSubRowsSelectedForRow(
+					row.parentRow,
+					$updatedSelectedDataIds,
+					linkDataSubRows
+				);
+			}
 			return $updatedSelectedDataIds;
 		});
 	};
@@ -94,7 +124,10 @@ const getIsSelectedStoreForDisplayRow = <Item>(
 };
 
 export const addSelectedRows =
-	<Item>({ initialSelectedDataIds = {} }: SelectedRowsConfig<Item> = {}): TablePlugin<
+	<Item>({
+		initialSelectedDataIds = {},
+		linkDataSubRows = false,
+	}: SelectedRowsConfig<Item> = {}): TablePlugin<
 		Item,
 		SelectedRowsState<Item>,
 		Record<string, never>,
@@ -104,19 +137,16 @@ export const addSelectedRows =
 		const selectedDataIds = recordSetStore(initialSelectedDataIds);
 
 		const getRowState = (row: BodyRow<Item>): SelectedRowsRowState => {
-			const isSelected =
-				row instanceof DataBodyRow
-					? keyed(selectedDataIds, row.dataId)
-					: getIsSelectedStoreForDisplayRow(row, selectedDataIds);
+			const isSelected = getRowIsSelectedStore(row, selectedDataIds, linkDataSubRows);
 			const isSomeSubRowsSelected = derived(
 				[isSelected, selectedDataIds],
 				([$isSelected, $selectedDataIds]) => {
 					if ($isSelected) return false;
-					return isSomeSubRowsSelectedForRow(row, $selectedDataIds);
+					return isSomeSubRowsSelectedForRow(row, $selectedDataIds, linkDataSubRows);
 				}
 			);
 			const isAllSubRowsSelected = derived(selectedDataIds, ($selectedDataIds) => {
-				return isAllSubRowsSelectedForRow(row, $selectedDataIds);
+				return isAllSubRowsSelectedForRow(row, $selectedDataIds, linkDataSubRows);
 			});
 			return {
 				isSelected,
@@ -132,8 +162,16 @@ export const addSelectedRows =
 			hooks: {
 				'tbody.tr': (row) => {
 					const props = derived(selectedDataIds, ($selectedDataIds) => {
-						const someSubRowsSelected = isSomeSubRowsSelectedForRow(row, $selectedDataIds);
-						const allSubRowsSelected = isAllSubRowsSelectedForRow(row, $selectedDataIds);
+						const someSubRowsSelected = isSomeSubRowsSelectedForRow(
+							row,
+							$selectedDataIds,
+							linkDataSubRows
+						);
+						const allSubRowsSelected = isAllSubRowsSelectedForRow(
+							row,
+							$selectedDataIds,
+							linkDataSubRows
+						);
 						const selected =
 							row instanceof DataBodyRow
 								? $selectedDataIds[row.dataId] === true

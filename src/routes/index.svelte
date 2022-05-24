@@ -29,7 +29,7 @@
 	import { getDistinct } from '$lib/utils/array';
 	import SelectIndicator from './_SelectIndicator.svelte';
 
-	const data = readable(createSamples(50));
+	const data = readable(createSamples(50, 2));
 
 	const table = createTable(data, {
 		subRows: addSubRows({
@@ -48,6 +48,7 @@
 		}),
 		select: addSelectedRows({
 			initialSelectedDataIds: { 1: true },
+			linkDataSubRows: true,
 		}),
 		orderColumns: addColumnOrder(),
 		hideColumns: addHiddenColumns(),
