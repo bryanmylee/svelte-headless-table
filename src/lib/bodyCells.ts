@@ -98,7 +98,6 @@ export class DataBodyCell<
 			label: this.label,
 			value: this.value,
 		});
-		clonedCell.metadataForName = this.metadataForName;
 		return clonedCell;
 	}
 }
@@ -142,7 +141,6 @@ export class DisplayBodyCell<Item, Plugins extends AnyPlugins = AnyPlugins> exte
 			column: this.column,
 			label: this.label,
 		});
-		clonedCell.metadataForName = this.metadataForName;
 		return clonedCell;
 	}
 }

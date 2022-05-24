@@ -191,7 +191,6 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 			});
 		});
 		_pageRows.set($pageRows);
-		console.log($pageRows);
 		return $pageRows;
 	});
 

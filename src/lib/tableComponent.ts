@@ -26,7 +26,6 @@ export abstract class TableComponent<Item, Plugins extends AnyPlugins, Key exten
 		throw Error('Missing `attrs` implementation');
 	}
 
-	metadataForName: Record<string, Record<string, unknown>> = {};
 	private propsForName: Record<string, Readable<Record<string, unknown>>> = {};
 	props(): Readable<PluginTablePropSet<Plugins>[Key]> {
 		return derivedKeys(this.propsForName) as Readable<PluginTablePropSet<Plugins>[Key]>;

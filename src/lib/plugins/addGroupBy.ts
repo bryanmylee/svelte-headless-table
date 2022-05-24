@@ -47,7 +47,7 @@ export type GroupByPropSet = NewTablePropSet<{
 	};
 }>;
 
-interface GetGroupedRowsMetadata {
+interface GetGroupedRowsProps {
 	repeatCellIds: Record<string, boolean>;
 	aggregateCellIds: Record<string, boolean>;
 	groupCellIds: Record<string, boolean>;
@@ -77,7 +77,7 @@ export const getGroupedRows = <
 	rows: Row[],
 	groupByIds: string[],
 	columnOptions: Record<string, GroupByColumnOptions<Item>>,
-	{ repeatCellIds, aggregateCellIds, groupCellIds, allGroupByIds }: GetGroupedRowsMetadata
+	{ repeatCellIds, aggregateCellIds, groupCellIds, allGroupByIds }: GetGroupedRowsProps
 ): Row[] => {
 	if (groupByIds.length === 0) {
 		return rows;
