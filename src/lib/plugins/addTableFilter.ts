@@ -1,5 +1,5 @@
 import { DataBodyCell } from '$lib/bodyCells';
-import { DataBodyRow, type BodyRow } from '$lib/bodyRows';
+import type { BodyRow } from '$lib/bodyRows';
 import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
 import { recordSetStore } from '$lib/utils/store';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
@@ -89,7 +89,10 @@ const getFilteredRows = <Item, Row extends BodyRow<Item>>(
 				}
 				const matches = fn({ value: String(value), filterValue });
 				if (matches) {
-					tableCellMatches[cell.rowColId()] = matches;
+					const dataRowColId = cell.dataRowColId();
+					if (dataRowColId !== undefined) {
+						tableCellMatches[dataRowColId] = matches;
+					}
 				}
 				return matches;
 			});
@@ -142,13 +145,9 @@ export const addTableFilter =
 					const props = derived(
 						[filterValue, tableCellMatches],
 						([$filterValue, $tableCellMatches]) => {
-							if (!(cell.row instanceof DataBodyRow)) {
-								return {
-									matches: false,
-								}
-							};
+							const dataRowColId = cell.dataRowColId();
 							return {
-								matches: $filterValue !== '' && ($tableCellMatches[cell.originalRowColId()] ?? false),
+								matches: $filterValue !== '' && dataRowColId !== undefined && ($tableCellMatches[dataRowColId] ?? false),
 							};
 						}
 					);

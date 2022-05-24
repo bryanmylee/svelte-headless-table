@@ -38,11 +38,11 @@ export abstract class BodyCell<
 		return `${this.row.id}:${this.column.id}`;
 	}
 	
-	originalRowColId(): string {
+	dataRowColId(): string | undefined {
 		if (!(this.row instanceof DataBodyRow)) {
-			return this.rowColId();
+			return undefined;
 		}
-		return `${this.row.originalId}:${this.column.id}`;
+		return `${this.row.dataId}:${this.column.id}`;
 	}
 }
 

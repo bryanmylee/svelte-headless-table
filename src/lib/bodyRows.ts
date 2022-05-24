@@ -57,11 +57,11 @@ export class DataBodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends 
 	Item,
 	Plugins
 > {
-	originalId: string;
+	dataId: string;
 	original: Item;
 	constructor({ id, original, cells, cellForId, depth = 0 }: DataBodyRowInit<Item, Plugins>) {
 		super({ id, cells, cellForId, depth });
-		this.originalId = id;
+		this.dataId = id;
 		this.original = original;
 	}
 
