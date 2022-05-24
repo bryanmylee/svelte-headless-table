@@ -48,7 +48,6 @@
 		}),
 		select: addSelectedRows({
 			initialSelectedDataIds: { 1: true },
-			linkDataSubRows: true,
 		}),
 		orderColumns: addColumnOrder(),
 		hideColumns: addHiddenColumns(),

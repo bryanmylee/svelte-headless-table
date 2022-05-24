@@ -126,7 +126,7 @@ const getRowIsSelectedStore = <Item>(
 export const addSelectedRows =
 	<Item>({
 		initialSelectedDataIds = {},
-		linkDataSubRows = false,
+		linkDataSubRows = true,
 	}: SelectedRowsConfig<Item> = {}): TablePlugin<
 		Item,
 		SelectedRowsState<Item>,
