@@ -1,4 +1,4 @@
-import type { DataBodyRow } from '$lib/bodyRows';
+import type { BodyRow } from '$lib/bodyRows';
 import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
 import { keyed } from 'svelte-keyed';
 import { derived, readable, writable, type Readable, type Writable } from 'svelte/store';
@@ -10,7 +10,7 @@ export interface ExpandedRowsConfig<Item> {
 
 export interface ExpandedRowsState<Item> {
 	expandedIds: Writable<Record<string, boolean>>;
-	getRowState: (row: DataBodyRow<Item>) => ExpandedRowsRowState;
+	getRowState: (row: BodyRow<Item>) => ExpandedRowsRowState;
 }
 
 export interface ExpandedRowsRowState {
@@ -19,7 +19,7 @@ export interface ExpandedRowsRowState {
 	isAllSubRowsExpanded: Readable<boolean>;
 }
 
-const withExpandedRows = <Item, Row extends DataBodyRow<Item>>(
+const withExpandedRows = <Item, Row extends BodyRow<Item>>(
 	row: Row,
 	expandedIds: Record<string, boolean>
 ): Row[] => {
@@ -44,7 +44,7 @@ export const addExpandedRows =
 	> =>
 	() => {
 		const expandedIds = writable(initialExpandedIds);
-		const getRowState = (row: DataBodyRow<Item>): ExpandedRowsRowState => {
+		const getRowState = (row: BodyRow<Item>): ExpandedRowsRowState => {
 			const isExpanded = keyed(expandedIds, row.id) as Writable<boolean>;
 			const canExpand = readable((row.subRows?.length ?? 0) > 0);
 			const subRowExpandedIds = derived(expandedIds, ($expandedIds) => {

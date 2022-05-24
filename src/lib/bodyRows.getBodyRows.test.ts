@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 import { DataBodyCell, DisplayBodyCell } from './bodyCells';
-import { DataBodyRow, getBodyRows } from './bodyRows';
+import { BodyRow, DataBodyRow, getBodyRows } from './bodyRows';
 import { createTable } from './createTable';
 
 interface User {
@@ -51,7 +51,7 @@ const dataColumns = [
 it('transforms empty data', () => {
 	const actual = getBodyRows([], dataColumns);
 
-	const expected: DataBodyRow<User>[] = [];
+	const expected: BodyRow<User>[] = [];
 
 	expect(actual).toStrictEqual(expected);
 });
@@ -114,8 +114,13 @@ it('transforms data for data columns', () => {
 	const expected: DataBodyRow<User>[] = [row0, row1];
 
 	[0, 1].forEach((rowIdx) => {
-		expect(actual[rowIdx].original).toStrictEqual(expected[rowIdx].original);
-		expect(actual[rowIdx].cells.length).toStrictEqual(expected[rowIdx].cells.length);
+		const row = actual[rowIdx];
+		expect(row).toBeInstanceOf(DataBodyRow);
+		if (!(row instanceof DataBodyRow)) {
+			throw new Error('Incorrect BodyRow subtype');
+		}
+		expect(row.original).toStrictEqual(expected[rowIdx].original);
+		expect(row.cells.length).toStrictEqual(expected[rowIdx].cells.length);
 		actual[rowIdx].cells.forEach((_, colIdx) => {
 			const cell = actual[rowIdx].cells[colIdx];
 			expect(cell).toBeInstanceOf(DataBodyCell);
@@ -199,10 +204,15 @@ it('transforms data with display columns', () => {
 	const expected: DataBodyRow<User>[] = [row0, row1];
 
 	[0, 1].forEach((rowIdx) => {
-		expect(actual[rowIdx].original).toStrictEqual(expected[rowIdx].original);
-		expect(actual[rowIdx].cells.length).toStrictEqual(expected[rowIdx].cells.length);
-		actual[rowIdx].cells.forEach((_, colIdx) => {
-			const cell = actual[rowIdx].cells[colIdx];
+		const row = actual[rowIdx];
+		expect(actual[rowIdx]).toBeInstanceOf(DataBodyRow);
+		if (!(row instanceof DataBodyRow)) {
+			throw new Error('Incorrect BodyRow subtype');
+		}
+		expect(row.original).toStrictEqual(expected[rowIdx].original);
+		expect(row.cells.length).toStrictEqual(expected[rowIdx].cells.length);
+		row.cells.forEach((_, colIdx) => {
+			const cell = row.cells[colIdx];
 			expect(cell).toBeInstanceOf(DisplayBodyCell);
 			const expectedCell = expected[rowIdx].cells[colIdx];
 			if (!(cell instanceof DisplayBodyCell && expectedCell instanceof DisplayBodyCell)) {
@@ -211,7 +221,7 @@ it('transforms data with display columns', () => {
 			expect(cell.label).toEqual(expectedCell.label);
 		});
 		['checked', 'expanded'].forEach((id) => {
-			const cell = actual[rowIdx].cellForId[id];
+			const cell = row.cellForId[id];
 			expect(cell).toBeInstanceOf(DisplayBodyCell);
 			const expectedCell = expected[rowIdx].cellForId[id];
 			if (!(cell instanceof DisplayBodyCell && expectedCell instanceof DisplayBodyCell)) {

@@ -1,5 +1,5 @@
 import { DataBodyCell } from '$lib/bodyCells';
-import type { DataBodyRow } from '$lib/bodyRows';
+import type { BodyRow } from '$lib/bodyRows';
 import { DataHeaderCell } from '$lib/headerCells';
 import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
 import { compare } from '$lib/utils/compare';
@@ -14,7 +14,7 @@ export interface SortByConfig {
 
 export interface SortByState<Item> {
 	sortKeys: WritableSortKeys;
-	preSortedRows: Readable<DataBodyRow<Item>[]>;
+	preSortedRows: Readable<BodyRow<Item>[]>;
 }
 
 export interface SortByColumnOptions {
@@ -97,7 +97,7 @@ export type WritableSortKeys = Writable<SortKey[]> & {
 	clearId: (id: string) => void;
 };
 
-const getSortedRows = <Item, Row extends DataBodyRow<Item>>(
+const getSortedRows = <Item, Row extends BodyRow<Item>>(
 	rows: Row[],
 	sortKeys: SortKey[],
 	columnOptions: Record<string, SortByColumnOptions>
@@ -168,8 +168,8 @@ export const addSortBy =
 			.map(([columnId]) => columnId);
 
 		const sortKeys = createSortKeysStore(initialSortKeys);
-		const preSortedRows = writable<DataBodyRow<Item>[]>([]);
-		const sortedRows = writable<DataBodyRow<Item>[]>([]);
+		const preSortedRows = writable<BodyRow<Item>[]>([]);
+		const sortedRows = writable<BodyRow<Item>[]>([]);
 
 		const deriveRows: DeriveRowsFn<Item> = (rows) => {
 			return derived([rows, sortKeys], ([$rows, $sortKeys]) => {

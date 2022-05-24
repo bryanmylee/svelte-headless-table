@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { DataBodyRow, getBodyRows, getColumnedBodyRows } from './bodyRows';
+import { BodyRow, getBodyRows, getColumnedBodyRows } from './bodyRows';
 import { createTable } from './createTable';
 
 interface User {
@@ -52,7 +52,7 @@ const bodyRows = getBodyRows(data, columns);
 it('does not affect empty rows', () => {
 	const actual = getColumnedBodyRows([], ['firstName', 'visits']);
 
-	const expected: DataBodyRow<User>[] = [];
+	const expected: BodyRow<User>[] = [];
 
 	expect(actual).toStrictEqual(expected);
 });

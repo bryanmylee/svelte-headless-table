@@ -1,6 +1,6 @@
 import type { ReadOrWritable } from 'svelte-subscribe/derivedKeys';
 import { derived, readable, writable, type Readable } from 'svelte/store';
-import { DataBodyRow, getBodyRows, getColumnedBodyRows } from './bodyRows';
+import { BodyRow, getBodyRows, getColumnedBodyRows } from './bodyRows';
 import { FlatColumn, getFlatColumns, type Column } from './columns';
 import type { Table } from './createTable';
 import { getHeaderRows, HeaderRow } from './headerRows';
@@ -16,9 +16,9 @@ export interface TableViewModel<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	flatColumns: FlatColumn<Item, Plugins>[];
 	visibleColumns: Readable<FlatColumn<Item, Plugins>[]>;
 	headerRows: Readable<HeaderRow<Item, Plugins>[]>;
-	originalRows: Readable<DataBodyRow<Item, Plugins>[]>;
-	rows: Readable<DataBodyRow<Item, Plugins>[]>;
-	pageRows: Readable<DataBodyRow<Item, Plugins>[]>;
+	originalRows: Readable<BodyRow<Item, Plugins>[]>;
+	rows: Readable<BodyRow<Item, Plugins>[]>;
+	pageRows: Readable<BodyRow<Item, Plugins>[]>;
 	pluginStates: PluginStates<Plugins>;
 }
 
@@ -50,8 +50,8 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	// _stores need to be defined first to pass into plugins for initialization.
 	const _visibleColumns = writable<FlatColumn<Item, Plugins>[]>([]);
 	const _headerRows = writable<HeaderRow<Item, Plugins>[]>();
-	const _rows = writable<DataBodyRow<Item, Plugins>[]>([]);
-	const _pageRows = writable<DataBodyRow<Item, Plugins>[]>([]);
+	const _rows = writable<BodyRow<Item, Plugins>[]>([]);
+	const _pageRows = writable<BodyRow<Item, Plugins>[]>([]);
 	const pluginInitTableState: PluginInitTableState<Item, Plugins> = {
 		data,
 		columns,

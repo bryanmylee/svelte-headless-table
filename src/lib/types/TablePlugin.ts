@@ -1,5 +1,5 @@
 import type { BodyCell, BodyCellAttributes } from '$lib/bodyCells';
-import type { DataBodyRow, DataBodyRowAttributes } from '$lib/bodyRows';
+import type { BodyRow, BodyRowAttributes } from '$lib/bodyRows';
 import type { DataColumn, FlatColumn } from '$lib/columns';
 import type { HeaderCell, HeaderCellAttributes } from '$lib/headerCells';
 import type { HeaderRow, HeaderRowAttributes } from '$lib/headerRows';
@@ -52,21 +52,21 @@ export type DeriveFlatColumnsFn<Item> = <Col extends FlatColumn<Item>>(
 	flatColumns: Readable<Col[]>
 ) => Readable<Col[]>;
 
-export type DeriveRowsFn<Item> = <Row extends DataBodyRow<Item>>(
+export type DeriveRowsFn<Item> = <Row extends BodyRow<Item>>(
 	rows: Readable<Row[]>
 ) => Readable<Row[]>;
 
 export type Components<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	'thead.tr': HeaderRow<Item, Plugins>;
 	'thead.tr.th': HeaderCell<Item, Plugins>;
-	'tbody.tr': DataBodyRow<Item, Plugins>;
+	'tbody.tr': BodyRow<Item, Plugins>;
 	'tbody.tr.td': BodyCell<Item, Plugins>;
 };
 
 export type AttributesForKey<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	'thead.tr': HeaderRowAttributes<Item, Plugins>;
 	'thead.tr.th': HeaderCellAttributes<Item, Plugins>;
-	'tbody.tr': DataBodyRowAttributes<Item, Plugins>;
+	'tbody.tr': BodyRowAttributes<Item, Plugins>;
 	'tbody.tr.td': BodyCellAttributes<Item, Plugins>;
 };
 

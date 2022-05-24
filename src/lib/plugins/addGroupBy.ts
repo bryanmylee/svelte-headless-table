@@ -1,5 +1,5 @@
 import { DataBodyCell } from '$lib/bodyCells';
-import { DataBodyRow } from '$lib/bodyRows';
+import { BodyRow, DataBodyRow, DisplayBodyRow } from '$lib/bodyRows';
 import type { DataColumn } from '$lib/columns';
 import { DataHeaderCell } from '$lib/headerCells';
 import type { DataLabel } from '$lib/types/Label';
@@ -70,7 +70,7 @@ const getIdLeaf = (id: string): string => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getGroupedRows = <
 	Item,
-	Row extends DataBodyRow<Item>,
+	Row extends BodyRow<Item>,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	GroupOn extends string | number = any
 >(
@@ -111,10 +111,9 @@ export const getGroupedRows = <
 	for (const [groupOnValue, subRows] of subRowsForGroupOnValue.entries()) {
 		// Guaranteed to have at least one subRow.
 		const firstRow = subRows[0];
-		const groupRow = new DataBodyRow({
+		const groupRow = new DisplayBodyRow<Item>({
 			id: `${idPrefix}${groupRowIdx++}`,
 			// TODO Differentiate data rows and grouped rows.
-			original: firstRow.original,
 			depth: firstRow.depth,
 			cells: [],
 			cellForId: {},
