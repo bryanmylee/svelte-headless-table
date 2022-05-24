@@ -173,6 +173,7 @@ export const getGroupedRows = <
 			}
 		});
 		groupRow.subRows.forEach((subRow) => {
+			subRow.parentRow = groupRow;
 			subRow.cells.forEach((cell) => {
 				if (allGroupByIds.includes(cell.id) && groupCellIds[cell.rowColId()] !== true) {
 					repeatCellIds[cell.rowColId()] = true;

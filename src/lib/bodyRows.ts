@@ -10,10 +10,14 @@ export type BodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	cells: BodyCell<Item, Plugins>[];
 	cellForId: Record<string, BodyCell<Item, Plugins>>;
 	depth?: number;
-}
+	parentRow?: BodyRow<Item, Plugins>;
+};
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export type BodyRowAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = Record<string, never>
+export type BodyRowAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = Record<
+	string,
+	never
+>;
 
 export abstract class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends TableComponent<
 	Item,
@@ -28,12 +32,14 @@ export abstract class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> ext
 	 */
 	cellForId: Record<string, BodyCell<Item, Plugins>>;
 	depth: number;
+	parentRow?: BodyRow<Item, Plugins>;
 	subRows?: BodyRow<Item, Plugins>[];
-	constructor({ id, cells, cellForId, depth = 0 }: BodyRowInit<Item, Plugins>) {
+	constructor({ id, cells, cellForId, depth = 0, parentRow }: BodyRowInit<Item, Plugins>) {
 		super({ id });
 		this.cells = cells;
 		this.cellForId = cellForId;
 		this.depth = depth;
+		this.parentRow = parentRow;
 	}
 
 	attrs(): Readable<BodyRowAttributes<Item, Plugins>> {
@@ -41,17 +47,20 @@ export abstract class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> ext
 			return {};
 		});
 	}
-	
+
 	abstract clone(props?: BodyRowCloneProps): BodyRow<Item, Plugins>;
 }
 
 type BodyRowCloneProps = {
 	includeCells?: boolean;
-}
+};
 
-export type DataBodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> = BodyRowInit<Item, Plugins> & {
+export type DataBodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> = BodyRowInit<
+	Item,
+	Plugins
+> & {
 	original: Item;
-}
+};
 
 export class DataBodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends BodyRow<
 	Item,
@@ -59,8 +68,15 @@ export class DataBodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends 
 > {
 	dataId: string;
 	original: Item;
-	constructor({ id, original, cells, cellForId, depth = 0 }: DataBodyRowInit<Item, Plugins>) {
-		super({ id, cells, cellForId, depth });
+	constructor({
+		id,
+		original,
+		cells,
+		cellForId,
+		depth = 0,
+		parentRow,
+	}: DataBodyRowInit<Item, Plugins>) {
+		super({ id, cells, cellForId, depth, parentRow });
 		this.dataId = id;
 		this.original = original;
 	}
@@ -90,13 +106,19 @@ export class DataBodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends 
 	}
 }
 
-export type DisplayBodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> = BodyRowInit<Item, Plugins>
+export type DisplayBodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> = BodyRowInit<
+	Item,
+	Plugins
+>;
 
-export class DisplayBodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends BodyRow<Item, Plugins> {
-	constructor({ id, cells, cellForId, depth = 0 }: DisplayBodyRowInit<Item, Plugins>) {
-		super({ id, cells, cellForId, depth });
+export class DisplayBodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends BodyRow<
+	Item,
+	Plugins
+> {
+	constructor({ id, cells, cellForId, depth = 0, parentRow }: DisplayBodyRowInit<Item, Plugins>) {
+		super({ id, cells, cellForId, depth, parentRow });
 	}
-	
+
 	clone({ includeCells = false }: BodyRowCloneProps = {}): DisplayBodyRow<Item, Plugins> {
 		const clonedRow = new DisplayBodyRow({
 			id: this.id,
@@ -186,14 +208,12 @@ export const getColumnedBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugin
 	rows: BodyRow<Item, Plugins>[],
 	columnIdOrder: string[]
 ): BodyRow<Item, Plugins>[] => {
-	const columnedRows: BodyRow<Item, Plugins>[] = rows.map(
-		row => {
-			const clonedRow = row.clone()
-			clonedRow.cells = [];
-			clonedRow.cellForId = {};
-			return clonedRow;
-		}
-	);
+	const columnedRows: BodyRow<Item, Plugins>[] = rows.map((row) => {
+		const clonedRow = row.clone();
+		clonedRow.cells = [];
+		clonedRow.cellForId = {};
+		return clonedRow;
+	});
 	if (rows.length === 0 || columnIdOrder.length === 0) return rows;
 	rows.forEach((row, rowIdx) => {
 		// Create a shallow copy of `row.cells` to reassign each `cell`'s `row`
@@ -236,6 +256,7 @@ export const getSubRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 			cells: [],
 			cellForId: {},
 			depth: parentRow.depth + 1,
+			parentRow,
 		});
 	});
 	subItems.forEach((item, rowIdx) => {
