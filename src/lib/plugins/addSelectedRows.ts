@@ -16,12 +16,14 @@ export interface SelectedRowsState<Item> {
 
 export interface SelectedRowsRowState {
 	isSelected: Writable<boolean>;
+	isSomeSubRowsSelected: Readable<boolean>;
 	isAllSubRowsSelected: Readable<boolean>;
 }
 
 export type SelectedRowsPropSet = NewTablePropSet<{
 	'tbody.tr': {
 		selected: boolean;
+		someSubRowsSelected: boolean;
 		allSubRowsSelected: boolean;
 	};
 }>;
@@ -37,6 +39,19 @@ const isAllSubRowsSelectedForRow = <Item>(
 		return false;
 	}
 	return row.subRows.every((subRow) => isAllSubRowsSelectedForRow(subRow, $selectedDataIds));
+};
+
+const isSomeSubRowsSelectedForRow = <Item>(
+	row: BodyRow<Item>,
+	$selectedDataIds: Record<string, boolean>
+): boolean => {
+	if (row instanceof DataBodyRow) {
+		return $selectedDataIds[row.dataId] === true;
+	}
+	if (row.subRows === undefined) {
+		return false;
+	}
+	return row.subRows.some((subRow) => isAllSubRowsSelectedForRow(subRow, $selectedDataIds));
 };
 
 const updateSelectedDataIds = <Item>(
@@ -93,11 +108,19 @@ export const addSelectedRows =
 				row instanceof DataBodyRow
 					? keyed(selectedDataIds, row.dataId)
 					: getIsSelectedStoreForDisplayRow(row, selectedDataIds);
+			const isSomeSubRowsSelected = derived(
+				[isSelected, selectedDataIds],
+				([$isSelected, $selectedDataIds]) => {
+					if ($isSelected) return false;
+					return isSomeSubRowsSelectedForRow(row, $selectedDataIds);
+				}
+			);
 			const isAllSubRowsSelected = derived(selectedDataIds, ($selectedDataIds) => {
 				return isAllSubRowsSelectedForRow(row, $selectedDataIds);
 			});
 			return {
 				isSelected,
+				isSomeSubRowsSelected,
 				isAllSubRowsSelected,
 			};
 		};
@@ -109,9 +132,11 @@ export const addSelectedRows =
 			hooks: {
 				'tbody.tr': (row) => {
 					const props = derived(selectedDataIds, ($selectedDataIds) => {
+						const someSubRowsSelected = isSomeSubRowsSelectedForRow(row, $selectedDataIds);
 						const allSubRowsSelected = isAllSubRowsSelectedForRow(row, $selectedDataIds);
 						return {
 							selected: allSubRowsSelected,
+							someSubRowsSelected,
 							allSubRowsSelected,
 						};
 					});
