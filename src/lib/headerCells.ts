@@ -40,8 +40,9 @@ export abstract class HeaderCell<
 	}
 
 	attrs() {
-		return derived([], () => {
+		return derived(super.attrs(), ($baseAttrs) => {
 			return {
+				...$baseAttrs,
 				role: 'columnheader' as const,
 				colspan: this.colspan,
 			};

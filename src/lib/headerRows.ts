@@ -35,8 +35,9 @@ export class HeaderRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends Ta
 	}
 
 	attrs() {
-		return derived([], () => {
+		return derived(super.attrs(), ($baseAttrs) => {
 			return {
+				...$baseAttrs,
 				role: 'row' as const,
 			};
 		});

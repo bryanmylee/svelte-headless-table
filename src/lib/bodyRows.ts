@@ -42,8 +42,9 @@ export abstract class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> ext
 	}
 
 	attrs(): Readable<BodyRowAttributes<Item, Plugins>> {
-		return derived([], () => {
+		return derived(super.attrs(), ($baseAttrs) => {
 			return {
+				...$baseAttrs,
 				role: 'row' as const,
 			};
 		});

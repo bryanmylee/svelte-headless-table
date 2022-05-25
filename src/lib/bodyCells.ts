@@ -29,7 +29,14 @@ export abstract class BodyCell<
 
 	abstract render(): RenderConfig;
 
-	abstract attrs(): Readable<BodyCellAttributes<Item, Plugins>>;
+	attrs(): Readable<BodyCellAttributes<Item, Plugins>> {
+		return derived(super.attrs(), ($baseAttrs) => {
+			return {
+				...$baseAttrs,
+				role: 'cell' as const,
+			};
+		});
+	}
 
 	abstract clone(): BodyCell<Item, Plugins>;
 
@@ -84,14 +91,6 @@ export class DataBodyCell<
 		return this.label({ column: this.column, row: this.row, value: this.value }, this.state);
 	}
 
-	attrs() {
-		return derived([], () => {
-			return {
-				role: 'cell' as const,
-			};
-		});
-	}
-
 	clone(): DataBodyCell<Item, Plugins> {
 		const clonedCell = new DataBodyCell({
 			row: this.row,
@@ -128,14 +127,6 @@ export class DisplayBodyCell<Item, Plugins extends AnyPlugins = AnyPlugins> exte
 			throw new Error('Missing `state` reference');
 		}
 		return this.label({ column: this.column, row: this.row }, this.state);
-	}
-
-	attrs() {
-		return derived([], () => {
-			return {
-				role: 'cell' as const,
-			};
-		});
 	}
 
 	clone(): DisplayBodyCell<Item, Plugins> {
