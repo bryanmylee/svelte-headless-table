@@ -57,7 +57,7 @@ Svelte Headless Table allows you to perform complex sorting, filtering, grouping
 - [x] [addSubRows](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-sub-rows)
 - [x] [addGroupBy](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-group-by)
 - [x] [addExpandedRows](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-expanded-rows)
-- [ ] addRowSelect
+- [x] [addSelectedRows](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-selected-rows)
 - [ ] addResizeColumns
 - [ ] addEditable
 - [ ] addRowLabel
