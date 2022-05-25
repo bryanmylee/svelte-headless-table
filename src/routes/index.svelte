@@ -203,7 +203,8 @@
 		}),
 	]);
 
-	const { visibleColumns, headerRows, pageRows, pluginStates } = table.createViewModel(columns);
+	const { headerRows, pageRows, tableAttrs, tableBodyAttrs, visibleColumns, pluginStates } =
+		table.createViewModel(columns);
 
 	const { groupByIds } = pluginStates.group;
 	const { sortKeys } = pluginStates.sort;
@@ -229,41 +230,43 @@
 	<input id="page-size" type="number" min={1} bind:value={$pageSize} />
 </div>
 
-<table>
+<table {...$tableAttrs}>
 	<thead>
 		{#each $headerRows as headerRow (headerRow.id)}
-			<tr>
-				{#each headerRow.cells as cell (cell.id)}
-					<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-						<th
-							{...attrs}
-							on:click={props.sort.toggle}
-							class:sorted={props.sort.order !== undefined}
-						>
-							<div>
-								<Render of={cell.render()} />
-								{#if props.sort.order === 'asc'}
-									⬇️
-								{:else if props.sort.order === 'desc'}
-									⬆️
-								{/if}
-							</div>
-							{#if !props.group.disabled}
-								<button on:click|stopPropagation={props.group.toggle}>
-									{#if props.group.grouped}
-										ungroup
-									{:else}
-										group
+			<Subscribe attrs={headerRow.attrs()} let:attrs>
+				<tr {...attrs}>
+					{#each headerRow.cells as cell (cell.id)}
+						<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
+							<th
+								{...attrs}
+								on:click={props.sort.toggle}
+								class:sorted={props.sort.order !== undefined}
+							>
+								<div>
+									<Render of={cell.render()} />
+									{#if props.sort.order === 'asc'}
+										⬇️
+									{:else if props.sort.order === 'desc'}
+										⬆️
 									{/if}
-								</button>
-							{/if}
-							{#if props.filter !== undefined}
-								<Render of={props.filter.render} />
-							{/if}
-						</th>
-					</Subscribe>
-				{/each}
-			</tr>
+								</div>
+								{#if !props.group.disabled}
+									<button on:click|stopPropagation={props.group.toggle}>
+										{#if props.group.grouped}
+											ungroup
+										{:else}
+											group
+										{/if}
+									</button>
+								{/if}
+								{#if props.filter !== undefined}
+									<Render of={props.filter.render} />
+								{/if}
+							</th>
+						</Subscribe>
+					{/each}
+				</tr>
+			</Subscribe>
 		{/each}
 		<tr>
 			<th colspan={$visibleColumns.length}>
@@ -271,10 +274,10 @@
 			</th>
 		</tr>
 	</thead>
-	<tbody>
+	<tbody {...$tableBodyAttrs}>
 		{#each $pageRows as row (row.id)}
-			<Subscribe rowProps={row.props()} let:rowProps>
-				<tr class:selected={rowProps.select.selected}>
+			<Subscribe attrs={row.attrs()} let:attrs rowProps={row.props()} let:rowProps>
+				<tr {...attrs} class:selected={rowProps.select.selected}>
 					{#each row.cells as cell (cell.id)}
 						<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
 							<td

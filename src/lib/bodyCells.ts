@@ -12,10 +12,9 @@ export type BodyCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export type BodyCellAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = Record<
-	string,
-	never
->;
+export type BodyCellAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = {
+	role: 'cell';
+};
 
 export abstract class BodyCell<
 	Item,
@@ -37,7 +36,7 @@ export abstract class BodyCell<
 	rowColId(): string {
 		return `${this.row.id}:${this.column.id}`;
 	}
-	
+
 	dataRowColId(): string | undefined {
 		if (!(this.row instanceof DataBodyRow)) {
 			return undefined;
@@ -85,9 +84,11 @@ export class DataBodyCell<
 		return this.label({ column: this.column, row: this.row, value: this.value }, this.state);
 	}
 
-	attrs(): Readable<DataBodyCellAttributes<Item, Plugins>> {
+	attrs() {
 		return derived([], () => {
-			return {};
+			return {
+				role: 'cell' as const,
+			};
 		});
 	}
 
@@ -131,7 +132,9 @@ export class DisplayBodyCell<Item, Plugins extends AnyPlugins = AnyPlugins> exte
 
 	attrs() {
 		return derived([], () => {
-			return {};
+			return {
+				role: 'cell' as const,
+			};
 		});
 	}
 

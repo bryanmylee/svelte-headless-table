@@ -14,10 +14,9 @@ export type BodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export type BodyRowAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = Record<
-	string,
-	never
->;
+export type BodyRowAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = {
+	role: 'row';
+};
 
 export abstract class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends TableComponent<
 	Item,
@@ -44,7 +43,9 @@ export abstract class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> ext
 
 	attrs(): Readable<BodyRowAttributes<Item, Plugins>> {
 		return derived([], () => {
-			return {};
+			return {
+				role: 'row' as const,
+			};
 		});
 	}
 

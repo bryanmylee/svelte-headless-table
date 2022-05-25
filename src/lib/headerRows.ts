@@ -1,3 +1,4 @@
+import { derived } from 'svelte/store';
 import { DataColumn, DisplayColumn, GroupColumn, type Column } from './columns';
 import {
 	DataHeaderCell,
@@ -12,8 +13,10 @@ import type { AnyPlugins } from './types/TablePlugin';
 import { sum } from './utils/math';
 import { getNullMatrix, getTransposed } from './utils/matrix';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-unused-vars
-export interface HeaderRowAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> {}
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type HeaderRowAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = {
+	role: 'row';
+};
 
 export interface HeaderRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	id: string;
@@ -23,12 +26,20 @@ export interface HeaderRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 export class HeaderRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends TableComponent<
 	Item,
 	Plugins,
-	'tbody.tr'
+	'thead.tr'
 > {
 	cells: HeaderCell<Item, Plugins>[];
 	constructor({ id, cells }: HeaderRowInit<Item, Plugins>) {
 		super({ id });
 		this.cells = cells;
+	}
+
+	attrs() {
+		return derived([], () => {
+			return {
+				role: 'row' as const,
+			};
+		});
 	}
 
 	clone(): HeaderRow<Item, Plugins> {

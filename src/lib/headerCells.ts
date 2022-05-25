@@ -14,6 +14,7 @@ export type HeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type HeaderCellAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = {
+	role: 'columnheader';
 	colspan: number;
 };
 export abstract class HeaderCell<
@@ -41,6 +42,7 @@ export abstract class HeaderCell<
 	attrs() {
 		return derived([], () => {
 			return {
+				role: 'columnheader' as const,
 				colspan: this.colspan,
 			};
 		});
