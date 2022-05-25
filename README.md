@@ -22,6 +22,28 @@ Visit the [documentation](https://svelte-headless-table.bryanmylee.com/) for cod
 
 Svelte Headless Table has **full TypeScript support** and is compatible with **SvelteKit**!
 
+## All the features you could ever need!
+
+Svelte Headless Table comes with an extensive suite of plugins.
+
+Easily extend Svelte Headless Table with complex **sorting**, **filtering**, **grouping**, **pagination**, and much more.
+
+### Plugin roadmap
+
+- [x] [addSortBy](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-sort-by)
+- [x] [addColumnFilters](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-column-filters)
+- [x] [addTableFilter](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-table-filter)
+- [x] [addColumnOrder](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-column-order)
+- [x] [addHiddenColumns](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-hidden-columns)
+- [x] [addPagination](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-pagination)
+- [x] [addSubRows](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-sub-rows)
+- [x] [addGroupBy](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-group-by)
+- [x] [addExpandedRows](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-expanded-rows)
+- [x] [addSelectedRows](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-selected-rows)
+- [ ] addResizeColumns
+- [ ] addEditable
+- [ ] addRowLabel
+
 ## Why Svelte Headless Table?
 
 ### Svelte First
@@ -39,28 +61,6 @@ Just describe how you want your tables to behave and let Svelte Headless Table h
 ### Extensible
 
 Svelte Headless Table comes with a stable plugin system that allows you to transform and modify every step under the hood. If you want extra functionality, you can build it!
-
-## The Plugin System
-
-Svelte Headless Table is designed with extensibility in mind. Its complex features are provided by an extensive suite of plugins.
-
-Svelte Headless Table allows you to perform complex sorting, filtering, grouping, pagination, and more.
-
-### Plugin roadmap
-
-- [x] [addSortBy](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-sort-by)
-- [x] [addColumnFilters](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-column-filters)
-- [x] [addTableFilter](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-table-filter)
-- [x] [addColumnOrder](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-column-order)
-- [x] [addHiddenColumns](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-hidden-columns)
-- [x] [addPagination](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-pagination)
-- [x] [addSubRows](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-sub-rows)
-- [x] [addGroupBy](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-group-by)
-- [x] [addExpandedRows](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-expanded-rows)
-- [x] [addSelectedRows](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-selected-rows)
-- [ ] addResizeColumns
-- [ ] addEditable
-- [ ] addRowLabel
 
 ## Examples
 
