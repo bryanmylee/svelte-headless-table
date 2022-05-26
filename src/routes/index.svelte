@@ -219,6 +219,7 @@
 	// $: $columnIdOrder = ['expanded', ...$groupByIds];
 	const { hiddenColumnIds } = pluginStates.hideColumns;
 	$hiddenColumnIds = ['progress'];
+	const { columnWidths } = pluginStates.resize;
 </script>
 
 <h1>svelte-headless-table</h1>
@@ -318,6 +319,7 @@
 			columnIdOrder: $columnIdOrder,
 			hiddenColumnIds: $hiddenColumnIds,
 			expandedIds: $expandedIds,
+			columnWidths: $columnWidths,
 		},
 		null,
 		2
