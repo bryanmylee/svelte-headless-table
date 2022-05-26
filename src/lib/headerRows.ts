@@ -1,8 +1,10 @@
+import { derived } from 'svelte/store';
 import { DataColumn, DisplayColumn, GroupColumn, type Column } from './columns';
 import {
 	DataHeaderCell,
-	DisplayHeaderCell,
+	FlatDisplayHeaderCell,
 	FlatHeaderCell,
+	GroupDisplayHeaderCell,
 	GroupHeaderCell,
 	type HeaderCell,
 } from './headerCells';
@@ -12,8 +14,10 @@ import type { AnyPlugins } from './types/TablePlugin';
 import { sum } from './utils/math';
 import { getNullMatrix, getTransposed } from './utils/matrix';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-unused-vars
-export interface HeaderRowAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> {}
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type HeaderRowAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = {
+	role: 'row';
+};
 
 export interface HeaderRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	id: string;
@@ -23,12 +27,21 @@ export interface HeaderRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 export class HeaderRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends TableComponent<
 	Item,
 	Plugins,
-	'tbody.tr'
+	'thead.tr'
 > {
 	cells: HeaderCell<Item, Plugins>[];
 	constructor({ id, cells }: HeaderRowInit<Item, Plugins>) {
 		super({ id });
 		this.cells = cells;
+	}
+
+	attrs() {
+		return derived(super.attrs(), ($baseAttrs) => {
+			return {
+				...$baseAttrs,
+				role: 'row' as const,
+			};
+		});
 	}
 
 	clone(): HeaderRow<Item, Plugins> {
@@ -65,8 +78,13 @@ export const getHeaderRowMatrix = <Item, Plugins extends AnyPlugins = AnyPlugins
 		cellOffset += c instanceof GroupColumn ? c.ids.length : 1;
 	});
 	// Replace null cells with blank display cells.
-	return rowMatrix.map((cells) =>
-		cells.map((cell, columnIdx) => cell ?? new DisplayHeaderCell({ id: columnIdx.toString() }))
+	return rowMatrix.map((cells, rowIdx) =>
+		cells.map((cell, columnIdx) => {
+			if (cell !== null) return cell;
+			if (rowIdx === maxHeight - 1) return new FlatDisplayHeaderCell({ id: columnIdx.toString() });
+			const flatId = rowMatrix[maxHeight - 1][columnIdx]?.id ?? columnIdx.toString();
+			return new GroupDisplayHeaderCell({ ids: [], allIds: [flatId] });
+		})
 	);
 };
 
@@ -87,7 +105,7 @@ const loadHeaderRowMatrix = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		return;
 	}
 	if (column instanceof DisplayColumn) {
-		rowMatrix[rowMatrix.length - 1][cellOffset] = new DisplayHeaderCell({
+		rowMatrix[rowMatrix.length - 1][cellOffset] = new FlatDisplayHeaderCell({
 			id: column.id,
 			label: column.header,
 		});

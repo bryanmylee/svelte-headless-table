@@ -6,9 +6,15 @@ import type { HeaderRow, HeaderRowAttributes } from '$lib/headerRows';
 import type { PluginInitTableState } from '$lib/createViewModel';
 import type { Readable } from 'svelte/store';
 
-export type TablePlugin<Item, PluginState, ColumnOptions, TablePropSet extends AnyTablePropSet> = (
+export type TablePlugin<
+	Item,
+	PluginState,
+	ColumnOptions,
+	TablePropSet extends AnyTablePropSet = AnyTablePropSet,
+	TableAttributeSet extends AnyTableAttributeSet = AnyTableAttributeSet
+> = (
 	init: TablePluginInit<Item, ColumnOptions>
-) => TablePluginInstance<Item, PluginState, ColumnOptions, TablePropSet>;
+) => TablePluginInstance<Item, PluginState, ColumnOptions, TablePropSet, TableAttributeSet>;
 
 export type TablePluginInit<Item, ColumnOptions> = {
 	pluginName: string;
@@ -21,7 +27,8 @@ export type TablePluginInstance<
 	Item,
 	PluginState,
 	ColumnOptions,
-	TablePropSet extends AnyTablePropSet
+	TablePropSet extends AnyTablePropSet = AnyTablePropSet,
+	TableAttributeSet extends AnyTableAttributeSet = AnyTableAttributeSet
 > = {
 	pluginState: PluginState;
 	transformFlatColumnsFn?: Readable<TransformFlatColumnsFn<Item>>;
@@ -29,21 +36,21 @@ export type TablePluginInstance<
 	deriveRows?: DeriveRowsFn<Item>;
 	derivePageRows?: DeriveRowsFn<Item>;
 	columnOptions?: ColumnOptions;
-	hooks?: TableHooks<Item, TablePropSet>;
+	hooks?: TableHooks<Item, TablePropSet, TableAttributeSet>;
 };
 
 export type AnyPlugins = Record<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	any,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	TablePlugin<any, any, any, any>
+	TablePlugin<any, any, any, any, any>
 >;
 
 export type AnyPluginInstances = Record<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	any,
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	TablePluginInstance<any, any, any, any>
+	TablePluginInstance<any, any, any, any, any>
 >;
 
 export type TransformFlatColumnsFn<Item> = (flatColumns: DataColumn<Item>[]) => DataColumn<Item>[];
@@ -91,14 +98,38 @@ export type NewTablePropSet<
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyTablePropSet = TablePropSet<any>;
 
-export type TableHooks<Item, PropSet extends AnyTablePropSet = AnyTablePropSet> = {
-	[ComponentKey in keyof Components<Item>]?: (
-		component: Components<Item>[ComponentKey]
-	) => ElementHook<PropSet[ComponentKey]>;
+type TableAttributeSet<
+	AttributeSet extends {
+		[K in ComponentKeys]?: unknown;
+	}
+> = {
+	[K in ComponentKeys]: AttributeSet[K];
 };
 
-export type ElementHook<Props> = {
+export type NewTableAttributeSet<
+	AttributeSet extends {
+		[K in ComponentKeys]?: unknown;
+	}
+> = {
+	[K in ComponentKeys]: unknown extends AttributeSet[K] ? never : AttributeSet[K];
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyTableAttributeSet = TableAttributeSet<any>;
+
+export type TableHooks<
+	Item,
+	PropSet extends AnyTablePropSet = AnyTablePropSet,
+	AttributeSet extends AnyTableAttributeSet = AnyTableAttributeSet
+> = {
+	[ComponentKey in keyof Components<Item>]?: (
+		component: Components<Item>[ComponentKey]
+	) => ElementHook<PropSet[ComponentKey], AttributeSet[ComponentKey]>;
+};
+
+export type ElementHook<Props, Attributes> = {
 	props?: Readable<Props>;
+	attrs?: Readable<Attributes>;
 };
 
 export type PluginStates<Plugins extends AnyPlugins> = {

@@ -1,14 +1,14 @@
-import type { Readable } from 'svelte/store';
+import { derived, type Readable } from 'svelte/store';
 import { derivedKeys } from 'svelte-subscribe';
 import type {
 	AnyPlugins,
-	AttributesForKey,
 	ComponentKeys,
 	ElementHook,
 	PluginTablePropSet,
 } from './types/TablePlugin';
 import type { TableState } from './createViewModel';
 import type { Clonable } from './utils/clone';
+import { stringifyCss } from './utils/css';
 
 export interface TableComponentInit {
 	id: string;
@@ -22,8 +22,25 @@ export abstract class TableComponent<Item, Plugins extends AnyPlugins, Key exten
 		this.id = id;
 	}
 
-	attrs(): Readable<AttributesForKey<Item, Plugins>[Key]> {
-		throw Error('Missing `attrs` implementation');
+	private attrsForName: Record<string, Readable<Record<string, unknown>>> = {};
+	attrs(): Readable<Record<string, unknown>> {
+		return derived(Object.values(this.attrsForName), ($attrsArray) => {
+			const $mergedAttrs: Record<string, unknown> = {};
+			$attrsArray.forEach(({ style, ...$attrs }) => {
+				// Handle style object.
+				if (style !== undefined && typeof style === 'object') {
+					if ($mergedAttrs.style === undefined) {
+						$mergedAttrs.style = {};
+					}
+					Object.assign($mergedAttrs.style, style);
+				}
+				Object.assign($mergedAttrs, $attrs);
+			});
+			if ($mergedAttrs.style !== undefined) {
+				$mergedAttrs.style = stringifyCss($mergedAttrs.style as Record<string, unknown>);
+			}
+			return $mergedAttrs;
+		});
 	}
 
 	private propsForName: Record<string, Readable<Record<string, unknown>>> = {};
@@ -36,9 +53,15 @@ export abstract class TableComponent<Item, Plugins extends AnyPlugins, Key exten
 		this.state = state;
 	}
 
-	applyHook(pluginName: string, hook: ElementHook<Record<string, unknown>>) {
+	applyHook(
+		pluginName: string,
+		hook: ElementHook<Record<string, unknown>, Record<string, unknown>>
+	) {
 		if (hook.props !== undefined) {
 			this.propsForName[pluginName] = hook.props;
+		}
+		if (hook.attrs !== undefined) {
+			this.attrsForName[pluginName] = hook.attrs;
 		}
 	}
 

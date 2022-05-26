@@ -12,8 +12,20 @@ import type {
 } from './types/TablePlugin';
 import { nonUndefined } from './utils/filter';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type TableAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = {
+	role: 'table';
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type TableBodyAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = {
+	role: 'rowgroup';
+};
+
 export interface TableViewModel<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	flatColumns: FlatColumn<Item, Plugins>[];
+	tableAttrs: Readable<TableAttributes<Item, Plugins>>;
+	tableBodyAttrs: Readable<TableBodyAttributes<Item, Plugins>>;
 	visibleColumns: Readable<FlatColumn<Item, Plugins>[]>;
 	headerRows: Readable<HeaderRow<Item, Plugins>[]>;
 	originalRows: Readable<BodyRow<Item, Plugins>[]>;
@@ -52,9 +64,17 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	const _headerRows = writable<HeaderRow<Item, Plugins>[]>();
 	const _rows = writable<BodyRow<Item, Plugins>[]>([]);
 	const _pageRows = writable<BodyRow<Item, Plugins>[]>([]);
+	const tableAttrs = readable({
+		role: 'table' as const,
+	});
+	const tableBodyAttrs = readable({
+		role: 'rowgroup' as const,
+	});
 	const pluginInitTableState: PluginInitTableState<Item, Plugins> = {
 		data,
 		columns,
+		tableAttrs,
+		tableBodyAttrs,
 		flatColumns: $flatColumns,
 		visibleColumns: _visibleColumns,
 		headerRows: _headerRows,
@@ -90,6 +110,8 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	const tableState: TableState<Item, Plugins> = {
 		data,
 		columns,
+		tableAttrs,
+		tableBodyAttrs,
 		flatColumns: $flatColumns,
 		visibleColumns: _visibleColumns,
 		headerRows: _headerRows,
@@ -224,6 +246,8 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	});
 
 	return {
+		tableAttrs,
+		tableBodyAttrs,
 		flatColumns: $flatColumns,
 		visibleColumns: injectedColumns,
 		headerRows,

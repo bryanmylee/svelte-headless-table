@@ -14,6 +14,7 @@ export type HeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type HeaderCellAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = {
+	role: 'columnheader';
 	colspan: number;
 };
 export abstract class HeaderCell<
@@ -39,8 +40,10 @@ export abstract class HeaderCell<
 	}
 
 	attrs() {
-		return derived([], () => {
+		return derived(super.attrs(), ($baseAttrs) => {
 			return {
+				...$baseAttrs,
+				role: 'columnheader' as const,
 				colspan: this.colspan,
 			};
 		});
@@ -107,23 +110,23 @@ export class DataHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exten
 	}
 }
 
-export type DisplayHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = Omit<
+export type FlatDisplayHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = Omit<
 	FlatHeaderCellInit<Item, Plugins>,
 	'label'
 > & {
 	label?: HeaderLabel<Item>;
 };
 
-export class DisplayHeaderCell<
+export class FlatDisplayHeaderCell<
 	Item,
 	Plugins extends AnyPlugins = AnyPlugins
 > extends FlatHeaderCell<Item, Plugins> {
-	constructor({ id, label = NBSP }: DisplayHeaderCellInit<Item, Plugins>) {
+	constructor({ id, label = NBSP }: FlatDisplayHeaderCellInit<Item, Plugins>) {
 		super({ id, label });
 	}
 
-	clone(): DisplayHeaderCell<Item, Plugins> {
-		return new DisplayHeaderCell({
+	clone(): FlatDisplayHeaderCell<Item, Plugins> {
+		return new FlatDisplayHeaderCell({
 			id: this.id,
 			label: this.label,
 		});
@@ -164,6 +167,37 @@ export class GroupHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exte
 
 	clone(): GroupHeaderCell<Item, Plugins> {
 		return new GroupHeaderCell({
+			label: this.label,
+			colspan: this.colspan,
+			ids: this.ids,
+			allIds: this.allIds,
+		});
+	}
+}
+
+export type GroupDisplayHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = Omit<
+	GroupHeaderCellInit<Item, Plugins>,
+	'label' | 'colspan'
+> & {
+	label?: HeaderLabel<Item>;
+	colspan?: number;
+};
+
+export class GroupDisplayHeaderCell<
+	Item,
+	Plugins extends AnyPlugins = AnyPlugins
+> extends GroupHeaderCell<Item, Plugins> {
+	constructor({
+		label = NBSP,
+		colspan = 1,
+		ids,
+		allIds,
+	}: GroupDisplayHeaderCellInit<Item, Plugins>) {
+		super({ label, colspan, ids, allIds });
+	}
+
+	clone(): GroupDisplayHeaderCell<Item, Plugins> {
+		return new GroupDisplayHeaderCell({
 			label: this.label,
 			colspan: this.colspan,
 			ids: this.ids,

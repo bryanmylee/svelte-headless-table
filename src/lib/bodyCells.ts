@@ -12,10 +12,9 @@ export type BodyCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export type BodyCellAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = Record<
-	string,
-	never
->;
+export type BodyCellAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = {
+	role: 'cell';
+};
 
 export abstract class BodyCell<
 	Item,
@@ -30,14 +29,21 @@ export abstract class BodyCell<
 
 	abstract render(): RenderConfig;
 
-	abstract attrs(): Readable<BodyCellAttributes<Item, Plugins>>;
+	attrs(): Readable<BodyCellAttributes<Item, Plugins>> {
+		return derived(super.attrs(), ($baseAttrs) => {
+			return {
+				...$baseAttrs,
+				role: 'cell' as const,
+			};
+		});
+	}
 
 	abstract clone(): BodyCell<Item, Plugins>;
 
 	rowColId(): string {
 		return `${this.row.id}:${this.column.id}`;
 	}
-	
+
 	dataRowColId(): string | undefined {
 		if (!(this.row instanceof DataBodyRow)) {
 			return undefined;
@@ -85,12 +91,6 @@ export class DataBodyCell<
 		return this.label({ column: this.column, row: this.row, value: this.value }, this.state);
 	}
 
-	attrs(): Readable<DataBodyCellAttributes<Item, Plugins>> {
-		return derived([], () => {
-			return {};
-		});
-	}
-
 	clone(): DataBodyCell<Item, Plugins> {
 		const clonedCell = new DataBodyCell({
 			row: this.row,
@@ -127,12 +127,6 @@ export class DisplayBodyCell<Item, Plugins extends AnyPlugins = AnyPlugins> exte
 			throw new Error('Missing `state` reference');
 		}
 		return this.label({ column: this.column, row: this.row }, this.state);
-	}
-
-	attrs() {
-		return derived([], () => {
-			return {};
-		});
 	}
 
 	clone(): DisplayBodyCell<Item, Plugins> {

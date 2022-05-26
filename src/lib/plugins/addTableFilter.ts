@@ -147,7 +147,10 @@ export const addTableFilter =
 						([$filterValue, $tableCellMatches]) => {
 							const dataRowColId = cell.dataRowColId();
 							return {
-								matches: $filterValue !== '' && dataRowColId !== undefined && ($tableCellMatches[dataRowColId] ?? false),
+								matches:
+									$filterValue !== '' &&
+									dataRowColId !== undefined &&
+									($tableCellMatches[dataRowColId] ?? false),
 							};
 						}
 					);

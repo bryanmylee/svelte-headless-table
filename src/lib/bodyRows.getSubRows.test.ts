@@ -96,7 +96,9 @@ it('derives the correct cellForId when parent has hidden cells', () => {
 	const columnedParentRow = getColumnedBodyRows([parentRow], ['firstName'])[0];
 	const actual = getSubRows(data, columnedParentRow);
 
-	const expected = getColumnedBodyRows(getBodyRows(data, dataColumns), ['firstName']) as DataBodyRow<User>[];
+	const expected = getColumnedBodyRows(getBodyRows(data, dataColumns), [
+		'firstName',
+	]) as DataBodyRow<User>[];
 
 	[0, 1].forEach((rowIdx) => {
 		const row = actual[rowIdx];
