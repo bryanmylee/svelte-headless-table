@@ -1,4 +1,4 @@
-import { FlatHeaderCell, GroupHeaderCell } from '$lib/headerCells';
+import { FlatHeaderCell, GroupHeaderCell, HeaderCell } from '$lib/headerCells';
 import type { NewTableAttributeSet, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
 import { sum } from '$lib/utils/math';
 import { keyed } from 'svelte-keyed';
@@ -8,10 +8,15 @@ export type ResizedColumnsState = {
 	columnWidths: Writable<Record<string, number>>;
 };
 
+export type ResizedColumnsColumnOptions = {
+	disable?: boolean;
+};
+
 export type ResizedColumnsPropSet = NewTablePropSet<{
 	'thead.tr.th': {
 		(node: Element): void;
 		drag: (event: Event) => void;
+		disabled: boolean;
 	};
 }>;
 
@@ -32,6 +37,14 @@ const getDragXPos = (event: Event): number => {
 	return 0;
 };
 
+const isCellDisabled = (cell: HeaderCell<unknown>, disabledIds: string[]) => {
+	if (disabledIds.includes(cell.id)) return true;
+	if (cell instanceof GroupHeaderCell && cell.ids.every((id) => disabledIds.includes(id))) {
+		return true;
+	}
+	return false;
+};
+
 type ColumnsWidthState = {
 	current: Record<string, number>;
 	start: Record<string, number>;
@@ -41,11 +54,15 @@ export const addResizedColumns =
 	<Item>(): TablePlugin<
 		Item,
 		ResizedColumnsState,
-		Record<string, never>,
+		ResizedColumnsColumnOptions,
 		ResizedColumnsPropSet,
 		ResizedColumnsAttributeSet
 	> =>
-	() => {
+	({ columnOptions }) => {
+		const disabledResizeIds = Object.entries(columnOptions)
+			.filter(([, option]) => option.disable === true)
+			.map(([columnId]) => columnId);
+
 		const columnsWidthState = writable<ColumnsWidthState>({
 			current: {},
 			start: {},
@@ -62,10 +79,11 @@ export const addResizedColumns =
 			hooks: {
 				'thead.tr.th': (cell) => {
 					const dragStart = (event: Event) => {
-						event.stopPropagation();
-						event.preventDefault();
+						if (isCellDisabled(cell, disabledResizeIds)) return;
 						const { target } = event;
 						if (target === null) return;
+						event.stopPropagation();
+						event.preventDefault();
 						dragStartXPosForId[cell.id] = getDragXPos(event);
 						columnsWidthState.update(($columnsWidthState) => {
 							const $updatedState = {
@@ -99,8 +117,9 @@ export const addResizedColumns =
 								current: { ...$columnsWidthState.current },
 							};
 							if (cell instanceof GroupHeaderCell) {
-								const totalStartWidth = sum(cell.ids.map((id) => $columnsWidthState.start[id]));
-								cell.ids.forEach((id) => {
+								const enabledIds = cell.ids.filter((id) => !disabledResizeIds.includes(id));
+								const totalStartWidth = sum(enabledIds.map((id) => $columnsWidthState.start[id]));
+								enabledIds.forEach((id) => {
 									const startWidth = $columnsWidthState.start[id];
 									if (startWidth !== undefined) {
 										$updatedState.current[id] = Math.max(
@@ -127,7 +146,7 @@ export const addResizedColumns =
 								if (node !== undefined) {
 									columnWidths.update(($columnWidths) => ({
 										...$columnWidths,
-										[id]: node.clientWidth,
+										[id]: node.getBoundingClientRect().width,
 									}));
 								}
 							});
@@ -136,7 +155,7 @@ export const addResizedColumns =
 							if (node !== undefined) {
 								columnWidths.update(($columnWidths) => ({
 									...$columnWidths,
-									[cell.id]: node.clientWidth,
+									[cell.id]: node.getBoundingClientRect().width,
 								}));
 							}
 						}
@@ -153,7 +172,7 @@ export const addResizedColumns =
 						if (cell instanceof FlatHeaderCell) {
 							columnWidths.update(($columnWidths) => ({
 								...$columnWidths,
-								[cell.id]: node.clientWidth,
+								[cell.id]: node.getBoundingClientRect().width,
 							}));
 						}
 						return {
@@ -163,6 +182,7 @@ export const addResizedColumns =
 						};
 					};
 					action.drag = dragStart;
+					action.disabled = isCellDisabled(cell, disabledResizeIds);
 					const props = derived([], () => {
 						return action;
 					});

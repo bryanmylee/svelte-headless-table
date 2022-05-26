@@ -4,7 +4,7 @@ import {
 	DataHeaderCell,
 	FlatDisplayHeaderCell,
 	FlatHeaderCell,
-	DisplayHeaderCell,
+	GroupDisplayHeaderCell,
 	GroupHeaderCell,
 	type HeaderCell,
 } from './headerCells';
@@ -79,13 +79,12 @@ export const getHeaderRowMatrix = <Item, Plugins extends AnyPlugins = AnyPlugins
 	});
 	// Replace null cells with blank display cells.
 	return rowMatrix.map((cells, rowIdx) =>
-		cells.map(
-			(cell, columnIdx) =>
-				cell ??
-				(rowIdx === maxHeight - 1
-					? new FlatDisplayHeaderCell({ id: columnIdx.toString() })
-					: new DisplayHeaderCell({ id: columnIdx.toString() }))
-		)
+		cells.map((cell, columnIdx) => {
+			if (cell !== null) return cell;
+			if (rowIdx === maxHeight - 1) return new FlatDisplayHeaderCell({ id: columnIdx.toString() });
+			const flatId = rowMatrix[maxHeight - 1][columnIdx]?.id ?? columnIdx.toString();
+			return new GroupDisplayHeaderCell({ ids: [], allIds: [flatId] });
+		})
 	);
 };
 

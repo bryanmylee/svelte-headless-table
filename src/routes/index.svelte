@@ -69,6 +69,11 @@
 					isSomeSubRowsSelected,
 				});
 			},
+			plugins: {
+				resize: {
+					disable: true,
+				},
+			},
 		}),
 		table.display({
 			id: 'expanded',
@@ -82,6 +87,11 @@
 					isAllSubRowsExpanded,
 					depth: row.depth,
 				});
+			},
+			plugins: {
+				resize: {
+					disable: true,
+				},
 			},
 		}),
 		table.column({
@@ -172,6 +182,9 @@
 						},
 						tableFilter: {
 							exclude: true,
+						},
+						resize: {
+							disable: true,
 						},
 					},
 				}),
@@ -266,12 +279,14 @@
 								{#if props.filter !== undefined}
 									<Render of={props.filter.render} />
 								{/if}
-								<div
-									class="resizer"
-									on:click|stopPropagation
-									on:mousedown={props.resize.drag}
-									on:touchstart={props.resize.drag}
-								/>
+								{#if !props.resize.disabled}
+									<div
+										class="resizer"
+										on:click|stopPropagation
+										on:mousedown={props.resize.drag}
+										on:touchstart={props.resize.drag}
+									/>
+								{/if}
 							</th>
 						</Subscribe>
 					{/each}
