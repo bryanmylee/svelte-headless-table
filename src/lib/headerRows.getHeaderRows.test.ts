@@ -1,6 +1,11 @@
 import { writable } from 'svelte/store';
 import { createTable } from './createTable';
-import { DataHeaderCell, FlatDisplayHeaderCell, GroupHeaderCell } from './headerCells';
+import {
+	DataHeaderCell,
+	FlatDisplayHeaderCell,
+	GroupDisplayHeaderCell,
+	GroupHeaderCell,
+} from './headerCells';
 import { getHeaderRows, HeaderRow } from './headerRows';
 
 interface User {
@@ -16,7 +21,7 @@ const data = writable<User[]>([]);
 
 const table = createTable(data);
 
-test('flat columns\n[][][]', () => {
+it('arranges flat columns\n[][][]', () => {
 	const columns = table.createColumns([
 		table.column({
 			header: 'First Name',
@@ -60,7 +65,7 @@ test('flat columns\n[][][]', () => {
 	expect(actual).toStrictEqual(expected);
 });
 
-test('one group\n[    ]\n[][][]', () => {
+it('creates a group over flat columns\n[    ]\n[][][]', () => {
 	const columns = table.createColumns([
 		table.group({
 			header: 'Info',
@@ -120,7 +125,7 @@ test('one group\n[    ]\n[][][]', () => {
 	expect(actual).toStrictEqual(expected);
 });
 
-test('two groups\n[  ][    ]\n[][][][][]', () => {
+it('creates two groups over different columns\n[  ][    ]\n[][][][][]', () => {
 	const columns = table.createColumns([
 		table.group({
 			header: 'Name',
@@ -209,7 +214,7 @@ test('two groups\n[  ][    ]\n[][][][][]', () => {
 	expect(actual).toStrictEqual(expected);
 });
 
-test('one group and extra\n[  ]      \n[][][][][]', () => {
+it('groups a subset of columns and ungrouped columns have flat header cells on the last row\n[  ]      \n[][][][][]', () => {
 	const columns = table.createColumns([
 		table.group({
 			header: 'Name',
@@ -250,9 +255,9 @@ test('one group and extra\n[  ]      \n[][][][][]', () => {
 					allIds: ['firstName', 'lastName'],
 					ids: ['firstName', 'lastName'],
 				}),
-				new FlatDisplayHeaderCell({ id: '2' }),
-				new FlatDisplayHeaderCell({ id: '3' }),
-				new FlatDisplayHeaderCell({ id: '4' }),
+				new GroupDisplayHeaderCell({ allIds: ['age'], ids: ['age'] }),
+				new GroupDisplayHeaderCell({ allIds: ['status'], ids: ['status'] }),
+				new GroupDisplayHeaderCell({ allIds: ['progress'], ids: ['progress'] }),
 			],
 		}),
 		new HeaderRow({
@@ -290,7 +295,7 @@ test('one group and extra\n[  ]      \n[][][][][]', () => {
 	expect(actual).toStrictEqual(expected);
 });
 
-test('data cell on last row\n[  ]\n[]  \n[][]', () => {
+it('puts flat header cells on the last row if there is a gap between the group and flat header cell\n[  ]\n[]  \n[][]', () => {
 	const columns = table.createColumns([
 		table.group({
 			header: 'ID',
@@ -335,7 +340,7 @@ test('data cell on last row\n[  ]\n[]  \n[][]', () => {
 					allIds: ['firstName'],
 					ids: ['firstName'],
 				}),
-				new FlatDisplayHeaderCell({ id: '1' }),
+				new GroupDisplayHeaderCell({ ids: ['progress'], allIds: ['progress'] }),
 			],
 		}),
 		new HeaderRow({
@@ -358,7 +363,7 @@ test('data cell on last row\n[  ]\n[]  \n[][]', () => {
 	expect(actual).toStrictEqual(expected);
 });
 
-test('group on lowest row\n[]\n[][]\n[][]', () => {
+it('puts group cells on the lowest row possible\n[]\n[][]\n[][]', () => {
 	const columns = table.createColumns([
 		table.group({
 			header: 'ID',
@@ -397,7 +402,7 @@ test('group on lowest row\n[]\n[][]\n[][]', () => {
 					allIds: ['firstName'],
 					ids: ['firstName'],
 				}),
-				new FlatDisplayHeaderCell({ id: '1' }),
+				new GroupDisplayHeaderCell({ allIds: ['progress'], ids: ['progress'] }),
 			],
 		}),
 		new HeaderRow({
