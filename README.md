@@ -40,7 +40,7 @@ Easily extend Svelte Headless Table with complex **sorting**, **filtering**, **g
 - [x] [addGroupBy](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-group-by)
 - [x] [addExpandedRows](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-expanded-rows)
 - [x] [addSelectedRows](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-selected-rows)
-- [ ] addResizeColumns
+- [x] [addResizedColumns](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-resized-columns)
 - [ ] addEditable
 - [ ] addRowLabel
 
@@ -66,55 +66,55 @@ Svelte Headless Table comes with a stable plugin system that allows you to trans
 
 ```svelte
 <script>
-  const data = readable([
-    { name: 'Ada Lovelace', age: 21 },
-    { name: 'Barbara Liskov', age: 52 },
-    { name: 'Richard Hamming', age: 38 },
-  ]);
+	const data = readable([
+		{ name: 'Ada Lovelace', age: 21 },
+		{ name: 'Barbara Liskov', age: 52 },
+		{ name: 'Richard Hamming', age: 38 },
+	]);
 
-  const table = createTable(data);
+	const table = createTable(data);
 
-  const columns = table.createColumns([
-    table.column({
-      header: 'Name',
-      accessor: 'name',
-    }),
-    table.column({
-      header: 'Age',
-      accessor: 'age',
-    }),
-  ]);
+	const columns = table.createColumns([
+		table.column({
+			header: 'Name',
+			accessor: 'name',
+		}),
+		table.column({
+			header: 'Age',
+			accessor: 'age',
+		}),
+	]);
 
-  const { headerRows, rows } = table.createViewModel(columns);
+	const { headerRows, rows } = table.createViewModel(columns);
 </script>
 
 <table>
-  <thead>
-    {#each $headerRows as headerRow (headerRow.id)}
-      <tr>
-        {#each headerRow.cells as cell (cell.id)}
-          <Subscribe attrs={cell.attrs()} let:attrs>
-            <th {...attrs}>
-              <Render of={cell.render()} />
-            </th>
-          </Subscribe>
-        {/each}
-      </tr>
-    {/each}
-  </thead>
-  <tbody>
-    {#each $rows as row (row.id)}
-      <tr>
-        {#each row.cells as cell (cell.id)}
-          <Subscribe attrs={cell.attrs()} let:attrs>
-            <td {...attrs}>
-              <Render of={cell.render()} />
-            </td>
-          </Subscribe>
-        {/each}
-      </tr>
-    {/each}
-  </tbody>
+	<thead>
+		{#each $headerRows as headerRow (headerRow.id)}
+			<tr>
+				{#each headerRow.cells as cell (cell.id)}
+					<Subscribe attrs={cell.attrs()} let:attrs>
+						<th {...attrs}>
+							<Render of={cell.render()} />
+						</th>
+					</Subscribe>
+				{/each}
+			</tr>
+		{/each}
+	</thead>
+	<tbody>
+		{#each $rows as row (row.id)}
+			<tr>
+				{#each row.cells as cell (cell.id)}
+					<Subscribe attrs={cell.attrs()} let:attrs>
+						<td {...attrs}>
+							<Render of={cell.render()} />
+						</td>
+					</Subscribe>
+				{/each}
+			</tr>
+		{/each}
+	</tbody>
 </table>
 ```
 
