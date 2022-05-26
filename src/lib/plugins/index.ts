@@ -11,6 +11,7 @@ export { addExpandedRows } from './addExpandedRows';
 export { addGroupBy } from './addGroupBy';
 export { addHiddenColumns } from './addHiddenColumns';
 export { addPagination } from './addPagination';
+export { addResizedColumns } from './addResizedColumns';
 export { addSelectedRows } from './addSelectedRows';
 export { addSortBy } from './addSortBy';
 export { addSubRows } from './addSubRows';

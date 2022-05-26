@@ -15,7 +15,6 @@
 		addSubRows,
 		addGroupBy,
 		addSelectedRows,
-		addResizedColumns,
 	} from '$lib/plugins';
 	import { mean, sum } from '$lib/utils/math';
 	import { getShuffled } from './_getShuffled';
@@ -55,7 +54,6 @@
 		page: addPagination({
 			initialPageSize: 20,
 		}),
-		resize: addResizedColumns(),
 	});
 
 	const columns = table.createColumns([
@@ -232,18 +230,17 @@
 	<input id="page-size" type="number" min={1} bind:value={$pageSize} />
 </div>
 
-<table {...$tableAttrs}>
-	<thead>
+<div class="table" {...$tableAttrs}>
+	<div class="thead">
 		{#each $headerRows as headerRow (headerRow.id)}
 			<Subscribe attrs={headerRow.attrs()} let:attrs>
-				<tr {...attrs}>
+				<div class="tr" {...attrs}>
 					{#each headerRow.cells as cell (cell.id)}
 						<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-							<th
+							<div class="th"
 								{...attrs}
 								on:click={props.sort.toggle}
 								class:sorted={props.sort.order !== undefined}
-								use:props.resize
 							>
 								<div>
 									<Render of={cell.render()} />
@@ -265,31 +262,25 @@
 								{#if props.filter !== undefined}
 									<Render of={props.filter.render} />
 								{/if}
-								<div
-									class="resizer"
-									on:click|stopPropagation
-									on:mousedown={props.resize.drag}
-									on:touchstart={props.resize.drag}
-								/>
-							</th>
+								</div>
 						</Subscribe>
 					{/each}
-				</tr>
+					</div>
 			</Subscribe>
 		{/each}
-		<tr>
-			<th colspan={$visibleColumns.length}>
+		<div class="tr">
+			<div class="th" colspan={$visibleColumns.length}>
 				<input type="text" bind:value={$filterValue} placeholder="Search all data..." />
-			</th>
-		</tr>
-	</thead>
-	<tbody {...$tableBodyAttrs}>
+			</div>
+		</div>
+	</div>
+	<div class="tbody" {...$tableBodyAttrs}>
 		{#each $pageRows as row (row.id)}
 			<Subscribe attrs={row.attrs()} let:attrs rowProps={row.props()} let:rowProps>
-				<tr {...attrs} class:selected={rowProps.select.selected}>
+				<div class="tr" {...attrs} class:selected={rowProps.select.selected}>
 					{#each row.cells as cell (cell.id)}
 						<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-							<td
+							<div class="td"
 								{...attrs}
 								class:sorted={props.sort.order !== undefined}
 								class:matches={props.tableFilter.matches}
@@ -300,14 +291,14 @@
 								{#if !props.group.repeated}
 									<Render of={cell.render()} />
 								{/if}
-							</td>
+						</div>
 						</Subscribe>
 					{/each}
-				</tr>
+					</div>
 			</Subscribe>
 		{/each}
-	</tbody>
-</table>
+	</div>
+</div>
 
 <pre>{JSON.stringify(
 		{
@@ -331,32 +322,18 @@
 		font-family: monospace;
 	}
 
-	table {
+	.table {
 		border-spacing: 0;
 		border-top: 1px solid black;
 		border-left: 1px solid black;
 	}
 
-	th,
-	td {
+	.th,
+	.td {
 		margin: 0;
 		padding: 0.5rem;
 		border-bottom: 1px solid black;
 		border-right: 1px solid black;
-	}
-
-	th {
-		position: relative;
-	}
-
-	th .resizer {
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		right: -4px;
-		width: 8px;
-		z-index: 1;
-		background: lightgray;
 	}
 
 	.sorted {
