@@ -165,6 +165,11 @@
 							getAggregateValue: (values) => mean(values),
 							cell: ({ value }) => `${(value as number).toFixed(2)} (avg)`,
 						},
+						resize: {
+							minWidth: 50,
+							initialWidth: 100,
+							maxWidth: 200,
+						},
 					},
 				}),
 				table.column({

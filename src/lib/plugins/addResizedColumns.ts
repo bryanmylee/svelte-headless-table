@@ -9,6 +9,9 @@ export type ResizedColumnsState = {
 };
 
 export type ResizedColumnsColumnOptions = {
+	initialWidth?: number;
+	minWidth?: number;
+	maxWidth?: number;
 	disable?: boolean;
 };
 
@@ -63,8 +66,14 @@ export const addResizedColumns =
 			.filter(([, option]) => option.disable === true)
 			.map(([columnId]) => columnId);
 
+		const initialWidths = Object.fromEntries(
+			Object.entries(columnOptions)
+				.filter(([, option]) => option.initialWidth !== undefined)
+				.map(([columnId, { initialWidth }]) => [columnId, initialWidth as number])
+		);
+
 		const columnsWidthState = writable<ColumnsWidthState>({
-			current: {},
+			current: initialWidths,
 			start: {},
 		});
 		const columnWidths = keyed(columnsWidthState, 'current');
@@ -130,8 +139,12 @@ export const addResizedColumns =
 								});
 							} else {
 								const startWidth = $columnsWidthState.start[cell.id];
+								const { minWidth = 0, maxWidth } = columnOptions[cell.id] ?? {};
 								if (startWidth !== undefined) {
-									$updatedState.current[cell.id] = Math.max(0, startWidth + deltaWidth);
+									$updatedState.current[cell.id] = Math.min(
+										Math.max(minWidth, startWidth + deltaWidth),
+										...(maxWidth === undefined ? [] : [maxWidth])
+									);
 								}
 							}
 							return $updatedState;
