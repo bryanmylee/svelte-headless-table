@@ -18,7 +18,7 @@ export type ResizedColumnsColumnOptions = {
 export type ResizedColumnsPropSet = NewTablePropSet<{
 	'thead.tr.th': {
 		(node: Element): void;
-		drag: (event: Event) => void;
+		drag: (node: Element) => void;
 		disabled: boolean;
 	};
 }>;
@@ -194,7 +194,16 @@ export const addResizedColumns =
 							},
 						};
 					};
-					action.drag = dragStart;
+					action.drag = (node: Element) => {
+						node.addEventListener('mousedown', dragStart);
+						node.addEventListener('touchstart', dragStart);
+						return {
+							destroy() {
+								node.removeEventListener('mousedown', dragStart);
+								node.removeEventListener('touchstart', dragStart);
+							},
+						};
+					};
 					action.disabled = isCellDisabled(cell, disabledResizeIds);
 					const props = derived([], () => {
 						return action;
