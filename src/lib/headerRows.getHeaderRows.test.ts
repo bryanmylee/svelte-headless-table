@@ -1,11 +1,6 @@
 import { writable } from 'svelte/store';
 import { createTable } from './createTable';
-import {
-	DataHeaderCell,
-	FlatDisplayHeaderCell,
-	GroupDisplayHeaderCell,
-	GroupHeaderCell,
-} from './headerCells';
+import { DataHeaderCell, GroupDisplayHeaderCell, GroupHeaderCell } from './headerCells';
 import { getHeaderRows, HeaderRow } from './headerRows';
 
 interface User {
