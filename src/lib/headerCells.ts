@@ -110,23 +110,23 @@ export class DataHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exten
 	}
 }
 
-export type DisplayHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = Omit<
+export type FlatDisplayHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = Omit<
 	FlatHeaderCellInit<Item, Plugins>,
 	'label'
 > & {
 	label?: HeaderLabel<Item>;
 };
 
-export class DisplayHeaderCell<
+export class FlatDisplayHeaderCell<
 	Item,
 	Plugins extends AnyPlugins = AnyPlugins
 > extends FlatHeaderCell<Item, Plugins> {
-	constructor({ id, label = NBSP }: DisplayHeaderCellInit<Item, Plugins>) {
+	constructor({ id, label = NBSP }: FlatDisplayHeaderCellInit<Item, Plugins>) {
 		super({ id, label });
 	}
 
-	clone(): DisplayHeaderCell<Item, Plugins> {
-		return new DisplayHeaderCell({
+	clone(): FlatDisplayHeaderCell<Item, Plugins> {
+		return new FlatDisplayHeaderCell({
 			id: this.id,
 			label: this.label,
 		});
@@ -171,6 +171,31 @@ export class GroupHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exte
 			colspan: this.colspan,
 			ids: this.ids,
 			allIds: this.allIds,
+		});
+	}
+}
+
+export type DisplayHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = Omit<
+	HeaderCellInit<Item, Plugins>,
+	'label' | 'colspan'
+> & {
+	label?: HeaderLabel<Item>;
+	colspan?: number;
+};
+
+export class DisplayHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> extends HeaderCell<
+	Item,
+	Plugins
+> {
+	constructor({ id, label = NBSP, colspan = 1 }: DisplayHeaderCellInit<Item, Plugins>) {
+		super({ id, label, colspan });
+	}
+
+	clone(): DisplayHeaderCell<Item, Plugins> {
+		return new DisplayHeaderCell({
+			id: this.id,
+			label: this.label,
+			colspan: this.colspan,
 		});
 	}
 }

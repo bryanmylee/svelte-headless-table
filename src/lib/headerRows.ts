@@ -2,8 +2,9 @@ import { derived } from 'svelte/store';
 import { DataColumn, DisplayColumn, GroupColumn, type Column } from './columns';
 import {
 	DataHeaderCell,
-	DisplayHeaderCell,
+	FlatDisplayHeaderCell,
 	FlatHeaderCell,
+	DisplayHeaderCell,
 	GroupHeaderCell,
 	type HeaderCell,
 } from './headerCells';
@@ -77,8 +78,14 @@ export const getHeaderRowMatrix = <Item, Plugins extends AnyPlugins = AnyPlugins
 		cellOffset += c instanceof GroupColumn ? c.ids.length : 1;
 	});
 	// Replace null cells with blank display cells.
-	return rowMatrix.map((cells) =>
-		cells.map((cell, columnIdx) => cell ?? new DisplayHeaderCell({ id: columnIdx.toString() }))
+	return rowMatrix.map((cells, rowIdx) =>
+		cells.map(
+			(cell, columnIdx) =>
+				cell ??
+				(rowIdx === maxHeight - 1
+					? new FlatDisplayHeaderCell({ id: columnIdx.toString() })
+					: new DisplayHeaderCell({ id: columnIdx.toString() }))
+		)
 	);
 };
 
@@ -99,7 +106,7 @@ const loadHeaderRowMatrix = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		return;
 	}
 	if (column instanceof DisplayColumn) {
-		rowMatrix[rowMatrix.length - 1][cellOffset] = new DisplayHeaderCell({
+		rowMatrix[rowMatrix.length - 1][cellOffset] = new FlatDisplayHeaderCell({
 			id: column.id,
 			label: column.header,
 		});

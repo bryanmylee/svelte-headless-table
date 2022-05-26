@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 import { createTable } from './createTable';
-import { DataHeaderCell, DisplayHeaderCell, GroupHeaderCell } from './headerCells';
+import { DataHeaderCell, FlatDisplayHeaderCell, GroupHeaderCell } from './headerCells';
 import { getHeaderRows, HeaderRow } from './headerRows';
 
 interface User {
@@ -250,9 +250,9 @@ test('one group and extra\n[  ]      \n[][][][][]', () => {
 					allIds: ['firstName', 'lastName'],
 					ids: ['firstName', 'lastName'],
 				}),
-				new DisplayHeaderCell({ id: '2' }),
-				new DisplayHeaderCell({ id: '3' }),
-				new DisplayHeaderCell({ id: '4' }),
+				new FlatDisplayHeaderCell({ id: '2' }),
+				new FlatDisplayHeaderCell({ id: '3' }),
+				new FlatDisplayHeaderCell({ id: '4' }),
 			],
 		}),
 		new HeaderRow({
@@ -335,7 +335,7 @@ test('data cell on last row\n[  ]\n[]  \n[][]', () => {
 					allIds: ['firstName'],
 					ids: ['firstName'],
 				}),
-				new DisplayHeaderCell({ id: '1' }),
+				new FlatDisplayHeaderCell({ id: '1' }),
 			],
 		}),
 		new HeaderRow({
@@ -397,7 +397,7 @@ test('group on lowest row\n[]\n[][]\n[][]', () => {
 					allIds: ['firstName'],
 					ids: ['firstName'],
 				}),
-				new DisplayHeaderCell({ id: '1' }),
+				new FlatDisplayHeaderCell({ id: '1' }),
 			],
 		}),
 		new HeaderRow({
