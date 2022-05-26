@@ -374,6 +374,7 @@
 		width: 8px;
 		z-index: 1;
 		background: lightgray;
+		cursor: col-resize;
 	}
 
 	.sorted {
