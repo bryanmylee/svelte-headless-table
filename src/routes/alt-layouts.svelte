@@ -237,7 +237,8 @@
 				<div class="tr" {...attrs}>
 					{#each headerRow.cells as cell (cell.id)}
 						<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-							<div class="th"
+							<div
+								class="th"
 								{...attrs}
 								on:click={props.sort.toggle}
 								class:sorted={props.sort.order !== undefined}
@@ -262,10 +263,10 @@
 								{#if props.filter !== undefined}
 									<Render of={props.filter.render} />
 								{/if}
-								</div>
+							</div>
 						</Subscribe>
 					{/each}
-					</div>
+				</div>
 			</Subscribe>
 		{/each}
 		<div class="tr">
@@ -280,7 +281,8 @@
 				<div class="tr" {...attrs} class:selected={rowProps.select.selected}>
 					{#each row.cells as cell (cell.id)}
 						<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
-							<div class="td"
+							<div
+								class="td"
 								{...attrs}
 								class:sorted={props.sort.order !== undefined}
 								class:matches={props.tableFilter.matches}
@@ -291,10 +293,10 @@
 								{#if !props.group.repeated}
 									<Render of={cell.render()} />
 								{/if}
-						</div>
+							</div>
 						</Subscribe>
 					{/each}
-					</div>
+				</div>
 			</Subscribe>
 		{/each}
 	</div>
