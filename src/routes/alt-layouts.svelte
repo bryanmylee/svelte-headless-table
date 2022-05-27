@@ -15,6 +15,7 @@
 		addSubRows,
 		addGroupBy,
 		addSelectedRows,
+		addGridLayout,
 	} from '$lib/plugins';
 	import { mean, sum } from '$lib/utils/math';
 	import { getShuffled } from './_getShuffled';
@@ -54,6 +55,7 @@
 		page: addPagination({
 			initialPageSize: 20,
 		}),
+		layout: addGridLayout(),
 	});
 
 	const columns = table.createColumns([
@@ -203,8 +205,15 @@
 		}),
 	]);
 
-	const { headerRows, pageRows, tableAttrs, tableBodyAttrs, visibleColumns, pluginStates } =
-		table.createViewModel(columns);
+	const {
+		headerRows,
+		pageRows,
+		tableAttrs,
+		tableHeadAttrs,
+		tableBodyAttrs,
+		visibleColumns,
+		pluginStates,
+	} = table.createViewModel(columns);
 
 	const { groupByIds } = pluginStates.group;
 	const { sortKeys } = pluginStates.sort;
@@ -231,7 +240,7 @@
 </div>
 
 <div class="table" {...$tableAttrs}>
-	<div class="thead">
+	<div class="thead" {...$tableHeadAttrs}>
 		{#each $headerRows as headerRow (headerRow.id)}
 			<Subscribe attrs={headerRow.attrs()} let:attrs>
 				<div class="tr" {...attrs}>
@@ -269,8 +278,12 @@
 				</div>
 			</Subscribe>
 		{/each}
-		<div class="tr">
-			<div class="th" colspan={$visibleColumns.length}>
+		<div class="tr" style:display="contents">
+			<div
+				class="th"
+				colspan={$visibleColumns.length}
+				style:grid-column="1 / span {$visibleColumns.length}"
+			>
 				<input type="text" bind:value={$filterValue} placeholder="Search all data..." />
 			</div>
 		</div>
