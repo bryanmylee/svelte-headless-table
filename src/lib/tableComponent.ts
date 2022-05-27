@@ -8,7 +8,7 @@ import type {
 } from './types/TablePlugin';
 import type { TableState } from './createViewModel';
 import type { Clonable } from './utils/clone';
-import { stringifyCss } from './utils/css';
+import { finalizeAttributes, mergeAttributes } from './utils/attributes';
 
 export interface TableComponentInit {
 	id: string;
@@ -25,21 +25,11 @@ export abstract class TableComponent<Item, Plugins extends AnyPlugins, Key exten
 	private attrsForName: Record<string, Readable<Record<string, unknown>>> = {};
 	attrs(): Readable<Record<string, unknown>> {
 		return derived(Object.values(this.attrsForName), ($attrsArray) => {
-			const $mergedAttrs: Record<string, unknown> = {};
-			$attrsArray.forEach(({ style, ...$attrs }) => {
-				// Handle style object.
-				if (style !== undefined && typeof style === 'object') {
-					if ($mergedAttrs.style === undefined) {
-						$mergedAttrs.style = {};
-					}
-					Object.assign($mergedAttrs.style, style);
-				}
-				Object.assign($mergedAttrs, $attrs);
+			let $mergedAttrs: Record<string, unknown> = {};
+			$attrsArray.forEach(($attrs) => {
+				$mergedAttrs = mergeAttributes($mergedAttrs, $attrs);
 			});
-			if ($mergedAttrs.style !== undefined) {
-				$mergedAttrs.style = stringifyCss($mergedAttrs.style as Record<string, unknown>);
-			}
-			return $mergedAttrs;
+			return finalizeAttributes($mergedAttrs);
 		});
 	}
 
