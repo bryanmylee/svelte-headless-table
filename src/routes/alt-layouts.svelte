@@ -16,6 +16,7 @@
 		addGroupBy,
 		addSelectedRows,
 		addGridLayout,
+		addResizedColumns,
 	} from '$lib/plugins';
 	import { mean, sum } from '$lib/utils/math';
 	import { getShuffled } from './_getShuffled';
@@ -55,6 +56,7 @@
 		page: addPagination({
 			initialPageSize: 20,
 		}),
+		resize: addResizedColumns(),
 		layout: addGridLayout(),
 	});
 
@@ -69,6 +71,11 @@
 					isSomeSubRowsSelected,
 				});
 			},
+			plugins: {
+				resize: {
+					disable: true,
+				},
+			},
 		}),
 		table.display({
 			id: 'expanded',
@@ -82,6 +89,11 @@
 					isAllSubRowsExpanded,
 					depth: row.depth,
 				});
+			},
+			plugins: {
+				resize: {
+					disable: true,
+				},
 			},
 		}),
 		table.column({
@@ -162,6 +174,9 @@
 					id: 'status',
 					accessor: (item) => item.status,
 					plugins: {
+						resize: {
+							disable: true,
+						},
 						sort: {
 							disable: true,
 						},
@@ -251,6 +266,7 @@
 								{...attrs}
 								on:click={props.sort.toggle}
 								class:sorted={props.sort.order !== undefined}
+								use:props.resize
 							>
 								<div>
 									<Render of={cell.render()} />
@@ -271,6 +287,9 @@
 								{/if}
 								{#if props.filter !== undefined}
 									<Render of={props.filter.render} />
+								{/if}
+								{#if !props.resize.disabled}
+									<div class="resizer" on:click|stopPropagation use:props.resize.drag />
 								{/if}
 							</div>
 						</Subscribe>
@@ -349,6 +368,21 @@
 		padding: 0.5rem;
 		border-bottom: 1px solid black;
 		border-right: 1px solid black;
+	}
+
+	.th {
+		position: relative;
+	}
+
+	.th .resizer {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		right: -4px;
+		width: 8px;
+		z-index: 1;
+		background: lightgray;
+		cursor: col-resize;
 	}
 
 	.sorted {
