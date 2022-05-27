@@ -16,6 +16,7 @@ class TestHeaderCell<Item> extends HeaderCell<Item> {
 			id: this.id,
 			colspan: this.colspan,
 			label: this.label,
+			colstart: 1,
 		});
 	}
 }
@@ -25,6 +26,7 @@ it('renders string label', () => {
 		id: '0',
 		label: 'Name',
 		colspan: 1,
+		colstart: 1,
 	});
 
 	expect(actual.render()).toBe('Name');
@@ -39,6 +41,7 @@ it('renders dynamic label with state', () => {
 		id: '0',
 		label: ({ columns }) => `${columns.length} columns`,
 		colspan: 1,
+		colstart: 1,
 	});
 
 	actual.injectState(state);
@@ -51,6 +54,7 @@ it('throws if rendering dynamically without state', () => {
 		id: '0',
 		label: ({ columns }) => `${columns.length} columns`,
 		colspan: 1,
+		colstart: 1,
 	});
 
 	expect(() => {

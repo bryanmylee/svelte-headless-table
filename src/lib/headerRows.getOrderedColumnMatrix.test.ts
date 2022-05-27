@@ -17,27 +17,56 @@ it('orders the matrix columns', () => {
 			new GroupHeaderCell({
 				label: 'Name',
 				colspan: 1,
+				colstart: 0,
 				allIds: ['firstName', 'lastName'],
 				ids: [],
 			}),
-			new DataHeaderCell({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new DataHeaderCell({
+				label: 'First Name',
+				colstart: 0,
+				accessorKey: 'firstName',
+				id: 'firstName',
+			}),
 		],
 		[
 			new GroupHeaderCell({
 				label: 'Name',
 				colspan: 1,
+				colstart: 1,
 				allIds: ['firstName', 'lastName'],
 				ids: [],
 			}),
-			new DataHeaderCell({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+			new DataHeaderCell({
+				label: 'Last Name',
+				colstart: 1,
+				accessorKey: 'lastName',
+				id: 'lastName',
+			}),
 		],
 		[
-			new GroupHeaderCell({ label: 'Info', colspan: 1, allIds: ['age', 'progress'], ids: [] }),
-			new DataHeaderCell({ label: 'Age', accessorKey: 'age', id: 'age' }),
+			new GroupHeaderCell({
+				label: 'Info',
+				colspan: 1,
+				colstart: 2,
+				allIds: ['age', 'progress'],
+				ids: [],
+			}),
+			new DataHeaderCell({ label: 'Age', colstart: 2, accessorKey: 'age', id: 'age' }),
 		],
 		[
-			new GroupHeaderCell({ label: 'Info', colspan: 1, allIds: ['age', 'progress'], ids: [] }),
-			new DataHeaderCell({ label: 'Progress', accessorKey: 'progress', id: 'progress' }),
+			new GroupHeaderCell({
+				label: 'Info',
+				colspan: 1,
+				colstart: 3,
+				allIds: ['age', 'progress'],
+				ids: [],
+			}),
+			new DataHeaderCell({
+				label: 'Progress',
+				colstart: 3,
+				accessorKey: 'progress',
+				id: 'progress',
+			}),
 		],
 	];
 
@@ -48,27 +77,56 @@ it('orders the matrix columns', () => {
 			new GroupHeaderCell({
 				label: 'Name',
 				colspan: 1,
+				colstart: 0,
 				allIds: ['firstName', 'lastName'],
 				ids: [],
 			}),
-			new DataHeaderCell({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new DataHeaderCell({
+				label: 'First Name',
+				colstart: 0,
+				accessorKey: 'firstName',
+				id: 'firstName',
+			}),
 		],
 		[
-			new GroupHeaderCell({ label: 'Info', colspan: 1, allIds: ['age', 'progress'], ids: [] }),
-			new DataHeaderCell({ label: 'Age', accessorKey: 'age', id: 'age' }),
+			new GroupHeaderCell({
+				label: 'Info',
+				colspan: 1,
+				colstart: 1,
+				allIds: ['age', 'progress'],
+				ids: [],
+			}),
+			new DataHeaderCell({ label: 'Age', colstart: 1, accessorKey: 'age', id: 'age' }),
 		],
 		[
 			new GroupHeaderCell({
 				label: 'Name',
 				colspan: 1,
+				colstart: 2,
 				allIds: ['firstName', 'lastName'],
 				ids: [],
 			}),
-			new DataHeaderCell({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+			new DataHeaderCell({
+				label: 'Last Name',
+				colstart: 2,
+				accessorKey: 'lastName',
+				id: 'lastName',
+			}),
 		],
 		[
-			new GroupHeaderCell({ label: 'Info', colspan: 1, allIds: ['age', 'progress'], ids: [] }),
-			new DataHeaderCell({ label: 'Progress', accessorKey: 'progress', id: 'progress' }),
+			new GroupHeaderCell({
+				label: 'Info',
+				colspan: 1,
+				colstart: 3,
+				allIds: ['age', 'progress'],
+				ids: [],
+			}),
+			new DataHeaderCell({
+				label: 'Progress',
+				colstart: 3,
+				accessorKey: 'progress',
+				id: 'progress',
+			}),
 		],
 	];
 
@@ -81,27 +139,56 @@ it('ignores empty ordering', () => {
 			new GroupHeaderCell({
 				label: 'Name',
 				colspan: 1,
+				colstart: 0,
 				allIds: ['firstName', 'lastName'],
 				ids: [],
 			}),
-			new DataHeaderCell({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new DataHeaderCell({
+				label: 'First Name',
+				colstart: 0,
+				accessorKey: 'firstName',
+				id: 'firstName',
+			}),
 		],
 		[
 			new GroupHeaderCell({
 				label: 'Name',
 				colspan: 1,
+				colstart: 1,
 				allIds: ['firstName', 'lastName'],
 				ids: [],
 			}),
-			new DataHeaderCell({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+			new DataHeaderCell({
+				label: 'Last Name',
+				colstart: 1,
+				accessorKey: 'lastName',
+				id: 'lastName',
+			}),
 		],
 		[
-			new GroupHeaderCell({ label: 'Info', colspan: 1, allIds: ['age', 'progress'], ids: [] }),
-			new DataHeaderCell({ label: 'Age', accessorKey: 'age', id: 'age' }),
+			new GroupHeaderCell({
+				label: 'Info',
+				colspan: 1,
+				colstart: 2,
+				allIds: ['age', 'progress'],
+				ids: [],
+			}),
+			new DataHeaderCell({ label: 'Age', colstart: 2, accessorKey: 'age', id: 'age' }),
 		],
 		[
-			new GroupHeaderCell({ label: 'Info', colspan: 1, allIds: ['age', 'progress'], ids: [] }),
-			new DataHeaderCell({ label: 'Progress', accessorKey: 'progress', id: 'progress' }),
+			new GroupHeaderCell({
+				label: 'Info',
+				colspan: 1,
+				colstart: 3,
+				allIds: ['age', 'progress'],
+				ids: [],
+			}),
+			new DataHeaderCell({
+				label: 'Progress',
+				colstart: 3,
+				accessorKey: 'progress',
+				id: 'progress',
+			}),
 		],
 	];
 
@@ -112,27 +199,56 @@ it('ignores empty ordering', () => {
 			new GroupHeaderCell({
 				label: 'Name',
 				colspan: 1,
+				colstart: 0,
 				allIds: ['firstName', 'lastName'],
 				ids: [],
 			}),
-			new DataHeaderCell({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
+			new DataHeaderCell({
+				label: 'First Name',
+				colstart: 0,
+				accessorKey: 'firstName',
+				id: 'firstName',
+			}),
 		],
 		[
 			new GroupHeaderCell({
 				label: 'Name',
 				colspan: 1,
+				colstart: 1,
 				allIds: ['firstName', 'lastName'],
 				ids: [],
 			}),
-			new DataHeaderCell({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+			new DataHeaderCell({
+				label: 'Last Name',
+				colstart: 1,
+				accessorKey: 'lastName',
+				id: 'lastName',
+			}),
 		],
 		[
-			new GroupHeaderCell({ label: 'Info', colspan: 1, allIds: ['age', 'progress'], ids: [] }),
-			new DataHeaderCell({ label: 'Age', accessorKey: 'age', id: 'age' }),
+			new GroupHeaderCell({
+				label: 'Info',
+				colspan: 1,
+				colstart: 2,
+				allIds: ['age', 'progress'],
+				ids: [],
+			}),
+			new DataHeaderCell({ label: 'Age', colstart: 2, accessorKey: 'age', id: 'age' }),
 		],
 		[
-			new GroupHeaderCell({ label: 'Info', colspan: 1, allIds: ['age', 'progress'], ids: [] }),
-			new DataHeaderCell({ label: 'Progress', accessorKey: 'progress', id: 'progress' }),
+			new GroupHeaderCell({
+				label: 'Info',
+				colspan: 1,
+				colstart: 3,
+				allIds: ['age', 'progress'],
+				ids: [],
+			}),
+			new DataHeaderCell({
+				label: 'Progress',
+				colstart: 3,
+				accessorKey: 'progress',
+				id: 'progress',
+			}),
 		],
 	];
 

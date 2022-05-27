@@ -8,23 +8,38 @@ import type {
 	AnyPlugins,
 	DeriveFlatColumnsFn,
 	DeriveRowsFn,
+	DeriveFn,
 	PluginStates,
 } from './types/TablePlugin';
+import { finalizeAttributes } from './utils/attributes';
 import { nonUndefined } from './utils/filter';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export type TableAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = {
+export type TableAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = Record<
+	string,
+	unknown
+> & {
 	role: 'table';
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export type TableBodyAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = {
+export type TableHeadAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = Record<
+	string,
+	unknown
+>;
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type TableBodyAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = Record<
+	string,
+	unknown
+> & {
 	role: 'rowgroup';
 };
 
 export interface TableViewModel<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	flatColumns: FlatColumn<Item, Plugins>[];
 	tableAttrs: Readable<TableAttributes<Item, Plugins>>;
+	tableHeadAttrs: Readable<TableHeadAttributes<Item, Plugins>>;
 	tableBodyAttrs: Readable<TableBodyAttributes<Item, Plugins>>;
 	visibleColumns: Readable<FlatColumn<Item, Plugins>[]>;
 	headerRows: Readable<HeaderRow<Item, Plugins>[]>;
@@ -64,18 +79,20 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	const _headerRows = writable<HeaderRow<Item, Plugins>[]>();
 	const _rows = writable<BodyRow<Item, Plugins>[]>([]);
 	const _pageRows = writable<BodyRow<Item, Plugins>[]>([]);
-	const tableAttrs = readable({
+	const _tableAttrs = writable<TableAttributes<Item>>({
 		role: 'table' as const,
 	});
-	const tableBodyAttrs = readable({
+	const _tableHeadAttrs = writable<TableHeadAttributes<Item>>({});
+	const _tableBodyAttrs = writable<TableBodyAttributes<Item>>({
 		role: 'rowgroup' as const,
 	});
 	const pluginInitTableState: PluginInitTableState<Item, Plugins> = {
 		data,
 		columns,
-		tableAttrs,
-		tableBodyAttrs,
 		flatColumns: $flatColumns,
+		tableAttrs: _tableAttrs,
+		tableHeadAttrs: _tableHeadAttrs,
+		tableBodyAttrs: _tableBodyAttrs,
 		visibleColumns: _visibleColumns,
 		headerRows: _headerRows,
 		originalRows,
@@ -110,9 +127,10 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	const tableState: TableState<Item, Plugins> = {
 		data,
 		columns,
-		tableAttrs,
-		tableBodyAttrs,
 		flatColumns: $flatColumns,
+		tableAttrs: _tableAttrs,
+		tableHeadAttrs: _tableHeadAttrs,
+		tableBodyAttrs: _tableBodyAttrs,
 		visibleColumns: _visibleColumns,
 		headerRows: _headerRows,
 		originalRows,
@@ -120,6 +138,53 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		pageRows: _pageRows,
 		pluginStates,
 	};
+
+	const deriveTableAttrsFns: DeriveFn<TableAttributes<Item>>[] = Object.values(pluginInstances)
+		.map((pluginInstance) => pluginInstance.deriveTableAttrs)
+		.filter(nonUndefined);
+	let tableAttrs = readable<TableAttributes<Item>>({
+		role: 'table',
+	});
+	deriveTableAttrsFns.forEach((fn) => {
+		tableAttrs = fn(tableAttrs);
+	});
+	const finalizedTableAttrs = derived(tableAttrs, ($tableAttrs) => {
+		const $finalizedAttrs = finalizeAttributes($tableAttrs) as TableAttributes<Item>;
+		_tableAttrs.set($finalizedAttrs);
+		return $finalizedAttrs;
+	});
+
+	const deriveTableHeadAttrsFns: DeriveFn<TableHeadAttributes<Item>>[] = Object.values(
+		pluginInstances
+	)
+		.map((pluginInstance) => pluginInstance.deriveTableBodyAttrs)
+		.filter(nonUndefined);
+	let tableHeadAttrs = readable<TableHeadAttributes<Item>>({});
+	deriveTableHeadAttrsFns.forEach((fn) => {
+		tableHeadAttrs = fn(tableHeadAttrs);
+	});
+	const finalizedTableHeadAttrs = derived(tableHeadAttrs, ($tableHeadAttrs) => {
+		const $finalizedAttrs = finalizeAttributes($tableHeadAttrs) as TableHeadAttributes<Item>;
+		_tableHeadAttrs.set($finalizedAttrs);
+		return $finalizedAttrs;
+	});
+
+	const deriveTableBodyAttrsFns: DeriveFn<TableBodyAttributes<Item>>[] = Object.values(
+		pluginInstances
+	)
+		.map((pluginInstance) => pluginInstance.deriveTableBodyAttrs)
+		.filter(nonUndefined);
+	let tableBodyAttrs = readable<TableBodyAttributes<Item>>({
+		role: 'rowgroup',
+	});
+	deriveTableBodyAttrsFns.forEach((fn) => {
+		tableBodyAttrs = fn(tableBodyAttrs);
+	});
+	const finalizedTableBodyAttrs = derived(tableBodyAttrs, ($tableBodyAttrs) => {
+		const $finalizedAttrs = finalizeAttributes($tableBodyAttrs) as TableBodyAttributes<Item>;
+		_tableBodyAttrs.set($finalizedAttrs);
+		return $finalizedAttrs;
+	});
 
 	const deriveFlatColumnsFns: DeriveFlatColumnsFn<Item>[] = Object.values(pluginInstances)
 		.map((pluginInstance) => pluginInstance.deriveFlatColumns)
@@ -246,10 +311,11 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	});
 
 	return {
-		tableAttrs,
-		tableBodyAttrs,
-		flatColumns: $flatColumns,
+		tableAttrs: finalizedTableAttrs,
+		tableHeadAttrs: finalizedTableHeadAttrs,
+		tableBodyAttrs: finalizedTableBodyAttrs,
 		visibleColumns: injectedColumns,
+		flatColumns: $flatColumns,
 		headerRows,
 		originalRows,
 		rows: injectedRows,

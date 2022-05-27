@@ -3,7 +3,12 @@ import type { BodyRow, BodyRowAttributes } from '$lib/bodyRows';
 import type { DataColumn, FlatColumn } from '$lib/columns';
 import type { HeaderCell, HeaderCellAttributes } from '$lib/headerCells';
 import type { HeaderRow, HeaderRowAttributes } from '$lib/headerRows';
-import type { PluginInitTableState } from '$lib/createViewModel';
+import type {
+	PluginInitTableState,
+	TableAttributes,
+	TableBodyAttributes,
+	TableHeadAttributes,
+} from '$lib/createViewModel';
 import type { Readable } from 'svelte/store';
 
 export type TablePlugin<
@@ -35,6 +40,9 @@ export type TablePluginInstance<
 	deriveFlatColumns?: DeriveFlatColumnsFn<Item>;
 	deriveRows?: DeriveRowsFn<Item>;
 	derivePageRows?: DeriveRowsFn<Item>;
+	deriveTableAttrs?: DeriveFn<TableAttributes<Item>>;
+	deriveTableHeadAttrs?: DeriveFn<TableHeadAttributes<Item>>;
+	deriveTableBodyAttrs?: DeriveFn<TableBodyAttributes<Item>>;
 	columnOptions?: ColumnOptions;
 	hooks?: TableHooks<Item, TablePropSet, TableAttributeSet>;
 };
@@ -62,6 +70,8 @@ export type DeriveFlatColumnsFn<Item> = <Col extends FlatColumn<Item>>(
 export type DeriveRowsFn<Item> = <Row extends BodyRow<Item>>(
 	rows: Readable<Row[]>
 ) => Readable<Row[]>;
+
+export type DeriveFn<T> = (obj: Readable<T>) => Readable<T>;
 
 export type Components<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	'thead.tr': HeaderRow<Item, Plugins>;

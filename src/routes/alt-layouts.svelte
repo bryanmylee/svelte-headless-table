@@ -15,6 +15,8 @@
 		addSubRows,
 		addGroupBy,
 		addSelectedRows,
+		addGridLayout,
+		addResizedColumns,
 	} from '$lib/plugins';
 	import { mean, sum } from '$lib/utils/math';
 	import { getShuffled } from './_getShuffled';
@@ -54,6 +56,8 @@
 		page: addPagination({
 			initialPageSize: 20,
 		}),
+		resize: addResizedColumns(),
+		layout: addGridLayout(),
 	});
 
 	const columns = table.createColumns([
@@ -66,6 +70,11 @@
 					isSelected,
 					isSomeSubRowsSelected,
 				});
+			},
+			plugins: {
+				resize: {
+					disable: true,
+				},
 			},
 		}),
 		table.display({
@@ -80,6 +89,11 @@
 					isAllSubRowsExpanded,
 					depth: row.depth,
 				});
+			},
+			plugins: {
+				resize: {
+					disable: true,
+				},
 			},
 		}),
 		table.column({
@@ -160,6 +174,9 @@
 					id: 'status',
 					accessor: (item) => item.status,
 					plugins: {
+						resize: {
+							disable: true,
+						},
 						sort: {
 							disable: true,
 						},
@@ -203,8 +220,15 @@
 		}),
 	]);
 
-	const { headerRows, pageRows, tableAttrs, tableBodyAttrs, visibleColumns, pluginStates } =
-		table.createViewModel(columns);
+	const {
+		headerRows,
+		pageRows,
+		tableAttrs,
+		tableHeadAttrs,
+		tableBodyAttrs,
+		visibleColumns,
+		pluginStates,
+	} = table.createViewModel(columns);
 
 	const { groupByIds } = pluginStates.group;
 	const { sortKeys } = pluginStates.sort;
@@ -231,7 +255,7 @@
 </div>
 
 <div class="table" {...$tableAttrs}>
-	<div class="thead">
+	<div class="thead" {...$tableHeadAttrs}>
 		{#each $headerRows as headerRow (headerRow.id)}
 			<Subscribe attrs={headerRow.attrs()} let:attrs>
 				<div class="tr" {...attrs}>
@@ -242,6 +266,7 @@
 								{...attrs}
 								on:click={props.sort.toggle}
 								class:sorted={props.sort.order !== undefined}
+								use:props.resize
 							>
 								<div>
 									<Render of={cell.render()} />
@@ -263,14 +288,21 @@
 								{#if props.filter !== undefined}
 									<Render of={props.filter.render} />
 								{/if}
+								{#if !props.resize.disabled}
+									<div class="resizer" on:click|stopPropagation use:props.resize.drag />
+								{/if}
 							</div>
 						</Subscribe>
 					{/each}
 				</div>
 			</Subscribe>
 		{/each}
-		<div class="tr">
-			<div class="th" colspan={$visibleColumns.length}>
+		<div class="tr" style:display="contents">
+			<div
+				class="th"
+				colspan={$visibleColumns.length}
+				style:grid-column="1 / span {$visibleColumns.length}"
+			>
 				<input type="text" bind:value={$filterValue} placeholder="Search all data..." />
 			</div>
 		</div>
@@ -336,6 +368,21 @@
 		padding: 0.5rem;
 		border-bottom: 1px solid black;
 		border-right: 1px solid black;
+	}
+
+	.th {
+		position: relative;
+	}
+
+	.th .resizer {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		right: -4px;
+		width: 8px;
+		z-index: 1;
+		background: lightgray;
+		cursor: col-resize;
 	}
 
 	.sorted {
