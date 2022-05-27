@@ -10,6 +10,7 @@ export type HeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	id: string;
 	label: HeaderLabel<Item>;
 	colspan: number;
+	colstart: number;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -17,16 +18,19 @@ export type HeaderCellAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> 
 	role: 'columnheader';
 	colspan: number;
 };
+
 export abstract class HeaderCell<
 	Item,
 	Plugins extends AnyPlugins = AnyPlugins
 > extends TableComponent<Item, Plugins, 'thead.tr.th'> {
 	label: HeaderLabel<Item>;
 	colspan: number;
-	constructor({ id, label, colspan }: HeaderCellInit<Item>) {
+	colstart: number;
+	constructor({ id, label, colspan, colstart }: HeaderCellInit<Item>) {
 		super({ id });
 		this.label = label;
 		this.colspan = colspan;
+		this.colstart = colstart;
 	}
 
 	render(): RenderConfig {
@@ -68,14 +72,15 @@ export class FlatHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exten
 	Item,
 	Plugins
 > {
-	constructor({ id, label }: FlatHeaderCellInit<Item, Plugins>) {
-		super({ id, label, colspan: 1 });
+	constructor({ id, label, colstart }: FlatHeaderCellInit<Item, Plugins>) {
+		super({ id, label, colspan: 1, colstart });
 	}
 
 	clone(): FlatHeaderCell<Item, Plugins> {
 		return new FlatHeaderCell({
 			id: this.id,
 			label: this.label,
+			colstart: this.colstart,
 		});
 	}
 }
@@ -94,8 +99,8 @@ export class DataHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exten
 > {
 	accessorKey?: keyof Item;
 	accessorFn?: (item: Item) => unknown;
-	constructor({ id, label, accessorKey, accessorFn }: DataHeaderCellInit<Item, Plugins>) {
-		super({ id, label });
+	constructor({ id, label, accessorKey, accessorFn, colstart }: DataHeaderCellInit<Item, Plugins>) {
+		super({ id, label, colstart });
 		this.accessorKey = accessorKey;
 		this.accessorFn = accessorFn;
 	}
@@ -106,6 +111,7 @@ export class DataHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exten
 			label: this.label,
 			accessorFn: this.accessorFn,
 			accessorKey: this.accessorKey,
+			colstart: this.colstart,
 		});
 	}
 }
@@ -121,14 +127,15 @@ export class FlatDisplayHeaderCell<
 	Item,
 	Plugins extends AnyPlugins = AnyPlugins
 > extends FlatHeaderCell<Item, Plugins> {
-	constructor({ id, label = NBSP }: FlatDisplayHeaderCellInit<Item, Plugins>) {
-		super({ id, label });
+	constructor({ id, label = NBSP, colstart }: FlatDisplayHeaderCellInit<Item, Plugins>) {
+		super({ id, label, colstart });
 	}
 
 	clone(): FlatDisplayHeaderCell<Item, Plugins> {
 		return new FlatDisplayHeaderCell({
 			id: this.id,
 			label: this.label,
+			colstart: this.colstart,
 		});
 	}
 }
@@ -148,8 +155,8 @@ export class GroupHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exte
 	ids: string[];
 	allId: string;
 	allIds: string[];
-	constructor({ label, colspan, ids, allIds }: GroupHeaderCellInit<Item, Plugins>) {
-		super({ id: `[${ids.join(',')}]`, label, colspan });
+	constructor({ label, ids, allIds, colspan, colstart }: GroupHeaderCellInit<Item, Plugins>) {
+		super({ id: `[${ids.join(',')}]`, label, colspan, colstart });
 		this.ids = ids;
 		this.allId = `[${allIds.join(',')}]`;
 		this.allIds = allIds;
@@ -168,9 +175,10 @@ export class GroupHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exte
 	clone(): GroupHeaderCell<Item, Plugins> {
 		return new GroupHeaderCell({
 			label: this.label,
-			colspan: this.colspan,
 			ids: this.ids,
 			allIds: this.allIds,
+			colspan: this.colspan,
+			colstart: this.colstart,
 		});
 	}
 }
@@ -189,19 +197,21 @@ export class GroupDisplayHeaderCell<
 > extends GroupHeaderCell<Item, Plugins> {
 	constructor({
 		label = NBSP,
-		colspan = 1,
 		ids,
 		allIds,
+		colspan = 1,
+		colstart,
 	}: GroupDisplayHeaderCellInit<Item, Plugins>) {
-		super({ label, colspan, ids, allIds });
+		super({ label, ids, allIds, colspan, colstart });
 	}
 
 	clone(): GroupDisplayHeaderCell<Item, Plugins> {
 		return new GroupDisplayHeaderCell({
 			label: this.label,
-			colspan: this.colspan,
 			ids: this.ids,
 			allIds: this.allIds,
+			colspan: this.colspan,
+			colstart: this.colstart,
 		});
 	}
 }

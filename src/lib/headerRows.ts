@@ -81,9 +81,10 @@ export const getHeaderRowMatrix = <Item, Plugins extends AnyPlugins = AnyPlugins
 	return rowMatrix.map((cells, rowIdx) =>
 		cells.map((cell, columnIdx) => {
 			if (cell !== null) return cell;
-			if (rowIdx === maxHeight - 1) return new FlatDisplayHeaderCell({ id: columnIdx.toString() });
+			if (rowIdx === maxHeight - 1)
+				return new FlatDisplayHeaderCell({ id: columnIdx.toString(), colstart: columnIdx });
 			const flatId = rowMatrix[maxHeight - 1][columnIdx]?.id ?? columnIdx.toString();
-			return new GroupDisplayHeaderCell({ ids: [], allIds: [flatId] });
+			return new GroupDisplayHeaderCell({ ids: [], allIds: [flatId], colstart: columnIdx });
 		})
 	);
 };
@@ -101,6 +102,7 @@ const loadHeaderRowMatrix = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 			accessorFn: column.accessorFn,
 			accessorKey: column.accessorKey as keyof Item,
 			id: column.id,
+			colstart: cellOffset,
 		});
 		return;
 	}
@@ -108,6 +110,7 @@ const loadHeaderRowMatrix = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		rowMatrix[rowMatrix.length - 1][cellOffset] = new FlatDisplayHeaderCell({
 			id: column.id,
 			label: column.header,
+			colstart: cellOffset,
 		});
 		return;
 	}
@@ -119,6 +122,7 @@ const loadHeaderRowMatrix = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 				colspan: 1,
 				allIds: column.ids,
 				ids: [],
+				colstart: cellOffset,
 			});
 		}
 		let childCellOffset = 0;
@@ -140,7 +144,7 @@ export const getOrderedColumnMatrix = <Item, Plugins extends AnyPlugins = AnyPlu
 	const orderedColumnMatrix: Matrix<HeaderCell<Item, Plugins>> = [];
 	// Each row of the transposed matrix represents a column.
 	// The `FlatHeaderCell` should be the last cell of each column.
-	flatColumnIds.forEach((key) => {
+	flatColumnIds.forEach((key, columnIdx) => {
 		const nextColumn = columnMatrix.find((columnCells) => {
 			const flatCell = columnCells[columnCells.length - 1];
 			if (!(flatCell instanceof FlatHeaderCell)) {
@@ -149,7 +153,13 @@ export const getOrderedColumnMatrix = <Item, Plugins extends AnyPlugins = AnyPlu
 			return flatCell.id === key;
 		});
 		if (nextColumn !== undefined) {
-			orderedColumnMatrix.push(nextColumn);
+			orderedColumnMatrix.push(
+				nextColumn.map((column) => {
+					const clonedColumn = column.clone();
+					clonedColumn.colstart = columnIdx;
+					return clonedColumn;
+				})
+			);
 		}
 	});
 	return orderedColumnMatrix;

@@ -15,24 +15,28 @@ it('merges two sets of group cells', () => {
 		new GroupHeaderCell<User>({
 			label: 'Name',
 			colspan: 1,
+			colstart: 0,
 			allIds: ['firstName', 'lastName'],
 			ids: ['firstName'],
 		}),
 		new GroupHeaderCell<User>({
 			label: 'Name',
 			colspan: 1,
+			colstart: 1,
 			allIds: ['firstName', 'lastName'],
 			ids: ['lastName'],
 		}),
 		new GroupHeaderCell<User>({
 			label: 'Info',
 			colspan: 1,
+			colstart: 2,
 			allIds: ['age', 'status'],
 			ids: ['age'],
 		}),
 		new GroupHeaderCell<User>({
 			label: 'Info',
 			colspan: 1,
+			colstart: 3,
 			allIds: ['age', 'status'],
 			ids: ['status'],
 		}),
@@ -44,12 +48,14 @@ it('merges two sets of group cells', () => {
 		new GroupHeaderCell<User>({
 			label: 'Name',
 			colspan: 2,
+			colstart: 0,
 			allIds: ['firstName', 'lastName'],
 			ids: ['firstName', 'lastName'],
 		}),
 		new GroupHeaderCell<User>({
 			label: 'Info',
 			colspan: 2,
+			colstart: 2,
 			allIds: ['age', 'status'],
 			ids: ['age', 'status'],
 		}),
@@ -63,17 +69,29 @@ it('merges adjacent group cells in front', () => {
 		new GroupHeaderCell<User>({
 			label: 'Info',
 			colspan: 1,
+			colstart: 0,
 			allIds: ['age', 'status'],
 			ids: ['age'],
 		}),
 		new GroupHeaderCell<User>({
 			label: 'Info',
 			colspan: 1,
+			colstart: 1,
 			allIds: ['age', 'status'],
 			ids: ['status'],
 		}),
-		new DataHeaderCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
-		new DataHeaderCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+		new DataHeaderCell<User>({
+			colstart: 2,
+			label: 'First Name',
+			accessorKey: 'firstName',
+			id: 'firstName',
+		}),
+		new DataHeaderCell<User>({
+			colstart: 3,
+			label: 'Last Name',
+			accessorKey: 'lastName',
+			id: 'lastName',
+		}),
 	];
 
 	const actual = getMergedRow(cells);
@@ -82,11 +100,22 @@ it('merges adjacent group cells in front', () => {
 		new GroupHeaderCell<User>({
 			label: 'Info',
 			colspan: 2,
+			colstart: 0,
 			allIds: ['age', 'status'],
 			ids: ['age', 'status'],
 		}),
-		new DataHeaderCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
-		new DataHeaderCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+		new DataHeaderCell<User>({
+			colstart: 2,
+			label: 'First Name',
+			accessorKey: 'firstName',
+			id: 'firstName',
+		}),
+		new DataHeaderCell<User>({
+			colstart: 3,
+			label: 'Last Name',
+			accessorKey: 'lastName',
+			id: 'lastName',
+		}),
 	];
 
 	expect(actual).toStrictEqual(expected);
@@ -94,17 +123,29 @@ it('merges adjacent group cells in front', () => {
 
 it('merges adjacent group cells behind', () => {
 	const cells = [
-		new DataHeaderCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
-		new DataHeaderCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+		new DataHeaderCell<User>({
+			colstart: 0,
+			label: 'First Name',
+			accessorKey: 'firstName',
+			id: 'firstName',
+		}),
+		new DataHeaderCell<User>({
+			colstart: 1,
+			label: 'Last Name',
+			accessorKey: 'lastName',
+			id: 'lastName',
+		}),
 		new GroupHeaderCell<User>({
 			label: 'Info',
 			colspan: 1,
+			colstart: 2,
 			allIds: ['age', 'status'],
 			ids: ['age'],
 		}),
 		new GroupHeaderCell<User>({
 			label: 'Info',
 			colspan: 1,
+			colstart: 3,
 			allIds: ['age', 'status'],
 			ids: ['status'],
 		}),
@@ -113,11 +154,22 @@ it('merges adjacent group cells behind', () => {
 	const actual = getMergedRow(cells);
 
 	const expected = [
-		new DataHeaderCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
-		new DataHeaderCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+		new DataHeaderCell<User>({
+			colstart: 0,
+			label: 'First Name',
+			accessorKey: 'firstName',
+			id: 'firstName',
+		}),
+		new DataHeaderCell<User>({
+			colstart: 1,
+			label: 'Last Name',
+			accessorKey: 'lastName',
+			id: 'lastName',
+		}),
 		new GroupHeaderCell<User>({
 			label: 'Info',
 			colspan: 2,
+			colstart: 2,
 			allIds: ['age', 'status'],
 			ids: ['age', 'status'],
 		}),
@@ -131,12 +183,24 @@ it('does not merge disjoint group cells', () => {
 		new GroupHeaderCell<User>({
 			label: 'Info',
 			colspan: 1,
+			colstart: 0,
 			allIds: ['age', 'status'],
 			ids: ['age'],
 		}),
-		new DataHeaderCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
-		new DataHeaderCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+		new DataHeaderCell<User>({
+			colstart: 1,
+			label: 'First Name',
+			accessorKey: 'firstName',
+			id: 'firstName',
+		}),
+		new DataHeaderCell<User>({
+			colstart: 2,
+			label: 'Last Name',
+			accessorKey: 'lastName',
+			id: 'lastName',
+		}),
 		new GroupHeaderCell<User>({
+			colstart: 3,
 			label: 'Info',
 			colspan: 1,
 			allIds: ['age', 'status'],
@@ -150,14 +214,26 @@ it('does not merge disjoint group cells', () => {
 		new GroupHeaderCell<User>({
 			label: 'Info',
 			colspan: 1,
+			colstart: 0,
 			allIds: ['age', 'status'],
 			ids: ['age'],
 		}),
-		new DataHeaderCell<User>({ label: 'First Name', accessorKey: 'firstName', id: 'firstName' }),
-		new DataHeaderCell<User>({ label: 'Last Name', accessorKey: 'lastName', id: 'lastName' }),
+		new DataHeaderCell<User>({
+			colstart: 1,
+			label: 'First Name',
+			accessorKey: 'firstName',
+			id: 'firstName',
+		}),
+		new DataHeaderCell<User>({
+			colstart: 2,
+			label: 'Last Name',
+			accessorKey: 'lastName',
+			id: 'lastName',
+		}),
 		new GroupHeaderCell<User>({
 			label: 'Info',
 			colspan: 1,
+			colstart: 3,
 			allIds: ['age', 'status'],
 			ids: ['status'],
 		}),

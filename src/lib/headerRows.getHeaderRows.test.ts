@@ -42,16 +42,19 @@ it('arranges flat columns\n[][][]', () => {
 					label: 'First Name',
 					accessorKey: 'firstName',
 					id: 'firstName',
+					colstart: 0,
 				}),
 				new DataHeaderCell({
 					label: 'Last Name',
 					accessorKey: 'lastName',
 					id: 'lastName',
+					colstart: 1,
 				}),
 				new DataHeaderCell({
 					label: 'Age',
 					accessorKey: 'age',
 					id: 'age',
+					colstart: 2,
 				}),
 			],
 		}),
@@ -89,6 +92,7 @@ it('creates a group over flat columns\n[    ]\n[][][]', () => {
 			cells: [
 				new GroupHeaderCell({
 					colspan: 3,
+					colstart: 0,
 					label: 'Info',
 					allIds: ['firstName', 'lastName', 'age'],
 					ids: ['firstName', 'lastName', 'age'],
@@ -99,16 +103,19 @@ it('creates a group over flat columns\n[    ]\n[][][]', () => {
 			id: '1',
 			cells: [
 				new DataHeaderCell({
+					colstart: 0,
 					label: 'First Name',
 					accessorKey: 'firstName',
 					id: 'firstName',
 				}),
 				new DataHeaderCell({
+					colstart: 1,
 					label: 'Last Name',
 					accessorKey: 'lastName',
 					id: 'lastName',
 				}),
 				new DataHeaderCell({
+					colstart: 2,
 					label: 'Age',
 					accessorKey: 'age',
 					id: 'age',
@@ -162,12 +169,14 @@ it('creates two groups over different columns\n[  ][    ]\n[][][][][]', () => {
 			cells: [
 				new GroupHeaderCell({
 					colspan: 2,
+					colstart: 0,
 					label: 'Name',
 					allIds: ['firstName', 'lastName'],
 					ids: ['firstName', 'lastName'],
 				}),
 				new GroupHeaderCell({
 					colspan: 3,
+					colstart: 2,
 					label: 'Info',
 					allIds: ['age', 'status', 'progress'],
 					ids: ['age', 'status', 'progress'],
@@ -178,26 +187,31 @@ it('creates two groups over different columns\n[  ][    ]\n[][][][][]', () => {
 			id: '1',
 			cells: [
 				new DataHeaderCell({
+					colstart: 0,
 					label: 'First Name',
 					accessorKey: 'firstName',
 					id: 'firstName',
 				}),
 				new DataHeaderCell({
+					colstart: 1,
 					label: 'Last Name',
 					accessorKey: 'lastName',
 					id: 'lastName',
 				}),
 				new DataHeaderCell({
+					colstart: 2,
 					label: 'Age',
 					accessorKey: 'age',
 					id: 'age',
 				}),
 				new DataHeaderCell({
+					colstart: 3,
 					label: 'Status',
 					accessorKey: 'status',
 					id: 'status',
 				}),
 				new DataHeaderCell({
+					colstart: 4,
 					label: 'Profile Progress',
 					accessorKey: 'progress',
 					id: 'progress',
@@ -246,39 +260,45 @@ it('groups a subset of columns and ungrouped columns have flat header cells on t
 			cells: [
 				new GroupHeaderCell({
 					colspan: 2,
+					colstart: 0,
 					label: 'Name',
 					allIds: ['firstName', 'lastName'],
 					ids: ['firstName', 'lastName'],
 				}),
-				new GroupDisplayHeaderCell({ allIds: ['age'], ids: ['age'] }),
-				new GroupDisplayHeaderCell({ allIds: ['status'], ids: ['status'] }),
-				new GroupDisplayHeaderCell({ allIds: ['progress'], ids: ['progress'] }),
+				new GroupDisplayHeaderCell({ colstart: 2, allIds: ['age'], ids: ['age'] }),
+				new GroupDisplayHeaderCell({ colstart: 3, allIds: ['status'], ids: ['status'] }),
+				new GroupDisplayHeaderCell({ colstart: 4, allIds: ['progress'], ids: ['progress'] }),
 			],
 		}),
 		new HeaderRow({
 			id: '1',
 			cells: [
 				new DataHeaderCell({
+					colstart: 0,
 					label: 'First Name',
 					accessorKey: 'firstName',
 					id: 'firstName',
 				}),
 				new DataHeaderCell({
+					colstart: 1,
 					label: 'Last Name',
 					accessorKey: 'lastName',
 					id: 'lastName',
 				}),
 				new DataHeaderCell({
+					colstart: 2,
 					label: 'Age',
 					accessorKey: 'age',
 					id: 'age',
 				}),
 				new DataHeaderCell({
+					colstart: 3,
 					label: 'Status',
 					accessorKey: 'status',
 					id: 'status',
 				}),
 				new DataHeaderCell({
+					colstart: 4,
 					label: 'Profile Progress',
 					accessorKey: 'progress',
 					id: 'progress',
@@ -320,6 +340,7 @@ it('puts flat header cells on the last row if there is a gap between the group a
 			cells: [
 				new GroupHeaderCell({
 					colspan: 2,
+					colstart: 0,
 					label: 'ID',
 					allIds: ['firstName', 'progress'],
 					ids: ['firstName', 'progress'],
@@ -331,22 +352,25 @@ it('puts flat header cells on the last row if there is a gap between the group a
 			cells: [
 				new GroupHeaderCell({
 					colspan: 1,
+					colstart: 0,
 					label: 'Name',
 					allIds: ['firstName'],
 					ids: ['firstName'],
 				}),
-				new GroupDisplayHeaderCell({ ids: ['progress'], allIds: ['progress'] }),
+				new GroupDisplayHeaderCell({ colstart: 1, ids: ['progress'], allIds: ['progress'] }),
 			],
 		}),
 		new HeaderRow({
 			id: '2',
 			cells: [
 				new DataHeaderCell({
+					colstart: 0,
 					label: 'First Name',
 					accessorKey: 'firstName',
 					id: 'firstName',
 				}),
 				new DataHeaderCell({
+					colstart: 1,
 					label: 'Profile Progress',
 					accessorKey: 'progress',
 					id: 'progress',
@@ -393,11 +417,12 @@ it('puts group cells on the lowest row possible\n[]\n[][]\n[][]', () => {
 			cells: [
 				new GroupHeaderCell({
 					colspan: 1,
+					colstart: 0,
 					label: 'ID',
 					allIds: ['firstName'],
 					ids: ['firstName'],
 				}),
-				new GroupDisplayHeaderCell({ allIds: ['progress'], ids: ['progress'] }),
+				new GroupDisplayHeaderCell({ colstart: 1, allIds: ['progress'], ids: ['progress'] }),
 			],
 		}),
 		new HeaderRow({
@@ -405,12 +430,14 @@ it('puts group cells on the lowest row possible\n[]\n[][]\n[][]', () => {
 			cells: [
 				new GroupHeaderCell({
 					colspan: 1,
+					colstart: 0,
 					label: 'Name',
 					allIds: ['firstName'],
 					ids: ['firstName'],
 				}),
 				new GroupHeaderCell({
 					colspan: 1,
+					colstart: 1,
 					label: 'Info',
 					allIds: ['progress'],
 					ids: ['progress'],
@@ -421,11 +448,13 @@ it('puts group cells on the lowest row possible\n[]\n[][]\n[][]', () => {
 			id: '2',
 			cells: [
 				new DataHeaderCell({
+					colstart: 0,
 					label: 'First Name',
 					accessorKey: 'firstName',
 					id: 'firstName',
 				}),
 				new DataHeaderCell({
+					colstart: 1,
 					label: 'Profile Progress',
 					accessorKey: 'progress',
 					id: 'progress',
