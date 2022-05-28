@@ -25,10 +25,14 @@
 		"datatable",
 		"headless",
 		"plugin",
-		"sort",
-		"filter",
-		"order",
-		"hidden"
+		"sorting",
+		"filtering",
+		"ordering",
+		"hiding",
+		"grouping",
+		"selecting",
+		"expanding",
+		"resizing"
 	],
 	"author": "Bryan Lee",
 	"license": "MIT",
