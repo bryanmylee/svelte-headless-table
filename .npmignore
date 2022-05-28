@@ -1,0 +1,10 @@
+node_modules
+/build
+/.svelte-kit
+/package
+.env
+.env.*
+!.env.example
+/coverage
+**/*.test.d.ts
+**/*.test.js
