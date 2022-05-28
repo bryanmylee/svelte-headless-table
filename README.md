@@ -41,8 +41,7 @@ Easily extend Svelte Headless Table with complex **sorting**, **filtering**, **g
 - [x] [addExpandedRows](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-expanded-rows)
 - [x] [addSelectedRows](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-selected-rows)
 - [x] [addResizedColumns](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-resized-columns)
-- [ ] addEditable
-- [ ] addRowLabel
+- [x] [addGridLayout](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-grid-layout)
 
 ## Why Svelte Headless Table?
 
