@@ -1,3 +1,11 @@
+## NOTICE
+
+**During the development of Svelte Headless Table, TanStack had ported React Table to Svelte with [TanStack Table v8](https://tanstack.com/table/v8).**
+
+**As Svelte Headless Table is inspired by React Table, we believe that it is the healther option for the Svelte community to consolidate on `@tanstack/svelte-table`. Therefore, this project is now maintenance-only.**
+
+<br/>
+
 <p align="center">
   <img src="https://user-images.githubusercontent.com/42545742/169733428-295e2678-e509-4175-aeb3-cb3a9c9894e1.svg" alt="svelte-headless-table" width="400px"/>
 </p>
@@ -20,7 +28,17 @@
 
 Visit the [documentation](https://svelte-headless-table.bryanmylee.com/) for code examples and API reference, and get started with the [quick start guide](https://svelte-headless-table.bryanmylee.com/docs/getting-started/quick-start)!
 
-Svelte Headless Table has **full TypeScript support** and is compatible with **SvelteKit**!
+## Why Svelte Headless Table?
+
+Svelte Headless Table is designed to work **seamlessly** with Svelte. If you love Svelte, you will love Svelte Headless Table.
+
+* **Full TypeScript support**
+* Compatible with **SvelteKit** and SSR
+* Manage state with Svelte stores
+* Headless and fully customizable
+* Intuitive column-first declarative model
+* Highly performant
+* Feature-rich
 
 ## All the features you could ever need!
 
@@ -42,24 +60,6 @@ Easily extend Svelte Headless Table with complex **sorting**, **filtering**, **g
 - [x] [addSelectedRows](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-selected-rows)
 - [x] [addResizedColumns](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-resized-columns)
 - [x] [addGridLayout](https://svelte-headless-table.bryanmylee.com/docs/plugins/add-grid-layout)
-
-## Why Svelte Headless Table?
-
-### Svelte First
-
-Svelte Headless Table is designed to work **seamlessly** with Svelte. If you love Svelte, you will love Svelte Headless Table.
-
-### Headless
-
-Beauty is subjective – everybody wants components to match their own theme! That's why Svelte Headless Table is **headless** by design. You are in full control of how your table looks, down to the very last component, class, and style.
-
-### Declarative
-
-Just describe how you want your tables to behave and let Svelte Headless Table handle the rest! It is designed with full TypeScript support and an intuitive API that lets you get started immediately.
-
-### Extensible
-
-Svelte Headless Table comes with a stable plugin system that allows you to transform and modify every step under the hood. If you want extra functionality, you can build it!
 
 ## Examples
 
