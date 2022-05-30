@@ -1,4 +1,4 @@
-import { name } from 'faker';
+import faker from 'faker';
 
 export interface Sample {
 	firstName: string;
@@ -26,8 +26,8 @@ export const createSamples = (...lengths: number[]) => {
 const getSample = (): Sample => {
 	const statusChance = Math.random();
 	return {
-		firstName: name.firstName(),
-		lastName: name.lastName(),
+		firstName: faker.name.firstName(),
+		lastName: faker.name.lastName(),
 		age: Math.floor(Math.random() * 30),
 		visits: Math.floor(Math.random() * 100),
 		progress: Math.floor(Math.random() * 100),
