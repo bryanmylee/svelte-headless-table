@@ -1,11 +1,3 @@
-## NOTICE
-
-**During the development of Svelte Headless Table, TanStack had ported React Table to Svelte with [TanStack Table v8](https://tanstack.com/table/v8).**
-
-**As Svelte Headless Table is inspired by React Table, we believe that it is the healther option for the Svelte community to consolidate on `@tanstack/svelte-table`. Therefore, this project is now maintenance-only.**
-
-<br/>
-
 <p align="center">
   <img src="https://user-images.githubusercontent.com/42545742/169733428-295e2678-e509-4175-aeb3-cb3a9c9894e1.svg" alt="svelte-headless-table" width="400px"/>
 </p>
@@ -128,3 +120,9 @@ Easily extend Svelte Headless Table with complex **sorting**, **filtering**, **g
 ```
 
 For more complex examples with advanced features, visit the [documentation site](https://svelte-headless-table.bryanmylee.com/docs/plugins/overview).
+
+## NOTICE
+
+**During the development of Svelte Headless Table, TanStack had ported React Table to Svelte with [TanStack Table v8](https://tanstack.com/table/v8).**
+
+**As Svelte Headless Table is inspired by React Table, we believe that it is the healther option for the Svelte community to consolidate on `@tanstack/svelte-table`. Therefore, this project is now maintenance-only.**
