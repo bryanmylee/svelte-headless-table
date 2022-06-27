@@ -5,6 +5,7 @@ export { Subscribe } from 'svelte-subscribe';
 export { createTable } from '$lib/createTable';
 export { createRender, type RenderConfig } from '$lib/render';
 // models
+export { Table } from '$lib/createTable';
 export { HeaderRow } from '$lib/headerRows';
 export {
 	HeaderCell,
