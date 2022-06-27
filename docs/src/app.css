@@ -1,0 +1,56 @@
+/* Write your global styles here, in PostCSS syntax */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .demo {
+    table& {
+      border-spacing: 0;
+      @apply text-black border-black border-t border-l font-sans;
+      @apply dark:text-white dark:border-white;
+
+      & tr {
+        @apply bg-transparent dark:bg-transparent;
+      }
+
+      & th,
+      & td {
+        @apply border-black m-0 p-2 border-b border-r;
+        @apply dark:border-white;
+      }
+    }
+
+    button& {
+      @apply border border-gray-300 p-1 text-black bg-gray-200 disabled:opacity-50;
+      @apply dark:bg-gray-500 dark:text-white;
+    }
+
+    input&,
+    select& {
+      @apply p-1 border border-gray-300;
+    }
+  }
+}
+
+.hljs {
+  &-built_in {
+    @apply text-primary;
+  }
+  &-string {
+    @apply text-secondary;
+  }
+  &-literal {
+    @apply text-tertiary;
+  }
+  &-attr {
+    @apply font-bold;
+  }
+  &-params {
+    @apply italic;
+  }
+}
+
+.prose {
+  --tw-prose-headings: var(--kd-color-headings);
+}
