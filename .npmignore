@@ -8,3 +8,4 @@ node_modules
 /coverage
 **/*.test.d.ts
 **/*.test.js
+/docs
