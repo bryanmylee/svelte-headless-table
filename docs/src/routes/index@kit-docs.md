@@ -26,7 +26,7 @@ Svelte Headless Table is designed to work **seamlessly** with Svelte. If you lov
   import SvelteHeadlessTableIcon from '$img/svelte-headless-table.svg?raw';
 </script>
 
-<div class="wh-1/2 ml-auto mr-[-25%] mt-[-50%] opacity-20 mix-blend-darken pointer-events-none hidden md:block">
+<div class="wh-1/2 ml-auto mr-[-25%] mt-[-50%] opacity-20 pointer-events-none hidden md:block">
   {@html SvelteHeadlessTableIcon}
 </div>
 
