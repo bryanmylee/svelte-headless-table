@@ -70,10 +70,11 @@ As well as an extensive feature set!
 
 Want to learn more? Visit the [Plugin System](./docs/plugins/overview.md) to find out more.
 
-</div>
-
+<h1 class="text-center mt-36 mb-12">Ready to try it out?</h1>
 <div class="flex justify-center" >
   <Button size="lg" href="/docs">Documentation</Button>
+</div>
+
 </div>
 
 <div class="mt-40" />
