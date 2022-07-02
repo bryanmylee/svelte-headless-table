@@ -3,10 +3,11 @@ import type { BodyRow } from '$lib/bodyRows';
 import type { TablePlugin } from '$lib/types/TablePlugin';
 import { derived, type Readable } from 'svelte/store';
 
-export type DataExportFormat = 'object' | 'json';
+export type DataExportFormat = 'object' | 'json' | 'csv';
 type ExportForFormat = {
 	object: Record<string, unknown>[];
 	json: string;
+	csv: string;
 };
 export type DataExport<F extends DataExportFormat> = ExportForFormat[F];
 
@@ -45,6 +46,21 @@ const getObjectsFromRows = <Item>(
 	});
 };
 
+const getCsvFromRows = <Item>(rows: BodyRow<Item>[], ids: string[]): string => {
+	const dataLines = rows.map((row) => {
+		const line = ids.map((id) => {
+			const cell = row.cellForId[id];
+			if (cell instanceof DataBodyCell) {
+				return cell.value;
+			}
+			return null;
+		});
+		return line.join(',');
+	});
+	const headerLine = ids.join(',');
+	return headerLine + '\n' + dataLines.join('\n');
+};
+
 export const addDataExport =
 	<Item, F extends DataExportFormat = 'object'>({
 		format = 'object' as F,
@@ -67,6 +83,8 @@ export const addDataExport =
 					return JSON.stringify(
 						getObjectsFromRows($rows, $exportedIds, childrenKey)
 					) as DataExport<F>;
+				case 'csv':
+					return getCsvFromRows($rows, $exportedIds) as DataExport<F>;
 				default:
 					return getObjectsFromRows($rows, $exportedIds, childrenKey) as DataExport<F>;
 			}

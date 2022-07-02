@@ -61,6 +61,9 @@
 		exportJson: addDataExport({
 			format: 'json',
 		}),
+		exportCsv: addDataExport({
+			format: 'csv',
+		}),
 	});
 
 	const columns = table.createColumns([
@@ -245,6 +248,7 @@
 	const { columnWidths } = pluginStates.resize;
 	const { exportedData } = pluginStates.export;
 	const { exportedData: exportedJson } = pluginStates.exportJson;
+	const { exportedData: exportedCsv } = pluginStates.exportCsv;
 </script>
 
 <h1>svelte-headless-table</h1>
@@ -260,6 +264,7 @@
 
 <button on:click={() => console.log(get(exportedData))}>Export as object</button>
 <button on:click={() => console.log(get(exportedJson))}>Export as JSON</button>
+<button on:click={() => console.log(get(exportedCsv))}>Export as CSV</button>
 
 <table {...$tableAttrs}>
 	<thead>
