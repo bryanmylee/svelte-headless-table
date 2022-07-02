@@ -31,13 +31,12 @@
 
   --kd-color-focus: rgba(var(--kd-color-primary-rgb), 0.7);
 
-  --kd-code-fence-bg: var(--kd-prose-pre-bg, rgb(31, 41, 55));
+  --kd-code-fence-bg: rgb(14, 13, 28);
   --kd-code-fence-top-bar-bg: rgba(31, 41, 55, 0.3);
   --kd-code-copied-bg-color: rgba(var(--kd-color-primary-rgb), 0.8);
   --kd-terminal-line-pointer: var(--kd-color-primary);
   --kd-code-highlight-border: var(--kd-color-primary);
   --kd-code-highlight-color: rgba(var(--kd-color-primary-rgb), 0.05);
-  /* Deprecated => --kd-prose-pre-bg: rgb(31, 41, 55); */
 
   --kd-navbar-height: 5rem;
   --kd-navbar-padding: 1rem 1.25rem;
@@ -64,7 +63,7 @@
   --kd-color-gray-divider: rgb(49, 49, 49);
   --kd-color-gray-hover: rgb(54, 54, 54);
   --kd-color-gray-hover-inverse: rgb(245, 245, 245);
-  --kd-color-gray-elevate: rgb(45, 45, 45);
+  --kd-color-gray-elevate: rgb(24, 22, 28);
   --kd-color-gray-body: rgb(11, 10, 13);
 }
 

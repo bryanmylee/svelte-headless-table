@@ -1,3 +1,5 @@
+const colors = require('tailwindcss/colors');
+
 const config = {
   content: [
     './src/**/*.{html,js,svelte,ts,md}',
@@ -22,6 +24,8 @@ const config = {
         },
         secondary: {
           DEFAULT: 'var(--kd-color-secondary)',
+          light: 'var(--kd-color-secondary-light)',
+          dark: 'var(--kd-color-secondary-dark)',
         },
         gray: {
           DEFAULT: '#313131',
