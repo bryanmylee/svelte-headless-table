@@ -1,21 +1,22 @@
 <script lang="ts">
-	import { derived, readable } from 'svelte/store';
+	import { derived, readable, get } from 'svelte/store';
 	import { Render, Subscribe, createTable, createRender } from '$lib';
 	import {
 		addColumnFilters,
 		addColumnOrder,
-		addHiddenColumns,
-		addSortBy,
-		addTableFilter,
-		addPagination,
+		addDataExport,
 		addExpandedRows,
+		addGroupBy,
+		addHiddenColumns,
+		addPagination,
+		addResizedColumns,
+		addSelectedRows,
+		addSortBy,
+		addSubRows,
+		addTableFilter,
 		matchFilter,
 		numberRangeFilter,
 		textPrefixFilter,
-		addSubRows,
-		addGroupBy,
-		addSelectedRows,
-		addResizedColumns,
 	} from '$lib/plugins';
 	import { mean, sum } from '$lib/utils/math';
 	import { getShuffled } from './_getShuffled';
@@ -56,6 +57,10 @@
 			initialPageSize: 20,
 		}),
 		resize: addResizedColumns(),
+		export: addDataExport(),
+		exportJson: addDataExport({
+			format: 'json',
+		}),
 	});
 
 	const columns = table.createColumns([
@@ -238,6 +243,8 @@
 	const { hiddenColumnIds } = pluginStates.hideColumns;
 	$hiddenColumnIds = ['progress'];
 	const { columnWidths } = pluginStates.resize;
+	const { exportedData } = pluginStates.export;
+	const { exportedData: exportedJson } = pluginStates.exportJson;
 </script>
 
 <h1>svelte-headless-table</h1>
@@ -250,6 +257,9 @@
 	<label for="page-size">Page size</label>
 	<input id="page-size" type="number" min={1} bind:value={$pageSize} />
 </div>
+
+<button on:click={() => console.log(get(exportedData))}>Export as object</button>
+<button on:click={() => console.log(get(exportedJson))}>Export as JSON</button>
 
 <table {...$tableAttrs}>
 	<thead>
