@@ -251,7 +251,7 @@
   const { columnWidths } = pluginStates.resize;
 </script>
 
-<h2>Hidden columns</h2>
+<h3>Hidden columns</h3>
 
 <div style:display="grid" style:grid-template-columns="repeat(3, 1fr)">
   {#each ids as id}
@@ -262,7 +262,7 @@
   {/each}
 </div>
 
-<h2>Pagination</h2>
+<h3>Pagination</h3>
 
 <div>
   <button on:click={() => $pageIndex--} disabled={!$hasPreviousPage} class="demo"
@@ -276,7 +276,7 @@
   <input id="page-size" type="number" min={1} bind:value={$pageSize} class="demo" />
 </div>
 
-<h2>Column order</h2>
+<h3>Column order</h3>
 
 <button on:click={() => ($columnIdOrder = getShuffled($columnIdOrder))} class="demo"
   >Shuffle columns</button
@@ -327,7 +327,12 @@
       {/each}
       <tr>
         <th colspan={$visibleColumns.length}>
-          <input type="text" bind:value={$filterValue} placeholder="Search all data..." />
+          <input
+            type="text"
+            bind:value={$filterValue}
+            placeholder="Search all data..."
+            class="demo"
+          />
         </th>
       </tr>
     </thead>
@@ -385,7 +390,7 @@
     right: -4px;
     width: 8px;
     z-index: 1;
-    background: rgba(200, 200, 200, 0.5);
+    background: rgba(128, 128, 128, 0.2);
     cursor: col-resize;
   }
   .sorted {

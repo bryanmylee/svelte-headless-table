@@ -5,10 +5,12 @@
 
 @layer components {
   .demo {
+    @apply text-base;
+
     table& {
       border-spacing: 0;
-      @apply text-black border-black border-t border-l font-sans;
-      @apply dark:text-white dark:border-white;
+      @apply text-black border-gray-300 border-t border-l font-sans;
+      @apply dark:text-white dark:border-gray-400;
 
       & tr {
         @apply bg-transparent dark:bg-transparent;
@@ -16,19 +18,21 @@
 
       & th,
       & td {
-        @apply border-black m-0 p-2 border-b border-r;
-        @apply dark:border-white;
+        @apply border-gray-300 m-0 p-1.5 border-b border-r;
+        @apply dark:border-gray-400;
       }
     }
 
     button& {
-      @apply border border-gray-300 p-1 text-black bg-gray-200 disabled:opacity-50;
+      @apply text-black bg-gray-200 disabled:opacity-30;
       @apply dark:bg-gray-500 dark:text-white;
+      @apply p-1.5 border border-gray-300 rounded-lg;
     }
 
     input&,
     select& {
-      @apply p-1 border border-gray-300;
+      @apply p-1.5 border border-gray-300 rounded-lg;
+      @apply dark:bg-gray-800 dark:text-white;
     }
   }
 }

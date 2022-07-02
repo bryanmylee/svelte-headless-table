@@ -9,7 +9,7 @@
   $: max = $values.length === 0 ? 0 : Math.max(...$values.filter(isNumber));
 </script>
 
-<div>
+<div class="flex items-center">
   <input
     type="number"
     bind:value={$filterValue[0]}
