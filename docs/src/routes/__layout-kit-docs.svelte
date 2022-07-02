@@ -20,7 +20,6 @@
   import type { MarkdownMeta, ResolvedSidebarConfig, NavbarConfig } from '@svelteness/kit-docs';
 
   import {
-    Button,
     KitDocs,
     KitDocsLayout,
     createKitDocsLoader,
