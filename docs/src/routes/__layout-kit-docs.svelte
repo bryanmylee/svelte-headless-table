@@ -25,6 +25,7 @@
     KitDocsLayout,
     createKitDocsLoader,
     createSidebarContext,
+    SocialLink,
   } from '@svelteness/kit-docs';
 
   export let meta: MarkdownMeta | null = null;
@@ -35,10 +36,6 @@
     links: [
       { title: 'Documentation', slug: '/docs', match: /\/docs/ },
       { title: 'Credits', slug: '/credits', match: /\/credits/ },
-      {
-        title: 'GitHub',
-        slug: 'https://github.com/bryanmylee/svelte-headless-table',
-      },
     ],
   };
 
@@ -63,7 +60,7 @@
 <KitDocs {meta}>
   <KitDocsLayout {navbar} {sidebar}>
     <div class="logo" slot="navbar-left">
-      <Button href="/">
+      <a href="/" class="hover:opacity-50 transition-opacity">
         <div class="flex items-center gap-4">
           <span>
             {@html SvelteHeadlessTableIcon}
@@ -72,7 +69,11 @@
             Svelte Headless Table
           </h1>
         </div>
-      </Button>
+      </a>
+    </div>
+
+    <div class="socials" slot="navbar-right-alt">
+      <SocialLink type="gitHub" href="https://github.com/bryanmylee/svelte-headless-table" />
     </div>
 
     <slot />
