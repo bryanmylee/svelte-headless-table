@@ -3,7 +3,9 @@ title: Unopinionated and extensible data tables for Svelte
 description: Build and design powerful datagrid experiences while retaining 100% control over styles and markup.
 ---
 
-<div class="max-w-5xl p-4 mx-auto">
+<div class="max-w-5xl p-4 mx-auto relative">
+
+<div class="md:mr-[25%]">
 
 # {$frontmatter.title}
 
@@ -16,6 +18,16 @@ Svelte Headless Table is designed to work **seamlessly** with Svelte. If you lov
   <Button size="lg" variant="unfilled" href="https://github.com/bryanmylee/svelte-headless-table">
     GitHub
   </Button>
+</div>
+
+</div>
+
+<script>
+  import SvelteHeadlessTableIcon from '$img/svelte-headless-table.svg?raw';
+</script>
+
+<div class="wh-1/2 ml-auto mr-[-25%] mt-[-50%] opacity-20 mix-blend-darken pointer-events-none hidden md:block">
+  {@html SvelteHeadlessTableIcon}
 </div>
 
 ## Headless
