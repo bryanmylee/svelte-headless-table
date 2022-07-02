@@ -25,18 +25,18 @@
 
 <style lang="postcss">
   .button {
-    @apply rounded-lg shadow;
+    @apply rounded-xl shadow;
     @apply transition-colors;
     /* reset anchor tag */
     @apply no-underline border-b-0 font-normal cursor-pointer;
     &.lg {
-      @apply px-8 py-4;
+      @apply px-6 py-3;
     }
     &.md {
-      @apply px-4 py-2;
+      @apply px-4 py-1;
     }
     &.filled {
-      @apply bg-primary text-white;
+      @apply bg-primary text-white font-bold;
       &:hover {
         @apply bg-primary-light;
       }
@@ -45,12 +45,15 @@
       }
     }
     &.unfilled {
-      @apply text-primary;
+      @apply text-secondary font-bold;
       &:hover {
-        @apply text-primary-light;
+        @apply text-secondary-light;
       }
       &:active {
-        @apply text-primary-dark;
+        @apply text-secondary-dark;
+      }
+      :global(.dark) & {
+        @apply text-white;
       }
     }
   }
