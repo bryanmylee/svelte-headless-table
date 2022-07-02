@@ -7,6 +7,7 @@ export {
 	type ColumnFilterFnProps,
 } from './addColumnFilters';
 export { addColumnOrder } from './addColumnOrder';
+export { addDataExport } from './addDataExport';
 export { addExpandedRows } from './addExpandedRows';
 export { addGridLayout } from './addGridLayout';
 export { addGroupBy } from './addGroupBy';
