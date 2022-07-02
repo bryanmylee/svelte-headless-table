@@ -32,6 +32,14 @@ export type ResizedColumnsAttributeSet = NewTableAttributeSet<{
 			'box-sizing': 'border-box';
 		};
 	};
+	'tbody.tr.td': {
+		style?: {
+			width: string;
+			'min-width': string;
+			'max-width': string;
+			'box-sizing': 'border-box';
+		};
+	};
 }>;
 
 const getDragXPos = (event: Event): number => {
@@ -180,7 +188,7 @@ export const addResizedColumns =
 							window.removeEventListener('touchend', dragEnd);
 						}
 					};
-					const action = (node: Element) => {
+					const $props = (node: Element) => {
 						nodeForId[cell.id] = node;
 						if (cell instanceof FlatHeaderCell) {
 							columnWidths.update(($columnWidths) => ({
@@ -194,7 +202,7 @@ export const addResizedColumns =
 							},
 						};
 					};
-					action.drag = (node: Element) => {
+					$props.drag = (node: Element) => {
 						node.addEventListener('mousedown', dragStart);
 						node.addEventListener('touchstart', dragStart);
 						return {
@@ -204,10 +212,31 @@ export const addResizedColumns =
 							},
 						};
 					};
-					action.disabled = isCellDisabled(cell, disabledResizeIds);
+					$props.disabled = isCellDisabled(cell, disabledResizeIds);
 					const props = derived([], () => {
-						return action;
+						return $props;
 					});
+					const attrs = derived(columnWidths, ($columnWidths) => {
+						const width =
+							cell instanceof GroupHeaderCell
+								? sum(cell.ids.map((id) => $columnWidths[id]))
+								: $columnWidths[cell.id];
+						if (width === undefined) {
+							return {};
+						}
+						const widthPx = `${width}px`;
+						return {
+							style: {
+								width: widthPx,
+								'min-width': widthPx,
+								'max-width': widthPx,
+								'box-sizing': 'border-box' as const,
+							},
+						};
+					});
+					return { props, attrs };
+				},
+				'tbody.tr.td': (cell) => {
 					const attrs = derived(columnWidths, ($columnWidths) => {
 						const width = $columnWidths[cell.id];
 						if (width === undefined) {
@@ -223,7 +252,7 @@ export const addResizedColumns =
 							},
 						};
 					});
-					return { props, attrs };
+					return { attrs };
 				},
 			},
 		};
