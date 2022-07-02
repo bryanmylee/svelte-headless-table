@@ -3,7 +3,7 @@ title: Unopinionated and extensible data tables for Svelte
 description: Build and design powerful datagrid experiences while retaining 100% control over styles and markup.
 ---
 
-<div class="max-w-5xl p-4 mx-auto relative">
+<div class="max-w-5xl p-4 mx-auto">
 
 <div class="md:mr-[25%]">
 
