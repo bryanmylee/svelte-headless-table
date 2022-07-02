@@ -68,7 +68,7 @@
           <span>
             {@html SvelteHeadlessTableIcon}
           </span>
-          <h1 class="text-headings dark:text-white font-bold text-2xl tracking-tighter">
+          <h1 class="text-secondary dark:text-white font-bold text-2xl tracking-tighter">
             Svelte Headless Table
           </h1>
         </div>
@@ -81,28 +81,28 @@
 
 <style>
   :global(:root) {
-    --kd-color-headings-rgb: 31, 26, 56;
     --kd-color-primary-rgb: 46, 196, 182;
     --kd-color-primary-light-rgb: 73, 212, 198;
     --kd-color-primary-dark-rgb: 43, 182, 168;
-    --kd-color-secondary-rgb: 255, 71, 96;
-    --kd-color-secondary-light-rgb: 255, 112, 131;
-    --kd-color-secondary-dark-rgb: 255, 51, 78;
-    --kd-color-tertiary-rgb: 92, 77, 168;
-    --kd-color-tertiary-light-rgb: 115, 101, 184;
-    --kd-color-tertiary-dark-rgb: 77, 64, 140;
+    --kd-color-secondary-rgb: 31, 26, 56;
+    --kd-color-red-rgb: 255, 71, 96;
+    --kd-color-red-light-rgb: 255, 112, 131;
+    --kd-color-red-dark-rgb: 255, 51, 78;
+    --kd-color-purple-rgb: 92, 77, 168;
+    --kd-color-purple-light-rgb: 115, 101, 184;
+    --kd-color-purple-dark-rgb: 77, 64, 140;
   }
 
   :global(:root.dark) {
     --kd-color-primary-rgb: 46, 196, 182;
     --kd-color-primary-light-rgb: 73, 212, 198;
     --kd-color-primary-dark-rgb: 43, 182, 168;
-    --kd-color-secondary-rgb: 255, 92, 114;
-    --kd-color-secondary-light-rgb: 255, 133, 149;
-    --kd-color-secondary-dark-rgb: 255, 71, 96;
-    --kd-color-tertiary-rgb: 141, 129, 197;
-    --kd-color-tertiary-light-rgb: 167, 157, 210;
-    --kd-color-tertiary-dark-rgb: 117, 101, 184;
+    --kd-color-red-rgb: 255, 92, 114;
+    --kd-color-red-light-rgb: 255, 133, 149;
+    --kd-color-red-dark-rgb: 255, 71, 96;
+    --kd-color-purple-rgb: 141, 129, 197;
+    --kd-color-purple-light-rgb: 167, 157, 210;
+    --kd-color-purple-dark-rgb: 117, 101, 184;
   }
 
   .logo :global(a) {

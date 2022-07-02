@@ -9,6 +9,8 @@ description: Build and design powerful datagrid experiences while retaining 100%
 
 {$frontmatter.description}
 
+Svelte Headless Table is designed to work **seamlessly** with Svelte. If you love Svelte, you will love Svelte Headless Table.
+
 <div class="flex justify-center gap-4">
   <Button size="lg" href="/docs">Get started</Button>
   <Button size="lg" variant="unfilled" href="https://github.com/bryanmylee/svelte-headless-table">
@@ -27,10 +29,6 @@ Just describe how you want your tables to behave and let Svelte Headless Table h
 ## Extensible
 
 Svelte Headless Table comes with a stable plugin system that allows you to transform and modify every step under the hood. If you want extra functionality, you can build it!
-
-## Svelte-ty
-
-Svelte Headless Table is designed to work **seamlessly** with Svelte. If you love Svelte, you will love Svelte Headless Table.
 
 </div>
 

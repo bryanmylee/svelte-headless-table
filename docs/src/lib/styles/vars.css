@@ -11,14 +11,14 @@
   --kd-font-family-mono: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation, Mono,
     Fira Code VF, monospace;
 
-  --kd-color-headings: rgb(var(--kd-color-headings-rgb));
+  --kd-color-secondary: rgb(var(--kd-color-secondary-rgb));
   --kd-color-primary: rgb(var(--kd-color-primary-rgb));
   --kd-color-primary-light: rgb(var(--kd-color-primary-light-rgb));
   --kd-color-primary-dark: rgb(var(--kd-color-primary-dark-rgb));
-  --kd-color-secondary: rgb(var(--kd-color-secondary-rgb));
-  --kd-color-secondary-light: rgb(var(--kd-color-secondary-light-rgb));
-  --kd-color-secondary-dark: rgb(var(--kd-color-secondary-dark-rgb));
-  --kd-color-tertiary: rgb(var(--kd-color-tertiary-rgb));
+  --kd-color-red: rgb(var(--kd-color-red-rgb));
+  --kd-color-red-light: rgb(var(--kd-color-red-light-rgb));
+  --kd-color-red-dark: rgb(var(--kd-color-red-dark-rgb));
+  --kd-color-purple: rgb(var(--kd-color-purple-rgb));
 
   --kd-color-gray-soft: rgb(112, 112, 112);
   --kd-color-gray-inverse: rgb(0, 0, 0);

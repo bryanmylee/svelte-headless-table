@@ -12,16 +12,16 @@ const config = {
           light: 'var(--kd-color-primary-light)',
           dark: 'var(--kd-color-primary-dark)',
         },
+        red: {
+          DEFAULT: 'var(--kd-color-red)',
+          light: 'var(--kd-color-red-light)',
+          dark: 'var(--kd-color-red-dark)',
+        },
+        purple: {
+          DEFAULT: 'var(--kd-color-purple)',
+        },
         secondary: {
           DEFAULT: 'var(--kd-color-secondary)',
-          light: 'var(--kd-color-secondary-light)',
-          dark: 'var(--kd-color-secondary-dark)',
-        },
-        tertiary: {
-          DEFAULT: 'var(--kd-color-tertiary)',
-        },
-        headings: {
-          DEFAULT: 'var(--kd-color-headings)',
         },
         gray: {
           DEFAULT: '#313131',

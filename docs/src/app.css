@@ -38,10 +38,10 @@
     @apply text-primary;
   }
   &-string {
-    @apply text-secondary;
+    @apply text-red;
   }
   &-literal {
-    @apply text-tertiary;
+    @apply text-purple;
   }
   &-attr {
     @apply font-bold;
@@ -52,7 +52,7 @@
 }
 
 .prose {
-  --tw-prose-headings: var(--kd-color-headings);
+  --tw-prose-secondary: var(--kd-color-secondary);
   code {
     &::before,
     &::after {
