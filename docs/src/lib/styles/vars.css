@@ -11,16 +11,16 @@
   --kd-font-family-mono: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation, Mono,
     Fira Code VF, monospace;
 
-  --kd-color-secondary: rgb(var(--kd-color-secondary-rgb));
   --kd-color-primary: rgb(var(--kd-color-primary-rgb));
   --kd-color-primary-light: rgb(var(--kd-color-primary-light-rgb));
   --kd-color-primary-dark: rgb(var(--kd-color-primary-dark-rgb));
+  --kd-color-secondary: rgb(var(--kd-color-secondary-rgb));
   --kd-color-red: rgb(var(--kd-color-red-rgb));
   --kd-color-red-light: rgb(var(--kd-color-red-light-rgb));
   --kd-color-red-dark: rgb(var(--kd-color-red-dark-rgb));
   --kd-color-purple: rgb(var(--kd-color-purple-rgb));
 
-  --kd-color-gray-soft: rgb(112, 112, 112);
+  --kd-color-gray-soft: rgb(98, 94, 115);
   --kd-color-gray-inverse: rgb(0, 0, 0);
   --kd-color-gray-current: rgb(255, 255, 255);
   --kd-color-gray-divider: rgb(234, 234, 234);
@@ -58,14 +58,14 @@
 :root.dark {
   color-scheme: dark;
 
-  --kd-color-gray-soft: rgb(140, 140, 140);
+  --kd-color-gray-soft: rgb(132, 129, 145);
   --kd-color-gray-inverse: rgb(255, 255, 255);
   --kd-color-gray-current: rgb(0, 0, 0);
   --kd-color-gray-divider: rgb(49, 49, 49);
   --kd-color-gray-hover: rgb(54, 54, 54);
   --kd-color-gray-hover-inverse: rgb(245, 245, 245);
   --kd-color-gray-elevate: rgb(45, 45, 45);
-  --kd-color-gray-body: rgb(26, 26, 26);
+  --kd-color-gray-body: rgb(11, 10, 13);
 }
 
 @media screen and (min-width: 768px) {
