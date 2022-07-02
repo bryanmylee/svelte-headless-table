@@ -72,4 +72,8 @@ Want to learn more? Visit the [Plugin System](./docs/plugins/overview.md) to fin
 
 </div>
 
+<div class="flex justify-center" >
+  <Button size="lg" href="/docs">Documentation</Button>
+</div>
+
 <div class="mt-40" />
