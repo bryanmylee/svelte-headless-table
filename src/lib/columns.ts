@@ -108,7 +108,7 @@ export class DataColumn<
 		if (id === undefined && this.accessorKey === undefined) {
 			throw new Error('A column id or string accessor is required');
 		}
-		this.id = (id ?? `${this.accessorKey}`) as Id;
+		this.id = (id ?? String(this.accessorKey)) as Id;
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
