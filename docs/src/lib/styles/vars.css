@@ -57,7 +57,7 @@
 :root.dark {
   color-scheme: dark;
 
-  --kd-color-gray-soft: rgb(132, 129, 145);
+  --kd-color-gray-soft: rgb(132, 129, 135);
   --kd-color-gray-inverse: rgb(255, 255, 255);
   --kd-color-gray-current: rgb(0, 0, 0);
   --kd-color-gray-divider: rgb(49, 49, 49);
