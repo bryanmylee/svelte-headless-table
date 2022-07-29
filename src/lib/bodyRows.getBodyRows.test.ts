@@ -154,6 +154,106 @@ it('transforms data for data columns', () => {
 	});
 });
 
+it('transforms data for data columns with custom rowDataId', () => {
+	const actual = getBodyRows(data, dataColumns, {
+		rowDataId: ({ firstName, lastName }) => `${firstName}-${lastName}`,
+	});
+
+	const row0 = new DataBodyRow<User>({
+		id: '0',
+		dataId: 'Adam-West',
+		original: data[0],
+		cells: [],
+		cellForId: {},
+	});
+	const cells0 = [
+		new DataBodyCell<User>({
+			row: row0,
+			column: dataColumns[0],
+			value: 'Adam',
+		}),
+		new DataBodyCell<User>({
+			row: row0,
+			column: dataColumns[1],
+			value: 'West',
+		}),
+		new DataBodyCell<User>({
+			row: row0,
+			column: dataColumns[2],
+			value: 75,
+		}),
+	];
+	row0.cells = cells0;
+	const cellForId0 = {
+		firstName: cells0[0],
+		lastName: cells0[1],
+		progress: cells0[2],
+	};
+	row0.cellForId = cellForId0;
+
+	const row1 = new DataBodyRow<User>({
+		id: '1',
+		dataId: 'Becky-White',
+		original: data[1],
+		cells: [],
+		cellForId: {},
+	});
+	const cells1 = [
+		new DataBodyCell<User>({
+			row: row1,
+			column: dataColumns[0],
+			value: 'Becky',
+		}),
+		new DataBodyCell<User>({
+			row: row1,
+			column: dataColumns[1],
+			value: 'White',
+		}),
+		new DataBodyCell<User>({
+			row: row1,
+			column: dataColumns[2],
+			value: 43,
+		}),
+	];
+	row1.cells = cells1;
+	const cellForId1 = {
+		firstName: cells1[0],
+		lastName: cells1[1],
+		progress: cells1[2],
+	};
+	row1.cellForId = cellForId1;
+
+	const expected: DataBodyRow<User>[] = [row0, row1];
+
+	[0, 1].forEach((rowIdx) => {
+		const row = actual[rowIdx];
+		expect(row).toBeInstanceOf(DataBodyRow);
+		if (!(row instanceof DataBodyRow)) {
+			throw new Error('Incorrect BodyRow subtype');
+		}
+		expect(row.original).toStrictEqual(expected[rowIdx].original);
+		expect(row.cells.length).toStrictEqual(expected[rowIdx].cells.length);
+		actual[rowIdx].cells.forEach((_, colIdx) => {
+			const cell = actual[rowIdx].cells[colIdx];
+			expect(cell).toBeInstanceOf(DataBodyCell);
+			const expectedCell = expected[rowIdx].cells[colIdx];
+			if (!(cell instanceof DataBodyCell && expectedCell instanceof DataBodyCell)) {
+				throw new Error('Incorrect instance type');
+			}
+			expect(cell.value).toStrictEqual(expectedCell.value);
+		});
+		['firstName', 'lastName', 'progress'].forEach((id) => {
+			const cell = actual[rowIdx].cellForId[id];
+			expect(cell).toBeInstanceOf(DataBodyCell);
+			const expectedCell = expected[rowIdx].cellForId[id];
+			if (!(cell instanceof DataBodyCell && expectedCell instanceof DataBodyCell)) {
+				throw new Error('Incorrect instance type');
+			}
+			expect(cell.value).toStrictEqual(expectedCell.value);
+		});
+	});
+});
+
 const checkedLabel = () => 'check';
 const expandedLabel = () => 'expanded';
 const displayColumns = [
