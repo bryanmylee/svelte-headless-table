@@ -1,5 +1,5 @@
 import type { BodyRow } from '$lib/bodyRows';
-import type { FlatColumn } from '$lib/columns';
+import type { DataColumn, FlatColumn } from '$lib/columns';
 import type { TableState } from '$lib/createViewModel';
 import type { RenderConfig } from '$lib/render';
 import type { AnyPlugins } from './TablePlugin';
@@ -12,7 +12,7 @@ export type DataLabel<Item, Plugins extends AnyPlugins = AnyPlugins, Value = any
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
 export type DataLabelProps<Item, Plugins extends AnyPlugins = AnyPlugins, Value = any> = {
-	column: FlatColumn<Item, Plugins>;
+	column: DataColumn<Item, Plugins>;
 	row: BodyRow<Item, Plugins>;
 	// Value type does not infer correctly in Svelte
 	// value: Value;

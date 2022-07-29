@@ -61,9 +61,14 @@ export interface TableState<Item, Plugins extends AnyPlugins = AnyPlugins>
 	columns: Column<Item, Plugins>[];
 }
 
+export interface CreateViewModelOptions<Item> {
+	rowDataId?: (item: Item) => string;
+}
+
 export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	table: Table<Item, Plugins>,
-	columns: Column<Item, Plugins>[]
+	columns: Column<Item, Plugins>[],
+	{ rowDataId }: CreateViewModelOptions<Item> = {}
 ): TableViewModel<Item, Plugins> => {
 	const { data, plugins } = table;
 
@@ -71,7 +76,7 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	const flatColumns = readable($flatColumns);
 
 	const originalRows = derived([data, flatColumns], ([$data, $flatColumns]) => {
-		return getBodyRows($data, $flatColumns);
+		return getBodyRows($data, $flatColumns, { rowDataId });
 	});
 
 	// _stores need to be defined first to pass into plugins for initialization.
