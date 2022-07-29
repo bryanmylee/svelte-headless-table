@@ -59,7 +59,13 @@ it('transforms empty data', () => {
 it('transforms data for data columns', () => {
 	const actual = getBodyRows(data, dataColumns);
 
-	const row0 = new DataBodyRow<User>({ id: '0', original: data[0], cells: [], cellForId: {} });
+	const row0 = new DataBodyRow<User>({
+		id: '0',
+		dataId: '0',
+		original: data[0],
+		cells: [],
+		cellForId: {},
+	});
 	const cells0 = [
 		new DataBodyCell<User>({
 			row: row0,
@@ -85,7 +91,13 @@ it('transforms data for data columns', () => {
 	};
 	row0.cellForId = cellForId0;
 
-	const row1 = new DataBodyRow<User>({ id: '1', original: data[1], cells: [], cellForId: {} });
+	const row1 = new DataBodyRow<User>({
+		id: '1',
+		dataId: '1',
+		original: data[1],
+		cells: [],
+		cellForId: {},
+	});
 	const cells1 = [
 		new DataBodyCell<User>({
 			row: row1,
@@ -161,7 +173,13 @@ it('transforms data with display columns', () => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const actual = getBodyRows(data, displayColumns as any);
 
-	const row0 = new DataBodyRow<User>({ id: '0', original: data[0], cells: [], cellForId: {} });
+	const row0 = new DataBodyRow<User>({
+		id: '0',
+		dataId: '0',
+		original: data[0],
+		cells: [],
+		cellForId: {},
+	});
 	const cells0 = [
 		new DisplayBodyCell<User>({
 			row: row0,
@@ -181,7 +199,13 @@ it('transforms data with display columns', () => {
 	};
 	row0.cellForId = cellForId0;
 
-	const row1 = new DataBodyRow<User>({ id: '1', original: data[1], cells: [], cellForId: {} });
+	const row1 = new DataBodyRow<User>({
+		id: '1',
+		dataId: '1',
+		original: data[1],
+		cells: [],
+		cellForId: {},
+	});
 	const cells1 = [
 		new DisplayBodyCell<User>({
 			row: row1,
