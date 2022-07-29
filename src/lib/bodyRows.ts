@@ -149,7 +149,7 @@ export class DisplayBodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> exten
 }
 
 export interface BodyRowsOptions<Item> {
-	rowDataId?: (item: Item) => string;
+	rowDataId?: (item: Item, index: number) => string;
 }
 
 /**
@@ -170,7 +170,7 @@ export const getBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		const id = idx.toString();
 		return new DataBodyRow({
 			id,
-			dataId: rowDataId !== undefined ? rowDataId(item) : id,
+			dataId: rowDataId !== undefined ? rowDataId(item, idx) : id,
 			original: item,
 			cells: [],
 			cellForId: {},
@@ -265,7 +265,7 @@ export const getSubRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		const id = `${parentRow.id}>${idx}`;
 		return new DataBodyRow<Item, Plugins>({
 			id,
-			dataId: rowDataId !== undefined ? rowDataId(item) : id,
+			dataId: rowDataId !== undefined ? rowDataId(item, idx) : id,
 			original: item,
 			cells: [],
 			cellForId: {},

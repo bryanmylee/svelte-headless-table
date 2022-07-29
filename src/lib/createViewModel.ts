@@ -62,7 +62,7 @@ export interface TableState<Item, Plugins extends AnyPlugins = AnyPlugins>
 }
 
 export interface CreateViewModelOptions<Item> {
-	rowDataId?: (item: Item) => string;
+	rowDataId?: (item: Item, index: number) => string;
 }
 
 export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
