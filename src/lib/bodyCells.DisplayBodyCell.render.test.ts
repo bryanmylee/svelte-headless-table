@@ -23,6 +23,7 @@ const user: User = {
 
 const row = new DataBodyRow({
 	id: '0',
+	dataId: '0',
 	original: user,
 	cells: [],
 	cellForId: {},

@@ -15,7 +15,11 @@ import {
 import type { AnyPlugins } from './types/TablePlugin';
 import type { ReadOrWritable } from './utils/store';
 import { getDuplicates } from './utils/array';
-import { createViewModel, type TableViewModel } from './createViewModel';
+import {
+	createViewModel,
+	type CreateViewModelOptions,
+	type TableViewModel,
+} from './createViewModel';
 
 export class Table<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	data: ReadOrWritable<Item[]>;
@@ -58,8 +62,11 @@ export class Table<Item, Plugins extends AnyPlugins = AnyPlugins> {
 		return new DisplayColumn(def);
 	}
 
-	createViewModel(columns: Column<Item, Plugins>[]): TableViewModel<Item, Plugins> {
-		return createViewModel(this, columns);
+	createViewModel(
+		columns: Column<Item, Plugins>[],
+		options?: CreateViewModelOptions<Item>
+	): TableViewModel<Item, Plugins> {
+		return createViewModel(this, columns, options);
 	}
 }
 

@@ -61,6 +61,7 @@ export type DataBodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> = Bod
 	Item,
 	Plugins
 > & {
+	dataId: string;
 	original: Item;
 };
 
@@ -72,6 +73,7 @@ export class DataBodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends 
 	original: Item;
 	constructor({
 		id,
+		dataId,
 		original,
 		cells,
 		cellForId,
@@ -79,13 +81,14 @@ export class DataBodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends 
 		parentRow,
 	}: DataBodyRowInit<Item, Plugins>) {
 		super({ id, cells, cellForId, depth, parentRow });
-		this.dataId = id;
+		this.dataId = dataId;
 		this.original = original;
 	}
 
 	clone({ includeCells = false }: BodyRowCloneProps = {}): DataBodyRow<Item, Plugins> {
 		const clonedRow = new DataBodyRow({
 			id: this.id,
+			dataId: this.dataId,
 			cellForId: this.cellForId,
 			cells: this.cells,
 			original: this.original,
@@ -145,6 +148,10 @@ export class DisplayBodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> exten
 	}
 }
 
+export interface BodyRowsOptions<Item> {
+	rowDataId?: (item: Item, index: number) => string;
+}
+
 /**
  * Converts an array of items into an array of table `BodyRow`s based on the column structure.
  * @param data The data to display.
@@ -156,11 +163,14 @@ export const getBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	/**
 	 * Flat columns before column transformations.
 	 */
-	flatColumns: FlatColumn<Item, Plugins>[]
+	flatColumns: FlatColumn<Item, Plugins>[],
+	{ rowDataId }: BodyRowsOptions<Item> = {}
 ): BodyRow<Item, Plugins>[] => {
 	const rows: BodyRow<Item, Plugins>[] = data.map((item, idx) => {
+		const id = idx.toString();
 		return new DataBodyRow({
-			id: idx.toString(),
+			id,
+			dataId: rowDataId !== undefined ? rowDataId(item, idx) : id,
 			original: item,
 			cells: [],
 			cellForId: {},
@@ -248,12 +258,14 @@ export const getColumnedBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugin
  */
 export const getSubRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	subItems: Item[],
-	parentRow: BodyRow<Item, Plugins>
+	parentRow: BodyRow<Item, Plugins>,
+	{ rowDataId }: BodyRowsOptions<Item> = {}
 ): BodyRow<Item, Plugins>[] => {
 	const subRows = subItems.map((item, idx) => {
 		const id = `${parentRow.id}>${idx}`;
 		return new DataBodyRow<Item, Plugins>({
 			id,
+			dataId: rowDataId !== undefined ? rowDataId(item, idx) : id,
 			original: item,
 			cells: [],
 			cellForId: {},

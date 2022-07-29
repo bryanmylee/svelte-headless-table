@@ -24,13 +24,13 @@ Visit the [documentation](https://svelte-headless-table.bryanmylee.com/) for cod
 
 Svelte Headless Table is designed to work **seamlessly** with Svelte. If you love Svelte, you will love Svelte Headless Table.
 
-* **Full TypeScript support**
-* Compatible with **SvelteKit** and SSR
-* Manage state with Svelte stores
-* Headless and fully customizable
-* Intuitive column-first declarative model
-* Highly performant
-* Feature-rich
+- **Full TypeScript support**
+- Compatible with **SvelteKit** and SSR
+- Manage state with Svelte stores
+- Headless and fully customizable
+- Intuitive column-first declarative model
+- Highly performant
+- Feature-rich
 
 ## All the features you could ever need!
 
