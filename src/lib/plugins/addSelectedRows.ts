@@ -1,7 +1,8 @@
 import type { BodyRow } from '$lib/bodyRows';
 import type { NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
+import { nonNull } from '$lib/utils/filter';
 import { recordSetStore, type RecordSetStore } from '$lib/utils/store';
-import { derived, type Readable, type Updater, type Writable } from 'svelte/store';
+import { derived, get, type Readable, type Updater, type Writable } from 'svelte/store';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface SelectedRowsConfig<Item> {
@@ -11,6 +12,10 @@ export interface SelectedRowsConfig<Item> {
 
 export interface SelectedRowsState<Item> {
 	selectedDataIds: RecordSetStore<string>;
+	allRowsSelected: Writable<boolean>;
+	someRowsSelected: Readable<boolean>;
+	allPageRowsSelected: Writable<boolean>;
+	somePageRowsSelected: Readable<boolean>;
 	getRowState: (row: BodyRow<Item>) => SelectedRowsRowState;
 }
 
@@ -133,7 +138,7 @@ export const addSelectedRows =
 		Record<string, never>,
 		SelectedRowsPropSet
 	> =>
-	() => {
+	({ tableState }) => {
 		const selectedDataIds = recordSetStore(initialSelectedDataIds);
 
 		const getRowState = (row: BodyRow<Item>): SelectedRowsRowState => {
@@ -155,7 +160,100 @@ export const addSelectedRows =
 			};
 		};
 
-		const pluginState = { selectedDataIds, getRowState };
+		// all rows
+		const _allRowsSelected = derived(
+			[tableState.rows, selectedDataIds],
+			([$rows, $selectedDataIds]) => {
+				return $rows.every((row) => {
+					if (!row.isData()) {
+						return true;
+					}
+					return $selectedDataIds[row.dataId] === true;
+				});
+			}
+		);
+		const setAllRowsSelected = ($allRowsSelected: boolean) => {
+			if ($allRowsSelected) {
+				const $rows = get(tableState.rows);
+				const allDataIds = $rows.map((row) => (row.isData() ? row.dataId : null)).filter(nonNull);
+				selectedDataIds.addAll(allDataIds);
+			} else {
+				selectedDataIds.clear();
+			}
+		};
+		const allRowsSelected: Writable<boolean> = {
+			subscribe: _allRowsSelected.subscribe,
+			update(fn) {
+				const $allRowsSelected = get(_allRowsSelected);
+				setAllRowsSelected(fn($allRowsSelected));
+			},
+			set: setAllRowsSelected,
+		};
+
+		const someRowsSelected = derived(
+			[tableState.rows, selectedDataIds],
+			([$rows, $selectedDataIds]) => {
+				return $rows.some((row) => {
+					if (!row.isData()) {
+						return false;
+					}
+					return $selectedDataIds[row.dataId] === true;
+				});
+			}
+		);
+
+		// page rows
+		const _allPageRowsSelected = derived(
+			[tableState.pageRows, selectedDataIds],
+			([$pageRows, $selectedDataIds]) => {
+				return $pageRows.every((row) => {
+					if (!row.isData()) {
+						return true;
+					}
+					return $selectedDataIds[row.dataId] === true;
+				});
+			}
+		);
+		const setAllPageRowsSelected = ($allPageRowsSelected: boolean) => {
+			if ($allPageRowsSelected) {
+				const $pageRows = get(tableState.pageRows);
+				const pageDataIds = $pageRows
+					.map((row) => (row.isData() ? row.dataId : null))
+					.filter(nonNull);
+				selectedDataIds.addAll(pageDataIds);
+			} else {
+				selectedDataIds.clear();
+			}
+		};
+		const allPageRowsSelected: Writable<boolean> = {
+			subscribe: _allPageRowsSelected.subscribe,
+			update(fn) {
+				const $allPageRowsSelected = get(_allPageRowsSelected);
+				setAllPageRowsSelected(fn($allPageRowsSelected));
+			},
+			set: setAllPageRowsSelected,
+		};
+
+		const somePageRowsSelected = derived(
+			[tableState.pageRows, selectedDataIds],
+			([$pageRows, $selectedDataIds]) => {
+				return $pageRows.some((row) => {
+					if (!row.isData()) {
+						return false;
+					}
+					return $selectedDataIds[row.dataId] === true;
+				});
+			}
+		);
+
+		const pluginState = {
+			selectedDataIds,
+			getRowState,
+			allRowsSelected,
+			someRowsSelected,
+			allPageRowsSelected,
+			somePageRowsSelected,
+		};
 
 		return {
 			pluginState,

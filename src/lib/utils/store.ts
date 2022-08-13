@@ -97,6 +97,7 @@ export const arraySetStore = <T>(
 export interface RecordSetStore<T extends string | number> extends Writable<Record<T, boolean>> {
 	toggle: (item: T) => void;
 	add: (item: T) => void;
+	addAll: (items: T[]) => void;
 	remove: (item: T) => void;
 	clear: () => void;
 }
@@ -123,6 +124,12 @@ export const recordSetStore = <T extends string | number>(
 			[item]: true,
 		}));
 	};
+	const addAll = (items: T[]) => {
+		update(($recordSet) => ({
+			...$recordSet,
+			...Object.fromEntries(items.map((item) => [item, true])),
+		}));
+	};
 	const remove = (item: T) => {
 		update(($recordSet) => {
 			delete $recordSet[item];
@@ -138,6 +145,7 @@ export const recordSetStore = <T extends string | number>(
 		set,
 		toggle,
 		add,
+		addAll,
 		remove,
 		clear,
 	};

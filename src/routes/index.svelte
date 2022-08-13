@@ -69,7 +69,13 @@
 	const columns = table.createColumns([
 		table.display({
 			id: 'selected',
-			header: '',
+			header: ({ pluginStates }) => {
+				const { allPageRowsSelected, somePageRowsSelected } = pluginStates.select;
+				return createRender(SelectIndicator, {
+					isSelected: allPageRowsSelected,
+					isSomeSubRowsSelected: somePageRowsSelected,
+				});
+			},
 			cell: ({ row }, { pluginStates }) => {
 				const { isSelected, isSomeSubRowsSelected } = pluginStates.select.getRowState(row);
 				return createRender(SelectIndicator, {
