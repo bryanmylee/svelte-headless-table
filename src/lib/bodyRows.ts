@@ -1,6 +1,6 @@
 import { derived, type Readable } from 'svelte/store';
 import { BodyCell, DataBodyCell, DisplayBodyCell } from './bodyCells';
-import { DataColumn, DisplayColumn, type FlatColumn } from './columns';
+import type { DataColumn, DisplayColumn, FlatColumn } from './columns';
 import { TableComponent } from './tableComponent';
 import type { AnyPlugins } from './types/TablePlugin';
 import { nonUndefined } from './utils/filter';
@@ -194,7 +194,7 @@ export const getBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	});
 	data.forEach((item, rowIdx) => {
 		const cells = flatColumns.map((col) => {
-			if (col instanceof DataColumn) {
+			if (col.isData()) {
 				const dataCol = col as DataColumn<Item, Plugins>;
 				const value = dataCol.getValue(item);
 				return new DataBodyCell<Item, Plugins>({
@@ -204,7 +204,7 @@ export const getBodyRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 					value,
 				});
 			}
-			if (col instanceof DisplayColumn) {
+			if (col.isDisplay()) {
 				const displayCol = col as DisplayColumn<Item, Plugins>;
 				return new DisplayBodyCell<Item, Plugins>({
 					row: rows[rowIdx],
@@ -295,7 +295,7 @@ export const getSubRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		const cellForId = Object.fromEntries(
 			Object.values(parentRow.cellForId).map((cell) => {
 				const { column } = cell;
-				if (column instanceof DataColumn) {
+				if (column.isData()) {
 					const dataCol = column as DataColumn<Item, Plugins>;
 					const value = dataCol.getValue(item);
 					return [
@@ -303,7 +303,7 @@ export const getSubRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 						new DataBodyCell({ row: subRows[rowIdx], column, label: column.cell, value }),
 					];
 				}
-				if (column instanceof DisplayColumn) {
+				if (column.isDisplay()) {
 					return [
 						column.id,
 						new DisplayBodyCell({ row: subRows[rowIdx], column, label: column.cell }),

@@ -38,7 +38,8 @@ export abstract class HeaderCell<
 			if (this.state === undefined) {
 				throw new Error('Missing `state` reference');
 			}
-			return this.label(this.state);
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			return this.label(this.state as any);
 		}
 		return this.label;
 	}
