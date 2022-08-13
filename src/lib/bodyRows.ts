@@ -51,6 +51,16 @@ export abstract class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> ext
 	}
 
 	abstract clone(props?: BodyRowCloneProps): BodyRow<Item, Plugins>;
+
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	isData(): this is DataBodyRow<Item, Plugins> {
+		return '__data' in this;
+	}
+
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	isDisplay(): this is DisplayBodyRow<Item, Plugins> {
+		return '__display' in this;
+	}
 }
 
 type BodyRowCloneProps = {
@@ -69,6 +79,9 @@ export class DataBodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends 
 	Item,
 	Plugins
 > {
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	__data = true;
+
 	dataId: string;
 	original: Item;
 	constructor({
@@ -120,6 +133,9 @@ export class DisplayBodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> exten
 	Item,
 	Plugins
 > {
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	__display = true;
+
 	constructor({ id, cells, cellForId, depth = 0, parentRow }: DisplayBodyRowInit<Item, Plugins>) {
 		super({ id, cells, cellForId, depth, parentRow });
 	}

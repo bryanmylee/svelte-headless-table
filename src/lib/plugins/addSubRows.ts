@@ -41,7 +41,7 @@ export const addSubRows =
 		const deriveRows: DeriveRowsFn<Item> = (rows) => {
 			return derived(rows, ($rows) => {
 				return $rows.map((row) => {
-					if (row instanceof DataBodyRow) {
+					if (row.isData()) {
 						return withSubRows(row, getChildren);
 					}
 					return row;

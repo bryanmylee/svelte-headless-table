@@ -128,7 +128,7 @@ it('transforms data for data columns', () => {
 	[0, 1].forEach((rowIdx) => {
 		const row = actual[rowIdx];
 		expect(row).toBeInstanceOf(DataBodyRow);
-		if (!(row instanceof DataBodyRow)) {
+		if (!row.isData()) {
 			throw new Error('Incorrect BodyRow subtype');
 		}
 		expect(row.original).toStrictEqual(expected[rowIdx].original);
@@ -228,7 +228,7 @@ it('transforms data for data columns with custom rowDataId', () => {
 	[0, 1].forEach((rowIdx) => {
 		const row = actual[rowIdx];
 		expect(row).toBeInstanceOf(DataBodyRow);
-		if (!(row instanceof DataBodyRow)) {
+		if (!row.isData()) {
 			throw new Error('Incorrect BodyRow subtype');
 		}
 		expect(row.original).toStrictEqual(expected[rowIdx].original);
@@ -330,7 +330,7 @@ it('transforms data with display columns', () => {
 	[0, 1].forEach((rowIdx) => {
 		const row = actual[rowIdx];
 		expect(actual[rowIdx]).toBeInstanceOf(DataBodyRow);
-		if (!(row instanceof DataBodyRow)) {
+		if (!row.isData()) {
 			throw new Error('Incorrect BodyRow subtype');
 		}
 		expect(row.original).toStrictEqual(expected[rowIdx].original);

@@ -1,5 +1,5 @@
 import { derived, type Readable } from 'svelte/store';
-import { DataBodyRow, type BodyRow } from './bodyRows';
+import type { BodyRow } from './bodyRows';
 import type { DataColumn, DisplayColumn, FlatColumn } from './columns';
 import { TableComponent } from './tableComponent';
 import type { DataLabel, DisplayLabel } from './types/Label';
@@ -45,7 +45,7 @@ export abstract class BodyCell<
 	}
 
 	dataRowColId(): string | undefined {
-		if (!(this.row instanceof DataBodyRow)) {
+		if (!this.row.isData()) {
 			return undefined;
 		}
 		return `${this.row.dataId}:${this.column.id}`;
