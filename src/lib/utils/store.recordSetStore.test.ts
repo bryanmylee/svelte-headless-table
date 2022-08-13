@@ -163,3 +163,29 @@ it('resets the set', () => {
 
 	expect(get(actual)).toStrictEqual(expected);
 });
+
+it('removes false values on init', () => {
+	const actual = recordSetStore<number>({
+		1: false,
+		2: true,
+		3: true,
+	});
+
+	const expected = { 2: true, 3: true };
+
+	expect(get(actual)).toStrictEqual(expected);
+});
+
+it('removes false values on update', () => {
+	const actual = recordSetStore<number>({
+		1: true,
+		2: true,
+		3: true,
+	});
+
+	actual.update(($set) => ({ ...$set, 1: false }));
+
+	const expected = { 2: true, 3: true };
+
+	expect(get(actual)).toStrictEqual(expected);
+});

@@ -1,4 +1,4 @@
-import { readable, writable, type Readable, type Writable } from 'svelte/store';
+import { readable, writable, type Readable, type Updater, type Writable } from 'svelte/store';
 
 export type ReadOrWritable<T> = Readable<T> | Writable<T>;
 
@@ -105,7 +105,16 @@ export interface RecordSetStore<T extends string | number> extends Writable<Reco
 export const recordSetStore = <T extends string | number>(
 	initial: Record<T, boolean> = {} as Record<T, boolean>
 ): RecordSetStore<T> => {
-	const { subscribe, update, set } = writable(initial);
+	const withFalseRemoved = (record: Record<T, boolean>): Record<T, true> => {
+		return Object.fromEntries(Object.entries(record).filter(([, v]) => v)) as Record<T, true>;
+	};
+	const { subscribe, update, set } = writable(withFalseRemoved(initial));
+	const updateAndRemoveFalse = (fn: Updater<Record<T, boolean>>) => {
+		update(($recordSet) => {
+			const newRecordSet = fn($recordSet);
+			return withFalseRemoved(newRecordSet);
+		});
+	};
 	const toggle = (item: T) => {
 		update(($recordSet) => {
 			if ($recordSet[item] === true) {
@@ -137,12 +146,12 @@ export const recordSetStore = <T extends string | number>(
 		});
 	};
 	const clear = () => {
-		set({} as Record<T, boolean>);
+		set({} as Record<T, true>);
 	};
 	return {
 		subscribe,
-		update,
-		set,
+		update: updateAndRemoveFalse,
+		set: (newValue) => updateAndRemoveFalse(() => newValue),
 		toggle,
 		add,
 		addAll,
