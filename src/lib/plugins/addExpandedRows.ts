@@ -1,7 +1,8 @@
 import type { BodyRow } from '$lib/bodyRows';
 import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
+import { recordSetStore, type RecordSetStore } from '$lib/utils/store';
 import { keyed } from 'svelte-keyed';
-import { derived, readable, writable, type Readable, type Writable } from 'svelte/store';
+import { derived, readable, type Readable, type Writable } from 'svelte/store';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface ExpandedRowsConfig<Item> {
@@ -9,7 +10,7 @@ export interface ExpandedRowsConfig<Item> {
 }
 
 export interface ExpandedRowsState<Item> {
-	expandedIds: Writable<Record<string, boolean>>;
+	expandedIds: RecordSetStore<string>;
 	getRowState: (row: BodyRow<Item>) => ExpandedRowsRowState;
 }
 
@@ -43,7 +44,7 @@ export const addExpandedRows =
 		NewTablePropSet<never>
 	> =>
 	() => {
-		const expandedIds = writable(initialExpandedIds);
+		const expandedIds = recordSetStore(initialExpandedIds);
 		const getRowState = (row: BodyRow<Item>): ExpandedRowsRowState => {
 			const isExpanded = keyed(expandedIds, row.id) as Writable<boolean>;
 			const canExpand = readable((row.subRows?.length ?? 0) > 0);
