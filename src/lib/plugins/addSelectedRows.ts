@@ -1,4 +1,4 @@
-import { DataBodyRow, type BodyRow } from '$lib/bodyRows';
+import type { BodyRow } from '$lib/bodyRows';
 import type { NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
 import { recordSetStore, type RecordSetStore } from '$lib/utils/store';
 import { derived, type Readable, type Updater, type Writable } from 'svelte/store';
@@ -33,7 +33,7 @@ const isAllSubRowsSelectedForRow = <Item>(
 	$selectedDataIds: Record<string, boolean>,
 	linkDataSubRows: boolean
 ): boolean => {
-	if (row instanceof DataBodyRow) {
+	if (row.isData()) {
 		if (!linkDataSubRows || row.subRows === undefined) {
 			return $selectedDataIds[row.dataId] === true;
 		}
@@ -51,7 +51,7 @@ const isSomeSubRowsSelectedForRow = <Item>(
 	$selectedDataIds: Record<string, boolean>,
 	linkDataSubRows: boolean
 ): boolean => {
-	if (row instanceof DataBodyRow) {
+	if (row.isData()) {
 		if (!linkDataSubRows || row.subRows === undefined) {
 			return $selectedDataIds[row.dataId] === true;
 		}
@@ -70,7 +70,7 @@ const writeSelectedDataIds = <Item>(
 	$selectedDataIds: Record<string, boolean>,
 	linkDataSubRows: boolean
 ): void => {
-	if (row instanceof DataBodyRow) {
+	if (row.isData()) {
 		$selectedDataIds[row.dataId] = value;
 		if (!linkDataSubRows) {
 			return;
@@ -90,7 +90,7 @@ const getRowIsSelectedStore = <Item>(
 	linkDataSubRows: boolean
 ): Writable<boolean> => {
 	const { subscribe } = derived(selectedDataIds, ($selectedDataIds) => {
-		if (row instanceof DataBodyRow) {
+		if (row.isData()) {
 			if (!linkDataSubRows) {
 				return $selectedDataIds[row.dataId] === true;
 			}
@@ -105,7 +105,7 @@ const getRowIsSelectedStore = <Item>(
 			const oldValue = isAllSubRowsSelectedForRow(row, $selectedDataIds, linkDataSubRows);
 			const $updatedSelectedDataIds = { ...$selectedDataIds };
 			writeSelectedDataIds(row, fn(oldValue), $updatedSelectedDataIds, linkDataSubRows);
-			if (row.parentRow !== undefined && row.parentRow instanceof DataBodyRow) {
+			if (row.parentRow !== undefined && row.parentRow.isData()) {
 				$updatedSelectedDataIds[row.parentRow.dataId] = isAllSubRowsSelectedForRow(
 					row.parentRow,
 					$updatedSelectedDataIds,
@@ -172,10 +172,9 @@ export const addSelectedRows =
 							$selectedDataIds,
 							linkDataSubRows
 						);
-						const selected =
-							row instanceof DataBodyRow
-								? $selectedDataIds[row.dataId] === true
-								: allSubRowsSelected;
+						const selected = row.isData()
+							? $selectedDataIds[row.dataId] === true
+							: allSubRowsSelected;
 						return {
 							selected,
 							someSubRowsSelected,

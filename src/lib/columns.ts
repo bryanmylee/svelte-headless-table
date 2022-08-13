@@ -20,6 +20,26 @@ export class Column<Item, Plugins extends AnyPlugins = AnyPlugins> {
 		this.height = height;
 		this.plugins = plugins;
 	}
+
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	isFlat(): this is FlatColumn<Item, Plugins> {
+		return '__flat' in this;
+	}
+
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	isData(): this is DataColumn<Item, Plugins> {
+		return '__data' in this;
+	}
+
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	isDisplay(): this is DisplayColumn<Item, Plugins> {
+		return '__display' in this;
+	}
+
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	isGroup(): this is GroupColumn<Item, Plugins> {
+		return '__group' in this;
+	}
 }
 
 export type FlatColumnInit<
@@ -37,6 +57,9 @@ export class FlatColumn<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	Id extends string = any
 > extends Column<Item, Plugins> {
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	__flat = true;
+
 	id: Id;
 	constructor({ header, footer, plugins, id }: FlatColumnInit<Item, Plugins>) {
 		super({ header, footer, plugins, height: 1 });
@@ -87,6 +110,9 @@ export class DataColumn<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	Value = any
 > extends FlatColumn<Item, Plugins, Id> {
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	__data = true;
+
 	cell?: DataLabel<Item, Plugins, Value>;
 	accessorKey?: keyof Item;
 	accessorFn?: (item: Item) => Value;
@@ -138,6 +164,9 @@ export class DisplayColumn<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	Id extends string = any
 > extends FlatColumn<Item, Plugins, Id> {
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	__display = true;
+
 	cell: DisplayLabel<Item, Plugins>;
 	constructor({ header, footer, plugins, id, cell }: DisplayColumnInit<Item, Plugins, Id>) {
 		super({ header, footer, plugins, id });
@@ -156,6 +185,9 @@ export class GroupColumn<Item, Plugins extends AnyPlugins = AnyPlugins> extends 
 	Item,
 	Plugins
 > {
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	__group = true;
+
 	columns: Column<Item, Plugins>[];
 	ids: string[];
 	constructor({ header, footer, columns, plugins }: GroupColumnInit<Item, Plugins>) {
@@ -168,15 +200,10 @@ export class GroupColumn<Item, Plugins extends AnyPlugins = AnyPlugins> extends 
 
 export const getFlatColumnIds = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	columns: Column<Item, Plugins>[]
-): string[] =>
-	columns.flatMap((c) =>
-		c instanceof FlatColumn ? [c.id] : c instanceof GroupColumn ? c.ids : []
-	);
+): string[] => columns.flatMap((c) => (c.isFlat() ? [c.id] : c.isGroup() ? c.ids : []));
 
 export const getFlatColumns = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	columns: Column<Item, Plugins>[]
 ): FlatColumn<Item, Plugins>[] => {
-	return columns.flatMap((c) =>
-		c instanceof FlatColumn ? [c] : c instanceof GroupColumn ? getFlatColumns(c.columns) : []
-	);
+	return columns.flatMap((c) => (c.isFlat() ? [c] : c.isGroup() ? getFlatColumns(c.columns) : []));
 };

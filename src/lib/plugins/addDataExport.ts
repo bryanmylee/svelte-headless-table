@@ -1,4 +1,3 @@
-import { DataBodyCell } from '$lib/bodyCells';
 import type { BodyRow } from '$lib/bodyRows';
 import type { TablePlugin } from '$lib/types/TablePlugin';
 import { derived, type Readable } from 'svelte/store';
@@ -33,7 +32,7 @@ const getObjectsFromRows = <Item>(
 		const dataObject = Object.fromEntries(
 			ids.map((id) => {
 				const cell = row.cellForId[id];
-				if (cell instanceof DataBodyCell) {
+				if (cell.isData()) {
 					return [id, cell.value];
 				}
 				return [id, null];
@@ -50,7 +49,7 @@ const getCsvFromRows = <Item>(rows: BodyRow<Item>[], ids: string[]): string => {
 	const dataLines = rows.map((row) => {
 		const line = ids.map((id) => {
 			const cell = row.cellForId[id];
-			if (cell instanceof DataBodyCell) {
+			if (cell.isData()) {
 				return cell.value;
 			}
 			return null;

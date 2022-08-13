@@ -1,4 +1,3 @@
-import { DataBodyCell } from '$lib/bodyCells';
 import type { BodyRow } from '$lib/bodyRows';
 import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
 import { recordSetStore } from '$lib/utils/store';
@@ -80,7 +79,7 @@ const getFilteredRows = <Item, Row extends BodyRow<Item>>(
 				if (isHidden && !includeHiddenColumns) {
 					return false;
 				}
-				if (!(cell instanceof DataBodyCell)) {
+				if (!cell.isData()) {
 					return false;
 				}
 				let value = cell.value;

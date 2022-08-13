@@ -38,7 +38,8 @@ export abstract class HeaderCell<
 			if (this.state === undefined) {
 				throw new Error('Missing `state` reference');
 			}
-			return this.label(this.state);
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			return this.label(this.state as any);
 		}
 		return this.label;
 	}
@@ -54,6 +55,31 @@ export abstract class HeaderCell<
 	}
 
 	abstract clone(): HeaderCell<Item, Plugins>;
+
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	isFlat(): this is FlatHeaderCell<Item, Plugins> {
+		return '__flat' in this;
+	}
+
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	isData(): this is DataHeaderCell<Item, Plugins> {
+		return '__data' in this;
+	}
+
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	isFlatDisplay(): this is FlatDisplayHeaderCell<Item, Plugins> {
+		return '__flat' in this && '__display' in this;
+	}
+
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	isGroup(): this is GroupHeaderCell<Item, Plugins> {
+		return '__group' in this;
+	}
+
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	isGroupDisplay(): this is GroupDisplayHeaderCell<Item, Plugins> {
+		return '__group' in this && '__display' in this;
+	}
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -72,6 +98,9 @@ export class FlatHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exten
 	Item,
 	Plugins
 > {
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	__flat = true;
+
 	constructor({ id, label, colstart }: FlatHeaderCellInit<Item, Plugins>) {
 		super({ id, label, colspan: 1, colstart });
 	}
@@ -97,6 +126,9 @@ export class DataHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exten
 	Item,
 	Plugins
 > {
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	__data = true;
+
 	accessorKey?: keyof Item;
 	accessorFn?: (item: Item) => unknown;
 	constructor({ id, label, accessorKey, accessorFn, colstart }: DataHeaderCellInit<Item, Plugins>) {
@@ -127,6 +159,9 @@ export class FlatDisplayHeaderCell<
 	Item,
 	Plugins extends AnyPlugins = AnyPlugins
 > extends FlatHeaderCell<Item, Plugins> {
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	__display = true;
+
 	constructor({ id, label = NBSP, colstart }: FlatDisplayHeaderCellInit<Item, Plugins>) {
 		super({ id, label, colstart });
 	}
@@ -152,6 +187,9 @@ export class GroupHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exte
 	Item,
 	Plugins
 > {
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	__group = true;
+
 	ids: string[];
 	allId: string;
 	allIds: string[];
@@ -195,6 +233,9 @@ export class GroupDisplayHeaderCell<
 	Item,
 	Plugins extends AnyPlugins = AnyPlugins
 > extends GroupHeaderCell<Item, Plugins> {
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	__display = true;
+
 	constructor({
 		label = NBSP,
 		ids,

@@ -1,7 +1,6 @@
 import { DataBodyCell } from '$lib/bodyCells';
 import { BodyRow, DisplayBodyRow } from '$lib/bodyRows';
 import type { DataColumn } from '$lib/columns';
-import { DataHeaderCell } from '$lib/headerCells';
 import type { DataLabel } from '$lib/types/Label';
 import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
 import { isShiftClick } from '$lib/utils/event';
@@ -92,7 +91,7 @@ export const getGroupedRows = <
 	const subRowsForGroupOnValue = new Map<GroupOn, Row[]>();
 	for (const row of rows) {
 		const cell = row.cellForId[groupById];
-		if (!(cell instanceof DataBodyCell)) {
+		if (!cell.isData()) {
 			break;
 		}
 		const columnOption = columnOptions[groupById] ?? {};
@@ -130,7 +129,7 @@ export const getGroupedRows = <
 					return [id, newCell];
 				}
 				const columnCells = subRows.map((row) => row.cellForId[id]).filter(nonUndefined);
-				if (!(columnCells[0] instanceof DataBodyCell)) {
+				if (!columnCells[0].isData()) {
 					const clonedCell = columnCells[0].clone();
 					clonedCell.row = groupRow;
 					return [id, clonedCell];
@@ -164,7 +163,7 @@ export const getGroupedRows = <
 			groupCellIds,
 			allGroupByIds,
 		});
-		groupedRows.push(groupRow as Row);
+		groupedRows.push(groupRow as unknown as Row);
 		groupRow.cells.forEach((cell) => {
 			if (cell.id === groupById) {
 				groupCellIds[cell.rowColId()] = true;
@@ -233,11 +232,11 @@ export const addGroupBy =
 			deriveRows,
 			hooks: {
 				'thead.tr.th': (cell) => {
-					const disabled = disabledGroupIds.includes(cell.id) || !(cell instanceof DataHeaderCell);
+					const disabled = disabledGroupIds.includes(cell.id) || !cell.isData();
 					const props = derived(groupByIds, ($groupByIds) => {
 						const grouped = $groupByIds.includes(cell.id);
 						const toggle = (event: Event) => {
-							if (!(cell instanceof DataHeaderCell)) return;
+							if (!cell.isData()) return;
 							if (disabled) return;
 							groupByIds.toggle(cell.id, {
 								clearOthers: disableMultiGroup || !isMultiGroupEvent(event),

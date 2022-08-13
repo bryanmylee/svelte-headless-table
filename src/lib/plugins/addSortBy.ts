@@ -1,6 +1,5 @@
-import { DataBodyCell } from '$lib/bodyCells';
+import type { DataBodyCell } from '$lib/bodyCells';
 import type { BodyRow } from '$lib/bodyRows';
-import { DataHeaderCell } from '$lib/headerCells';
 import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
 import { compare } from '$lib/utils/compare';
 import { isShiftClick } from '$lib/utils/event';
@@ -114,7 +113,7 @@ const getSortedRows = <Item, Row extends BodyRow<Item>>(
 			// Only need to check properties of `cellA` as both should have the same
 			// properties.
 			const getSortValue = columnOptions[key.id]?.getSortValue;
-			if (!(cellA instanceof DataBodyCell)) {
+			if (!cellA.isData()) {
 				return 0;
 			}
 			const valueA = cellA.value;
@@ -195,14 +194,14 @@ export const addSortBy =
 					const props = derived(sortKeys, ($sortKeys) => {
 						const key = $sortKeys.find((k) => k.id === cell.id);
 						const toggle = (event: Event) => {
-							if (!(cell instanceof DataHeaderCell)) return;
+							if (!cell.isData()) return;
 							if (disabled) return;
 							sortKeys.toggleId(cell.id, {
 								multiSort: disableMultiSort ? false : isMultiSortEvent(event),
 							});
 						};
 						const clear = () => {
-							if (!(cell instanceof DataHeaderCell)) return;
+							if (!cell.isData()) return;
 							if (disabledSortIds.includes(cell.id)) return;
 							sortKeys.clearId(cell.id);
 						};

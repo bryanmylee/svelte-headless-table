@@ -116,7 +116,11 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 					})
 					.filter(nonUndefined)
 			);
-			return [pluginName, plugin({ pluginName, tableState: pluginInitTableState, columnOptions })];
+			return [
+				pluginName,
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				plugin({ pluginName, tableState: pluginInitTableState as any, columnOptions }),
+			];
 		})
 	) as {
 		[K in keyof Plugins]: ReturnType<Plugins[K]>;
@@ -223,7 +227,8 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 
 	let rows = columnedRows;
 	deriveRowsFns.forEach((fn) => {
-		rows = fn(rows);
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		rows = fn(rows as any) as any;
 	});
 
 	const injectedRows = derived(rows, ($rows) => {
@@ -258,7 +263,8 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	// Must derive from `injectedRows` instead of `rows` to ensure that `_rows` is set.
 	let pageRows = injectedRows;
 	derivePageRowsFns.forEach((fn) => {
-		pageRows = fn(pageRows);
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		pageRows = fn(pageRows as any) as any;
 	});
 
 	const injectedPageRows = derived(pageRows, ($pageRows) => {

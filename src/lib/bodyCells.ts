@@ -1,5 +1,5 @@
 import { derived, type Readable } from 'svelte/store';
-import { DataBodyRow, type BodyRow } from './bodyRows';
+import type { BodyRow } from './bodyRows';
 import type { DataColumn, DisplayColumn, FlatColumn } from './columns';
 import { TableComponent } from './tableComponent';
 import type { DataLabel, DisplayLabel } from './types/Label';
@@ -45,10 +45,20 @@ export abstract class BodyCell<
 	}
 
 	dataRowColId(): string | undefined {
-		if (!(this.row instanceof DataBodyRow)) {
+		if (!this.row.isData()) {
 			return undefined;
 		}
 		return `${this.row.dataId}:${this.column.id}`;
+	}
+
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	isData(): this is DataBodyCell<Item, Plugins> {
+		return '__data' in this;
+	}
+
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	isDisplay(): this is DisplayBodyCell<Item, Plugins> {
+		return '__display' in this;
 	}
 }
 
@@ -71,6 +81,9 @@ export class DataBodyCell<
 	Plugins extends AnyPlugins = AnyPlugins,
 	Value = unknown
 > extends BodyCell<Item, Plugins> {
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	__data = true;
+
 	column: DataColumn<Item, Plugins>;
 	label?: DataLabel<Item, Plugins, Value>;
 	value: Value;
@@ -114,6 +127,9 @@ export class DisplayBodyCell<Item, Plugins extends AnyPlugins = AnyPlugins> exte
 	Item,
 	Plugins
 > {
+	// TODO Workaround for https://github.com/vitejs/vite/issues/9528
+	__display = true;
+
 	column: DisplayColumn<Item, Plugins>;
 	label: DisplayLabel<Item, Plugins>;
 	constructor({ row, column, label }: DisplayBodyCellInit<Item, Plugins>) {

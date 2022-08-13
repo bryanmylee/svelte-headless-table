@@ -1,4 +1,4 @@
-import { FlatHeaderCell, GroupHeaderCell, HeaderCell } from '$lib/headerCells';
+import type { HeaderCell } from '$lib/headerCells';
 import type { NewTableAttributeSet, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
 import { sum } from '$lib/utils/math';
 import { keyed } from 'svelte-keyed';
@@ -48,9 +48,10 @@ const getDragXPos = (event: Event): number => {
 	return 0;
 };
 
-const isCellDisabled = (cell: HeaderCell<unknown>, disabledIds: string[]) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isCellDisabled = (cell: HeaderCell<any>, disabledIds: string[]) => {
 	if (disabledIds.includes(cell.id)) return true;
-	if (cell instanceof GroupHeaderCell && cell.ids.every((id) => disabledIds.includes(id))) {
+	if (cell.isGroup() && cell.ids.every((id) => disabledIds.includes(id))) {
 		return true;
 	}
 	return false;
@@ -107,7 +108,7 @@ export const addResizedColumns =
 								...$columnsWidthState,
 								start: { ...$columnsWidthState.start },
 							};
-							if (cell instanceof GroupHeaderCell) {
+							if (cell.isGroup()) {
 								cell.ids.forEach((id) => {
 									$updatedState.start[id] = $columnsWidthState.current[id];
 								});
@@ -133,7 +134,7 @@ export const addResizedColumns =
 								...$columnsWidthState,
 								current: { ...$columnsWidthState.current },
 							};
-							if (cell instanceof GroupHeaderCell) {
+							if (cell.isGroup()) {
 								const enabledIds = cell.ids.filter((id) => !disabledResizeIds.includes(id));
 								const totalStartWidth = sum(enabledIds.map((id) => $columnsWidthState.start[id]));
 								enabledIds.forEach((id) => {
@@ -161,7 +162,7 @@ export const addResizedColumns =
 					const dragEnd = (event: Event) => {
 						event.stopPropagation();
 						event.preventDefault();
-						if (cell instanceof GroupHeaderCell) {
+						if (cell.isGroup()) {
 							cell.ids.forEach((id) => {
 								const node = nodeForId[id];
 								if (node !== undefined) {
@@ -190,7 +191,7 @@ export const addResizedColumns =
 					};
 					const $props = (node: Element) => {
 						nodeForId[cell.id] = node;
-						if (cell instanceof FlatHeaderCell) {
+						if (cell.isFlat()) {
 							columnWidths.update(($columnWidths) => ({
 								...$columnWidths,
 								[cell.id]: node.getBoundingClientRect().width,
@@ -217,10 +218,9 @@ export const addResizedColumns =
 						return $props;
 					});
 					const attrs = derived(columnWidths, ($columnWidths) => {
-						const width =
-							cell instanceof GroupHeaderCell
-								? sum(cell.ids.map((id) => $columnWidths[id]))
-								: $columnWidths[cell.id];
+						const width = cell.isGroup()
+							? sum(cell.ids.map((id) => $columnWidths[id]))
+							: $columnWidths[cell.id];
 						if (width === undefined) {
 							return {};
 						}

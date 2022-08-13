@@ -1,9 +1,8 @@
 import { derived } from 'svelte/store';
-import { DataColumn, DisplayColumn, GroupColumn, type Column } from './columns';
+import type { Column } from './columns';
 import {
 	DataHeaderCell,
 	FlatDisplayHeaderCell,
-	FlatHeaderCell,
 	GroupDisplayHeaderCell,
 	GroupHeaderCell,
 	type HeaderCell,
@@ -61,21 +60,22 @@ export const getHeaderRows = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	// to reduce the number of expensive transpose operations required.
 	let columnMatrix = getTransposed(rowMatrix);
 	columnMatrix = getOrderedColumnMatrix(columnMatrix, flatColumnIds);
-	populateGroupHeaderCellIds(columnMatrix);
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	populateGroupHeaderCellIds(columnMatrix as any);
 	return headerRowsForRowMatrix(getTransposed(columnMatrix));
 };
 
 export const getHeaderRowMatrix = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	columns: Column<Item, Plugins>[]
 ): Matrix<HeaderCell<Item, Plugins>> => {
-	const maxColspan = sum(columns.map((c) => (c instanceof GroupColumn ? c.ids.length : 1)));
+	const maxColspan = sum(columns.map((c) => (c.isGroup() ? c.ids.length : 1)));
 	const maxHeight = Math.max(...columns.map((c) => c.height));
 	const rowMatrix: Matrix<HeaderCell<Item, Plugins> | null> = getNullMatrix(maxColspan, maxHeight);
 	let cellOffset = 0;
 	columns.forEach((c) => {
 		const heightOffset = maxHeight - c.height;
 		loadHeaderRowMatrix(rowMatrix, c, heightOffset, cellOffset);
-		cellOffset += c instanceof GroupColumn ? c.ids.length : 1;
+		cellOffset += c.isGroup() ? c.ids.length : 1;
 	});
 	// Replace null cells with blank display cells.
 	return rowMatrix.map((cells, rowIdx) =>
@@ -95,10 +95,11 @@ const loadHeaderRowMatrix = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	rowOffset: number,
 	cellOffset: number
 ) => {
-	if (column instanceof DataColumn) {
+	if (column.isData()) {
 		// `DataHeaderCell` should always be in the last row.
 		rowMatrix[rowMatrix.length - 1][cellOffset] = new DataHeaderCell({
-			label: column.header,
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			label: column.header as any,
 			accessorFn: column.accessorFn,
 			accessorKey: column.accessorKey as keyof Item,
 			id: column.id,
@@ -106,19 +107,21 @@ const loadHeaderRowMatrix = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		});
 		return;
 	}
-	if (column instanceof DisplayColumn) {
+	if (column.isDisplay()) {
 		rowMatrix[rowMatrix.length - 1][cellOffset] = new FlatDisplayHeaderCell({
 			id: column.id,
-			label: column.header,
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			label: column.header as any,
 			colstart: cellOffset,
 		});
 		return;
 	}
-	if (column instanceof GroupColumn) {
+	if (column.isGroup()) {
 		// Fill multi-colspan cells.
 		for (let i = 0; i < column.ids.length; i++) {
 			rowMatrix[rowOffset][cellOffset + i] = new GroupHeaderCell({
-				label: column.header,
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				label: column.header as any,
 				colspan: 1,
 				allIds: column.ids,
 				ids: [],
@@ -128,7 +131,7 @@ const loadHeaderRowMatrix = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		let childCellOffset = 0;
 		column.columns.forEach((c) => {
 			loadHeaderRowMatrix(rowMatrix, c, rowOffset + 1, cellOffset + childCellOffset);
-			childCellOffset += c instanceof GroupColumn ? c.ids.length : 1;
+			childCellOffset += c.isGroup() ? c.ids.length : 1;
 		});
 		return;
 	}
@@ -147,7 +150,7 @@ export const getOrderedColumnMatrix = <Item, Plugins extends AnyPlugins = AnyPlu
 	flatColumnIds.forEach((key, columnIdx) => {
 		const nextColumn = columnMatrix.find((columnCells) => {
 			const flatCell = columnCells[columnCells.length - 1];
-			if (!(flatCell instanceof FlatHeaderCell)) {
+			if (!flatCell.isFlat()) {
 				throw new Error('The last element of each column must be a `FlatHeaderCell`');
 			}
 			return flatCell.id === key;
@@ -168,11 +171,11 @@ export const getOrderedColumnMatrix = <Item, Plugins extends AnyPlugins = AnyPlu
 const populateGroupHeaderCellIds = <Item>(columnMatrix: Matrix<HeaderCell<Item>>) => {
 	columnMatrix.forEach((columnCells) => {
 		const lastCell = columnCells[columnCells.length - 1];
-		if (!(lastCell instanceof FlatHeaderCell)) {
+		if (!lastCell.isFlat()) {
 			throw new Error('The last element of each column must be a `FlatHeaderCell`');
 		}
 		columnCells.forEach((c) => {
-			if (c instanceof GroupHeaderCell) {
+			if (c.isGroup()) {
 				c.pushId(lastCell.id);
 			}
 		});
@@ -208,7 +211,7 @@ export const getMergedRow = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	let endIdx = 1;
 	while (startIdx < cells.length) {
 		const cell = cells[startIdx].clone();
-		if (!(cell instanceof GroupHeaderCell)) {
+		if (!cell.isGroup()) {
 			mergedCells.push(cell);
 			startIdx++;
 			continue;
@@ -217,7 +220,7 @@ export const getMergedRow = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		const ids: string[] = [...cell.ids];
 		while (endIdx < cells.length) {
 			const nextCell = cells[endIdx];
-			if (!(nextCell instanceof GroupHeaderCell)) {
+			if (!nextCell.isGroup()) {
 				break;
 			}
 			if (cell.allId !== nextCell.allId) {
