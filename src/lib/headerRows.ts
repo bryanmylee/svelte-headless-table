@@ -3,7 +3,6 @@ import type { Column } from './columns';
 import {
 	DataHeaderCell,
 	FlatDisplayHeaderCell,
-	FlatHeaderCell,
 	GroupDisplayHeaderCell,
 	GroupHeaderCell,
 	type HeaderCell,
@@ -151,7 +150,7 @@ export const getOrderedColumnMatrix = <Item, Plugins extends AnyPlugins = AnyPlu
 	flatColumnIds.forEach((key, columnIdx) => {
 		const nextColumn = columnMatrix.find((columnCells) => {
 			const flatCell = columnCells[columnCells.length - 1];
-			if (!(flatCell instanceof FlatHeaderCell)) {
+			if (!flatCell.isFlat()) {
 				throw new Error('The last element of each column must be a `FlatHeaderCell`');
 			}
 			return flatCell.id === key;
@@ -172,11 +171,11 @@ export const getOrderedColumnMatrix = <Item, Plugins extends AnyPlugins = AnyPlu
 const populateGroupHeaderCellIds = <Item>(columnMatrix: Matrix<HeaderCell<Item>>) => {
 	columnMatrix.forEach((columnCells) => {
 		const lastCell = columnCells[columnCells.length - 1];
-		if (!(lastCell instanceof FlatHeaderCell)) {
+		if (!lastCell.isFlat()) {
 			throw new Error('The last element of each column must be a `FlatHeaderCell`');
 		}
 		columnCells.forEach((c) => {
-			if (c instanceof GroupHeaderCell) {
+			if (c.isGroup()) {
 				c.pushId(lastCell.id);
 			}
 		});
@@ -212,7 +211,7 @@ export const getMergedRow = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	let endIdx = 1;
 	while (startIdx < cells.length) {
 		const cell = cells[startIdx].clone();
-		if (!(cell instanceof GroupHeaderCell)) {
+		if (!cell.isGroup()) {
 			mergedCells.push(cell);
 			startIdx++;
 			continue;
@@ -221,7 +220,7 @@ export const getMergedRow = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		const ids: string[] = [...cell.ids];
 		while (endIdx < cells.length) {
 			const nextCell = cells[endIdx];
-			if (!(nextCell instanceof GroupHeaderCell)) {
+			if (!nextCell.isGroup()) {
 				break;
 			}
 			if (cell.allId !== nextCell.allId) {

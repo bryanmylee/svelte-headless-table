@@ -4,7 +4,6 @@ import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/Tabl
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 import type { RenderConfig } from '$lib/render';
 import type { PluginInitTableState } from '$lib/createViewModel';
-import { DataHeaderCell } from '$lib/headerCells';
 import type { DataBodyCell } from '$lib/bodyCells';
 
 export interface ColumnFiltersState<Item> {
@@ -125,7 +124,7 @@ export const addColumnFilters =
 						}
 						filterValue.set(columnOption.initialFilterValue);
 						const preFilteredValues = derived(preFilteredRows, ($rows) => {
-							if (headerCell instanceof DataHeaderCell) {
+							if (headerCell.isData()) {
 								return $rows.map((row) => {
 									// TODO check and handle different BodyCell types
 									const cell = row.cellForId[headerCell.id] as DataBodyCell<Item>;
@@ -135,7 +134,7 @@ export const addColumnFilters =
 							return [];
 						});
 						const values = derived(filteredRows, ($rows) => {
-							if (headerCell instanceof DataHeaderCell) {
+							if (headerCell.isData()) {
 								return $rows.map((row) => {
 									// TODO check and handle different BodyCell types
 									const cell = row.cellForId[headerCell.id] as DataBodyCell<Item>;
