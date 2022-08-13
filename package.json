@@ -1,6 +1,7 @@
 {
 	"name": "svelte-headless-table",
-	"version": "0.13.0",
+	"description": "Unopininated and extensible data tables for Svelte",
+	"version": "0.13.1",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
