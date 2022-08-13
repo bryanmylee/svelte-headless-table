@@ -4,8 +4,8 @@ import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/Tabl
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 import type { RenderConfig } from '$lib/render';
 import type { PluginInitTableState } from '$lib/createViewModel';
-import { DataBodyCell } from '$lib/bodyCells';
 import { DataHeaderCell } from '$lib/headerCells';
+import type { DataBodyCell } from '$lib/bodyCells';
 
 export interface ColumnFiltersState<Item> {
 	filterValues: Writable<Record<string, unknown>>;
@@ -71,7 +71,7 @@ const getFilteredRows = <Item, Row extends BodyRow<Item>>(
 			}
 			for (const [columnId, columnOption] of Object.entries(columnOptions)) {
 				const bodyCell = row.cellForId[columnId];
-				if (!(bodyCell instanceof DataBodyCell)) {
+				if (!bodyCell.isData()) {
 					continue;
 				}
 				const { value } = bodyCell;

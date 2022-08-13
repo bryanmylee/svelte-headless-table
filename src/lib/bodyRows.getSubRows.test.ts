@@ -84,7 +84,7 @@ it('derives the correct cells for parent with data columns', () => {
 			const cell = actual[rowIdx].cells[colIdx];
 			expect(cell).toBeInstanceOf(DataBodyCell);
 			const expectedCell = expected[rowIdx].cells[colIdx];
-			if (!(cell instanceof DataBodyCell && expectedCell instanceof DataBodyCell)) {
+			if (!(cell.isData() && expectedCell.isData())) {
 				throw new Error('Incorrect instance type');
 			}
 			expect(cell.value).toStrictEqual(expectedCell.value);
@@ -112,7 +112,7 @@ it('derives the correct cellForId when parent has hidden cells', () => {
 			const cell = actual[rowIdx].cells[colIdx];
 			expect(cell).toBeInstanceOf(DataBodyCell);
 			const expectedCell = expected[rowIdx].cells[colIdx];
-			if (!(cell instanceof DataBodyCell && expectedCell instanceof DataBodyCell)) {
+			if (!(cell.isData() && expectedCell.isData())) {
 				throw new Error('Incorrect instance type');
 			}
 			expect(cell.value).toStrictEqual(expectedCell.value);
@@ -121,7 +121,7 @@ it('derives the correct cellForId when parent has hidden cells', () => {
 			const cell = actual[rowIdx].cellForId[id];
 			expect(cell).toBeInstanceOf(DataBodyCell);
 			const expectedCell = expected[rowIdx].cellForId[id];
-			if (!(cell instanceof DataBodyCell && expectedCell instanceof DataBodyCell)) {
+			if (!(cell.isData() && expectedCell.isData())) {
 				throw new Error('Incorrect instance type');
 			}
 			expect(cell.value).toStrictEqual(expectedCell.value);
@@ -163,7 +163,7 @@ it('derives the correct cells for parent with columns', () => {
 			const cell = actual[rowIdx].cells[colIdx];
 			expect(cell).toBeInstanceOf(DisplayBodyCell);
 			const expectedCell = expected[rowIdx].cells[colIdx];
-			if (!(cell instanceof DisplayBodyCell && expectedCell instanceof DisplayBodyCell)) {
+			if (!(cell.isDisplay() && expectedCell.isDisplay())) {
 				throw new Error('Incorrect instance type');
 			}
 			expect(cell.label).toEqual(expectedCell.label);

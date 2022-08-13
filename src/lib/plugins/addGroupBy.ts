@@ -92,7 +92,7 @@ export const getGroupedRows = <
 	const subRowsForGroupOnValue = new Map<GroupOn, Row[]>();
 	for (const row of rows) {
 		const cell = row.cellForId[groupById];
-		if (!(cell instanceof DataBodyCell)) {
+		if (!cell.isData()) {
 			break;
 		}
 		const columnOption = columnOptions[groupById] ?? {};
@@ -130,7 +130,7 @@ export const getGroupedRows = <
 					return [id, newCell];
 				}
 				const columnCells = subRows.map((row) => row.cellForId[id]).filter(nonUndefined);
-				if (!(columnCells[0] instanceof DataBodyCell)) {
+				if (!columnCells[0].isData()) {
 					const clonedCell = columnCells[0].clone();
 					clonedCell.row = groupRow;
 					return [id, clonedCell];
@@ -164,7 +164,7 @@ export const getGroupedRows = <
 			groupCellIds,
 			allGroupByIds,
 		});
-		groupedRows.push(groupRow as Row);
+		groupedRows.push(groupRow as unknown as Row);
 		groupRow.cells.forEach((cell) => {
 			if (cell.id === groupById) {
 				groupCellIds[cell.rowColId()] = true;

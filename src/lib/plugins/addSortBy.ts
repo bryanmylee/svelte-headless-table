@@ -1,4 +1,3 @@
-import { DataBodyCell } from '$lib/bodyCells';
 import type { BodyRow } from '$lib/bodyRows';
 import { DataHeaderCell } from '$lib/headerCells';
 import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
@@ -114,7 +113,7 @@ const getSortedRows = <Item, Row extends BodyRow<Item>>(
 			// Only need to check properties of `cellA` as both should have the same
 			// properties.
 			const getSortValue = columnOptions[key.id]?.getSortValue;
-			if (!(cellA instanceof DataBodyCell)) {
+			if (!cellA.isData()) {
 				return 0;
 			}
 			const valueA = cellA.value;
