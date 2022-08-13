@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { DataBodyRow, DataColumn, type BodyRow } from "svelte-headless-table";
+  import type { DataColumn, BodyRow } from "svelte-headless-table";
   
   type Item = $$Generic;
 
@@ -20,7 +20,7 @@
   };
   const handleSubmit = () => {
     isEditing = false;
-    if (row instanceof DataBodyRow) {
+    if (row.isData()) {
       onUpdateValue(row.dataId, column.id, value);
     }
   };
