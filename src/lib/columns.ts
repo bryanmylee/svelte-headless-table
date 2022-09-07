@@ -1,3 +1,5 @@
+import type { BodyRow } from './bodyRows';
+import type { TableState } from './createViewModel';
 import type { DisplayLabel, HeaderLabel } from './types/Label';
 import type { DataLabel } from './types/Label';
 import type { AnyPlugins, PluginColumnConfigs } from './types/TablePlugin';
@@ -149,6 +151,16 @@ export class DataColumn<
 	}
 }
 
+export type DisplayColumnDataGetterProps<Item, Plugins extends AnyPlugins = AnyPlugins> = {
+	column: FlatColumn<Item, Plugins>;
+	row: BodyRow<Item, Plugins>;
+};
+
+export type DisplayColumnDataGetter<Item, Plugins extends AnyPlugins = AnyPlugins> = (
+	props: DisplayColumnDataGetterProps<Item, Plugins>,
+	state?: TableState<Item, Plugins>
+) => unknown;
+
 export type DisplayColumnInit<
 	Item,
 	Plugins extends AnyPlugins = AnyPlugins,
@@ -156,6 +168,7 @@ export type DisplayColumnInit<
 	Id extends string = any
 > = FlatColumnInit<Item, Plugins, Id> & {
 	cell: DisplayLabel<Item, Plugins>;
+	data?: DisplayColumnDataGetter<Item, Plugins>;
 };
 
 export class DisplayColumn<
@@ -168,9 +181,11 @@ export class DisplayColumn<
 	__display = true;
 
 	cell: DisplayLabel<Item, Plugins>;
-	constructor({ header, footer, plugins, id, cell }: DisplayColumnInit<Item, Plugins, Id>) {
+	data?: DisplayColumnDataGetter<Item, Plugins>;
+	constructor({ header, footer, plugins, id, cell, data }: DisplayColumnInit<Item, Plugins, Id>) {
 		super({ header, footer, plugins, id });
 		this.cell = cell;
+		this.data = data;
 	}
 }
 

@@ -31,7 +31,7 @@
 	import { getDistinct } from '$lib/utils/array';
 	import SelectIndicator from './_SelectIndicator.svelte';
 
-	const data = readable(createSamples(50, 2));
+	const data = readable(createSamples(2, 2));
 
 	const table = createTable(data, {
 		subRows: addSubRows({
@@ -83,6 +83,9 @@
 					isSomeSubRowsSelected,
 				});
 			},
+			data: ({ row }, state) => {
+				return state?.pluginStates.select.getRowState(row).isSelected;
+			},
 			plugins: {
 				resize: {
 					disable: true,
@@ -101,6 +104,9 @@
 					isAllSubRowsExpanded,
 					depth: row.depth,
 				});
+			},
+			data: ({ row }, state) => {
+				return state?.pluginStates.expand.getRowState(row).isExpanded;
 			},
 			plugins: {
 				resize: {
