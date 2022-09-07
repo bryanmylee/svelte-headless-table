@@ -4,12 +4,12 @@ export type ReadOrWritable<T> = Readable<T> | Writable<T>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isReadable = <T>(value: any): value is Readable<T> => {
-	return value?.subscribe !== undefined;
+	return value?.subscribe instanceof Function;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isWritable = <T>(store: any): store is Writable<T> => {
-	return store?.update !== undefined && store.set !== undefined;
+	return store?.update instanceof Function && store.set instanceof Function;
 };
 
 export type WritableKeys<T> = {

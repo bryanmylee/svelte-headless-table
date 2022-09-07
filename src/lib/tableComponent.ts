@@ -38,7 +38,7 @@ export abstract class TableComponent<Item, Plugins extends AnyPlugins, Key exten
 		return derivedKeys(this.propsForName) as Readable<PluginTablePropSet<Plugins>[Key]>;
 	}
 
-	protected state?: TableState<Item, Plugins>;
+	state?: TableState<Item, Plugins>;
 	injectState(state: TableState<Item, Plugins>) {
 		this.state = state;
 	}
