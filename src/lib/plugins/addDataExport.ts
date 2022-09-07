@@ -1,6 +1,7 @@
 import type { BodyRow } from '$lib/bodyRows';
 import type { TablePlugin } from '$lib/types/TablePlugin';
-import { derived, type Readable } from 'svelte/store';
+import { isReadable } from '$lib/utils/store';
+import { derived, get, type Readable } from 'svelte/store';
 
 export type DataExportFormat = 'object' | 'json' | 'csv';
 type ExportForFormat = {
@@ -35,6 +36,14 @@ const getObjectsFromRows = <Item>(
 				if (cell.isData()) {
 					return [id, cell.value];
 				}
+				if (cell.isDisplay() && cell.column.data !== undefined) {
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					let data = cell.column.data({ row, column: cell.column }, row.state);
+					if (isReadable(data)) {
+						data = get(data);
+					}
+					return [id, data];
+				}
 				return [id, null];
 			})
 		);
@@ -51,6 +60,14 @@ const getCsvFromRows = <Item>(rows: BodyRow<Item>[], ids: string[]): string => {
 			const cell = row.cellForId[id];
 			if (cell.isData()) {
 				return cell.value;
+			}
+			if (cell.isDisplay() && cell.column.data !== undefined) {
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				let data = cell.column.data({ row, column: cell.column }, row.state);
+				if (isReadable(data)) {
+					data = get(data);
+				}
+				return data;
 			}
 			return null;
 		});
