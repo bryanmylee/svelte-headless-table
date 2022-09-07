@@ -24,7 +24,6 @@
     KitDocsLayout,
     createKitDocsLoader,
     createSidebarContext,
-    SocialLink,
   } from '@svelteness/kit-docs';
 
   export let meta: MarkdownMeta | null = null;
@@ -35,6 +34,7 @@
     links: [
       { title: 'Documentation', slug: '/docs', match: /\/docs/ },
       { title: 'Credits', slug: '/credits', match: /\/credits/ },
+      { title: 'GitHub', slug: 'https://github.com/bryanmylee/svelte-headless-table' },
     ],
   };
 
@@ -69,10 +69,6 @@
           </h1>
         </div>
       </a>
-    </div>
-
-    <div class="socials" slot="navbar-right-alt">
-      <SocialLink type="gitHub" href="https://github.com/bryanmylee/svelte-headless-table" />
     </div>
 
     <slot />
