@@ -64,7 +64,7 @@
           <span>
             {@html SvelteHeadlessTableIcon}
           </span>
-          <h1 class="text-secondary dark:text-white font-bold text-2xl tracking-tighter">
+          <h1 class="text-secondary dark:text-white font-semibold text-2xl tracking-tight">
             Svelte Headless Table
           </h1>
         </div>
