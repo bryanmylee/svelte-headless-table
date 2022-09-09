@@ -69,7 +69,7 @@
 	const columns = table.createColumns([
 		table.display({
 			id: 'selected',
-			header: ({ pluginStates }) => {
+			header: (_, { pluginStates }) => {
 				const { allPageRowsSelected, somePageRowsSelected } = pluginStates.select;
 				return createRender(SelectIndicator, {
 					isSelected: allPageRowsSelected,
@@ -134,14 +134,19 @@
 			},
 		}),
 		table.group({
-			header: ({ rows, pageRows }) =>
+			header: (_, { rows, pageRows }) =>
 				derived(
 					[rows, pageRows],
 					([_rows, _pageRows]) => `Name (${_rows.length} records, ${_pageRows.length} in page)`
 				),
 			columns: [
 				table.column({
-					header: createRender(Italic, { text: 'First Name' }),
+					header: (cell) => {
+						return createRender(
+							Italic,
+							derived(cell.props(), (_props) => ({ text: `First Name ${_props.sort.order}` }))
+						);
+					},
 					accessor: 'firstName',
 					plugins: {
 						group: {
@@ -171,7 +176,7 @@
 			],
 		}),
 		table.group({
-			header: ({ rows }) =>
+			header: (_, { rows }) =>
 				createRender(
 					Italic,
 					derived(rows, (_rows) => ({ text: `Info (${_rows.length} samples)` }))

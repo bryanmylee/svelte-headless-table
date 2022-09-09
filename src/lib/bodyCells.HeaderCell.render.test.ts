@@ -39,7 +39,7 @@ const state = {
 it('renders dynamic label with state', () => {
 	const actual = new TestHeaderCell({
 		id: '0',
-		label: ({ columns }) => `${columns.length} columns`,
+		label: (_, { columns }) => `${columns.length} columns`,
 		colspan: 1,
 		colstart: 1,
 	});
@@ -53,7 +53,7 @@ it('renders dynamic label with state', () => {
 it('throws if rendering dynamically without state', () => {
 	const actual = new TestHeaderCell({
 		id: '0',
-		label: ({ columns }) => `${columns.length} columns`,
+		label: (_, { columns }) => `${columns.length} columns`,
 		colspan: 1,
 		colstart: 1,
 	});

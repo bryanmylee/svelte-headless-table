@@ -5,10 +5,9 @@ import type { HeaderLabel } from './types/Label';
 import type { AnyPlugins } from './types/TablePlugin';
 import type { RenderConfig } from './render';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type HeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	id: string;
-	label: HeaderLabel<Item>;
+	label: HeaderLabel<Item, Plugins>;
 	colspan: number;
 	colstart: number;
 };
@@ -23,10 +22,10 @@ export abstract class HeaderCell<
 	Item,
 	Plugins extends AnyPlugins = AnyPlugins
 > extends TableComponent<Item, Plugins, 'thead.tr.th'> {
-	label: HeaderLabel<Item>;
+	label: HeaderLabel<Item, Plugins>;
 	colspan: number;
 	colstart: number;
-	constructor({ id, label, colspan, colstart }: HeaderCellInit<Item>) {
+	constructor({ id, label, colspan, colstart }: HeaderCellInit<Item, Plugins>) {
 		super({ id });
 		this.label = label;
 		this.colspan = colspan;
@@ -39,7 +38,7 @@ export abstract class HeaderCell<
 				throw new Error('Missing `state` reference');
 			}
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			return this.label(this.state as any);
+			return this.label(this, this.state as any);
 		}
 		return this.label;
 	}
@@ -152,7 +151,7 @@ export type FlatDisplayHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlug
 	FlatHeaderCellInit<Item, Plugins>,
 	'label'
 > & {
-	label?: HeaderLabel<Item>;
+	label?: HeaderLabel<Item, Plugins>;
 };
 
 export class FlatDisplayHeaderCell<
@@ -225,7 +224,7 @@ export type GroupDisplayHeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlu
 	GroupHeaderCellInit<Item, Plugins>,
 	'label' | 'colspan'
 > & {
-	label?: HeaderLabel<Item>;
+	label?: HeaderLabel<Item, Plugins>;
 	colspan?: number;
 };
 
