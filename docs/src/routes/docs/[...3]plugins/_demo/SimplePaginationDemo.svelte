@@ -12,7 +12,7 @@
 
   const columns = table.createColumns([
     table.group({
-      header: ({ rows, pageRows }) =>
+      header: (_, { rows, pageRows }) =>
         derived([pageRows], ([_pageRows]) => `Name (${_pageRows.length} on page)`),
       columns: [
         table.column({

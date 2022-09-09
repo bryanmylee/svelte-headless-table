@@ -11,7 +11,7 @@
   const table = createTable(data);
   const columns = table.createColumns([
     table.group({
-      header: ({ rows }) => derived(rows, (r) => `Name (${r.length} people)`),
+      header: (_, { rows }) => derived(rows, (r) => `Name (${r.length} people)`),
       columns: [
         table.column({
           header: 'First Name',

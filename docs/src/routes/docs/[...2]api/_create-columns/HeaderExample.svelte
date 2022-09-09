@@ -10,7 +10,7 @@
   const table = createTable(data);
   const columns = table.createColumns([
     table.column({
-      header: ({ rows }) => derived(rows, (r) => `First Name (${r.length} people)`),
+      header: (_, { rows }) => derived(rows, (r) => `First Name (${r.length} people)`),
       accessor: 'firstName',
     }),
     table.column({

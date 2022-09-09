@@ -114,7 +114,7 @@
       },
     }),
     table.group({
-      header: ({ rows, pageRows }) =>
+      header: (_, { rows, pageRows }) =>
         derived(
           [rows, pageRows],
           ([_rows, _pageRows]) => `Name (${_rows.length} records, ${_pageRows.length} in page)`,
@@ -151,7 +151,7 @@
       ],
     }),
     table.group({
-      header: ({ rows }) =>
+      header: (_, { rows }) =>
         createRender(
           Italic,
           derived(rows, (_rows) => ({ text: `Info (${_rows.length} samples)` })),

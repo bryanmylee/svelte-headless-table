@@ -30,7 +30,7 @@
       },
     }),
     table.group({
-      header: ({ rows }) => derived([rows], ([_rows]) => `Name (${_rows.length} users)`),
+      header: (_, { rows }) => derived([rows], ([_rows]) => `Name (${_rows.length} users)`),
       columns: [
         table.column({
           header: 'First Name',
