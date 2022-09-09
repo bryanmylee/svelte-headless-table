@@ -2,15 +2,28 @@
   import { readable, derived } from 'svelte/store';
   import { createTable, Render, createRender, Subscribe } from 'svelte-headless-table';
   import Italic from '../_Italic.svelte';
+  import { addSortBy } from 'svelte-headless-table/plugins';
+import SortHeaderCell from './SortHeaderCell.svelte';
+
   const data = readable([
     { firstName: 'Ada', lastName: 'Lovelace', info: { age: 21 } },
     { firstName: 'Barbara', lastName: 'Liskov', info: { age: 52 } },
     { firstName: 'Richard', lastName: 'Hamming', info: { age: 38 } },
   ]);
-  const table = createTable(data);
+
+  const table = createTable(data, {
+    sort: addSortBy(),
+  });
+
   const columns = table.createColumns([
     table.column({
-      header: (_, { rows }) => derived(rows, (r) => `First Name (${r.length} people)`),
+      header: (cell, { rows }) => createRender(
+        SortHeaderCell,
+        derived([cell.props(), rows], ([{sort}, _rows]) => ({
+          label: `First Name (${_rows.length} people)`,
+          ...sort,
+        }),
+      )),
       accessor: 'firstName',
     }),
     table.column({
