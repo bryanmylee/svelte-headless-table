@@ -101,7 +101,7 @@ export class DataBodyCell<
 		if (this.state === undefined) {
 			throw new Error('Missing `state` reference');
 		}
-		return this.label({ column: this.column, row: this.row, value: this.value }, this.state);
+		return this.label(this, this.state);
 	}
 
 	clone(): DataBodyCell<Item, Plugins> {
@@ -142,7 +142,7 @@ export class DisplayBodyCell<Item, Plugins extends AnyPlugins = AnyPlugins> exte
 		if (this.state === undefined) {
 			throw new Error('Missing `state` reference');
 		}
-		return this.label({ column: this.column, row: this.row }, this.state);
+		return this.label(this, this.state);
 	}
 
 	clone(): DisplayBodyCell<Item, Plugins> {
