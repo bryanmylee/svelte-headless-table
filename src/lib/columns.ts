@@ -1,4 +1,4 @@
-import type { BodyRow } from './bodyRows';
+import type { DisplayBodyCell } from './bodyCells';
 import type { TableState } from './createViewModel';
 import type { DisplayLabel, HeaderLabel } from './types/Label';
 import type { DataLabel } from './types/Label';
@@ -151,13 +151,8 @@ export class DataColumn<
 	}
 }
 
-export type DisplayColumnDataGetterProps<Item, Plugins extends AnyPlugins = AnyPlugins> = {
-	column: FlatColumn<Item, Plugins>;
-	row: BodyRow<Item, Plugins>;
-};
-
 export type DisplayColumnDataGetter<Item, Plugins extends AnyPlugins = AnyPlugins> = (
-	props: DisplayColumnDataGetterProps<Item, Plugins>,
+	cell: DisplayBodyCell<Item, Plugins>,
 	state?: TableState<Item, Plugins>
 ) => unknown;
 
