@@ -65,6 +65,7 @@ export abstract class BodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> ext
 
 type BodyRowCloneProps = {
 	includeCells?: boolean;
+	includeSubRows?: boolean;
 };
 
 export type DataBodyRowInit<Item, Plugins extends AnyPlugins = AnyPlugins> = BodyRowInit<
@@ -98,7 +99,10 @@ export class DataBodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends 
 		this.original = original;
 	}
 
-	clone({ includeCells = false }: BodyRowCloneProps = {}): DataBodyRow<Item, Plugins> {
+	clone({ includeCells = false, includeSubRows = false }: BodyRowCloneProps = {}): DataBodyRow<
+		Item,
+		Plugins
+	> {
 		const clonedRow = new DataBodyRow({
 			id: this.id,
 			dataId: this.dataId,
@@ -107,19 +111,24 @@ export class DataBodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends 
 			original: this.original,
 			depth: this.depth,
 		});
-		if (!includeCells) {
-			return clonedRow;
+		if (includeCells) {
+			const clonedCellsForId = Object.fromEntries(
+				Object.entries(clonedRow.cellForId).map(([id, cell]) => {
+					const clonedCell = cell.clone();
+					clonedCell.row = clonedRow;
+					return [id, clonedCell];
+				})
+			);
+			const clonedCells = clonedRow.cells.map(({ id }) => clonedCellsForId[id]);
+			clonedRow.cellForId = clonedCellsForId;
+			clonedRow.cells = clonedCells;
 		}
-		const clonedCellsForId = Object.fromEntries(
-			Object.entries(clonedRow.cellForId).map(([id, cell]) => {
-				const clonedCell = cell.clone();
-				clonedCell.row = clonedRow;
-				return [id, clonedCell];
-			})
-		);
-		const clonedCells = clonedRow.cells.map(({ id }) => clonedCellsForId[id]);
-		clonedRow.cellForId = clonedCellsForId;
-		clonedRow.cells = clonedCells;
+		if (includeSubRows) {
+			const clonedSubRows = this.subRows?.map((row) => row.clone({ includeCells, includeSubRows }));
+			clonedRow.subRows = clonedSubRows;
+		} else {
+			clonedRow.subRows = this.subRows;
+		}
 		return clonedRow;
 	}
 }
@@ -140,26 +149,35 @@ export class DisplayBodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> exten
 		super({ id, cells, cellForId, depth, parentRow });
 	}
 
-	clone({ includeCells = false }: BodyRowCloneProps = {}): DisplayBodyRow<Item, Plugins> {
+	clone({ includeCells = false, includeSubRows = false }: BodyRowCloneProps = {}): DisplayBodyRow<
+		Item,
+		Plugins
+	> {
 		const clonedRow = new DisplayBodyRow({
 			id: this.id,
 			cellForId: this.cellForId,
 			cells: this.cells,
 			depth: this.depth,
 		});
-		if (!includeCells) {
-			return clonedRow;
+		clonedRow.subRows = this.subRows;
+		if (includeCells) {
+			const clonedCellsForId = Object.fromEntries(
+				Object.entries(clonedRow.cellForId).map(([id, cell]) => {
+					const clonedCell = cell.clone();
+					clonedCell.row = clonedRow;
+					return [id, clonedCell];
+				})
+			);
+			const clonedCells = clonedRow.cells.map(({ id }) => clonedCellsForId[id]);
+			clonedRow.cellForId = clonedCellsForId;
+			clonedRow.cells = clonedCells;
 		}
-		const clonedCellsForId = Object.fromEntries(
-			Object.entries(clonedRow.cellForId).map(([id, cell]) => {
-				const clonedCell = cell.clone();
-				clonedCell.row = clonedRow;
-				return [id, clonedCell];
-			})
-		);
-		const clonedCells = clonedRow.cells.map(({ id }) => clonedCellsForId[id]);
-		clonedRow.cellForId = clonedCellsForId;
-		clonedRow.cells = clonedCells;
+		if (includeSubRows) {
+			const clonedSubRows = this.subRows?.map((row) => row.clone({ includeCells, includeSubRows }));
+			clonedRow.subRows = clonedSubRows;
+		} else {
+			clonedRow.subRows = this.subRows;
+		}
 		return clonedRow;
 	}
 }

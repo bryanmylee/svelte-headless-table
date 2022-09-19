@@ -334,7 +334,7 @@
 	<tbody {...$tableBodyAttrs}>
 		{#each $pageRows as row (row.id)}
 			<Subscribe attrs={row.attrs()} let:attrs rowProps={row.props()} let:rowProps>
-				<tr {...attrs} class:selected={rowProps.select.selected}>
+				<tr id={row.id} {...attrs} class:selected={rowProps.select.selected}>
 					{#each row.cells as cell (cell.id)}
 						<Subscribe attrs={cell.attrs()} let:attrs props={cell.props()} let:props>
 							<td
