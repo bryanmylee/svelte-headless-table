@@ -13,7 +13,7 @@
 		"lint": "prettier --ignore-path .prettierignore --check --plugin-search-dir=. . && eslint --ignore-path .eslintignore .",
 		"format": "prettier --ignore-path .prettierignore --write --plugin-search-dir=. .",
 		"test": "jest --collect-coverage",
-		"test:watch": "npm test -- --watch"
+		"test:watch": "jest --watch"
 	},
 	"repository": {
 		"type": "git",

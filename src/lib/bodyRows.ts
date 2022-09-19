@@ -107,6 +107,7 @@ export class DataBodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> extends 
 			original: this.original,
 			depth: this.depth,
 		});
+		clonedRow.subRows = this.subRows;
 		if (!includeCells) {
 			return clonedRow;
 		}
@@ -147,6 +148,7 @@ export class DisplayBodyRow<Item, Plugins extends AnyPlugins = AnyPlugins> exten
 			cells: this.cells,
 			depth: this.depth,
 		});
+		clonedRow.subRows = this.subRows;
 		if (!includeCells) {
 			return clonedRow;
 		}
