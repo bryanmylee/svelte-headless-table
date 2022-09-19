@@ -68,6 +68,13 @@ const getIdLeaf = (id: string): string => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+const deepenIdAndDepth = <Row extends BodyRow<any, any>>(row: Row, parentId: string) => {
+	row.id = `${parentId}>${row.id}`;
+	row.depth = row.depth + 1;
+	row.subRows?.forEach((subRow) => deepenIdAndDepth(subRow, parentId));
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getGroupedRows = <
 	Item,
 	Row extends BodyRow<Item>,
@@ -152,10 +159,9 @@ export const getGroupedRows = <
 		groupRow.cellForId = groupRowCellForId;
 		groupRow.cells = groupRowCells;
 		const groupRowSubRows = subRows.map((subRow) => {
-			const clonedRow = subRow.clone({ includeCells: true });
-			clonedRow.id = `${groupRow.id}>${getIdLeaf(subRow.id)}`;
-			clonedRow.depth = subRow.depth + 1;
-			return clonedRow;
+			const clonedSubRow = subRow.clone({ includeCells: true, includeSubRows: true });
+			deepenIdAndDepth(clonedSubRow, groupRow.id);
+			return clonedSubRow;
 		});
 		groupRow.subRows = getGroupedRows(groupRowSubRows, restIds, columnOptions, {
 			repeatCellIds,
