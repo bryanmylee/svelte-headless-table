@@ -9,6 +9,7 @@ export {
 export { addColumnOrder } from './addColumnOrder';
 export { addDataExport } from './addDataExport';
 export { addExpandedRows } from './addExpandedRows';
+export { addFlatten } from './addFlatten';
 export { addGridLayout } from './addGridLayout';
 export { addGroupBy } from './addGroupBy';
 export { addHiddenColumns } from './addHiddenColumns';
