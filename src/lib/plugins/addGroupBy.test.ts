@@ -49,7 +49,7 @@ test('basic row grouping', () => {
 	expect(subRow12Data.firstName).toBe('Danny');
 });
 
-it.only('preserves subrows of a row after grouping', () => {
+it('preserves subrows of a row after grouping', () => {
 	const data = readable<Sample[]>([
 		{
 			firstName: 'Adam',
