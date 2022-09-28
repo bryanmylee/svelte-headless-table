@@ -1,8 +1,8 @@
 import { keyed } from 'svelte-keyed';
+import type { RenderConfig } from 'svelte-render';
 import type { BodyRow } from '$lib/bodyRows';
 import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
-import type { RenderConfig } from '$lib/render';
 import type { PluginInitTableState } from '$lib/createViewModel';
 import type { DataBodyCell } from '$lib/bodyCells';
 

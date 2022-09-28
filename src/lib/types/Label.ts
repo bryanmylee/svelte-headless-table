@@ -1,7 +1,7 @@
+import type { RenderConfig } from 'svelte-render';
 import type { DataBodyCell, DisplayBodyCell } from '$lib/bodyCells';
 import type { TableState } from '$lib/createViewModel';
 import type { HeaderCell } from '$lib/headerCells';
-import type { RenderConfig } from '$lib/render';
 import type { AnyPlugins } from './TablePlugin';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
