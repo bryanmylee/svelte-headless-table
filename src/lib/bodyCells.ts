@@ -4,7 +4,7 @@ import type { DataColumn, DisplayColumn, FlatColumn } from './columns';
 import { TableComponent } from './tableComponent';
 import type { DataLabel, DisplayLabel } from './types/Label';
 import type { AnyPlugins } from './types/TablePlugin';
-import type { RenderConfig } from './render';
+import type { RenderConfig } from 'svelte-render';
 
 export type BodyCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	id: string;
