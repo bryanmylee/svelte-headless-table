@@ -5,7 +5,7 @@
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
-		"package": "svelte-kit package",
+		"package": "svelte-package",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync",
 		"check": "svelte-check --tsconfig ./tsconfig.json",
@@ -45,7 +45,8 @@
 		"@babel/core": "7",
 		"@babel/preset-env": "^7.17.10",
 		"@sveltejs/adapter-auto": "next",
-		"@sveltejs/kit": "^1.0.0-next.391",
+		"@sveltejs/kit": "^1.0.0-next.505",
+		"@sveltejs/package": "^1.0.0-next.5",
 		"@testing-library/jest-dom": "^5.16.4",
 		"@testing-library/svelte": "^3.1.1",
 		"@types/faker": "5",

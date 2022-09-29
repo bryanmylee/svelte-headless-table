@@ -10,6 +10,15 @@ const config = {
 	kit: {
 		adapter: adapter(),
 	},
+
+	package: {
+		exports: (filepath) => {
+			return filepath === 'plugins/index.ts' || filepath === 'index.ts';
+		},
+		files: (filepath) => {
+			return !filepath.endsWith('test.ts');
+		},
+	},
 };
 
 export default config;
