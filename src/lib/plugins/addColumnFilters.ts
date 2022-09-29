@@ -1,10 +1,10 @@
 import { keyed } from 'svelte-keyed';
 import type { RenderConfig } from 'svelte-render';
-import type { BodyRow } from '$lib/bodyRows';
-import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
+import type { BodyRow } from '../bodyRows';
+import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '../types/TablePlugin';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
-import type { PluginInitTableState } from '$lib/createViewModel';
-import type { DataBodyCell } from '$lib/bodyCells';
+import type { PluginInitTableState } from '../createViewModel';
+import type { DataBodyCell } from '../bodyCells';
 
 export interface ColumnFiltersState<Item> {
 	filterValues: Writable<Record<string, unknown>>;

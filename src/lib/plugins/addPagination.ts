@@ -1,5 +1,5 @@
-import type { BodyRow } from '$lib/bodyRows';
-import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
+import type { BodyRow } from '../bodyRows';
+import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '../types/TablePlugin';
 import { derived, writable, type Readable, type Updater, type Writable } from 'svelte/store';
 
 export interface PaginationConfig {

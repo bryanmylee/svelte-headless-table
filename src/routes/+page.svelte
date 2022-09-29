@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { derived, readable, get } from 'svelte/store';
-	import { Render, Subscribe, createTable, createRender } from '$lib';
+	import { Render, Subscribe, createTable, createRender } from '../lib';
 	import {
 		addColumnFilters,
 		addColumnOrder,
@@ -17,8 +17,8 @@
 		matchFilter,
 		numberRangeFilter,
 		textPrefixFilter,
-	} from '$lib/plugins';
-	import { mean, sum } from '$lib/utils/math';
+	} from '../lib/plugins';
+	import { mean, sum } from '../lib/utils/math';
 	import { getShuffled } from './_getShuffled';
 	import { createSamples } from './_createSamples';
 	import Italic from './_Italic.svelte';
@@ -28,7 +28,7 @@
 	import NumberRangeFilter from './_NumberRangeFilter.svelte';
 	import SelectFilter from './_SelectFilter.svelte';
 	import ExpandIndicator from './_ExpandIndicator.svelte';
-	import { getDistinct } from '$lib/utils/array';
+	import { getDistinct } from '../lib/utils/array';
 	import SelectIndicator from './_SelectIndicator.svelte';
 
 	const data = readable(createSamples(2, 2));

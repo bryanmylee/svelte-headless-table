@@ -1,4 +1,4 @@
-import type { DeriveFlatColumnsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
+import type { DeriveFlatColumnsFn, NewTablePropSet, TablePlugin } from '../types/TablePlugin';
 import { derived, writable, type Writable } from 'svelte/store';
 
 export interface ColumnOrderConfig {

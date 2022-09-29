@@ -1,4 +1,4 @@
-import { createTable } from '$lib/createTable';
+import { createTable } from '../createTable';
 import type { Sample } from 'src/routes/_createSamples';
 import { get, readable } from 'svelte/store';
 import { addFlatten } from './addFlatten';

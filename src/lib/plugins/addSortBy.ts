@@ -1,8 +1,8 @@
-import type { DataBodyCell } from '$lib/bodyCells';
-import type { BodyRow } from '$lib/bodyRows';
-import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '$lib/types/TablePlugin';
-import { compare } from '$lib/utils/compare';
-import { isShiftClick } from '$lib/utils/event';
+import type { DataBodyCell } from '../bodyCells';
+import type { BodyRow } from '../bodyRows';
+import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '../types/TablePlugin';
+import { compare } from '../utils/compare';
+import { isShiftClick } from '../utils/event';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 
 export interface SortByConfig {

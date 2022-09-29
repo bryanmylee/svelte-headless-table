@@ -1,4 +1,4 @@
-import type { Matrix } from '$lib/types/Matrix';
+import type { Matrix } from '../types/Matrix';
 
 export const getNullMatrix = (width: number, height: number): Matrix<null> => {
 	const result: Matrix<null> = [];

@@ -1,7 +1,7 @@
-import type { BodyRow } from '$lib/bodyRows';
-import type { NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
-import { nonNull } from '$lib/utils/filter';
-import { recordSetStore, type RecordSetStore } from '$lib/utils/store';
+import type { BodyRow } from '../bodyRows';
+import type { NewTablePropSet, TablePlugin } from '../types/TablePlugin';
+import { nonNull } from '../utils/filter';
+import { recordSetStore, type RecordSetStore } from '../utils/store';
 import { derived, get, type Readable, type Updater, type Writable } from 'svelte/store';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

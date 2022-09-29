@@ -1,11 +1,11 @@
-import { DataBodyCell } from '$lib/bodyCells';
-import { BodyRow, DisplayBodyRow } from '$lib/bodyRows';
-import type { DataColumn } from '$lib/columns';
-import type { DataLabel } from '$lib/types/Label';
-import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
-import { isShiftClick } from '$lib/utils/event';
-import { nonUndefined } from '$lib/utils/filter';
-import { arraySetStore, type ArraySetStore } from '$lib/utils/store';
+import { DataBodyCell } from '../bodyCells';
+import { BodyRow, DisplayBodyRow } from '../bodyRows';
+import type { DataColumn } from '../columns';
+import type { DataLabel } from '../types/Label';
+import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '../types/TablePlugin';
+import { isShiftClick } from '../utils/event';
+import { nonUndefined } from '../utils/filter';
+import { arraySetStore, type ArraySetStore } from '../utils/store';
 import { derived, writable, type Readable } from 'svelte/store';
 
 export interface GroupByConfig {

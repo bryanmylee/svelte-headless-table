@@ -76,5 +76,6 @@
 		"svelte-subscribe": "^1.0.4"
 	},
 	"type": "module",
-	"svelte": "index.js"
+	"svelte": "./index.js",
+	"types": "./lib/index.d.ts"
 }

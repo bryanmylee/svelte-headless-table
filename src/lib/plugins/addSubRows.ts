@@ -1,5 +1,5 @@
-import { DataBodyRow, getSubRows } from '$lib/bodyRows';
-import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
+import { DataBodyRow, getSubRows } from '../bodyRows';
+import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '../types/TablePlugin';
 import { derived } from 'svelte/store';
 
 export type ValidChildrenKey<Item> = {

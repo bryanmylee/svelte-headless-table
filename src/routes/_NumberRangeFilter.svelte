@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isNumber } from '$lib/utils/filter';
+	import { isNumber } from '../lib/utils/filter';
 	import type { Readable, Writable } from 'svelte/store';
 
 	export let filterValue: Writable<[number | null, number | null]>;

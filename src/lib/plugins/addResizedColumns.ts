@@ -1,6 +1,6 @@
-import type { HeaderCell } from '$lib/headerCells';
-import type { NewTableAttributeSet, NewTablePropSet, TablePlugin } from '$lib/types/TablePlugin';
-import { sum } from '$lib/utils/math';
+import type { HeaderCell } from '../headerCells';
+import type { NewTableAttributeSet, NewTablePropSet, TablePlugin } from '../types/TablePlugin';
+import { sum } from '../utils/math';
 import { keyed } from 'svelte-keyed';
 import { derived, writable, type Writable } from 'svelte/store';
 

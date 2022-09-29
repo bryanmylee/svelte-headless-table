@@ -2,10 +2,10 @@
 export * from 'svelte-render';
 export { Subscribe } from 'svelte-subscribe';
 // table core
-export { createTable } from '$lib/createTable';
+export { createTable } from './createTable';
 // models
-export { Table } from '$lib/createTable';
-export { HeaderRow } from '$lib/headerRows';
+export { Table } from './createTable';
+export { HeaderRow } from './headerRows';
 export {
 	HeaderCell,
 	FlatHeaderCell,
@@ -13,9 +13,9 @@ export {
 	FlatDisplayHeaderCell,
 	GroupHeaderCell,
 	GroupDisplayHeaderCell,
-} from '$lib/headerCells';
-export { BodyRow, DisplayBodyRow, DataBodyRow } from '$lib/bodyRows';
-export { BodyCell, DataBodyCell, DisplayBodyCell } from '$lib/bodyCells';
-export { Column, FlatColumn, DataColumn, GroupColumn, DisplayColumn } from '$lib/columns';
-export type { TableViewModel, TableState } from '$lib/createViewModel';
-export type { DataLabel, DisplayLabel, HeaderLabel } from '$lib/types/Label';
+} from './headerCells';
+export { BodyRow, DisplayBodyRow, DataBodyRow } from './bodyRows';
+export { BodyCell, DataBodyCell, DisplayBodyCell } from './bodyCells';
+export { Column, FlatColumn, DataColumn, GroupColumn, DisplayColumn } from './columns';
+export type { TableViewModel, TableState } from './createViewModel';
+export type { DataLabel, DisplayLabel, HeaderLabel } from './types/Label';

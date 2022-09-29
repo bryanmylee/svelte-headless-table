@@ -1,14 +1,14 @@
-import type { BodyCell, BodyCellAttributes } from '$lib/bodyCells';
-import type { BodyRow, BodyRowAttributes } from '$lib/bodyRows';
-import type { DataColumn, FlatColumn } from '$lib/columns';
-import type { HeaderCell, HeaderCellAttributes } from '$lib/headerCells';
-import type { HeaderRow, HeaderRowAttributes } from '$lib/headerRows';
+import type { BodyCell, BodyCellAttributes } from '../bodyCells';
+import type { BodyRow, BodyRowAttributes } from '../bodyRows';
+import type { DataColumn, FlatColumn } from '../columns';
+import type { HeaderCell, HeaderCellAttributes } from '../headerCells';
+import type { HeaderRow, HeaderRowAttributes } from '../headerRows';
 import type {
 	PluginInitTableState,
 	TableAttributes,
 	TableBodyAttributes,
 	TableHeadAttributes,
-} from '$lib/createViewModel';
+} from '../createViewModel';
 import type { Readable } from 'svelte/store';
 
 export type TablePlugin<
