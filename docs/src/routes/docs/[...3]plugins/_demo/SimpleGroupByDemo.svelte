@@ -162,12 +162,12 @@
 
 <style>
   .group {
-    background: rgb(144, 191, 148);
+    background: rgb(144, 191, 148, 0.2);
   }
   .aggregate {
-    background: rgb(238, 212, 100);
+    background: rgb(238, 212, 100, 0.2);
   }
   .repeat {
-    background: rgb(255, 139, 139);
+    background: rgb(255, 139, 139, 0.2);
   }
 </style>

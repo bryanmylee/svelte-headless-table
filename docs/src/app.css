@@ -5,34 +5,38 @@
 
 @layer components {
   .demo {
-    @apply text-base;
+    @apply text-base font-sans;
 
     table& {
-      border-spacing: 0;
-      @apply text-black border-gray-300 border-t border-l font-sans;
-      @apply dark:text-white dark:border-gray-400;
+      @apply text-gray-800 border rounded-md;
+      @apply dark:text-white dark:border-gray-400 dark:bg-gray-900;
 
       & tr {
         @apply bg-transparent dark:bg-transparent;
       }
+      
+      & th {
+        @apply bg-gray-100 font-bold;
+        @apply dark:bg-gray-700;
+      }
 
       & th,
       & td {
-        @apply border-gray-300 m-0 p-1.5 border-b border-r;
+        @apply border-gray-200 m-0 px-2 py-1 border-b border-r;
         @apply dark:border-gray-400;
       }
     }
 
-    button& {
-      @apply text-black bg-gray-200 disabled:opacity-30;
+    button&, & button {
+      @apply text-black bg-gray-200 disabled:opacity-30 font-semibold;
       @apply dark:bg-gray-500 dark:text-white;
-      @apply p-1.5 border border-gray-300 rounded-lg;
+      @apply px-1.5 py-1 rounded-lg;
     }
 
-    input&,
-    select& {
-      @apply p-1.5 border border-gray-300 rounded-lg;
-      @apply dark:bg-gray-800 dark:text-white;
+    input&, & input,
+    select&, & select {
+      @apply px-2 py-1 border border-gray-200 rounded-lg font-normal;
+      @apply dark:bg-gray-800 dark:text-white dark:border-gray-400;
     }
   }
 }

@@ -394,21 +394,21 @@
     cursor: col-resize;
   }
   .sorted {
-    background: rgb(144, 191, 148, 0.5);
+    background: rgb(144, 191, 148, 0.2);
   }
   .matches {
     font-weight: 700;
   }
   .group {
-    background: rgb(144, 191, 148, 0.5);
+    background: rgb(144, 191, 148, 0.2);
   }
   .aggregate {
-    background: rgb(238, 212, 100, 0.5);
+    background: rgb(238, 212, 100, 0.2);
   }
   .repeat {
-    background: rgb(255, 139, 139, 0.5);
+    background: rgb(255, 139, 139, 0.2);
   }
   .selected {
-    background: rgb(148, 205, 255, 0.5);
+    background: rgb(148, 205, 255, 0.2);
   }
 </style>

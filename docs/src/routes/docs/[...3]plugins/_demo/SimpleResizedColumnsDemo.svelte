@@ -100,14 +100,14 @@
     position: relative;
   }
 
-  .resizer {
+  th .resizer {
     position: absolute;
     top: 0;
     bottom: 0;
     right: -4px;
     width: 8px;
-    background: lightgray;
-    cursor: col-resize;
     z-index: 1;
+    background: rgba(128, 128, 128, 0.2);
+    cursor: col-resize;
   }
 </style>

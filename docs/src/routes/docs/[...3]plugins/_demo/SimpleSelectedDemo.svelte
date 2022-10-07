@@ -128,6 +128,6 @@
 
 <style>
   .selected {
-    background: rgb(148, 205, 255);
+    background: rgb(148, 205, 255, 0.2);
   }
 </style>
