@@ -3,6 +3,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Override a few styles to fix the logo clipping issue on the homepage*/
+.kit-docs {
+  @apply overflow-x-hidden;
+
+  & main {
+    @apply overflow-x-visible;
+  }
+}
+
+
 @layer components {
   .demo {
     @apply text-base font-sans;
