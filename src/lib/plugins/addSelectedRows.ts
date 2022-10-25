@@ -215,14 +215,14 @@ export const addSelectedRows =
 			}
 		);
 		const setAllPageRowsSelected = ($allPageRowsSelected: boolean) => {
+			const $pageRows = get(tableState.pageRows);
+			const pageDataIds = $pageRows
+				.map((row) => (row.isData() ? row.dataId : null))
+				.filter(nonNull);
 			if ($allPageRowsSelected) {
-				const $pageRows = get(tableState.pageRows);
-				const pageDataIds = $pageRows
-					.map((row) => (row.isData() ? row.dataId : null))
-					.filter(nonNull);
 				selectedDataIds.addAll(pageDataIds);
 			} else {
-				selectedDataIds.clear();
+				selectedDataIds.removeAll(pageDataIds);
 			}
 		};
 		const allPageRowsSelected: Writable<boolean> = {
