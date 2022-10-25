@@ -101,7 +101,7 @@ export class DataBodyCell<
 		if (this.state === undefined) {
 			throw new Error('Missing `state` reference');
 		}
-		return this.label(this, this.state);
+		return this.label(this as DataBodyCell<Item, AnyPlugins, Value>, this.state);
 	}
 
 	clone(): DataBodyCell<Item, Plugins> {
