@@ -99,6 +99,7 @@ export interface RecordSetStore<T extends string | number> extends Writable<Reco
 	add: (item: T) => void;
 	addAll: (items: T[]) => void;
 	remove: (item: T) => void;
+	removeAll: (items: T[]) => void;
 	clear: () => void;
 }
 
@@ -145,6 +146,14 @@ export const recordSetStore = <T extends string | number>(
 			return $recordSet;
 		});
 	};
+	const removeAll = (items: T[]) => {
+		update(($recordSet) => {
+			for (const item of items) {
+				delete $recordSet[item];
+			}
+			return $recordSet;
+		});
+	};
 	const clear = () => {
 		set({} as Record<T, true>);
 	};
@@ -156,6 +165,7 @@ export const recordSetStore = <T extends string | number>(
 		add,
 		addAll,
 		remove,
+		removeAll,
 		clear,
 	};
 };
