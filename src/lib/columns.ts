@@ -152,7 +152,7 @@ export class DataColumn<
 }
 
 export type DisplayColumnDataGetter<Item, Plugins extends AnyPlugins = AnyPlugins> = (
-	cell: DisplayBodyCell<Item, Plugins>,
+	cell: DisplayBodyCell<Item>,
 	state?: TableState<Item, Plugins>
 ) => unknown;
 

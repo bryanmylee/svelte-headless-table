@@ -6,12 +6,12 @@ import type { AnyPlugins } from './TablePlugin';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type DataLabel<Item, Plugins extends AnyPlugins = AnyPlugins, Value = any> = (
-	cell: DataBodyCell<Item, Plugins, Value>,
+	cell: DataBodyCell<Item, AnyPlugins, Value>,
 	state: TableState<Item, Plugins>
 ) => RenderConfig;
 
 export type DisplayLabel<Item, Plugins extends AnyPlugins = AnyPlugins> = (
-	cell: DisplayBodyCell<Item, Plugins>,
+	cell: DisplayBodyCell<Item>,
 	state: TableState<Item, Plugins>
 ) => RenderConfig;
 
@@ -19,4 +19,4 @@ export type DisplayLabel<Item, Plugins extends AnyPlugins = AnyPlugins> = (
 // inferred for subtypes.
 export type HeaderLabel<Item, Plugins extends AnyPlugins = AnyPlugins> =
 	| RenderConfig
-	| ((cell: HeaderCell<Item, Plugins>, state: TableState<Item, Plugins>) => RenderConfig);
+	| ((cell: HeaderCell<Item>, state: TableState<Item, Plugins>) => RenderConfig);
