@@ -44,7 +44,9 @@
 		group: addGroupBy({
 			initialGroupByIds: [],
 		}),
-		sort: addSortBy(),
+		sort: addSortBy({
+			toggleOrder: ['asc', 'desc'],
+		}),
 		expand: addExpandedRows({
 			initialExpandedIds: { 1: true },
 		}),

@@ -9,7 +9,10 @@ export interface SortByConfig {
 	initialSortKeys?: SortKey[];
 	disableMultiSort?: boolean;
 	isMultiSortEvent?: (event: Event) => boolean;
+	toggleOrder?: ('asc' | 'desc' | undefined)[];
 }
+
+const DEFAULT_TOGGLE_ORDER: ('asc' | 'desc' | undefined)[] = ['asc', 'desc', undefined];
 
 export interface SortByState<Item> {
 	sortKeys: WritableSortKeys;
@@ -42,31 +45,34 @@ export interface SortKey {
 
 export const createSortKeysStore = (initKeys: SortKey[]): WritableSortKeys => {
 	const { subscribe, update, set } = writable(initKeys);
-	const toggleId = (id: string, { multiSort = true }: ToggleOptions = {}) => {
+	const toggleId = (
+		id: string,
+		{ multiSort = true, toggleOrder = DEFAULT_TOGGLE_ORDER }: ToggleOptions = {}
+	) => {
 		update(($sortKeys) => {
 			const keyIdx = $sortKeys.findIndex((key) => key.id === id);
-			if (!multiSort) {
-				if (keyIdx === -1) {
-					return [{ id, order: 'asc' }];
-				}
-				const key = $sortKeys[keyIdx];
-				if (key.order === 'asc') {
-					return [{ id, order: 'desc' }];
-				}
-				return [];
-			}
-			if (keyIdx === -1) {
-				return [...$sortKeys, { id, order: 'asc' }];
-			}
 			const key = $sortKeys[keyIdx];
-			if (key.order === 'asc') {
-				return [
-					...$sortKeys.slice(0, keyIdx),
-					{ id, order: 'desc' },
-					...$sortKeys.slice(keyIdx + 1),
-				];
+			const order = key?.order;
+			const orderIdx = toggleOrder.findIndex((o) => o === order);
+			const nextOrderIdx = (orderIdx + 1) % toggleOrder.length;
+			const nextOrder = toggleOrder[nextOrderIdx];
+			if (!multiSort) {
+				if (nextOrder === undefined) {
+					return [];
+				}
+				return [{ id, order: nextOrder }];
 			}
-			return [...$sortKeys.slice(0, keyIdx), ...$sortKeys.slice(keyIdx + 1)];
+			if (keyIdx === -1 && nextOrder !== undefined) {
+				return [...$sortKeys, { id, order: nextOrder }];
+			}
+			if (nextOrder === undefined) {
+				return [...$sortKeys.slice(0, keyIdx), ...$sortKeys.slice(keyIdx + 1)];
+			}
+			return [
+				...$sortKeys.slice(0, keyIdx),
+				{ id, order: nextOrder },
+				...$sortKeys.slice(keyIdx + 1),
+			];
 		});
 	};
 	const clearId = (id: string) => {
@@ -89,6 +95,7 @@ export const createSortKeysStore = (initKeys: SortKey[]): WritableSortKeys => {
 
 interface ToggleOptions {
 	multiSort?: boolean;
+	toggleOrder?: ('asc' | 'desc' | undefined)[];
 }
 
 export type WritableSortKeys = Writable<SortKey[]> & {
@@ -160,6 +167,7 @@ export const addSortBy =
 		initialSortKeys = [],
 		disableMultiSort = false,
 		isMultiSortEvent = isShiftClick,
+		toggleOrder,
 	}: SortByConfig = {}): TablePlugin<Item, SortByState<Item>, SortByColumnOptions, SortByPropSet> =>
 	({ columnOptions }) => {
 		const disabledSortIds = Object.entries(columnOptions)
@@ -198,6 +206,7 @@ export const addSortBy =
 							if (disabled) return;
 							sortKeys.toggleId(cell.id, {
 								multiSort: disableMultiSort ? false : isMultiSortEvent(event),
+								toggleOrder,
 							});
 						};
 						const clear = () => {
