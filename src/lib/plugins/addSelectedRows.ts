@@ -65,7 +65,7 @@ const isSomeSubRowsSelectedForRow = <Item>(
 		return false;
 	}
 	return row.subRows.some((subRow) =>
-		isAllSubRowsSelectedForRow(subRow, $selectedDataIds, linkDataSubRows)
+		isSomeSubRowsSelectedForRow(subRow, $selectedDataIds, linkDataSubRows)
 	);
 };
 
