@@ -173,6 +173,13 @@ export const textPrefixFilter: ColumnFilterFn<string, string> = ({ filterValue, 
 	return String(value).toLowerCase().startsWith(String(filterValue).toLowerCase());
 };
 
+export const textIncludesFilter: ColumnFilterFn<string, string> = ({ filterValue, value }) => {
+	if (filterValue === '') {
+		return true;
+	}
+	return String(value).toLowerCase().includes(String(filterValue).toLowerCase());
+};
+
 export const numberRangeFilter: ColumnFilterFn<[number | null, number | null], number> = ({
 	filterValue: [min, max],
 	value,
