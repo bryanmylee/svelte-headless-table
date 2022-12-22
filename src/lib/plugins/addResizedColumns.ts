@@ -4,6 +4,10 @@ import { sum } from '../utils/math';
 import { keyed } from 'svelte-keyed';
 import { derived, writable, type Writable } from 'svelte/store';
 
+export interface AddResizedColumnsConfig {
+	onResizeEnd?: (ev: Event) => void;
+}
+
 export type ResizedColumnsState = {
 	columnWidths: Writable<Record<string, number>>;
 };
@@ -63,7 +67,9 @@ type ColumnsWidthState = {
 };
 
 export const addResizedColumns =
-	<Item>(): TablePlugin<
+	<Item>({
+		onResizeEnd,
+	}: AddResizedColumnsConfig): TablePlugin<
 		Item,
 		ResizedColumnsState,
 		ResizedColumnsColumnOptions,
@@ -181,6 +187,7 @@ export const addResizedColumns =
 								}));
 							}
 						}
+						onResizeEnd?.(event);
 						if (event instanceof MouseEvent) {
 							window.removeEventListener('mousemove', dragMove);
 							window.removeEventListener('mouseup', dragEnd);
