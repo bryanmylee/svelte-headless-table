@@ -67,9 +67,7 @@ type ColumnsWidthState = {
 };
 
 export const addResizedColumns =
-	<Item>({
-		onResizeEnd,
-	}: AddResizedColumnsConfig={}): TablePlugin<
+	<Item>({ onResizeEnd }: AddResizedColumnsConfig = {}): TablePlugin<
 		Item,
 		ResizedColumnsState,
 		ResizedColumnsColumnOptions,
