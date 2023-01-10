@@ -36,7 +36,7 @@ export const createPageStore = ({
 
 	const pageIndex = writable(initialPageIndex);
 
-	function calcPageCount([$pageSize, $itemsCount]: [$pageSize: number, $itemsCount: number]) {
+	function calcPageCountAndLimitIndex([$pageSize, $itemsCount]: [$pageSize: number, $itemsCount: number]) {
 		const $pageCount = Math.ceil($itemsCount / $pageSize);
 		pageIndex.update(($pageIndex) => {
 			if ($pageCount > 0 && $pageIndex >= $pageCount) {
@@ -50,10 +50,10 @@ export const createPageStore = ({
 	const serverItemsCount = writable(0);
 	let pageCount;
 	if (serverSide) {
-		pageCount = derived([pageSize, serverItemsCount], calcPageCount);
+		pageCount = derived([pageSize, serverItemsCount], calcPageCountAndLimitIndex);
 	} else {
 		const itemCount = derived(items, ($items) => $items.length);
-		pageCount = derived([pageSize, itemCount], calcPageCount);
+		pageCount = derived([pageSize, itemCount], calcPageCountAndLimitIndex);
 	}
 
 	const hasPreviousPage = derived(pageIndex, ($pageIndex) => {
