@@ -117,7 +117,6 @@ export const addTableFilter =
 	({ columnOptions }) => {
 		const filterValue = writable(initialFilterValue);
 		const preFilteredRows = writable<BodyRow<Item>[]>([]);
-		//const filteredRows = writable<BodyRow<Item>[]>([]);
 		const tableCellMatches = recordSetStore();
 
 		const pluginState: TableFilterState<Item> = { filterValue, preFilteredRows };
@@ -133,7 +132,6 @@ export const addTableFilter =
 					includeHiddenColumns,
 				});
 				tableCellMatches.set($tableCellMatches);
-				//filteredRows.set($filteredRows);
 				if (serverSide) {
 					return $rows;
 				} else {

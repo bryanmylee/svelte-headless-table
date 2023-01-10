@@ -178,7 +178,6 @@ export const addSortBy =
 
 		const sortKeys = createSortKeysStore(initialSortKeys);
 		const preSortedRows = writable<BodyRow<Item>[]>([]);
-		//const sortedRows = writable<BodyRow<Item>[]>([]);
 
 		const deriveRows: DeriveRowsFn<Item> = (rows) => {
 			return derived([rows, sortKeys], ([$rows, $sortKeys]) => {
@@ -188,7 +187,6 @@ export const addSortBy =
 				} else {
 					return $rows;
 				}
-				//sortedRows.set(_sortedRows);
 			});
 		};
 
