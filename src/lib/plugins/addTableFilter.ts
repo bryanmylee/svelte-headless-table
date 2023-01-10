@@ -7,6 +7,7 @@ export interface TableFilterConfig {
 	fn?: TableFilterFn;
 	initialFilterValue?: string;
 	includeHiddenColumns?: boolean;
+	serverSide?: boolean;
 }
 
 export interface TableFilterState<Item> {
@@ -106,6 +107,7 @@ export const addTableFilter =
 		fn = textPrefixFilter,
 		initialFilterValue = '',
 		includeHiddenColumns = false,
+		serverSide = false,
 	}: TableFilterConfig = {}): TablePlugin<
 		Item,
 		TableFilterState<Item>,
@@ -115,7 +117,7 @@ export const addTableFilter =
 	({ columnOptions }) => {
 		const filterValue = writable(initialFilterValue);
 		const preFilteredRows = writable<BodyRow<Item>[]>([]);
-		const filteredRows = writable<BodyRow<Item>[]>([]);
+		//const filteredRows = writable<BodyRow<Item>[]>([]);
 		const tableCellMatches = recordSetStore();
 
 		const pluginState: TableFilterState<Item> = { filterValue, preFilteredRows };
@@ -131,8 +133,12 @@ export const addTableFilter =
 					includeHiddenColumns,
 				});
 				tableCellMatches.set($tableCellMatches);
-				filteredRows.set($filteredRows);
-				return $filteredRows;
+				//filteredRows.set($filteredRows);
+				if (serverSide) {
+					return $rows;
+				} else {
+					return $filteredRows;
+				}
 			});
 		};
 
