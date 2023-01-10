@@ -33,7 +33,7 @@ export const createPageStore = ({
 		});
 	};
 	const setPageSize = (newPageSize: number) => updatePageSize(() => newPageSize);
-	
+
 	const pageIndex = writable(initialPageIndex);
 
 	let pageCount;
@@ -50,10 +50,10 @@ export const createPageStore = ({
 
 	const serverItemsCount = writable(0);
 	if (serverSide) {
-		pageCount = derived([pageSize, serverItemsCount], calcPageCount)
+		pageCount = derived([pageSize, serverItemsCount], calcPageCount);
 	} else {
-		const itemCount = derived(items, ($items) => $items.length)
-		pageCount = derived([pageSize, itemCount], calcPageCount)
+		const itemCount = derived(items, ($items) => $items.length);
+		pageCount = derived([pageSize, itemCount], calcPageCount);
 	}
 
 	const hasPreviousPage = derived(pageIndex, ($pageIndex) => {
