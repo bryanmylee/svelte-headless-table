@@ -33,19 +33,25 @@
 
 	const data = readable(createSamples(2, 2));
 
+	let serverSide = false;
+
 	const table = createTable(data, {
 		subRows: addSubRows({
 			children: 'children',
 		}),
-		filter: addColumnFilters(),
+		filter: addColumnFilters({
+			serverSide: serverSide,
+		}),
 		tableFilter: addTableFilter({
 			includeHiddenColumns: true,
+			serverSide: serverSide,
 		}),
 		group: addGroupBy({
 			initialGroupByIds: [],
 		}),
 		sort: addSortBy({
 			toggleOrder: ['asc', 'desc'],
+			serverSide: serverSide,
 		}),
 		expand: addExpandedRows({
 			initialExpandedIds: { 1: true },
@@ -57,6 +63,7 @@
 		hideColumns: addHiddenColumns(),
 		page: addPagination({
 			initialPageSize: 20,
+			serverSide: serverSide,
 		}),
 		resize: addResizedColumns(),
 		export: addDataExport(),
@@ -258,7 +265,8 @@
 	const { filterValues } = pluginStates.filter;
 	const { filterValue } = pluginStates.tableFilter;
 	const { selectedDataIds } = pluginStates.select;
-	const { pageIndex, pageCount, pageSize, hasPreviousPage, hasNextPage } = pluginStates.page;
+	const { pageIndex, pageCount, pageSize, hasPreviousPage, hasNextPage, serverItemCount } =
+		pluginStates.page;
 	const { expandedIds } = pluginStates.expand;
 	const { columnIdOrder } = pluginStates.orderColumns;
 	// $: $columnIdOrder = ['expanded', ...$groupByIds];
@@ -268,6 +276,8 @@
 	const { exportedData } = pluginStates.export;
 	const { exportedData: exportedJson } = pluginStates.exportJson;
 	const { exportedData: exportedCsv } = pluginStates.exportCsv;
+
+	$serverItemCount = 6;
 </script>
 
 <h1>svelte-headless-table</h1>
@@ -373,7 +383,8 @@
 		},
 		null,
 		2
-	)}</pre>
+	)}
+serverSide: {serverSide}</pre>
 
 <style>
 	* {
