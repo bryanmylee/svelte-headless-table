@@ -36,7 +36,6 @@ export const createPageStore = ({
 
 	const pageIndex = writable(initialPageIndex);
 
-	let pageCount;
 	function calcPageCount([$pageSize, $itemsCount]: [$pageSize: number, $itemsCount: number]) {
 		const $pageCount = Math.ceil($itemsCount / $pageSize);
 		pageIndex.update(($pageIndex) => {
@@ -49,6 +48,7 @@ export const createPageStore = ({
 	}
 
 	const serverItemsCount = writable(0);
+	let pageCount;
 	if (serverSide) {
 		pageCount = derived([pageSize, serverItemsCount], calcPageCount);
 	} else {
