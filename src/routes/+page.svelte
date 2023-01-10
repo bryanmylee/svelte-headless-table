@@ -364,6 +364,7 @@
 			groupByIds: $groupByIds,
 			sortKeys: $sortKeys,
 			filterValues: $filterValues,
+			filterValue: $filterValue,
 			selectedDataIds: $selectedDataIds,
 			columnIdOrder: $columnIdOrder,
 			hiddenColumnIds: $hiddenColumnIds,
