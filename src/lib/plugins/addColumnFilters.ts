@@ -6,6 +6,10 @@ import { derived, writable, type Readable, type Writable } from 'svelte/store';
 import type { PluginInitTableState } from '../createViewModel';
 import type { DataBodyCell } from '../bodyCells';
 
+export interface ColumnFiltersConfig {
+	serverSide?: boolean;
+}
+
 export interface ColumnFiltersState<Item> {
 	filterValues: Writable<Record<string, unknown>>;
 	preFilteredRows: Readable<BodyRow<Item>[]>;
@@ -89,7 +93,7 @@ const getFilteredRows = <Item, Row extends BodyRow<Item>>(
 };
 
 export const addColumnFilters =
-	<Item>(): TablePlugin<
+	<Item>({ serverSide = false }: ColumnFiltersConfig = {}): TablePlugin<
 		Item,
 		ColumnFiltersState<Item>,
 		ColumnFiltersColumnOptions<Item>,
@@ -105,9 +109,14 @@ export const addColumnFilters =
 		const deriveRows: DeriveRowsFn<Item> = (rows) => {
 			return derived([rows, filterValues], ([$rows, $filterValues]) => {
 				preFilteredRows.set($rows);
-				const _filteredRows = getFilteredRows($rows, $filterValues, columnOptions);
-				filteredRows.set(_filteredRows);
-				return _filteredRows;
+				if (!serverSide) {
+					const _filteredRows = getFilteredRows($rows, $filterValues, columnOptions);
+					filteredRows.set(_filteredRows);
+					return _filteredRows;
+				} else {
+					filteredRows.set($rows);
+					return $rows;
+				}
 			});
 		};
 

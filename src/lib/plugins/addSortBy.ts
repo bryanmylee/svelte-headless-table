@@ -10,6 +10,7 @@ export interface SortByConfig {
 	disableMultiSort?: boolean;
 	isMultiSortEvent?: (event: Event) => boolean;
 	toggleOrder?: ('asc' | 'desc' | undefined)[];
+	serverSide?: boolean;
 }
 
 const DEFAULT_TOGGLE_ORDER: ('asc' | 'desc' | undefined)[] = ['asc', 'desc', undefined];
@@ -168,6 +169,7 @@ export const addSortBy =
 		disableMultiSort = false,
 		isMultiSortEvent = isShiftClick,
 		toggleOrder,
+		serverSide = false,
 	}: SortByConfig = {}): TablePlugin<Item, SortByState<Item>, SortByColumnOptions, SortByPropSet> =>
 	({ columnOptions }) => {
 		const disabledSortIds = Object.entries(columnOptions)
@@ -176,18 +178,15 @@ export const addSortBy =
 
 		const sortKeys = createSortKeysStore(initialSortKeys);
 		const preSortedRows = writable<BodyRow<Item>[]>([]);
-		const sortedRows = writable<BodyRow<Item>[]>([]);
 
 		const deriveRows: DeriveRowsFn<Item> = (rows) => {
 			return derived([rows, sortKeys], ([$rows, $sortKeys]) => {
 				preSortedRows.set($rows);
-				const _sortedRows = getSortedRows<Item, typeof $rows[number]>(
-					$rows,
-					$sortKeys,
-					columnOptions
-				);
-				sortedRows.set(_sortedRows);
-				return _sortedRows;
+				if (serverSide) {
+					return getSortedRows<Item, typeof $rows[number]>($rows, $sortKeys, columnOptions);
+				} else {
+					return $rows;
+				}
 			});
 		};
 
