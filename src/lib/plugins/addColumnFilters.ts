@@ -109,14 +109,13 @@ export const addColumnFilters =
 		const deriveRows: DeriveRowsFn<Item> = (rows) => {
 			return derived([rows, filterValues], ([$rows, $filterValues]) => {
 				preFilteredRows.set($rows);
-				if (!serverSide) {
-					const _filteredRows = getFilteredRows($rows, $filterValues, columnOptions);
-					filteredRows.set(_filteredRows);
-					return _filteredRows;
-				} else {
+				if (serverSide) {
 					filteredRows.set($rows);
 					return $rows;
 				}
+				const _filteredRows = getFilteredRows($rows, $filterValues, columnOptions);
+				filteredRows.set(_filteredRows);
+				return _filteredRows;
 			});
 		};
 
