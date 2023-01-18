@@ -183,10 +183,9 @@ export const addSortBy =
 			return derived([rows, sortKeys], ([$rows, $sortKeys]) => {
 				preSortedRows.set($rows);
 				if (serverSide) {
-					return getSortedRows<Item, typeof $rows[number]>($rows, $sortKeys, columnOptions);
-				} else {
 					return $rows;
 				}
+				return getSortedRows<Item, typeof $rows[number]>($rows, $sortKeys, columnOptions);
 			});
 		};
 

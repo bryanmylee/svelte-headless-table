@@ -36,7 +36,10 @@ export const createPageStore = ({
 
 	const pageIndex = writable(initialPageIndex);
 
-	function calcPageCountAndLimitIndex([$pageSize, $itemsCount]: [$pageSize: number, $itemsCount: number]) {
+	function calcPageCountAndLimitIndex([$pageSize, $itemsCount]: [
+		$pageSize: number,
+		$itemsCount: number
+	]) {
 		const $pageCount = Math.ceil($itemsCount / $pageSize);
 		pageIndex.update(($pageIndex) => {
 			if ($pageCount > 0 && $pageIndex >= $pageCount) {
@@ -117,15 +120,14 @@ export const addPagination =
 		const derivePageRows: DeriveRowsFn<Item> = (rows) => {
 			return derived([rows, pageSize, pageIndex], ([$rows, $pageSize, $pageIndex]) => {
 				prePaginatedRows.set($rows);
-				if (!serverSide) {
-					const startIdx = $pageIndex * $pageSize;
-					const _paginatedRows = $rows.slice(startIdx, startIdx + $pageSize);
-					paginatedRows.set(_paginatedRows);
-					return _paginatedRows;
-				} else {
+				if (serverSide) {
 					paginatedRows.set($rows);
 					return $rows;
 				}
+				const startIdx = $pageIndex * $pageSize;
+				const _paginatedRows = $rows.slice(startIdx, startIdx + $pageSize);
+				paginatedRows.set(_paginatedRows);
+				return _paginatedRows;
 			});
 		};
 

@@ -134,9 +134,8 @@ export const addTableFilter =
 				tableCellMatches.set($tableCellMatches);
 				if (serverSide) {
 					return $rows;
-				} else {
-					return $filteredRows;
 				}
+				return $filteredRows;
 			});
 		};
 
