@@ -12,7 +12,7 @@ export interface PaginationState {
 	pageSize: Writable<number>;
 	pageIndex: Writable<number>;
 	pageCount: Readable<number>;
-	serverItemsCount: Writable<number>;
+	serverItemCount: Writable<number>;
 	hasPreviousPage: Readable<boolean>;
 	hasNextPage: Readable<boolean>;
 }
@@ -36,11 +36,11 @@ export const createPageStore = ({
 
 	const pageIndex = writable(initialPageIndex);
 
-	function calcPageCountAndLimitIndex([$pageSize, $itemsCount]: [
+	function calcPageCountAndLimitIndex([$pageSize, $itemCount]: [
 		$pageSize: number,
-		$itemsCount: number
+		$itemCount: number
 	]) {
-		const $pageCount = Math.ceil($itemsCount / $pageSize);
+		const $pageCount = Math.ceil($itemCount / $pageSize);
 		pageIndex.update(($pageIndex) => {
 			if ($pageCount > 0 && $pageIndex >= $pageCount) {
 				return $pageCount - 1;
@@ -50,10 +50,10 @@ export const createPageStore = ({
 		return $pageCount;
 	}
 
-	const serverItemsCount = writable(0);
+	const serverItemCount = writable(0);
 	let pageCount;
 	if (serverSide) {
-		pageCount = derived([pageSize, serverItemsCount], calcPageCountAndLimitIndex);
+		pageCount = derived([pageSize, serverItemCount], calcPageCountAndLimitIndex);
 	} else {
 		const itemCount = derived(items, ($items) => $items.length);
 		pageCount = derived([pageSize, itemCount], calcPageCountAndLimitIndex);
@@ -74,7 +74,7 @@ export const createPageStore = ({
 		},
 		pageIndex,
 		pageCount,
-		serverItemsCount,
+		serverItemCount,
 		hasPreviousPage,
 		hasNextPage,
 	};
@@ -101,7 +101,7 @@ export const addPagination =
 	() => {
 		const prePaginatedRows = writable<BodyRow<Item>[]>([]);
 		const paginatedRows = writable<BodyRow<Item>[]>([]);
-		const { pageSize, pageIndex, pageCount, serverItemsCount, hasPreviousPage, hasNextPage } =
+		const { pageSize, pageIndex, pageCount, serverItemCount, hasPreviousPage, hasNextPage } =
 			createPageStore({
 				items: prePaginatedRows,
 				initialPageIndex,
@@ -112,7 +112,7 @@ export const addPagination =
 			pageSize,
 			pageIndex,
 			pageCount,
-			serverItemsCount,
+			serverItemCount,
 			hasPreviousPage,
 			hasNextPage,
 		};
