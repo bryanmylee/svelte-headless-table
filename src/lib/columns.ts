@@ -50,7 +50,7 @@ export type FlatColumnInit<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	Id extends string = any
 > = Omit<ColumnInit<Item, Plugins>, 'height'> & {
-	id: Id;
+	id?: Id;
 };
 
 export class FlatColumn<
@@ -65,7 +65,7 @@ export class FlatColumn<
 	id: Id;
 	constructor({ header, footer, plugins, id }: FlatColumnInit<Item, Plugins>) {
 		super({ header, footer, plugins, height: 1 });
-		this.id = id;
+		this.id = id ?? String(header);
 	}
 }
 
@@ -96,7 +96,7 @@ export type DataColumnInitKey<Item, Id extends keyof Item> = {
 
 export type DataColumnInitIdAndKey<Item, Id extends string, Key extends keyof Item> = {
 	accessor: Key;
-	id: Id;
+	id?: Id;
 };
 
 export type DataColumnInitFnAndId<Item, Id extends string, Value> = {
@@ -133,10 +133,10 @@ export class DataColumn<
 		} else {
 			this.accessorKey = accessor;
 		}
-		if (id === undefined && this.accessorKey === undefined) {
-			throw new Error('A column id or string accessor is required');
+		if (id === undefined && this.accessorKey === undefined && header === undefined) {
+			throw new Error('A column id, string accessor, or header is required');
 		}
-		this.id = (id ?? String(this.accessorKey)) as Id;
+		this.id = (id ?? this.accessorKey ? String(this.accessorKey) : String(header)) as Id;
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
