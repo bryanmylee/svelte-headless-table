@@ -136,7 +136,8 @@ export class DataColumn<
 		if (id === undefined && this.accessorKey === undefined && header === undefined) {
 			throw new Error('A column id, string accessor, or header is required');
 		}
-		this.id = (id ?? this.accessorKey ? String(this.accessorKey) : String(header)) as Id;
+		const accessorKeyId = typeof this.accessorKey === 'string' ? this.accessorKey : null;
+		this.id = (id ?? accessorKeyId ?? String(header)) as Id;
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
