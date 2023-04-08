@@ -1,7 +1,8 @@
-import type {DisplayBodyCell} from './bodyCells'
-import type {TableState} from './createViewModel'
-import type {DataLabel, DisplayLabel, HeaderLabel} from './types/Label'
-import type {AnyPlugins, PluginColumnConfigs} from './types/TablePlugin'
+import type { DisplayBodyCell } from './bodyCells';
+import type { TableState } from './createViewModel';
+import type { DisplayLabel, HeaderLabel } from './types/Label';
+import type { DataLabel } from './types/Label';
+import type { AnyPlugins, PluginColumnConfigs } from './types/TablePlugin';
 
 export interface ColumnInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	header: HeaderLabel<Item, Plugins>;
@@ -135,7 +136,8 @@ export class DataColumn<
 		if (id === undefined && this.accessorKey === undefined && header === undefined) {
 			throw new Error('A column id, string accessor, or header is required');
 		}
-		this.id = (id ?? this.accessorKey ? String(this.accessorKey) : String(header)) as Id;
+		const accessorKeyId = typeof this.accessorKey === 'string' ? this.accessorKey : null;
+		this.id = (id ?? accessorKeyId ?? String(header)) as Id;
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
