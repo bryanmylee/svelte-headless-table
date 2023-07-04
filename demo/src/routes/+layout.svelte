@@ -1,15 +1,15 @@
 <script lang="ts">
+  import '../app.postcss';
   import '@svelteness/kit-docs/client/polyfills/index.js';
   import '@svelteness/kit-docs/client/styles/normalize.css';
   import '@svelteness/kit-docs/client/styles/theme.css';
-  import '@svelteness/kit-docs/client/styles/vars.css';
+  import '$lib/styles/kit-docs.css';
 
   import SvelteLogo from '$img/svelte-horizontal.svg?raw';
 
   import { page } from '$app/stores';
 
   import {
-    createKitDocsLoader,
     KitDocs,
     KitDocsLayout,
     Button,

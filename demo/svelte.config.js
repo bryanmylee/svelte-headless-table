@@ -11,8 +11,8 @@ const config = {
       handleMissingId: 'warn',
     },
   },
-  
-  preprocess: vitePreprocess()
+
+  preprocess: [vitePreprocess({})],
 };
 
 export default config;
