@@ -26,7 +26,7 @@
 
   $: currentHighlightedLines = copySteps ? stepHighlightLines : highlightLines;
 
-  const isHighlightLine = (lineNumber: number, _?: [number, number][]) =>
+  const isHighlightLine = (lineNumber: number, currentHighlightedLines: [number, number][]) =>
     currentHighlightedLines.some(([start, end]) => lineNumber >= start && lineNumber <= end);
 
   // `linesCount-1` since last line is always empty (prettier)
@@ -41,7 +41,7 @@
         currentHighlightedLines.length > 0 && (copyHighlightOnly || copySteps)
           ? unescapedRawCode
               ?.split('\n')
-              .filter((_, i) => isHighlightLine(i + 1))
+              .filter((_, i) => isHighlightLine(i + 1, currentHighlightedLines))
               .join('\n')
           : unescapedRawCode;
       await navigator.clipboard.writeText(copiedCode ?? '');
@@ -145,7 +145,7 @@
         aria-hidden="true"
       >
         {#each lines as lineNumber}
-          {#if isHighlightLine(lineNumber, currentHighlightedLines)}
+          {#if isHighlightLine(lineNumber + 1, currentHighlightedLines)}
             <div
               class="w-full border-l-[5px] font-mono text-transparent"
               style="border-color: var(--kd-code-highlight-border); background-color: var(--kd-code-highlight-color);"
