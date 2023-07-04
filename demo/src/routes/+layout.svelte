@@ -33,7 +33,7 @@
   const { activeCategory } = createSidebarContext(sidebar);
 
   $: category = $activeCategory ? `${$activeCategory}: ` : '';
-  $: title = meta ? `${category}${meta.title} | Svelte` : null;
+  $: title = meta ? `${category}${meta.title} | Svelte Headless Table | Bryan Lee` : null;
   $: description = meta?.description;
 </script>
 

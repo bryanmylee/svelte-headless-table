@@ -1,7 +1,7 @@
----
-title: Unopinionated and extensible data tables for Svelte
-description: Build and design powerful datagrid experiences while retaining 100% control over styles and markup.
----
+<svelte:head>
+  <title>Svelte Headless Table | Bryan Lee</title>
+  <meta name="description" content="Unopinionated and extensible data tables for Svelte" />
+</svelte:head>
 
 <article class="max-w-[var(--kd-article-max-width)] p-10 mx-auto prose dark:prose-invert">
 
