@@ -12,10 +12,10 @@ sidebar_title: Table
 
 # {$frontmatter?.title}
 
-`Table` is the main instance returned by [`createTable`](./create-table.md).
+`Table` is the main instance returned by [`createTable`](../create-table.md).
 
 ## Usage
 
-### [`createColumns: (columns) => Column[]`](./create-columns.md)
+### [`createColumns: (columns) => Column[]`](../create-columns.md)
 
-### [`createViewModel: (columns) => TableViewModel`](./create-view-model.md)
+### [`createViewModel: (columns) => TableViewModel`](../create-view-model.md)

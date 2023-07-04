@@ -33,7 +33,7 @@ See also [Plugin View Model Extensions](../plugins/overview#connecting-plugins-t
 
 ### `render: () => RenderConfig`
 
-Returns the [render configuration](./--render.md#renderconfig) of the body cell. Pass into `Render#of`.
+Returns the [render configuration](../--render.md#renderconfig) of the body cell. Pass into `Render#of`.
 
 ```svelte
 <tr>
@@ -49,7 +49,7 @@ Returns the [render configuration](./--render.md#renderconfig) of the body cell.
 
 ### `row: BodyRow`
 
-A reference to the [`BodyRow`](./body-row.md) that contains this cell.
+A reference to the [`BodyRow`](../body-row.md) that contains this cell.
 
 ### `column: Column`
 

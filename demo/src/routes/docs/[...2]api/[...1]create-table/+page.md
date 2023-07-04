@@ -11,7 +11,7 @@ sidebar_title: createTable
 
 # {$frontmatter.title}
 
-Every Svelte Headless Table starts with `createTable`. It takes a data source and plugin configuration, and returns a [`Table`](./--table.md) instance.
+Every Svelte Headless Table starts with `createTable`. It takes a data source and plugin configuration, and returns a [`Table`](../--table.md) instance.
 
 ## Usage
 
@@ -21,7 +21,7 @@ Every Svelte Headless Table starts with `createTable`. It takes a data source an
 
 `data` is a Svelte store containing an array of data to present on the table. If data needs to be updated (e.g. when editing the table or lazy-fetching data from the server), use a `Writable` store.
 
-`plugins` is an object of plugin names to plugins. Refer to [the plugin system](../plugins/overview.md) on how to use Svelte Headless Table plugins.
+`plugins` is an object of plugin names to plugins. Refer to [the plugin system](../../plugins/overview.md) on how to use Svelte Headless Table plugins.
 
 ```ts
 const table = createTable(data, {

@@ -89,7 +89,7 @@ _Defaults to the value of `accessor` if a string accessor is passed_. If a funct
 
 Defines the component to use for the header cell of the data column.
 
-`header` is either a [`RenderConfig`](./--render.md#renderconfig), or a function that receives [`HeaderCell`](./header-cell.md) and [`TableState`](./table-state.md), and returns a [`RenderConfig`](./--render.md#renderconfig).
+`header` is either a [`RenderConfig`](../--render.md#renderconfig), or a function that receives [`HeaderCell`](../header-cell.md) and [`TableState`](../table-state.md), and returns a [`RenderConfig`](../--render.md#renderconfig).
 
 :::example
 
@@ -144,7 +144,7 @@ Defines the component to use for the header cell of the data column.
 
 Defines the component to use for the body cells of the data column.
 
-`cell` is a function that receives [`DataBodyCell`](./body-cell.md#databodycell) and [`TableState`](./table-state.md), and returns a [`RenderConfig`](./--render.md#renderconfig).
+`cell` is a function that receives [`DataBodyCell`](../body-cell.md#databodycell) and [`TableState`](../table-state.md), and returns a [`RenderConfig`](../--render.md#renderconfig).
 
 _Defaults to returning `dataCell.value`_.
 
@@ -239,7 +239,7 @@ const columns = table.createColumns([
 
 Defines the component to use for the header cell of the group column.
 
-`header` is either a [`RenderConfig`](./--render.md#renderconfig), or a function that receives [`HeaderCell`](./header-cell.md) and [`TableState`](./table-state.md), and returns a [`RenderConfig`](./--render.md#renderconfig).
+`header` is either a [`RenderConfig`](../--render.md#renderconfig), or a function that receives [`HeaderCell`](../header-cell.md) and [`TableState`](../table-state.md), and returns a [`RenderConfig`](../--render.md#renderconfig).
 
 :::example
 
@@ -322,7 +322,7 @@ const columns = table.createColumns([
 
 Defines the component to use for the header cell of the display column.
 
-`header` is either a [`RenderConfig`](./--render.md#renderconfig), or a function that receives [`HeaderCell`](./header-cell.md) and [`TableState`](./table-state.md), and returns a [`RenderConfig`](./--render.md#renderconfig).
+`header` is either a [`RenderConfig`](../--render.md#renderconfig), or a function that receives [`HeaderCell`](../header-cell.md) and [`TableState`](../table-state.md), and returns a [`RenderConfig`](../--render.md#renderconfig).
 
 :::example
 
@@ -352,19 +352,19 @@ const columns = table.createColumns([
 
 Defines the component to use for the body cells of the display column.
 
-`cell` is a function that receives [`DisplayBodyCell`](./body-cell.md#displaybodycell) and [`TableState`](./table-state.md), and returns a [`RenderConfig`](./--render.md#renderconfig).
+`cell` is a function that receives [`DisplayBodyCell`](../body-cell.md#displaybodycell) and [`TableState`](../table-state.md), and returns a [`RenderConfig`](../--render.md#renderconfig).
 
 #### `displayDef.data: (displayCell, state) => Readable<unknown> | unknown`
 
 An optional method to define the underlying data of the display column cell.
 
-This is only useful when used with the [`addDataExport`](../plugins/add-data-export.md) plugin.
+This is only useful when used with the [`addDataExport`](../../plugins/add-data-export.md) plugin.
 
 Usually, display columns do not contain any data and are exported as `null` values. However, it may be useful to export the plugin states of each row as part of the data export.
 
 To do so, you can use `data` to specify how the column should be exported.
 
-`data` is a function that receives [`DisplayBodyCell`](./body-cell.md#displaybodycell) and a nullable [`TableState`](./table-state.md), and returns the data for that cell.
+`data` is a function that receives [`DisplayBodyCell`](../body-cell.md#displaybodycell) and a nullable [`TableState`](../table-state.md), and returns the data for that cell.
 
 :::example
 

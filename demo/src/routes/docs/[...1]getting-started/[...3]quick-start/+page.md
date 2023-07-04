@@ -123,7 +123,7 @@ We apply our view model over the structure.
 ```
 
 :::admonition type="info"
-`Subscribe` and `Render` are provided by Svelte Headless Table to overcome certain limitations of Svelte. Read more about [Subscribe](../api/subscribe.md) and [Render](../api/--render).
+`Subscribe` and `Render` are provided by Svelte Headless Table to overcome certain limitations of Svelte. Read more about [Subscribe](../../api/subscribe.md) and [Render](../../api/--render.md).
 :::
 
 ## Final result
@@ -225,4 +225,4 @@ Explore this example in the [REPL](https://svelte.dev/repl/08cb356f4fad4c03ae331
 
 ## What's next?
 
-We are now ready to extend our table with powerful features using the [Plugin System](../plugins/overview.md)!
+We are now ready to extend our table with powerful features using the [Plugin System](../../plugins/overview.md)!

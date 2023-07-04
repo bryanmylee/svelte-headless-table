@@ -11,7 +11,7 @@ sidebar_title: TableState
 
 # {$frontmatter.title}
 
-`TableState` is the [`TableViewModel`](./table-view-model.md) with two additional properties.
+`TableState` is the [`TableViewModel`](../table-view-model.md) with two additional properties.
 
 ## Usage
 

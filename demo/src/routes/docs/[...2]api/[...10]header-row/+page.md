@@ -33,6 +33,6 @@ See also [Plugin View Model Extensions](../plugins/overview#connecting-plugins-t
 
 ### `cells: HeaderCell[]`
 
-An array of [`HeaderCell`](./header-cell.md)s to iterate over and apply onto `<th>` elements.
+An array of [`HeaderCell`](../header-cell.md)s to iterate over and apply onto `<th>` elements.
 
 `cells` only includes the cells of **visible columns**.

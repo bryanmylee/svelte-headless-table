@@ -11,7 +11,7 @@ sidebar_title: createViewModel
 
 # {$frontmatter.title}
 
-`Table#createViewModel` derives the view model that is applied onto markup. It is called on the table instance with `Column` instances, and returns a [`TableViewModel`](./table-view-model.md).
+`Table#createViewModel` derives the view model that is applied onto markup. It is called on the table instance with `Column` instances, and returns a [`TableViewModel`](../table-view-model.md).
 
 ## Usage
 
@@ -19,7 +19,7 @@ sidebar_title: createViewModel
 
 ### `Table#createViewModel: (columns, options) => TableViewModel`
 
-`columns` is an array of `Column` instances returned from [`Table#createColumns`](./create-columns.md#table-createcolumns-columns-column).
+`columns` is an array of `Column` instances returned from [`Table#createColumns`](../create-columns.md#table-createcolumns-columns-column).
 
 `options` is an optional configuration object to configure the view model.
 
@@ -37,7 +37,7 @@ const {
 
 #### `options.rowDataId?: (item, index) => string`
 
-Defines a custom [`dataId`](./body-row.md#dataid-string) for each row.
+Defines a custom [`dataId`](../body-row.md#dataid-string) for each row.
 
 :::admonition type="warning"
 In the context of sub-rows, the `index` of the first sub-row is `0`.

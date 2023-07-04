@@ -33,7 +33,7 @@ See also [Plugin View Model Extensions](../plugins/overview#connecting-plugins-t
 
 ### `render: () => RenderConfig`
 
-Returns the [render configuration](./--render.md#renderconfig) of the header cell. Pass into `Render#of`.
+Returns the [render configuration](../--render.md#renderconfig) of the header cell. Pass into `Render#of`.
 
 ```svelte
 <tr>
@@ -79,7 +79,7 @@ Returns `true` if the header cell is an instance of [`GroupDisplayHeaderCell`](#
 
 `DataHeaderCell` is a `FlatHeaderCell` that is backed by a specific data attribute.
 
-`DataHeaderCell`s are usually created with [`Table#column`](./create-columns.md#table-column-columndef-datacolumn).
+`DataHeaderCell`s are usually created with [`Table#column`](../create-columns.md#table-column-columndef-datacolumn).
 
 ### `accessorKey?: string`
 
@@ -93,7 +93,7 @@ The function to derive the data attribute.
 
 `FlatDisplayHeaderCell` is a `FlatHeaderCell` that is not backed by any data attribute.
 
-`FlatDisplayHeaderCell`s are usually created with [`Table#display`](./create-columns.md#table-display-displaydef-displaycolumn).
+`FlatDisplayHeaderCell`s are usually created with [`Table#display`](../create-columns.md#table-display-displaydef-displaycolumn).
 
 ## GroupHeaderCell
 
