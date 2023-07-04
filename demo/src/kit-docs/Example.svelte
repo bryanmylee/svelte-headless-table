@@ -29,7 +29,7 @@
       @apply px-4 py-2 border rounded-lg;
       @apply border-gray-200 bg-gray-100/50;
       :global(.dark) & {
-        @apply border-gray-600 bg-gray-600/50;
+        @apply border-gray-600 bg-gray-800/50;
       }
     }
 
