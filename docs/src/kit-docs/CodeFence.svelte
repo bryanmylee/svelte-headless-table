@@ -26,7 +26,7 @@
 
   $: currentHighlightedLines = copySteps ? stepHighlightLines : highlightLines;
 
-  const isHighlightLine = (lineNumber: number, _?: [number, number][]) =>
+  const isHighlightLine = (lineNumber: number, currentHighlightedLines: [number, number][]) =>
     currentHighlightedLines.some(([start, end]) => lineNumber >= start && lineNumber <= end);
 
   // `linesCount-1` since last line is always empty (prettier)
@@ -41,7 +41,7 @@
         currentHighlightedLines.length > 0 && (copyHighlightOnly || copySteps)
           ? unescapedRawCode
               ?.split('\n')
-              .filter((_, i) => isHighlightLine(i + 1))
+              .filter((_, i) => isHighlightLine(i + 1, currentHighlightedLines))
               .join('\n')
           : unescapedRawCode;
       await navigator.clipboard.writeText(copiedCode ?? '');
@@ -71,15 +71,14 @@
 <div
   class={clsx(
     'code-fence overflow-y-auto relative my-8 rounded-md shadow-lg mx-auto',
-    'border border-gray-divider',
+    'border border-gray-100 dark:border-gray-800',
     lang && `lang-${lang}`,
     ext && `ext-${ext}`,
   )}
-  style="background-color: var(--kd-code-fence-bg);"
 >
   {#if showTopBar}
     <div
-      class="sticky top-0 left-0 z-10 flex items-center pt-2 rounded-md backdrop-blur supports-backdrop-blur:bg-white/60"
+      class="sticky top-0 left-0 z-10 flex items-center pt-2 pb-1 rounded-md backdrop-blur supports-backdrop-blur:bg-white/60"
       style="background-color: var(--kd-code-fence-top-bar-bg);"
     >
       {#if hasTopbarTitle}
@@ -91,7 +90,7 @@
       {#if showCopyCode}
         <button
           type="button"
-          class="px-2 py-1 mr-2 hover:text-white"
+          class="px-2 py-1 mr-2 hover:opacity-70 active:opacity-50"
           on:click={copyCodeToClipboard}
         >
           <div
@@ -121,7 +120,12 @@
   {/if}
 
   <div class="relative z-0 overflow-hidden code">
-    <div class={clsx(showLineNumbers && 'pl-10')}>
+    <div
+      class={clsx(
+        showLineNumbers && 'pl-10',
+        'bg-white dark:bg-gray-900 [&>pre]:bg-transparent [&>pre]:brightness-[0.6] [&>pre]:dark:brightness-100 [&>pre]:saturate-[2.5] [&>pre]:dark:saturate-100 [&>pre]:hue-rotate-[10deg] [&>pre]:dark:hue-rotate-0',
+      )}
+    >
       {@html code}
     </div>
 
@@ -141,7 +145,7 @@
         aria-hidden="true"
       >
         {#each lines as lineNumber}
-          {#if isHighlightLine(lineNumber, currentHighlightedLines)}
+          {#if isHighlightLine(lineNumber + 1, currentHighlightedLines)}
             <div
               class="w-full border-l-[5px] font-mono text-transparent"
               style="border-color: var(--kd-code-highlight-border); background-color: var(--kd-code-highlight-color);"

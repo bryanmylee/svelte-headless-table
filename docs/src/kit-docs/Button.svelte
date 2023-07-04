@@ -27,31 +27,31 @@
   .button {
     @apply rounded-xl shadow;
     @apply transition-colors;
+    @apply focus-visible:ring-2 ring-brand ring-offset-2;
+
     /* reset anchor tag */
     @apply no-underline border-b-0 font-normal cursor-pointer;
+
     &.lg {
       @apply px-6 py-3;
     }
     &.md {
       @apply px-4 py-1;
     }
-    &.filled {
-      @apply bg-primary text-white font-bold;
-      &:hover {
-        @apply bg-primary-light;
-      }
-      &:active {
-        @apply bg-primary-dark;
-      }
+
+    &:hover {
+      @apply opacity-80;
     }
+    &:active {
+      @apply opacity-60;
+    }
+
+    &.filled {
+      @apply bg-brand text-white font-bold;
+    }
+
     &.unfilled {
-      @apply text-secondary font-bold;
-      &:hover {
-        @apply text-secondary-light;
-      }
-      &:active {
-        @apply text-secondary-dark;
-      }
+      @apply text-brand font-bold;
       :global(.dark) & {
         @apply text-white;
       }
