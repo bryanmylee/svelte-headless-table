@@ -9,7 +9,7 @@ sidebar_title: addColumnOrder
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `addColumnOrder` re-orders table columns dynamicaly.
 

@@ -9,7 +9,7 @@ sidebar_title: addColumnFilters
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `addColumnFilters` filters table rows by specific column values.
 

@@ -9,7 +9,7 @@ sidebar_title: addFlatten
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `addFlatten` flattens the table by removing parent rows and bringing subrows up.
 

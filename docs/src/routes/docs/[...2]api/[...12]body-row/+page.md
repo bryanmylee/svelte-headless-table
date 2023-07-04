@@ -9,7 +9,7 @@ sidebar_title: BodyRow
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `BodyRow` represents the model of a `<tr>` element in `<tbody>`.
 

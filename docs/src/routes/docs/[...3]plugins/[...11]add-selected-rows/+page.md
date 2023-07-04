@@ -9,7 +9,7 @@ sidebar_title: addSelectedRows
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `addSelectedRows` keeps track of selected items in the table. Complex behaviors with sub-rows is supported.
 

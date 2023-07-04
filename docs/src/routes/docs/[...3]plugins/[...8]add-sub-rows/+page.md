@@ -9,7 +9,7 @@ sidebar_title: addSubRows
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `addSubRows` defines the data for deriving the sub-rows of a row. It is commonly used with `addExpandedRows` to visualize sub-rows.
 

@@ -9,7 +9,7 @@ sidebar_title: createColumns
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `Table#createColumns` creates and validates a set of columns for the table. It is called on the table instance, and returns an array of `Column`s.
 

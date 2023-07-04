@@ -3,7 +3,7 @@ title: Installation
 description: How to install Svelte Headless Table
 ---
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 Install Svelte Headless Table with the package manager of your choice.
 

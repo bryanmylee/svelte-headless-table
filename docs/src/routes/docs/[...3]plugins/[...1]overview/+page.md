@@ -3,7 +3,7 @@ title: The Plugin System
 description: Extending the functionality of Svelte Headless Table with powerful plugins
 ---
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 Svelte Headless Table is designed with extensibility in mind. Its complex features are powered by an extensive suite of plugins.
 

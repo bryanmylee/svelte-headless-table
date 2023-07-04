@@ -10,7 +10,7 @@ sidebar_title: createRender
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `createRender` lets you define complex Svelte component behaviors within the script.
 

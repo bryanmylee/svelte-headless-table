@@ -3,7 +3,7 @@ title: Overview
 description: What is Svelte Headless Table?
 ---
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 Svelte Headless Table provides a collection of Svelte stores that describe and enable powerful tables and datagrids. It is heavily inspired by [React Table](https://react-table.tanstack.com/) but designed from the ground up to be more _Svelte_.
 

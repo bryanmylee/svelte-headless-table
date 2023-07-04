@@ -3,7 +3,7 @@ title: Editable Table
 description: An example with editable cells.
 ---
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 A table with editable cells that updates the data source.
 

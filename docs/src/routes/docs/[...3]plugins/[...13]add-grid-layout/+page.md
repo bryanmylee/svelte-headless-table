@@ -9,7 +9,7 @@ sidebar_title: addGridLayout
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `addGridLayout` configures the table to use [CSS Grid Layout](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout) for laying out the table.
 

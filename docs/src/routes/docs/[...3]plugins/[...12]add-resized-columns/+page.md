@@ -9,7 +9,7 @@ sidebar_title: addResizedColumns
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `addResizedColumns` allows columns to be resized programatically and dynamically.
 

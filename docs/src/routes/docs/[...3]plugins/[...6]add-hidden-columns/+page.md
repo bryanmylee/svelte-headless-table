@@ -9,7 +9,7 @@ sidebar_title: addHiddenColumns
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `addHiddenColumns` hides table columns dynamically.
 

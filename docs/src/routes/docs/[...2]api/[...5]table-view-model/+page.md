@@ -9,7 +9,7 @@ sidebar_title: TableViewModel
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `TableViewModel` contains the `Readable` stores that describe the structure of the table. Apply the view model onto your markup.
 

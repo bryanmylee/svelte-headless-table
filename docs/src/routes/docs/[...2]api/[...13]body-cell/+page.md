@@ -9,7 +9,7 @@ sidebar_title: BodyCell
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `BodyCell` represents the model of a `<td>` element in `<tr>`.
 

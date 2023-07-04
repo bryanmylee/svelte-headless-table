@@ -4,7 +4,7 @@ description: Subscribe to non top-level Svelte stores within the template
 sidebar_title: Subscribe
 ---
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `<Subscribe/>` lets you subscribe to non top-level stores in the Svelte template.
 

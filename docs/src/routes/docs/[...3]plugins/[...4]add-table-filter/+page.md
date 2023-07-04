@@ -9,7 +9,7 @@ sidebar_title: addTableFilter
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `addTableFilter` filters table rows on data that may be in _any_ column.
 

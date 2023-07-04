@@ -9,7 +9,7 @@ sidebar_title: addGroupBy
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `addGroupBy` groups rows together based on column values and provides aggregated values for groups of rows. Grouped rows are modelled as sub-rows of a grouping row.
 

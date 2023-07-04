@@ -9,7 +9,7 @@ sidebar_title: createViewModel
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `Table#createViewModel` derives the view model that is applied onto markup. It is called on the table instance with `Column` instances, and returns a [`TableViewModel`](../table-view-model.md).
 

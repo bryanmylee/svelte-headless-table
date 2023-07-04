@@ -9,7 +9,7 @@ sidebar_title: addSortBy
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `addSortBy` sorts table rows by column values.
 

@@ -9,7 +9,7 @@ sidebar_title: HeaderCell
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `HeaderCell` represents the model of a `<th>` element in `<tr>`.
 

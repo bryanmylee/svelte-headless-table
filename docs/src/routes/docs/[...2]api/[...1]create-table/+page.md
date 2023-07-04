@@ -9,7 +9,7 @@ sidebar_title: createTable
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 Every Svelte Headless Table starts with `createTable`. It takes a data source and plugin configuration, and returns a [`Table`](../--table.md) instance.
 

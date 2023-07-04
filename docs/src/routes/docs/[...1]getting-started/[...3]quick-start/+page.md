@@ -3,7 +3,7 @@ title: Quick Start
 description: Build your first table with Svelte Headless Table
 ---
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 At the core of every Svelte Headless Table is the `createTable` function.
 

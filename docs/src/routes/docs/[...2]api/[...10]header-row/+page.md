@@ -9,7 +9,7 @@ sidebar_title: HeaderRow
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `HeaderRow` represents the model of a `<tr>` element in `<thead>`.
 

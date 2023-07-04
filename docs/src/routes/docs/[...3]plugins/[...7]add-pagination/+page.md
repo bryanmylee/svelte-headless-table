@@ -9,12 +9,12 @@ sidebar_title: addPagination
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `addPagination` paginates the table by page index. For token-based pagination, refer to [`addTokenPagination`](#).
 
 :::admonition type="note"
-Subscribe to [`TableViewModel#pageRows`](../api/create-view-model.md#tableviewmodel-pagerows-readable-bodyrow) instead of `TableViewModel#rows`.
+Subscribe to [`TableViewModel#pageRows`](../api/table-view-model.md#tableviewmodel-pagerows-readable-bodyrow) instead of `TableViewModel#rows`.
 :::
 
 ```svelte {5,11}

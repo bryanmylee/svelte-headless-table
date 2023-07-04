@@ -9,7 +9,7 @@ sidebar_title: addExpandedRows
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `addExpandedRows` expands and collapses sub-rows of rows. Sub-rows are defined by plugins such as [`addSubRows`](add-sub-rows.md) or [`addGroupBy`](add-group-by.md).
 

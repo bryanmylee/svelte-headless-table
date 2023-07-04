@@ -3,7 +3,7 @@ title: Kitchen Sink
 description: An example with all plugins enabled.
 ---
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 A table with all plugins enabled, including:
 

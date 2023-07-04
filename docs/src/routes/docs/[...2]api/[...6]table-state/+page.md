@@ -9,7 +9,7 @@ sidebar_title: TableState
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `TableState` is the [`TableViewModel`](../table-view-model.md) with two additional properties.
 

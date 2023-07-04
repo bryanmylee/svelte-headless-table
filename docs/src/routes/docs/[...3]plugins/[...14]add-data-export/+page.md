@@ -9,7 +9,7 @@ sidebar_title: addDataExport
   useHljs('ts');
 </script>
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 `addDataExport` allows for reading the data source as it is currently transformed by the table.
 
@@ -18,7 +18,7 @@ This is useful if you need to export data from the table with all plugin transfo
 :::admonition type="warning"
 Display columns do not contain any data by default and will show up as `null` in the data export.
 
-If you need to add data to a display column, use the [`data`](../api/create-columns.md#displaydef-data-column-row-state-readable-unknown-unknown) property when defining the display column.
+If you need to add data to a display column, use the [`data`](../api/create-columns.md#displaydef-data-displaycell-state-readable-unknown-unknown) property when defining the display column.
 :::
 
 ## Options

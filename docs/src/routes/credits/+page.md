@@ -3,7 +3,7 @@ title: Credits
 description: Contributors to Svelte Headless Table
 ---
 
-# {$frontmatter.title}
+# {$frontmatter?.title}
 
 <script lang="ts">
   import { readable } from 'svelte/store';
