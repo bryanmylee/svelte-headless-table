@@ -133,6 +133,8 @@ const getSortedRows = <Item, Row extends BodyRow<Item>>(
 			} else if (typeof valueA === 'string' || typeof valueA === 'number') {
 				// typeof `cellB.value` is logically equal to `cellA.value`.
 				order = compare(valueA, valueB as string | number);
+			} else if (valueA instanceof Date && valueB instanceof Date) {
+				order = compare(valueA.getTime(), valueB.getTime())
 			}
 			if (order !== 0) {
 				let orderFactor = 1;
