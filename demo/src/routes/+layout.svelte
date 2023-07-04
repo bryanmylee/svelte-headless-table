@@ -5,7 +5,7 @@
   import '@svelteness/kit-docs/client/styles/theme.css';
   import '$lib/styles/kit-docs.css';
 
-  import SvelteLogo from '$img/svelte-horizontal.svg?raw';
+  import SvelteHeadlessTableIcon from '$img/svelte-headless-table.svg?raw';
 
   import { page } from '$app/stores';
 
@@ -25,12 +25,8 @@
 
   const navbar: NavbarConfig = {
     links: [
-      { title: 'Docs', slug: '/docs', match: /\/docs/ },
-      { title: 'Tutorials', slug: 'https://svelte.dev/tutorial' },
-      { title: 'Examples', slug: 'https://svelte.dev/examples' },
-      { title: 'REPL', slug: 'https://svelte.dev/repl' },
-      { title: 'Blog', slug: 'https://svelte.dev/blog' },
-      { title: 'FAQ', slug: 'https://svelte.dev/faq' },
+      { title: 'Documentation', slug: '/docs', match: /\/docs/ },
+      { title: 'Credits', slug: 'https://svelte.dev/tutorial' },
     ],
   };
 
@@ -55,17 +51,17 @@
 <KitDocs {meta}>
   <KitDocsLayout {navbar} {sidebar}>
     <div slot="navbar-left">
-      <div class="logo">
+      <div class="logo p-2">
         <Button href="/">
-          {@html SvelteLogo}
+          <div class="flex items-center gap-2 font-bold text-2xl tracking-tight">
+            {@html SvelteHeadlessTableIcon} Svelte Headless Table
+          </div>
         </Button>
       </div>
     </div>
 
     <div class="socials" slot="navbar-right-alt">
-      <SocialLink type="twitter" href="https://twitter.com/sveltejs" />
-      <SocialLink type="discord" href="https://discord.com/invite/yy75DKs" />
-      <SocialLink type="gitHub" href="https://github.com/sveltejs/svelte" />
+      <SocialLink type="gitHub" href="https://github.com/bryanmylee/svelte-headless-table" />
     </div>
 
     <slot />
