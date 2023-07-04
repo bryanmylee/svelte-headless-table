@@ -26,7 +26,7 @@
   const navbar: NavbarConfig = {
     links: [
       { title: 'Documentation', slug: '/docs', match: /\/docs/ },
-      { title: 'Credits', slug: 'https://svelte.dev/tutorial' },
+      { title: 'Credits', slug: '/credits', match: /\/credits/ },
     ],
   };
 
