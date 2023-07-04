@@ -16,10 +16,10 @@ Build and design powerful datagrid experiences while retaining 100% control over
 Svelte Headless Table is designed to work **seamlessly** with Svelte. If you love Svelte, you will love Svelte Headless Table.
 
 <div class="flex justify-center gap-4">
-  <button size="lg" href="/docs">Get started</button>
-  <button size="lg" variant="unfilled" href="https://github.com/bryanmylee/svelte-headless-table">
+  <Button size="lg" href="/docs">Get started</Button>
+  <Button size="lg" variant="unfilled" href="https://github.com/bryanmylee/svelte-headless-table">
     GitHub
-  </button>
+  </Button>
 </div>
 
 <div class="absolute left-full top-0 wh-1/2 opacity-20">
@@ -62,7 +62,7 @@ Svelte Headless Table comes with everything you will need...
     'State management via stores', 'Highly performant', 'Fully customizable',
   ] as feature}
     <li class="flex gap-2 items-center m-0 list-none not-prose">
-      <CheckIcon class="text-green-400 wh-7 min-wh-7"/> {feature}
+      <CheckIcon class="text-brand wh-7 min-wh-7"/> {feature}
     </li>
   {/each}
 </ul>
@@ -77,7 +77,7 @@ As well as an extensive feature set!
     'Row selection', 'Column resizing', 'Alternate layouts'
   ] as feature}
     <li class="flex gap-2 items-center m-0 list-none not-prose">
-      <CheckIcon class="text-green-400 wh-7 min-wh-7"/> {feature}
+      <CheckIcon class="text-brand wh-7 min-wh-7"/> {feature}
     </li>
   {/each}
 </ul>
@@ -86,7 +86,7 @@ Want to learn more? Visit the [Plugin System](./docs/plugins/overview.md) to fin
 
 <h1 class="text-center pt-36 mb-12">Ready to try it out?</h1>
 <div class="flex justify-center" >
-  <button size="lg" href="/docs">Documentation</button>
+  <Button size="lg" href="/docs">Documentation</Button>
 </div>
 
 </section>

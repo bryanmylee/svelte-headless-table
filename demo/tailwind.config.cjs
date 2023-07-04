@@ -18,6 +18,9 @@ module.exports = {
         brand: {
           DEFAULT: 'rgb(var(--kd-color-brand) / <alpha-value>)',
         },
+        secondary: {
+          DEFAULT: 'rgb(var(--kd-color-secondary) / <alpha-value>)',
+        },
         focus: {
           DEFAULT: 'rgb(var(--kd-color-focus) / <alpha-value>)',
         },

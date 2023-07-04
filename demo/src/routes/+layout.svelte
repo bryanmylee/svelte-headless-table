@@ -53,7 +53,7 @@
     <div slot="navbar-left">
       <div class="logo p-2">
         <Button href="/">
-          <div class="flex items-center gap-2 font-bold text-2xl tracking-tight">
+          <div class="flex items-center gap-2 text-xl tracking-tight">
             {@html SvelteHeadlessTableIcon} Svelte Headless Table
           </div>
         </Button>
@@ -77,7 +77,7 @@
   }
 
   .logo :global(svg) {
-    height: 36px;
+    height: 28px;
     overflow: hidden;
   }
 
