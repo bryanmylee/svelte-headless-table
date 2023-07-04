@@ -10,6 +10,7 @@ description: Contributors to Svelte Headless Table
   import { createTable, createRender, Render, Subscribe } from 'svelte-headless-table';
   import { addSortBy } from 'svelte-headless-table/plugins';
   import CreditsAnchor from './CreditsAnchor.svelte';
+  import CreditsHtml from './CreditsHtml.svelte';
   import CaretDownIcon from '~icons/ic/round-keyboard-arrow-down';
   
   const data = readable([
@@ -23,6 +24,16 @@ description: Contributors to Svelte Headless Table
       description: 'The documentation site is built with KitDocs.',
       url: 'https://kitdocs.vercel.app/docs/getting-started/introduction',
     },
+    {
+      name: '@blerrgh',
+      description: 'For designing and implementing a server-side API',
+      url: 'https://github.com/blerrgh'
+    },
+    {
+      name: '@risalfajar',
+      description: 'For better column id inference and native Date sorting on the <code>addSortBy</code> plugin.',
+      url: 'https://github.com/risalfajar'
+    }
   ]);
 
   const table = createTable(data, {
@@ -44,6 +55,7 @@ description: Contributors to Svelte Headless Table
     table.column({
       header: 'Description',
       accessor: 'description',
+      cell: ({ value }) => createRender(CreditsHtml, { html: value }),
     }),
   ]);
   const { headerRows, rows } = table.createViewModel(columns);
