@@ -78,7 +78,7 @@
 >
   {#if showTopBar}
     <div
-      class="sticky top-0 left-0 z-10 flex items-center pt-2 rounded-md backdrop-blur supports-backdrop-blur:bg-white/60"
+      class="sticky top-0 left-0 z-10 flex items-center pt-2 pb-1 rounded-md backdrop-blur supports-backdrop-blur:bg-white/60"
       style="background-color: var(--kd-code-fence-top-bar-bg);"
     >
       {#if hasTopbarTitle}
@@ -90,7 +90,7 @@
       {#if showCopyCode}
         <button
           type="button"
-          class="px-2 py-1 mr-2 hover:text-white"
+          class="px-2 py-1 mr-2 hover:opacity-70 active:opacity-50"
           on:click={copyCodeToClipboard}
         >
           <div
