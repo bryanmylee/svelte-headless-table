@@ -18,7 +18,7 @@ export async function GET() {
     .map(
       (url) => `
 			<url>
-				<loc>https://kit-docs-demo.vercel.app/${url}</loc>
+				<loc>https://svelte-headless-table.bryanmylee.com/${url}</loc>
 				<changefreq>daily</changefreq>
 				<priority>0.7</priority>
 			</url>
