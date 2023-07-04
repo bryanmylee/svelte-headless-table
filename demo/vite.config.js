@@ -4,7 +4,7 @@ import icons from 'unplugin-icons/vite';
 
 /** @type {import('vite').UserConfig} */
 const config = {
-  plugins: [icons({ compiler: 'svelte' }), kitDocs({ shiki: { theme: 'material-ocean' }}), sveltekit()],
+  plugins: [icons({ compiler: 'svelte' }), kitDocs(), sveltekit()],
   server: {
     watch: {
       usePolling: true,
