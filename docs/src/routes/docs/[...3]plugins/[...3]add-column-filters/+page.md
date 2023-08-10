@@ -51,7 +51,7 @@ Defines the filter behavior for the column.
 
 Receives `filterValue` and the column cell `value`, and returns `true` if the cell should be visible.
 
-### `render: (renderProps) => RenderConfig`
+### `render?: (renderProps) => RenderConfig`
 
 Defines the component to render on `HeaderCell->props.[pluginName].render`.
 
