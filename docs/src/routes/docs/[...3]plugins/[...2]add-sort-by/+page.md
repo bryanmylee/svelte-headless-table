@@ -75,6 +75,16 @@ Disables sorting on the column.
 
 _Defaults to `false`_.
 
+### `compareFn?: (leftValue, rightValue) => number`
+
+Receives a left and right value to compare for sorting.
+
+If `leftValue` should come before `rightValue`, return a negative number.
+
+If `rightValue` should come before `leftValue`, return a positive number.
+
+Otherwise if both values are equal in sorting priority, return 0. 
+
 ### `getSortValue?: (value) => string | number | (string | number)[]`
 
 Receives the value of the column cell and returns the value to sort the column on.
