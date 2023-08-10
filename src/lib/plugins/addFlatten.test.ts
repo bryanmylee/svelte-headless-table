@@ -1,5 +1,5 @@
 import { createTable } from '../createTable';
-import type { Sample } from 'src/routes/_createSamples';
+import type { Sample } from '../../routes/_createSamples';
 import { get, readable } from 'svelte/store';
 import { addFlatten } from './addFlatten';
 import { addSubRows } from './addSubRows';

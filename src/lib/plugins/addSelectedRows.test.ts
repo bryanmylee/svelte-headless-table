@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { createTable } from '../createTable';
-import type { Sample } from 'src/routes/_createSamples';
+import type { Sample } from '../../routes/_createSamples';
 import { derived, get, readable } from 'svelte/store';
 import { addSelectedRows } from './addSelectedRows';
 import { addSubRows } from './addSubRows';

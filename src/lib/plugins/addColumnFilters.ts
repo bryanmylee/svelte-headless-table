@@ -19,7 +19,7 @@ export interface ColumnFiltersState<Item> {
 export interface ColumnFiltersColumnOptions<Item, FilterValue = any> {
 	fn: ColumnFilterFn<FilterValue>;
 	initialFilterValue?: FilterValue;
-	render: (props: ColumnRenderConfigPropArgs<Item, FilterValue>) => RenderConfig;
+	render?: (props: ColumnRenderConfigPropArgs<Item, FilterValue>) => RenderConfig;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -46,7 +46,7 @@ export type ColumnFilterFnProps<FilterValue = any, Value = any> = {
 export type ColumnFiltersPropSet = NewTablePropSet<{
 	'thead.tr.th':
 		| {
-				render: RenderConfig;
+				render?: RenderConfig;
 		  }
 		| undefined;
 }>;
@@ -151,7 +151,7 @@ export const addColumnFilters =
 							}
 							return [];
 						});
-						const render = columnOption.render({
+						const render = columnOption.render?.({
 							id: headerCell.id,
 							filterValue,
 							...tableState,
