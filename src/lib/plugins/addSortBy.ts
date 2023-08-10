@@ -24,6 +24,8 @@ export interface SortByColumnOptions {
 	disable?: boolean;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	getSortValue?: (value: any) => string | number | (string | number)[];
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	compareFn?: (left: any, right: any) => number;
 	invert?: boolean;
 }
 
@@ -118,15 +120,18 @@ const getSortedRows = <Item, Row extends BodyRow<Item>>(
 			const cellA = a.cellForId[key.id];
 			const cellB = b.cellForId[key.id];
 			let order = 0;
+			const compareFn = columnOptions[key.id]?.compareFn;
+			const getSortValue = columnOptions[key.id]?.getSortValue;
 			// Only need to check properties of `cellA` as both should have the same
 			// properties.
-			const getSortValue = columnOptions[key.id]?.getSortValue;
 			if (!cellA.isData()) {
 				return 0;
 			}
 			const valueA = cellA.value;
 			const valueB = (cellB as DataBodyCell<Item>).value;
-			if (getSortValue !== undefined) {
+			if (compareFn !== undefined) {
+				order = compareFn(valueA, valueB);
+			} else if (getSortValue !== undefined) {
 				const sortValueA = getSortValue(valueA);
 				const sortValueB = getSortValue(valueB);
 				order = compare(sortValueA, sortValueB);
@@ -134,7 +139,7 @@ const getSortedRows = <Item, Row extends BodyRow<Item>>(
 				// typeof `cellB.value` is logically equal to `cellA.value`.
 				order = compare(valueA, valueB as string | number);
 			} else if (valueA instanceof Date && valueB instanceof Date) {
-				order = compare(valueA.getTime(), valueB.getTime())
+				order = compare(valueA.getTime(), valueB.getTime());
 			}
 			if (order !== 0) {
 				let orderFactor = 1;
