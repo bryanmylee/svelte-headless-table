@@ -83,7 +83,7 @@ const columns = table.createColumns([
 
 Defines the id of the data column. **Duplicate ids are not allowed** on a single table.
 
-_Defaults to the value of `accessor` if a string accessor is passed_. If a function accessor is passed, defaults to the value of `header` instead.
+_Defaults to the value of `accessor` if a string accessor is passed. If a function accessor is passed, defaults to the value of `header` instead_.
 
 #### `columnDef.header: RenderConfig | ((headerCell, state) => RenderConfig)`
 
@@ -294,9 +294,11 @@ const columns = table.createColumns([
 
 Useful for row selection and row expanding UI.
 
-#### `displayDef.id: string`
+#### `displayDef.id?: string`
 
 Defines the id of the display column. **Duplicate ids are not allowed** on a single table.
+
+_Defaults to the value of `header`_.
 
 :::example
 
