@@ -1,7 +1,7 @@
 {
 	"name": "svelte-headless-table",
 	"description": "Unopinionated and extensible data tables for Svelte",
-	"version": "0.17.4",
+	"version": "0.17.5",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
@@ -59,7 +59,6 @@
 		"jest": "^27.5.1",
 		"prettier": "^2.6.2",
 		"prettier-plugin-svelte": "^2.7.0",
-		"svelte": "^3.48.0",
 		"svelte-check": "^2.7.0",
 		"svelte-jester": "^2.3.2",
 		"svelte-preprocess": "^4.10.6",
@@ -70,9 +69,12 @@
 		"vite": "^4.0.3"
 	},
 	"dependencies": {
-		"svelte-keyed": "^1.1.5",
-		"svelte-render": "^1.6.0",
-		"svelte-subscribe": "^1.0.4"
+		"svelte-keyed": "^1.1.6",
+		"svelte-render": "^1.6.1",
+		"svelte-subscribe": "^1.0.5"
+	},
+	"peerDependencies": {
+		"svelte": "^3 || ^4"
 	},
 	"type": "module",
 	"svelte": "./index.js",
