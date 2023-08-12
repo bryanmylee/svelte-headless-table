@@ -100,6 +100,45 @@ export const addResizedColumns =
 			pluginState,
 			hooks: {
 				'thead.tr.th': (cell) => {
+					const dblClick = (event: Event) => {
+						if (isCellDisabled(cell, disabledResizeIds))
+							return;
+						const { target } = event;
+						if (target === null)
+							return;
+						event.stopPropagation();
+						event.preventDefault();
+						if (cell.isGroup()) {
+							cell.ids.forEach((id) => {
+								const node = nodeForId[id];
+								if (node !== undefined) {
+									columnWidths.update(($columnWidths) => ({
+										...$columnWidths,
+										[id]: initialWidths[id],
+									}));
+								}
+							});
+						}
+						else {
+							const node = nodeForId[cell.id];
+							if (node !== undefined) {
+								columnWidths.update(($columnWidths) => ({
+									...$columnWidths,
+									[cell.id]: initialWidths[cell.id],
+								}));
+							}
+						}
+					};
+					let tapedTwice = false;
+					const checkDoubleTap = (event: Event) => {
+						if (!tapedTwice) {
+							tapedTwice = true;
+							setTimeout(function () { tapedTwice = false; }, 300);
+							return false;
+						}
+						event.preventDefault();
+						dblClick(event);
+					};
 					const dragStart = (event: Event) => {
 						if (isCellDisabled(cell, disabledResizeIds)) return;
 						const { target } = event;
@@ -217,6 +256,16 @@ export const addResizedColumns =
 								node.removeEventListener('touchstart', dragStart);
 							},
 						};
+					};
+					$props.reset = (node: Element) => {
+						node.addEventListener('dblclick', dblClick);
+						node.addEventListener('touchend', checkDoubleTap)
+						return {
+							destroy() {
+								node.removeEventListener('dblckick', dblClick);
+								node.removeEventListener('touchend', checkDoubleTap);
+							}
+						}
 					};
 					$props.disabled = isCellDisabled(cell, disabledResizeIds);
 					const props = derived([], () => {
