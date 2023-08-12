@@ -113,7 +113,7 @@ Use the action on the header cell element to initialize the plugin properly.
 
 Use `drag` on a resizer element to provide drag-to-resize behaviour.
 
-```svelte {7}
+```svelte {8}
 {#each headerRow.cells as cell (cell.id)}
   <Subscribe
     attrs={cell.attrs()} let:attrs
@@ -121,6 +121,42 @@ Use `drag` on a resizer element to provide drag-to-resize behaviour.
   >
     <th {...attrs} use:props.resize>
       <div class="resizer" use:props.resize.drag />
+    </th>
+  </Subscribe>
+{/each}
+
+...
+
+<style>
+  th {
+    position: relative;
+  }
+
+  .resizer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -4px;
+    width: 8px;
+    background: lightgray;
+    cursor: col-resize;
+    z-index: 1;
+  }
+</style>
+```
+
+#### `reset: Action`
+
+Use `reset` on a resizer element to reset column to initial width.
+
+```svelte {8}
+{#each headerRow.cells as cell (cell.id)}
+  <Subscribe
+    attrs={cell.attrs()} let:attrs
+    props={cell.props()} let:props
+  >
+    <th {...attrs} use:props.resize>
+      <div class="resizer" use:props.resize.reset />
     </th>
   </Subscribe>
 {/each}
