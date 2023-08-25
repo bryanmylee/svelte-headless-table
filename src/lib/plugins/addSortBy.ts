@@ -26,6 +26,7 @@ export interface SortByColumnOptions {
 	getSortValue?: (value: any) => string | number | (string | number)[];
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	compareFn?: (left: any, right: any) => number;
+	handleNulls?: 'nullsFirst' | 'nullsLast' | undefined;
 	invert?: boolean;
 }
 
@@ -122,6 +123,7 @@ const getSortedRows = <Item, Row extends BodyRow<Item>>(
 			let order = 0;
 			const compareFn = columnOptions[key.id]?.compareFn;
 			const getSortValue = columnOptions[key.id]?.getSortValue;
+			const handleNulls = columnOptions[key.id]?.handleNulls;
 			// Only need to check properties of `cellA` as both should have the same
 			// properties.
 			if (!cellA.isData()) {
@@ -129,6 +131,26 @@ const getSortedRows = <Item, Row extends BodyRow<Item>>(
 			}
 			const valueA = cellA.value;
 			const valueB = (cellB as DataBodyCell<Item>).value;
+			//If handleNulls has been set return sort order before inverting for 'desc'
+			if (handleNulls !== undefined) {
+				if ((valueA === null || valueA === undefined) && (valueB === null || valueB === undefined)) {
+					return 0;
+				} else if (handleNulls === 'nullsFirst') {
+					if (valueA === null || valueA === undefined) {
+						return -1;
+					}
+					if (valueB === null || valueB === undefined) {
+						return 1;
+					}
+				} else if (handleNulls === 'nullsLast') {
+					if (valueA === null || valueA === undefined) {
+						return 1;
+					}
+					if (valueB === null || valueB === undefined) {
+						return -1;
+					}
+				}
+			}
 			if (compareFn !== undefined) {
 				order = compareFn(valueA, valueB);
 			} else if (getSortValue !== undefined) {
