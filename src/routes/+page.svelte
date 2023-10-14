@@ -329,7 +329,7 @@
 									<Render of={props.filter.render} />
 								{/if}
 								{#if !props.resize.disabled}
-									<div class="resizer" on:click|stopPropagation use:props.resize.drag />
+									<div class="resizer" on:click|stopPropagation use:props.resize.drag use:props.resize.reset />
 								{/if}
 							</th>
 						</Subscribe>
