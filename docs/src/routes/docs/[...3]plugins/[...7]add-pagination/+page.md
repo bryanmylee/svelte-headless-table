@@ -11,7 +11,7 @@ sidebar_title: addPagination
 
 # {$frontmatter?.title}
 
-`addPagination` paginates the table by page index. For token-based pagination, refer to [`addTokenPagination`](#).
+`addPagination` paginates the table by page index.
 
 :::admonition type="note"
 Subscribe to [`TableViewModel#pageRows`](../api/table-view-model.md#tableviewmodel-pagerows-readable-bodyrow) instead of `TableViewModel#rows`.
@@ -57,6 +57,12 @@ _Defaults to `0`_.
 Sets the initial page size.
 
 _Defaults to `10`_.
+
+### `serverSide?: boolean`
+
+If `true`, the pagination plugin will have no effect on the rows of the table. Instead, you can control pagination by updating [`$data`](../api/create-table.md#createtable-data-plugins-table). The plugin's state can be used as variables in your data-fetching query to get paginated data from the server directly.
+
+_Defaults to `false`_.
 
 ## Column Options
 
@@ -131,6 +137,12 @@ Whether a next page is available.
 ### `pageCount: Readable<number>`
 
 The total number of pages derived from the number of rows and page size.
+
+### `serverItemCount: Writable<number>`
+
+The total number of items expected from the server.
+
+When using server-side pagination, the number of items in `$data` only reflects the number of items in the page and not the number of total items. To calculate the right number of pages required, the plugin needs to know how many items in total are expected.
 
 ## Examples
 

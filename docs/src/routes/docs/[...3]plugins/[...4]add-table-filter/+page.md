@@ -47,6 +47,12 @@ Determines if hidden columns should be searched for matching values.
 
 _Defaults to `false`_.
 
+### `serverSide?: boolean`
+
+If `true`, the table filter will have no effect on the rows of the table. Instead, you can control filtering by updating [`$data`](../api/create-table.md#createtable-data-plugins-table). The plugin's state can be used as variables in your data-fetching query to get filtered data from the server directly.
+
+_Defaults to `false`_.
+
 ## Column Options
 
 :::callout

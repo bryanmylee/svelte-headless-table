@@ -51,6 +51,12 @@ Allows customization of the toggling order. This cannot contain duplicate values
 
 _Defaults to `['asc', 'desc', undefined]`_.
 
+### `serverSide?: boolean`
+
+If `true`, the sort plugin will have no effect on the rows of the table. Instead, you can control sorting by updating [`$data`](../api/create-table.md#createtable-data-plugins-table). The plugin's state can be used as variables in your data-fetching query to get sorted data from the server directly.
+
+_Defaults to `false`_.
+
 ## Column Options
 
 :::callout

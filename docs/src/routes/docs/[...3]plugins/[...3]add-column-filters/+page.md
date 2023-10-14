@@ -25,7 +25,11 @@ const table = createTable(data, {
 });
 ```
 
-_Nothing here so far_.
+### `serverSide?: boolean`
+
+If `true`, the column filter will have no effect on the rows of the table. Instead, you can control filtering by updating [`$data`](../api/create-table.md#createtable-data-plugins-table). The plugin's state can be used as variables in your data-fetching query to get filtered data from the server directly.
+
+_Defaults to `false`_.
 
 ## Column Options
 
