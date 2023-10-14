@@ -23,6 +23,7 @@ export type ResizedColumnsPropSet = NewTablePropSet<{
 	'thead.tr.th': {
 		(node: Element): void;
 		drag: (node: Element) => void;
+		reset: (node: Element) => void;
 		disabled: boolean;
 	};
 }>;
@@ -101,11 +102,9 @@ export const addResizedColumns =
 			hooks: {
 				'thead.tr.th': (cell) => {
 					const dblClick = (event: Event) => {
-						if (isCellDisabled(cell, disabledResizeIds))
-							return;
+						if (isCellDisabled(cell, disabledResizeIds)) return;
 						const { target } = event;
-						if (target === null)
-							return;
+						if (target === null) return;
 						event.stopPropagation();
 						event.preventDefault();
 						if (cell.isGroup()) {
@@ -118,8 +117,7 @@ export const addResizedColumns =
 									}));
 								}
 							});
-						}
-						else {
+						} else {
 							const node = nodeForId[cell.id];
 							if (node !== undefined) {
 								columnWidths.update(($columnWidths) => ({
@@ -133,7 +131,9 @@ export const addResizedColumns =
 					const checkDoubleTap = (event: Event) => {
 						if (!tapedTwice) {
 							tapedTwice = true;
-							setTimeout(function () { tapedTwice = false; }, 300);
+							setTimeout(function () {
+								tapedTwice = false;
+							}, 300);
 							return false;
 						}
 						event.preventDefault();
@@ -259,13 +259,13 @@ export const addResizedColumns =
 					};
 					$props.reset = (node: Element) => {
 						node.addEventListener('dblclick', dblClick);
-						node.addEventListener('touchend', checkDoubleTap)
+						node.addEventListener('touchend', checkDoubleTap);
 						return {
 							destroy() {
 								node.removeEventListener('dblckick', dblClick);
 								node.removeEventListener('touchend', checkDoubleTap);
-							}
-						}
+							},
+						};
 					};
 					$props.disabled = isCellDisabled(cell, disabledResizeIds);
 					const props = derived([], () => {
