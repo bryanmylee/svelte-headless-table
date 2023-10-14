@@ -64,6 +64,7 @@
 		page: addPagination({
 			initialPageSize: 20,
 			serverSide: serverSide,
+			serverItemCount: readable(40) as any,
 		}),
 		resize: addResizedColumns(),
 		export: addDataExport(),
@@ -265,7 +266,7 @@
 	const { filterValues } = pluginStates.filter;
 	const { filterValue } = pluginStates.tableFilter;
 	const { selectedDataIds } = pluginStates.select;
-	const { pageIndex, pageCount, pageSize, hasPreviousPage, hasNextPage, serverItemCount } =
+	const { pageIndex, pageCount, pageSize, hasPreviousPage, hasNextPage } =
 		pluginStates.page;
 	const { expandedIds } = pluginStates.expand;
 	const { columnIdOrder } = pluginStates.orderColumns;
@@ -276,8 +277,6 @@
 	const { exportedData } = pluginStates.export;
 	const { exportedData: exportedJson } = pluginStates.exportJson;
 	const { exportedData: exportedCsv } = pluginStates.exportCsv;
-
-	$serverItemCount = 6;
 </script>
 
 <h1>svelte-headless-table</h1>
@@ -325,10 +324,11 @@
 										{/if}
 									</button>
 								{/if}
-								{#if props.filter !== undefined}
+								{#if props.filter?.render !== undefined}
 									<Render of={props.filter.render} />
 								{/if}
 								{#if !props.resize.disabled}
+									<!-- svelte-ignore a11y-click-events-have-key-events -->
 									<div class="resizer" on:click|stopPropagation use:props.resize.drag use:props.resize.reset />
 								{/if}
 							</th>

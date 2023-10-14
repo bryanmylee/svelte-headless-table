@@ -64,6 +64,14 @@ If `true`, the pagination plugin will have no effect on the rows of the table. I
 
 _Defaults to `false`_.
 
+### `serverItemCount: Writable<number>`
+
+The total number of items expected from the server.
+
+When using server-side pagination, the number of items in `$data` only reflects the number of items in the page and not the number of total items. To calculate the right number of pages required, the plugin needs to know how many items in total are expected.
+
+_Required when `serverSide = true`_.
+
 ## Column Options
 
 :::callout
@@ -137,12 +145,6 @@ Whether a next page is available.
 ### `pageCount: Readable<number>`
 
 The total number of pages derived from the number of rows and page size.
-
-### `serverItemCount: Writable<number>`
-
-The total number of items expected from the server.
-
-When using server-side pagination, the number of items in `$data` only reflects the number of items in the page and not the number of total items. To calculate the right number of pages required, the plugin needs to know how many items in total are expected.
 
 ## Examples
 

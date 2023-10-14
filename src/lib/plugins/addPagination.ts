@@ -2,17 +2,24 @@ import type { BodyRow } from '../bodyRows';
 import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '../types/TablePlugin';
 import { derived, writable, type Readable, type Updater, type Writable } from 'svelte/store';
 
-export interface PaginationConfig {
+export type PaginationConfig = {
 	initialPageIndex?: number;
 	initialPageSize?: number;
-	serverSide?: boolean;
-}
+} & (
+	| {
+			serverSide?: false | undefined;
+			serverItemCount?: undefined;
+	  }
+	| {
+			serverSide: true;
+			serverItemCount: Readable<number>;
+	  }
+);
 
 export interface PaginationState {
 	pageSize: Writable<number>;
 	pageIndex: Writable<number>;
 	pageCount: Readable<number>;
-	serverItemCount: Writable<number>;
 	hasPreviousPage: Readable<boolean>;
 	hasNextPage: Readable<boolean>;
 }
@@ -24,6 +31,7 @@ export const createPageStore = ({
 	initialPageSize,
 	initialPageIndex,
 	serverSide,
+	serverItemCount,
 }: PageStoreConfig) => {
 	const pageSize = writable(initialPageSize);
 	const updatePageSize = (fn: Updater<number>) => {
@@ -50,9 +58,8 @@ export const createPageStore = ({
 		return $pageCount;
 	}
 
-	const serverItemCount = writable(0);
 	let pageCount;
-	if (serverSide) {
+	if (serverSide && serverItemCount != null) {
 		pageCount = derived([pageSize, serverItemCount], calcPageCountAndLimitIndex);
 	} else {
 		const itemCount = derived(items, ($items) => $items.length);
@@ -85,6 +92,7 @@ export interface PageStoreConfig {
 	initialPageSize?: number;
 	initialPageIndex?: number;
 	serverSide?: boolean;
+	serverItemCount?: Readable<number>;
 }
 
 export const addPagination =
@@ -92,6 +100,7 @@ export const addPagination =
 		initialPageIndex = 0,
 		initialPageSize = 10,
 		serverSide = false,
+		serverItemCount,
 	}: PaginationConfig = {}): TablePlugin<
 		Item,
 		PaginationState,
@@ -101,18 +110,17 @@ export const addPagination =
 	() => {
 		const prePaginatedRows = writable<BodyRow<Item>[]>([]);
 		const paginatedRows = writable<BodyRow<Item>[]>([]);
-		const { pageSize, pageIndex, pageCount, serverItemCount, hasPreviousPage, hasNextPage } =
-			createPageStore({
-				items: prePaginatedRows,
-				initialPageIndex,
-				initialPageSize,
-				serverSide,
-			});
+		const { pageSize, pageIndex, pageCount, hasPreviousPage, hasNextPage } = createPageStore({
+			items: prePaginatedRows,
+			initialPageIndex,
+			initialPageSize,
+			serverSide,
+			serverItemCount,
+		});
 		const pluginState: PaginationState = {
 			pageSize,
 			pageIndex,
 			pageCount,
-			serverItemCount,
 			hasPreviousPage,
 			hasNextPage,
 		};
