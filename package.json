@@ -41,42 +41,52 @@
 	},
 	"homepage": "https://svelte-headless-table.bryanmylee.com",
 	"devDependencies": {
-		"@babel/core": "7",
-		"@babel/preset-env": "^7.17.10",
-		"@sveltejs/adapter-auto": "^1.0.0",
-		"@sveltejs/kit": "^1.0.1",
-		"@sveltejs/package": "^1.0.1",
-		"@testing-library/jest-dom": "^5.16.4",
-		"@testing-library/svelte": "^3.1.1",
+		"@babel/core": "7.23.6",
+		"@babel/preset-env": "^7.23.6",
+		"@sveltejs/adapter-auto": "^3.0.0",
+		"@sveltejs/kit": "^2.0.0",
+		"@sveltejs/package": "^2.2.3",
+		"@testing-library/jest-dom": "^6.1.5",
+		"@testing-library/svelte": "^4.0.5",
 		"@types/faker": "5",
-		"@types/jest": "^27.4.1",
-		"@typescript-eslint/eslint-plugin": "^5.21.0",
-		"@typescript-eslint/parser": "^5.21.0",
-		"eslint": "^7.32.0",
-		"eslint-config-prettier": "^8.5.0",
-		"eslint-plugin-svelte3": "^3.4.1",
+		"@types/jest": "^29.5.11",
+		"@typescript-eslint/eslint-plugin": "^6.14.0",
+		"@typescript-eslint/parser": "^6.14.0",
+		"eslint": "^8.55.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-svelte": "^2.35.1",
 		"faker": "5",
-		"jest": "^27.5.1",
-		"prettier": "^2.6.2",
-		"prettier-plugin-svelte": "^2.7.0",
-		"svelte-check": "^2.7.0",
-		"svelte-jester": "^2.3.2",
-		"svelte-preprocess": "^4.10.6",
-		"svelte2tsx": "^0.5.9",
-		"ts-jest": "^27.1.4",
-		"tslib": "^2.4.0",
-		"typescript": "^4.7.4",
-		"vite": "^4.0.3"
+		"jest": "^29.7.0",
+		"prettier": "^3.1.1",
+		"prettier-plugin-svelte": "^3.1.2",
+		"svelte-check": "^3.6.2",
+		"svelte-jester": "^3.0.0",
+		"svelte-preprocess": "^5.1.2",
+		"svelte2tsx": "^0.6.27",
+		"ts-jest": "^29.1.1",
+		"tslib": "^2.6.2",
+		"typescript": "^5.3.3",
+		"vite": "^5.0.9"
 	},
 	"dependencies": {
-		"svelte-keyed": "^1.1.6",
+		"svelte-keyed": "^1.1.7",
 		"svelte-render": "^1.6.1",
-		"svelte-subscribe": "^1.0.5"
+		"svelte-subscribe": "^1.0.6"
 	},
 	"peerDependencies": {
-		"svelte": "^3 || ^4"
+		"svelte": "^4.2.8"
 	},
-	"type": "module",
-	"svelte": "./index.js",
-	"types": "./lib/index.d.ts"
+	"exports": {
+		".": {
+			"types": "./dist/lib/index.d.ts",
+			"svelte": "./dist/index.js",
+			"import": "./dist/index.js"
+		},
+		"./plugins": {
+			"types": "./dist/lib/plugins/index.d.ts",
+			"svelte": "./dist/plugins/index.js",
+			"import": "./dist/plugins/index.js"
+		}
+	},
+	"type": "module"
 }
