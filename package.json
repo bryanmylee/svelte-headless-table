@@ -76,6 +76,10 @@
 	"peerDependencies": {
 		"svelte": "^4.2.8"
 	},
+	"files": [
+		"dist",
+		"!dist/**/*.test.*"
+	],
 	"exports": {
 		".": {
 			"types": "./dist/lib/index.d.ts",
