@@ -1,10 +1,10 @@
 import { derived, type Readable } from 'svelte/store';
-import type { BodyRow } from './bodyRows';
-import type { DataColumn, DisplayColumn, FlatColumn } from './columns';
-import { TableComponent } from './tableComponent';
-import type { DataLabel, DisplayLabel } from './types/Label';
-import type { AnyPlugins } from './types/TablePlugin';
-import type { RenderConfig } from 'svelte-render';
+import type { BodyRow } from './bodyRows.js';
+import type { DataColumn, DisplayColumn, FlatColumn } from './columns.js';
+import { TableComponent } from './tableComponent.js';
+import type { DataLabel, DisplayLabel } from './types/Label.js';
+import type { AnyPlugins } from './types/TablePlugin.js';
+import type { RenderConfig } from 'svelte-render/createRender';
 
 export type BodyCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	id: string;

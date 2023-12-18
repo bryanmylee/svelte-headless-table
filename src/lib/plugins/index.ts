@@ -5,17 +5,17 @@ export {
 	textPrefixFilter,
 	type ColumnFilterFn,
 	type ColumnFilterFnProps,
-} from './addColumnFilters';
-export { addColumnOrder } from './addColumnOrder';
-export { addDataExport } from './addDataExport';
-export { addExpandedRows } from './addExpandedRows';
-export { addFlatten } from './addFlatten';
-export { addGridLayout } from './addGridLayout';
-export { addGroupBy } from './addGroupBy';
-export { addHiddenColumns } from './addHiddenColumns';
-export { addPagination } from './addPagination';
-export { addResizedColumns } from './addResizedColumns';
-export { addSelectedRows } from './addSelectedRows';
-export { addSortBy } from './addSortBy';
-export { addSubRows } from './addSubRows';
-export { addTableFilter } from './addTableFilter';
+} from './addColumnFilters.js';
+export { addColumnOrder } from './addColumnOrder.js';
+export { addDataExport } from './addDataExport.js';
+export { addExpandedRows } from './addExpandedRows.js';
+export { addFlatten } from './addFlatten.js';
+export { addGridLayout } from './addGridLayout.js';
+export { addGroupBy } from './addGroupBy.js';
+export { addHiddenColumns } from './addHiddenColumns.js';
+export { addPagination } from './addPagination.js';
+export { addResizedColumns } from './addResizedColumns.js';
+export { addSelectedRows } from './addSelectedRows.js';
+export { addSortBy } from './addSortBy.js';
+export { addSubRows } from './addSubRows.js';
+export { addTableFilter } from './addTableFilter.js';

@@ -1,8 +1,8 @@
-import type { RenderConfig } from 'svelte-render';
-import type { DataBodyCell, DisplayBodyCell } from '../bodyCells';
-import type { TableState } from '../createViewModel';
-import type { HeaderCell } from '../headerCells';
-import type { AnyPlugins } from './TablePlugin';
+import type { RenderConfig } from 'svelte-render/createRender';
+import type { DataBodyCell, DisplayBodyCell } from '../bodyCells.js';
+import type { TableState } from '../createViewModel.js';
+import type { HeaderCell } from '../headerCells.js';
+import type { AnyPlugins } from './TablePlugin.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type DataLabel<Item, Plugins extends AnyPlugins = AnyPlugins, Value = any> = (

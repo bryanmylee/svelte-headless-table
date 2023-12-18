@@ -1,5 +1,9 @@
-import type { TableAttributes, TableBodyAttributes, TableHeadAttributes } from '../createViewModel';
-import type { DeriveFn, NewTablePropSet, TablePlugin } from '../types/TablePlugin';
+import type {
+	TableAttributes,
+	TableBodyAttributes,
+	TableHeadAttributes,
+} from '../createViewModel.js';
+import type { DeriveFn, NewTablePropSet, TablePlugin } from '../types/TablePlugin.js';
 import { derived } from 'svelte/store';
 
 export const addGridLayout =

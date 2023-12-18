@@ -1,6 +1,6 @@
 import { get, readable } from 'svelte/store';
-import { TableComponent } from './tableComponent';
-import type { AnyPlugins } from './types/TablePlugin';
+import { TableComponent } from './tableComponent.js';
+import type { AnyPlugins } from './types/TablePlugin.js';
 
 class TestComponent<Item> extends TableComponent<Item, AnyPlugins, 'tbody.tr'> {
 	clone(): TableComponent<Item, AnyPlugins, 'tbody.tr'> {

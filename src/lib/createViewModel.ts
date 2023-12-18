@@ -1,18 +1,18 @@
 import type { ReadOrWritable } from 'svelte-subscribe/derivedKeys';
 import { derived, readable, writable, type Readable } from 'svelte/store';
-import { BodyRow, getBodyRows, getColumnedBodyRows } from './bodyRows';
-import { FlatColumn, getFlatColumns, type Column } from './columns';
-import type { Table } from './createTable';
-import { getHeaderRows, HeaderRow } from './headerRows';
+import { BodyRow, getBodyRows, getColumnedBodyRows } from './bodyRows.js';
+import { FlatColumn, getFlatColumns, type Column } from './columns.js';
+import type { Table } from './createTable.js';
+import { getHeaderRows, HeaderRow } from './headerRows.js';
 import type {
 	AnyPlugins,
 	DeriveFlatColumnsFn,
 	DeriveRowsFn,
 	DeriveFn,
 	PluginStates,
-} from './types/TablePlugin';
-import { finalizeAttributes } from './utils/attributes';
-import { nonUndefined } from './utils/filter';
+} from './types/TablePlugin.js';
+import { finalizeAttributes } from './utils/attributes.js';
+import { nonUndefined } from './utils/filter.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type TableAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = Record<

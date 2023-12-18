@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { arraySetStore } from './store';
+import { arraySetStore } from './store.js';
 
 it('initializes correctly', () => {
 	const actual = arraySetStore();

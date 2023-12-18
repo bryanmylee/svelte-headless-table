@@ -1,5 +1,5 @@
-import { DataHeaderCell, GroupHeaderCell } from './headerCells';
-import { getMergedRow } from './headerRows';
+import { DataHeaderCell, GroupHeaderCell } from './headerCells.js';
+import { getMergedRow } from './headerRows.js';
 
 interface User {
 	firstName: string;

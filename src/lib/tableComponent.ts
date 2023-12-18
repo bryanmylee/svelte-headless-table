@@ -5,10 +5,10 @@ import type {
 	ComponentKeys,
 	ElementHook,
 	PluginTablePropSet,
-} from './types/TablePlugin';
-import type { TableState } from './createViewModel';
-import type { Clonable } from './utils/clone';
-import { finalizeAttributes, mergeAttributes } from './utils/attributes';
+} from './types/TablePlugin.js';
+import type { TableState } from './createViewModel.js';
+import type { Clonable } from './utils/clone.js';
+import { finalizeAttributes, mergeAttributes } from './utils/attributes.js';
 
 export interface TableComponentInit {
 	id: string;

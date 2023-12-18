@@ -1,9 +1,9 @@
 import { derived } from 'svelte/store';
-import { NBSP } from './constants';
-import { TableComponent } from './tableComponent';
-import type { HeaderLabel } from './types/Label';
-import type { AnyPlugins } from './types/TablePlugin';
-import type { RenderConfig } from 'svelte-render';
+import { NBSP } from './constants.js';
+import { TableComponent } from './tableComponent.js';
+import type { HeaderLabel } from './types/Label.js';
+import type { AnyPlugins } from './types/TablePlugin.js';
+import type { RenderConfig } from 'svelte-render/createRender';
 
 export type HeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	id: string;

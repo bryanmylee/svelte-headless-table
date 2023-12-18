@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getDistinct } from '../lib/utils/array';
+	import { getDistinct } from '../lib/utils/array.js';
 
 	import type { Readable, Writable } from 'svelte/store';
 

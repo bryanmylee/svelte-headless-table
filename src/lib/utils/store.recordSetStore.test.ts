@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { recordSetStore } from './store';
+import { recordSetStore } from './store.js';
 
 it('initializes correctly', () => {
 	const actual = recordSetStore();

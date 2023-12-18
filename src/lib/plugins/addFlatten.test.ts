@@ -1,8 +1,8 @@
-import { createTable } from '../createTable';
-import type { Sample } from '../../routes/_createSamples';
+import { createTable } from '../createTable.js';
+import type { Sample } from '../../routes/_createSamples.js';
 import { get, readable } from 'svelte/store';
-import { addFlatten } from './addFlatten';
-import { addSubRows } from './addSubRows';
+import { addFlatten } from './addFlatten.js';
+import { addSubRows } from './addSubRows.js';
 
 const data = readable<Sample[]>([
 	{

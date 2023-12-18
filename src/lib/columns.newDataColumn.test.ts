@@ -1,4 +1,4 @@
-import { DataColumn } from './columns';
+import { DataColumn } from './columns.js';
 
 interface User {
 	firstName: string;

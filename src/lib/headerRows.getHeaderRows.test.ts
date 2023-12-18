@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
-import { createTable } from './createTable';
-import { DataHeaderCell, GroupDisplayHeaderCell, GroupHeaderCell } from './headerCells';
-import { getHeaderRows, HeaderRow } from './headerRows';
+import { createTable } from './createTable.js';
+import { DataHeaderCell, GroupDisplayHeaderCell, GroupHeaderCell } from './headerCells.js';
+import { getHeaderRows, HeaderRow } from './headerRows.js';
 
 interface User {
 	firstName: string;

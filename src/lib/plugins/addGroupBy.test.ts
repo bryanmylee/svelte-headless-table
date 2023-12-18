@@ -1,8 +1,8 @@
-import { createTable } from '../createTable';
-import type { Sample } from '../../routes/_createSamples';
+import { createTable } from '../createTable.js';
+import type { Sample } from '../../routes/_createSamples.js';
 import { get, readable } from 'svelte/store';
-import { addGroupBy } from './addGroupBy';
-import { addSubRows } from './addSubRows';
+import { addGroupBy } from './addGroupBy.js';
+import { addSubRows } from './addSubRows.js';
 
 test('basic row grouping', () => {
 	const data = readable<Sample[]>([

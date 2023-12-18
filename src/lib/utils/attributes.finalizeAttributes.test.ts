@@ -1,4 +1,4 @@
-import { finalizeAttributes } from './attributes';
+import { finalizeAttributes } from './attributes.js';
 
 it('ignores undefined style', () => {
 	const actual = finalizeAttributes({

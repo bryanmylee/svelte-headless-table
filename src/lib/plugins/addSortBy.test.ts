@@ -1,6 +1,6 @@
 import { get, readable } from 'svelte/store';
-import { createTable } from '../createTable';
-import { addSortBy } from './addSortBy';
+import { createTable } from '../createTable.js';
+import { addSortBy } from './addSortBy.js';
 
 const data = readable([
 	{ id: 1, createdAt: new Date(2023, 1, 1), name: { first: 'Ariana', last: 'Grande' } },

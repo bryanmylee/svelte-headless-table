@@ -11,15 +11,15 @@ import {
 	type DataColumnInitKey,
 	type DisplayColumnInit,
 	type GroupColumnInit,
-} from './columns';
-import type { AnyPlugins } from './types/TablePlugin';
-import type { ReadOrWritable } from './utils/store';
-import { getDuplicates } from './utils/array';
+} from './columns.js';
+import type { AnyPlugins } from './types/TablePlugin.js';
+import type { ReadOrWritable } from './utils/store.js';
+import { getDuplicates } from './utils/array.js';
 import {
 	createViewModel,
 	type CreateViewModelOptions,
 	type TableViewModel,
-} from './createViewModel';
+} from './createViewModel.js';
 
 export class Table<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	data: ReadOrWritable<Item[]>;
