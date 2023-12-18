@@ -82,12 +82,12 @@
 	],
 	"exports": {
 		".": {
-			"types": "./dist/lib/index.d.ts",
+			"types": "./dist/index.d.ts",
 			"svelte": "./dist/index.js",
 			"default": "./dist/index.js"
 		},
 		"./plugins": {
-			"types": "./dist/lib/plugins/index.d.ts",
+			"types": "./dist/plugins/index.d.ts",
 			"svelte": "./dist/plugins/index.js",
 			"default": "./dist/plugins/index.js"
 		}
