@@ -1,8 +1,8 @@
-import type { DisplayBodyCell } from './bodyCells';
-import type { TableState } from './createViewModel';
-import type { DisplayLabel, HeaderLabel } from './types/Label';
-import type { DataLabel } from './types/Label';
-import type { AnyPlugins, PluginColumnConfigs } from './types/TablePlugin';
+import type { DisplayBodyCell } from './bodyCells.js';
+import type { TableState } from './createViewModel.js';
+import type { DisplayLabel, HeaderLabel } from './types/Label.js';
+import type { DataLabel } from './types/Label.js';
+import type { AnyPlugins, PluginColumnConfigs } from './types/TablePlugin.js';
 
 export interface ColumnInit<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	header: HeaderLabel<Item, Plugins>;

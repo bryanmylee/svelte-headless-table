@@ -1,6 +1,6 @@
-import { HeaderCell, DataHeaderCell, GroupHeaderCell } from './headerCells';
-import { getOrderedColumnMatrix } from './headerRows';
-import type { Matrix } from './types/Matrix';
+import { HeaderCell, DataHeaderCell, GroupHeaderCell } from './headerCells.js';
+import { getOrderedColumnMatrix } from './headerRows.js';
+import type { Matrix } from './types/Matrix.js';
 
 interface User {
 	firstName: string;

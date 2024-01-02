@@ -1,4 +1,4 @@
-import { getCounter } from './counter';
+import { getCounter } from './counter.js';
 
 export const getDistinct = <T>(items: T[]): T[] => {
 	return Array.from(getCounter(items).keys());

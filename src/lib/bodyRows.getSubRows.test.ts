@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
-import { DataBodyCell, DisplayBodyCell } from './bodyCells';
-import { BodyRow, DataBodyRow, getBodyRows, getColumnedBodyRows, getSubRows } from './bodyRows';
-import { createTable } from './createTable';
+import { DataBodyCell, DisplayBodyCell } from './bodyCells.js';
+import { BodyRow, DataBodyRow, getBodyRows, getColumnedBodyRows, getSubRows } from './bodyRows.js';
+import { createTable } from './createTable.js';
 
 interface User {
 	firstName: string;

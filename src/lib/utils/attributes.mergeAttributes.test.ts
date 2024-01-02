@@ -1,4 +1,4 @@
-import { mergeAttributes } from './attributes';
+import { mergeAttributes } from './attributes.js';
 
 it('merges basic attributes without styles', () => {
 	const actual = mergeAttributes(

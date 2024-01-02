@@ -1,6 +1,6 @@
-import type { BodyRow } from '../bodyRows';
-import type { TablePlugin } from '../types/TablePlugin';
-import { isReadable } from '../utils/store';
+import type { BodyRow } from '../bodyRows.js';
+import type { TablePlugin } from '../types/TablePlugin.js';
+import { isReadable } from '../utils/store.js';
 import { derived, get, type Readable } from 'svelte/store';
 
 export type DataExportFormat = 'object' | 'json' | 'csv';

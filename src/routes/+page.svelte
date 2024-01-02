@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { derived, readable, get } from 'svelte/store';
-	import { Render, Subscribe, createTable, createRender } from '../lib';
+	import { createRender } from 'svelte-render/createRender';
+	import { Render, Subscribe, createTable } from '../lib/index.js';
 	import {
 		addColumnFilters,
 		addColumnOrder,
@@ -17,10 +18,10 @@
 		matchFilter,
 		numberRangeFilter,
 		textPrefixFilter,
-	} from '../lib/plugins';
-	import { mean, sum } from '../lib/utils/math';
-	import { getShuffled } from './_getShuffled';
-	import { createSamples } from './_createSamples';
+	} from '../lib/plugins/index.js';
+	import { mean, sum } from '../lib/utils/math.js';
+	import { getShuffled } from './_getShuffled.js';
+	import { createSamples } from './_createSamples.js';
 	import Italic from './_Italic.svelte';
 	import Profile from './_Profile.svelte';
 	import Tick from './_Tick.svelte';
@@ -28,7 +29,7 @@
 	import NumberRangeFilter from './_NumberRangeFilter.svelte';
 	import SelectFilter from './_SelectFilter.svelte';
 	import ExpandIndicator from './_ExpandIndicator.svelte';
-	import { getDistinct } from '../lib/utils/array';
+	import { getDistinct } from '../lib/utils/array.js';
 	import SelectIndicator from './_SelectIndicator.svelte';
 
 	const data = readable(createSamples(2, 2));
@@ -266,8 +267,7 @@
 	const { filterValues } = pluginStates.filter;
 	const { filterValue } = pluginStates.tableFilter;
 	const { selectedDataIds } = pluginStates.select;
-	const { pageIndex, pageCount, pageSize, hasPreviousPage, hasNextPage } =
-		pluginStates.page;
+	const { pageIndex, pageCount, pageSize, hasPreviousPage, hasNextPage } = pluginStates.page;
 	const { expandedIds } = pluginStates.expand;
 	const { columnIdOrder } = pluginStates.orderColumns;
 	// $: $columnIdOrder = ['expanded', ...$groupByIds];
@@ -329,7 +329,12 @@
 								{/if}
 								{#if !props.resize.disabled}
 									<!-- svelte-ignore a11y-click-events-have-key-events -->
-									<div class="resizer" on:click|stopPropagation use:props.resize.drag use:props.resize.reset />
+									<div
+										class="resizer"
+										on:click|stopPropagation
+										use:props.resize.drag
+										use:props.resize.reset
+									/>
 								{/if}
 							</th>
 						</Subscribe>

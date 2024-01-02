@@ -1,7 +1,7 @@
-import { DataBodyCell } from './bodyCells';
-import { DataBodyRow } from './bodyRows';
-import { DataColumn } from './columns';
-import type { TableState } from './createViewModel';
+import { DataBodyCell } from './bodyCells.js';
+import { DataBodyRow } from './bodyRows.js';
+import { DataColumn } from './columns.js';
+import type { TableState } from './createViewModel.js';
 
 interface User {
 	firstName: string;

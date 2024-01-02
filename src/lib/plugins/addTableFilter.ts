@@ -1,6 +1,6 @@
-import type { BodyRow } from '../bodyRows';
-import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '../types/TablePlugin';
-import { recordSetStore } from '../utils/store';
+import type { BodyRow } from '../bodyRows.js';
+import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '../types/TablePlugin.js';
+import { recordSetStore } from '../utils/store.js';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 
 export interface TableFilterConfig {

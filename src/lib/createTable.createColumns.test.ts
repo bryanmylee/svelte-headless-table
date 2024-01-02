@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { createTable } from './createTable';
+import { createTable } from './createTable.js';
 
 interface User {
 	firstName: string;
@@ -49,18 +49,18 @@ it('using headers as id, passes if no duplicate headers', () => {
 		table.createColumns([
 			table.column({
 				header: 'First Name',
-				accessor: (item) => item.firstName
+				accessor: (item) => item.firstName,
 			}),
 			table.column({
 				header: 'Last Name',
-				accessor: (item) => item.lastName
+				accessor: (item) => item.lastName,
 			}),
 			table.display({
 				header: 'Actions',
-				cell: () => ''
+				cell: () => '',
 			}),
-		])
-	}).not.toThrow()
+		]);
+	}).not.toThrow();
 });
 
 it('using headers as id, throws if two columns have the same headers', () => {
@@ -68,16 +68,16 @@ it('using headers as id, throws if two columns have the same headers', () => {
 		table.createColumns([
 			table.column({
 				header: 'First Name',
-				accessor: (item) => item.firstName
+				accessor: (item) => item.firstName,
 			}),
 			table.column({
 				header: 'Last Name',
-				accessor: (item) => item.lastName
+				accessor: (item) => item.lastName,
 			}),
 			table.display({
 				header: 'First Name',
-				cell: () => ''
+				cell: () => '',
 			}),
-		])
-	}).toThrowError('Duplicate column ids not allowed: "First Name"')
+		]);
+	}).toThrowError('Duplicate column ids not allowed: "First Name"');
 });

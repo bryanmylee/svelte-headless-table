@@ -1,5 +1,5 @@
-import type { TableState } from './createViewModel';
-import { HeaderCell } from './headerCells';
+import type { TableState } from './createViewModel.js';
+import { HeaderCell } from './headerCells.js';
 
 interface User {
 	firstName: string;

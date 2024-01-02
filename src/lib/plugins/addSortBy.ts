@@ -1,8 +1,8 @@
-import type { DataBodyCell } from '../bodyCells';
-import type { BodyRow } from '../bodyRows';
-import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '../types/TablePlugin';
-import { compare } from '../utils/compare';
-import { isShiftClick } from '../utils/event';
+import type { DataBodyCell } from '../bodyCells.js';
+import type { BodyRow } from '../bodyRows.js';
+import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '../types/TablePlugin.js';
+import { compare } from '../utils/compare.js';
+import { isShiftClick } from '../utils/event.js';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 
 export interface SortByConfig {
@@ -139,8 +139,8 @@ const getSortedRows = <Item, Row extends BodyRow<Item>>(
 				// typeof `cellB.value` is logically equal to `cellA.value`.
 				order = compare(valueA, valueB as string | number);
 			} else if (valueA instanceof Date || valueB instanceof Date) {
-				const sortValueA = valueA instanceof Date ? valueA.getTime() : 0
-				const sortValueB = valueB instanceof Date ? valueB.getTime() : 0
+				const sortValueA = valueA instanceof Date ? valueA.getTime() : 0;
+				const sortValueB = valueB instanceof Date ? valueB.getTime() : 0;
 				order = compare(sortValueA, sortValueB);
 			}
 			if (order !== 0) {
@@ -194,7 +194,7 @@ export const addSortBy =
 				if (serverSide) {
 					return $rows;
 				}
-				return getSortedRows<Item, typeof $rows[number]>($rows, $sortKeys, columnOptions);
+				return getSortedRows<Item, (typeof $rows)[number]>($rows, $sortKeys, columnOptions);
 			});
 		};
 

@@ -1,6 +1,6 @@
-import type { BodyRow } from '../bodyRows';
-import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '../types/TablePlugin';
-import { recordSetStore, type RecordSetStore } from '../utils/store';
+import type { BodyRow } from '../bodyRows.js';
+import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '../types/TablePlugin.js';
+import { recordSetStore, type RecordSetStore } from '../utils/store.js';
 import { keyed } from 'svelte-keyed';
 import { derived, readable, type Readable, type Writable } from 'svelte/store';
 

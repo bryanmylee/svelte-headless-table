@@ -1,5 +1,5 @@
-import { DataBodyRow, getSubRows } from '../bodyRows';
-import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '../types/TablePlugin';
+import { DataBodyRow, getSubRows } from '../bodyRows.js';
+import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '../types/TablePlugin.js';
 import { derived } from 'svelte/store';
 
 export type ValidChildrenKey<Item> = {
@@ -20,7 +20,7 @@ const withSubRows = <Item, Row extends DataBodyRow<Item>>(
 	if (subItems === undefined) {
 		return row;
 	}
-	const subRows = getSubRows(subItems, row) as typeof row[];
+	const subRows = getSubRows(subItems, row) as (typeof row)[];
 	row.subRows = subRows.map((row) => withSubRows(row, getChildren));
 	return row;
 };

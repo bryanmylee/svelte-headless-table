@@ -1,4 +1,4 @@
-import { stringifyCss } from './css';
+import { stringifyCss } from './css.js';
 
 export const mergeAttributes = <
 	T extends Record<string, unknown>,

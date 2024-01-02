@@ -1,17 +1,17 @@
 import { derived } from 'svelte/store';
-import type { Column } from './columns';
+import type { Column } from './columns.js';
 import {
 	DataHeaderCell,
 	FlatDisplayHeaderCell,
 	GroupDisplayHeaderCell,
 	GroupHeaderCell,
 	type HeaderCell,
-} from './headerCells';
-import { TableComponent } from './tableComponent';
-import type { Matrix } from './types/Matrix';
-import type { AnyPlugins } from './types/TablePlugin';
-import { sum } from './utils/math';
-import { getNullMatrix, getTransposed } from './utils/matrix';
+} from './headerCells.js';
+import { TableComponent } from './tableComponent.js';
+import type { Matrix } from './types/Matrix.js';
+import type { AnyPlugins } from './types/TablePlugin.js';
+import { sum } from './utils/math.js';
+import { getNullMatrix, getTransposed } from './utils/matrix.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type HeaderRowAttributes<Item, Plugins extends AnyPlugins = AnyPlugins> = {

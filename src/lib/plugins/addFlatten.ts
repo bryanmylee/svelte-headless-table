@@ -1,5 +1,5 @@
-import type { BodyRow } from '../bodyRows';
-import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '../types/TablePlugin';
+import type { BodyRow } from '../bodyRows.js';
+import type { DeriveRowsFn, NewTablePropSet, TablePlugin } from '../types/TablePlugin.js';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
 
 export interface FlattenConfig {
@@ -46,7 +46,7 @@ export const addFlatten =
 		const pluginState: FlattenState = { depth };
 		const deriveRows: DeriveRowsFn<Item> = (rows) => {
 			return derived([rows, depth], ([$rows, $depth]) => {
-				return getFlattenedRows<Item, typeof $rows[number]>($rows, $depth);
+				return getFlattenedRows<Item, (typeof $rows)[number]>($rows, $depth);
 			});
 		};
 
