@@ -3,7 +3,7 @@ import { NBSP } from './constants.js';
 import { TableComponent } from './tableComponent.js';
 import type { HeaderLabel } from './types/Label.js';
 import type { AnyPlugins } from './types/TablePlugin.js';
-import type { RenderConfig } from 'svelte-render/createRender';
+import type { RenderConfig } from 'svelte-render';
 
 export type HeaderCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	id: string;
@@ -48,7 +48,7 @@ export abstract class HeaderCell<
 			return {
 				...$baseAttrs,
 				role: 'columnheader' as const,
-				colspan: this.colspan,
+				colspan: this.colspan
 			};
 		});
 	}
@@ -108,7 +108,7 @@ export class FlatHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exten
 		return new FlatHeaderCell({
 			id: this.id,
 			label: this.label,
-			colstart: this.colstart,
+			colstart: this.colstart
 		});
 	}
 }
@@ -142,7 +142,7 @@ export class DataHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exten
 			label: this.label,
 			accessorFn: this.accessorFn,
 			accessorKey: this.accessorKey,
-			colstart: this.colstart,
+			colstart: this.colstart
 		});
 	}
 }
@@ -169,7 +169,7 @@ export class FlatDisplayHeaderCell<
 		return new FlatDisplayHeaderCell({
 			id: this.id,
 			label: this.label,
-			colstart: this.colstart,
+			colstart: this.colstart
 		});
 	}
 }
@@ -215,7 +215,7 @@ export class GroupHeaderCell<Item, Plugins extends AnyPlugins = AnyPlugins> exte
 			ids: this.ids,
 			allIds: this.allIds,
 			colspan: this.colspan,
-			colstart: this.colstart,
+			colstart: this.colstart
 		});
 	}
 }
@@ -240,7 +240,7 @@ export class GroupDisplayHeaderCell<
 		ids,
 		allIds,
 		colspan = 1,
-		colstart,
+		colstart
 	}: GroupDisplayHeaderCellInit<Item, Plugins>) {
 		super({ label, ids, allIds, colspan, colstart });
 	}
@@ -251,7 +251,7 @@ export class GroupDisplayHeaderCell<
 			ids: this.ids,
 			allIds: this.allIds,
 			colspan: this.colspan,
-			colstart: this.colstart,
+			colstart: this.colstart
 		});
 	}
 }

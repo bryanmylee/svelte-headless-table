@@ -1,4 +1,4 @@
-import type { RenderConfig } from 'svelte-render/createRender';
+import type { RenderConfig } from 'svelte-render';
 import type { DataBodyCell, DisplayBodyCell } from '../bodyCells.js';
 import type { TableState } from '../createViewModel.js';
 import type { HeaderCell } from '../headerCells.js';

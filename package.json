@@ -4,15 +4,17 @@
 	"version": "0.17.7",
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build",
-		"package": "svelte-package",
+		"build": "vite build && npm run package",
 		"preview": "vite preview",
-		"check": "svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
-		"lint": "prettier --ignore-path .prettierignore --check --plugin-search-dir=. . && eslint --ignore-path .eslintignore .",
-		"format": "prettier --ignore-path .prettierignore --write --plugin-search-dir=. .",
-		"test": "jest --collect-coverage",
-		"test:watch": "jest --watch"
+		"package": "svelte-kit sync && svelte-package && publint",
+		"prepublishOnly": "npm run package",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"test": "vitest run --coverage",
+		"test:only": "vitest run",
+		"test:watch": "vitest",
+		"lint": "prettier --check . && eslint .",
+		"format": "prettier --write ."
 	},
 	"repository": {
 		"type": "git",
@@ -40,58 +42,53 @@
 		"url": "https://github.com/bryanmylee/svelte-headless-table/issues"
 	},
 	"homepage": "https://svelte-headless-table.bryanmylee.com",
-	"devDependencies": {
-		"@babel/core": "7",
-		"@babel/preset-env": "^7.17.10",
-		"@sveltejs/adapter-auto": "^1.0.0",
-		"@sveltejs/kit": "^1.0.1",
-		"@sveltejs/package": "^2.2.3",
-		"@testing-library/jest-dom": "^5.16.4",
-		"@testing-library/svelte": "^3.1.1",
-		"@types/faker": "5",
-		"@types/jest": "^27.4.1",
-		"@typescript-eslint/eslint-plugin": "^5.21.0",
-		"@typescript-eslint/parser": "^5.21.0",
-		"eslint": "^7.32.0",
-		"eslint-config-prettier": "^8.5.0",
-		"eslint-plugin-svelte3": "^3.4.1",
-		"faker": "5",
-		"jest": "^27.5.1",
-		"prettier": "^2.6.2",
-		"prettier-plugin-svelte": "^2.7.0",
-		"svelte-check": "^2.7.0",
-		"svelte-jester": "^2.3.2",
-		"svelte-preprocess": "^4.10.6",
-		"svelte2tsx": "^0.5.9",
-		"ts-jest": "^27.1.4",
-		"tslib": "^2.4.0",
-		"typescript": "^4.7.4",
-		"vite": "^4.0.3"
-	},
-	"dependencies": {
-		"svelte-keyed": "^1.1.6",
-		"svelte-render": "^1.6.1",
-		"svelte-subscribe": "^1.0.5"
-	},
-	"peerDependencies": {
-		"svelte": "^3 || ^4"
-	},
-	"files": [
-		"dist",
-		"!dist/**/*.test.*"
-	],
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
 			"svelte": "./dist/index.js",
 			"default": "./dist/index.js"
-		},
-		"./plugins": {
-			"types": "./dist/plugins/index.d.ts",
-			"svelte": "./dist/plugins/index.js",
-			"default": "./dist/plugins/index.js"
 		}
 	},
-	"type": "module",
-	"svelte": "./dist/index.js"
+	"files": [
+		"dist",
+		"!dist/**/*.test.*",
+		"!dist/**/*.spec.*"
+	],
+	"peerDependencies": {
+		"svelte": "^4.0.0"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-auto": "^3.0.0",
+		"@sveltejs/kit": "^2.0.0",
+		"@sveltejs/package": "^2.0.0",
+		"@sveltejs/vite-plugin-svelte": "^3.0.0",
+		"@testing-library/jest-dom": "^6.1.6",
+		"@testing-library/svelte": "^4.0.5",
+		"@types/eslint": "8.56.0",
+		"@types/faker": "^5.5.9",
+		"@typescript-eslint/eslint-plugin": "^6.0.0",
+		"@typescript-eslint/parser": "^6.0.0",
+		"@vitest/coverage-v8": "^1.1.1",
+		"eslint": "^8.56.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-svelte": "^2.35.1",
+		"faker": "^5.5.3",
+		"prettier": "^3.1.1",
+		"prettier-plugin-svelte": "^3.1.2",
+		"publint": "^0.1.9",
+		"svelte": "^4.2.7",
+		"svelte-check": "^3.6.0",
+		"tslib": "^2.4.1",
+		"typescript": "^5.0.0",
+		"vite": "^5.0.3",
+		"vitest": "^1.0.0"
+	},
+	"dependencies": {
+		"svelte-keyed": "^2.0.0",
+		"svelte-render": "^2.0.0",
+		"svelte-subscribe": "^2.0.1"
+	},
+	"svelte": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"type": "module"
 }
