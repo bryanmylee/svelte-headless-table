@@ -16,8 +16,8 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
-          node-version: 16
-      - run: npm install svelte
+          node-version: 18
+      - run: npm i svelte
       - run: npm ci
       - run: npm test
       - uses: coverallsapp/github-action@master
