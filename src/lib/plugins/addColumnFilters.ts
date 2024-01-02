@@ -1,5 +1,5 @@
 import { keyed } from 'svelte-keyed';
-import type { RenderConfig } from 'svelte-render/createRender';
+import type { RenderConfig } from 'svelte-render';
 import type { BodyRow } from '../bodyRows.js';
 import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '../types/TablePlugin.js';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
@@ -157,13 +157,13 @@ export const addColumnFilters =
 							...tableState,
 							values,
 							preFilteredRows,
-							preFilteredValues,
+							preFilteredValues
 						});
 						return { render };
 					});
 					return { props };
-				},
-			},
+				}
+			}
 		};
 	};
 
@@ -183,7 +183,7 @@ export const textPrefixFilter: ColumnFilterFn<string, string> = ({ filterValue, 
 
 export const numberRangeFilter: ColumnFilterFn<[number | null, number | null], number> = ({
 	filterValue: [min, max],
-	value,
+	value
 }) => {
 	return (min ?? -Infinity) <= value && value <= (max ?? Infinity);
 };

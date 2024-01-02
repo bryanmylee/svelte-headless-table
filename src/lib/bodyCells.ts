@@ -4,7 +4,7 @@ import type { DataColumn, DisplayColumn, FlatColumn } from './columns.js';
 import { TableComponent } from './tableComponent.js';
 import type { DataLabel, DisplayLabel } from './types/Label.js';
 import type { AnyPlugins } from './types/TablePlugin.js';
-import type { RenderConfig } from 'svelte-render/createRender';
+import type { RenderConfig } from 'svelte-render';
 
 export type BodyCellInit<Item, Plugins extends AnyPlugins = AnyPlugins> = {
 	id: string;
@@ -33,7 +33,7 @@ export abstract class BodyCell<
 		return derived(super.attrs(), ($baseAttrs) => {
 			return {
 				...$baseAttrs,
-				role: 'cell' as const,
+				role: 'cell' as const
 			};
 		});
 	}
@@ -109,7 +109,7 @@ export class DataBodyCell<
 			row: this.row,
 			column: this.column,
 			label: this.label,
-			value: this.value,
+			value: this.value
 		});
 		return clonedCell;
 	}
@@ -149,7 +149,7 @@ export class DisplayBodyCell<Item, Plugins extends AnyPlugins = AnyPlugins> exte
 		const clonedCell = new DisplayBodyCell({
 			row: this.row,
 			column: this.column,
-			label: this.label,
+			label: this.label
 		});
 		return clonedCell;
 	}
