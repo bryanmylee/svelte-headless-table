@@ -2,6 +2,7 @@ import type { BodyRow } from '../bodyRows.js';
 import type { TablePlugin, NewTablePropSet, DeriveRowsFn } from '../types/TablePlugin.js';
 import { recordSetStore } from '../utils/store.js';
 import { derived, writable, type Readable, type Writable } from 'svelte/store';
+import { textPrefixFilter } from './addColumnFilters.js';
 
 export interface TableFilterConfig {
 	fn?: TableFilterFn;
@@ -48,7 +49,7 @@ const getFilteredRows = <Item, Row extends BodyRow<Item>>(
 	rows: Row[],
 	filterValue: string,
 	columnOptions: Record<string, TableFilterColumnOptions<Item>>,
-	{ tableCellMatches, fn, includeHiddenColumns }: GetFilteredRowsOptions
+	{ tableCellMatches, fn, includeHiddenColumns }: GetFilteredRowsOptions,
 ): Row[] => {
 	const $filteredRows = rows
 		// Filter `subRows`
@@ -154,17 +155,10 @@ export const addTableFilter =
 									dataRowColId !== undefined &&
 									($tableCellMatches[dataRowColId] ?? false),
 							};
-						}
+						},
 					);
 					return { props };
 				},
 			},
 		};
 	};
-
-export const textPrefixFilter: TableFilterFn = ({ filterValue, value }) => {
-	if (filterValue === '') {
-		return true;
-	}
-	return String(value).toLowerCase().startsWith(String(filterValue).toLowerCase());
-};

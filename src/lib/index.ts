@@ -14,8 +14,8 @@ export {
 	GroupHeaderCell,
 	GroupDisplayHeaderCell,
 } from './headerCells.js';
-export { BodyRow, DisplayBodyRow, DataBodyRow } from './bodyRows.js';
-export { BodyCell, DataBodyCell, DisplayBodyCell } from './bodyCells.js';
-export { Column, FlatColumn, DataColumn, GroupColumn, DisplayColumn } from './columns.js';
-export type { TableViewModel, TableState } from './createViewModel.js';
-export type { DataLabel, DisplayLabel, HeaderLabel } from './types/Label.js';
+export * from './bodyRows.js';
+export * from './bodyCells.js';
+export * from './columns.js';
+export type * from './createViewModel.js';
+export type * from './types/Label.js';

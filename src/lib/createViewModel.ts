@@ -1,5 +1,4 @@
-import type { ReadOrWritable } from 'svelte-subscribe/derivedKeys';
-import { derived, readable, writable, type Readable } from 'svelte/store';
+import { derived, readable, writable, type Readable, type Writable } from 'svelte/store';
 import { BodyRow, getBodyRows, getColumnedBodyRows } from './bodyRows.js';
 import { FlatColumn, getFlatColumns, type Column } from './columns.js';
 import type { Table } from './createTable.js';
@@ -49,6 +48,7 @@ export interface TableViewModel<Item, Plugins extends AnyPlugins = AnyPlugins> {
 	pluginStates: PluginStates<Plugins>;
 }
 
+export type ReadOrWritable<T> = Readable<T> | Writable<T>;
 export interface PluginInitTableState<Item, Plugins extends AnyPlugins = AnyPlugins>
 	extends Omit<TableViewModel<Item, Plugins>, 'pluginStates'> {
 	data: ReadOrWritable<Item[]>;
@@ -68,7 +68,7 @@ export interface CreateViewModelOptions<Item> {
 export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	table: Table<Item, Plugins>,
 	columns: Column<Item, Plugins>[],
-	{ rowDataId }: CreateViewModelOptions<Item> = {}
+	{ rowDataId }: CreateViewModelOptions<Item> = {},
 ): TableViewModel<Item, Plugins> => {
 	const { data, plugins } = table;
 
@@ -114,14 +114,14 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 						if (option === undefined) return undefined;
 						return [c.id, option] as const;
 					})
-					.filter(nonUndefined)
+					.filter(nonUndefined),
 			);
 			return [
 				pluginName,
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				plugin({ pluginName, tableState: pluginInitTableState as any, columnOptions }),
 			];
-		})
+		}),
 	) as {
 		[K in keyof Plugins]: ReturnType<Plugins[K]>;
 	};
@@ -130,7 +130,7 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		Object.entries(pluginInstances).map(([key, pluginInstance]) => [
 			key,
 			pluginInstance.pluginState,
-		])
+		]),
 	) as PluginStates<Plugins>;
 
 	const tableState: TableState<Item, Plugins> = {
@@ -164,7 +164,7 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	});
 
 	const deriveTableHeadAttrsFns: DeriveFn<TableHeadAttributes<Item>>[] = Object.values(
-		pluginInstances
+		pluginInstances,
 	)
 		.map((pluginInstance) => pluginInstance.deriveTableBodyAttrs)
 		.filter(nonUndefined);
@@ -179,7 +179,7 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	});
 
 	const deriveTableBodyAttrsFns: DeriveFn<TableBodyAttributes<Item>>[] = Object.values(
-		pluginInstances
+		pluginInstances,
 	)
 		.map((pluginInstance) => pluginInstance.deriveTableBodyAttrs)
 		.filter(nonUndefined);
@@ -216,9 +216,9 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 		([$originalRows, $injectedColumns]) => {
 			return getColumnedBodyRows(
 				$originalRows,
-				$injectedColumns.map((c) => c.id)
+				$injectedColumns.map((c) => c.id),
 			);
-		}
+		},
 	);
 
 	const deriveRowsFns: DeriveRowsFn<Item>[] = Object.values(pluginInstances)
@@ -295,7 +295,7 @@ export const createViewModel = <Item, Plugins extends AnyPlugins = AnyPlugins>(
 	const headerRows = derived(injectedColumns, ($injectedColumns) => {
 		const $headerRows = getHeaderRows(
 			columns,
-			$injectedColumns.map((c) => c.id)
+			$injectedColumns.map((c) => c.id),
 		);
 		// Inject state.
 		$headerRows.forEach((row) => {
