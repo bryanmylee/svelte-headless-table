@@ -90,7 +90,7 @@
 	},
 	"dependencies": {
 		"svelte-keyed": "^2.0.0",
-		"svelte-render": "^2.0.0",
+		"svelte-render": "^2.0.1",
 		"svelte-subscribe": "^2.0.1"
 	},
 	"svelte": "./dist/index.js",
