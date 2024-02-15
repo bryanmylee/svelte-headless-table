@@ -208,7 +208,7 @@
 					accessor: 'age',
 					plugins: {
 						align: {
-							alignment: { body: 'right' },
+							alignment: 'right',
 						},
 						group: {
 							getAggregateValue: (values) => mean(values),
@@ -248,7 +248,7 @@
 					plugins: {
 						align: {
 							alignment: 'center',
-							span: 'body',
+							alignHead: true,
 						},
 						group: {
 							getAggregateValue: (values) => sum(values),

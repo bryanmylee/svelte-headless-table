@@ -1,7 +1,6 @@
-import type { EventHandler } from 'svelte/elements';
 import type { HeaderCell } from '../headerCells.js';
 import type { NewTableAttributeSet, NewTablePropSet, TablePlugin } from '../types/TablePlugin.js';
-import { derived, writable, type Writable, get } from 'svelte/store';
+import { derived, writable, type Writable } from 'svelte/store';
 
 export interface AddAlignedColumnsConfig {
 	defaultAlignment?: ColumnAlignment;
@@ -15,14 +14,7 @@ export interface AlignmentKey {
 
 const DEFAULT_TOGGLE_ORDER: ColumnAlignment[] = [null, 'left', 'center', 'right'];
 
-export type ColumnAlignmentOption = 'left' | 'right' | 'center' | null;
-
-export type ColumnAlignment =
-	| ColumnAlignmentOption
-	| {
-			head?: ColumnAlignmentOption;
-			body?: ColumnAlignmentOption;
-	  };
+export type ColumnAlignment = 'left' | 'right' | 'center' | null;
 
 export type AlignmentSpan = 'head' | 'body' | 'both';
 
@@ -32,6 +24,7 @@ export type AlignedColumnsState = {
 
 export type AlignedColumnsColumnOptions = {
 	alignment?: ColumnAlignment;
+	alignHead?: boolean;
 
 	disable?: boolean;
 };
@@ -105,14 +98,20 @@ export const addAlignedColumns =
 					const onToggle = (e: Event) => {
 						e.stopPropagation();
 
-						// TODO: deal with objects
+						const findNext = (currentAlignment: ColumnAlignment) => {
+							let currentIndex = toggleOrder.findIndex(
+								(alignment) => alignment === currentAlignment,
+							);
+							if (currentIndex === toggleOrder.length - 1) currentIndex = -1;
+							return toggleOrder[currentIndex + 1];
+						};
 
 						columnsAlignments.update((ca) => {
-							let currentIndex = toggleOrder.findIndex((alignment) => alignment === ca[cell.id]);
-							if (currentIndex === toggleOrder.length - 1) currentIndex = -1;
-							ca[cell.id] = toggleOrder[currentIndex + 1];
+							const currentAlignment = ca[cell.id];
+							if (currentAlignment !== undefined) {
+								ca[cell.id] = findNext(currentAlignment);
+							}
 
-							console.log('initial :', initialAlignments);
 							return ca;
 						});
 					};
@@ -120,12 +119,9 @@ export const addAlignedColumns =
 					const onClear = (e: Event) => {
 						e.stopPropagation();
 
-						// TODO: deal with objects
-
 						columnsAlignments.update((ca) => {
-							console.log('clear, cell :', cell.id, ca[cell.id], initialAlignments[cell.id]);
-
 							ca[cell.id] = ogAlignments[cell.id];
+
 							return ca;
 						});
 					};
@@ -161,12 +157,10 @@ export const addAlignedColumns =
 					const attrs = derived(columnsAlignments, ($columnsAlignment) => {
 						const alignment = $columnsAlignment[cell.id];
 
-						const alignmentStr = typeof alignment === 'string' ? alignment : alignment?.head;
-
-						return alignmentStr
+						return columnOptions[cell.id]?.alignHead && alignment
 							? {
 									style: {
-										'text-align': alignmentStr,
+										'text-align': alignment,
 									},
 								}
 							: {};
@@ -176,12 +170,11 @@ export const addAlignedColumns =
 				'tbody.tr.td': (cell) => {
 					const attrs = derived(columnsAlignments, ($columnsAlignment) => {
 						const alignment = $columnsAlignment[cell.id];
-						const alignmentStr = typeof alignment === 'string' ? alignment : alignment?.body;
 
-						return alignmentStr
+						return alignment
 							? {
 									style: {
-										'text-align': alignmentStr,
+										'text-align': alignment,
 									},
 								}
 							: {};
