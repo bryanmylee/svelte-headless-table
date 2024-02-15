@@ -1,6 +1,6 @@
 import type { HeaderCell } from '../headerCells.js';
 import type { NewTableAttributeSet, NewTablePropSet, TablePlugin } from '../types/TablePlugin.js';
-import { derived, writable, type Writable } from 'svelte/store';
+import { derived, get, writable, type Writable } from 'svelte/store';
 
 export interface AddAlignedColumnsConfig {
 	defaultAlignment?: ColumnAlignment;
@@ -12,14 +12,15 @@ export interface AlignmentKey {
 	alignment: ColumnAlignment;
 }
 
-const DEFAULT_TOGGLE_ORDER: ColumnAlignment[] = [null, 'left', 'center', 'right'];
+const DEFAULT_TOGGLE_ORDER: ColumnAlignment[] = ['auto', 'left', 'center', 'right'];
 
-export type ColumnAlignment = 'left' | 'right' | 'center' | null;
+export type ColumnAlignment = 'auto' | 'left' | 'right' | 'center';
 
 export type AlignmentSpan = 'head' | 'body' | 'both';
 
 export type AlignedColumnsState = {
 	alignments: Writable<Record<string, ColumnAlignment | undefined>>;
+	alignDefault: Writable<ColumnAlignment>;
 };
 
 export type AlignedColumnsColumnOptions = {
@@ -54,8 +55,7 @@ export type AlignedColumnsAttributeSet = NewTableAttributeSet<{
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isCellDisabled = (cell: HeaderCell<any>, disabledIds: string[]) => {
-	if (disabledIds.includes(cell.id)) return true;
-	return false;
+	return disabledIds.includes(cell.id);
 };
 
 type ColumnsAlignmentState = Record<string, ColumnAlignment | undefined>;
@@ -79,16 +79,21 @@ export const addAlignedColumns =
 		const initialAlignments = Object.fromEntries(
 			Object.entries(columnOptions).map(([columnId, { alignment, disable }]) => [
 				columnId,
-				!disable ? (alignment !== undefined ? alignment : defaultAlignment) : undefined,
+				!disable ? alignment ?? defaultAlignment : undefined,
 			]),
 		);
+
+		const alignDefault = writable(defaultAlignment);
 
 		const columnsAlignments = writable<ColumnsAlignmentState>(initialAlignments);
 
 		// ! `initialAlignments` follows `columnsAlignments` updates, how do i stop that ??
 		const ogAlignments = structuredClone(initialAlignments);
 
-		const pluginState: AlignedColumnsState = { alignments: columnsAlignments };
+		const pluginState: AlignedColumnsState = {
+			alignments: columnsAlignments,
+			alignDefault,
+		};
 
 		return {
 			pluginState,
@@ -98,19 +103,24 @@ export const addAlignedColumns =
 					const onToggle = (e: Event) => {
 						e.stopPropagation();
 
-						const findNext = (currentAlignment: ColumnAlignment) => {
-							let currentIndex = toggleOrder.findIndex(
+						const findNext = (currentAlignment: ColumnAlignment | undefined) => {
+							const currentIndex = toggleOrder.findIndex(
 								(alignment) => alignment === currentAlignment,
 							);
-							if (currentIndex === toggleOrder.length - 1) currentIndex = -1;
-							return toggleOrder[currentIndex + 1];
+
+							if (currentIndex < toggleOrder.length - 1) return toggleOrder[currentIndex + 1];
+
+							const initialAlignment = columnOptions[cell.id]?.alignment ?? get(alignDefault);
+							return initialAlignment && toggleOrder.includes(initialAlignment)
+								? toggleOrder[0]
+								: initialAlignment;
 						};
 
 						columnsAlignments.update((ca) => {
 							const currentAlignment = ca[cell.id];
-							if (currentAlignment !== undefined) {
-								ca[cell.id] = findNext(currentAlignment);
-							}
+							// if (currentAlignment !== undefined) {
+							ca[cell.id] = findNext(currentAlignment);
+							// }
 
 							return ca;
 						});
@@ -127,58 +137,73 @@ export const addAlignedColumns =
 					};
 
 					//   const alignment = get(columnsAlignments)[cell.id];
-					const props = derived(columnsAlignments, ($columnsAlignments) => {
-						const toggle = (node: Element) => {
-							node.addEventListener('click', onToggle);
-							return {
-								destroy() {
-									node.removeEventListener('click', onToggle);
-								},
-							};
-						};
-						const clear = (node: Element) => {
-							node.addEventListener('click', onClear);
-							return {
-								destroy() {
-									node.removeEventListener('click', onClear);
-								},
-							};
-						};
-						const disabled = isCellDisabled(cell, disabledAlignIds);
-
-						return {
-							alignment: $columnsAlignments[cell.id],
-							toggle,
-							clear,
-							disabled,
-						};
-					});
-
-					const attrs = derived(columnsAlignments, ($columnsAlignment) => {
-						const alignment = $columnsAlignment[cell.id];
-
-						return columnOptions[cell.id]?.alignHead && alignment
-							? {
-									style: {
-										'text-align': alignment,
+					const props = derived(
+						[columnsAlignments, alignDefault],
+						([$columnsAlignments, $alignDefault]) => {
+							const toggle = (node: Element) => {
+								node.addEventListener('click', onToggle);
+								return {
+									destroy() {
+										node.removeEventListener('click', onToggle);
 									},
-								}
-							: {};
-					});
+								};
+							};
+							const clear = (node: Element) => {
+								node.addEventListener('click', onClear);
+								return {
+									destroy() {
+										node.removeEventListener('click', onClear);
+									},
+								};
+							};
+							const disabled = isCellDisabled(cell, disabledAlignIds);
+
+							return {
+								alignment: columnOptions[cell.id]?.disable
+									? undefined
+									: $columnsAlignments[cell.id] ?? $alignDefault,
+								toggle,
+								clear,
+								disabled,
+							};
+						},
+					);
+
+					const attrs = derived(
+						[columnsAlignments, alignDefault],
+						([$columnsAlignments, $alignDefault]) => {
+							const alignment = columnOptions[cell.id]?.disable
+								? undefined
+								: $columnsAlignments[cell.id] ?? $alignDefault;
+
+							return columnOptions[cell.id]?.alignHead && alignment
+								? {
+										style: {
+											'text-align': alignment,
+										},
+									}
+								: {};
+						},
+					);
 					return { props, attrs };
 				},
 				'tbody.tr.td': (cell) => {
-					const attrs = derived(columnsAlignments, ($columnsAlignment) => {
-						const alignment = $columnsAlignment[cell.id];
+					const attrs = derived(
+						[columnsAlignments, alignDefault],
+						([$columnsAlignments, $alignDefault]) => {
+							const alignment = columnOptions[cell.id]?.disable
+								? undefined
+								: $columnsAlignments[cell.id] ?? $alignDefault;
 
-						return alignment
-							? {
-									style: {
-										'text-align': alignment,
-									},
-								}
-							: {};
-					});
+							return alignment
+								? {
+										style: {
+											'text-align': alignment,
+										},
+									}
+								: {};
+						},
+					);
 					return { attrs };
 				},
 			},

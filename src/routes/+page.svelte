@@ -19,6 +19,7 @@
 		numberRangeFilter,
 		textPrefixFilter,
 		addAlignedColumns,
+		type ColumnAlignment,
 	} from '../lib/plugins/index.js';
 	import { mean, sum } from '../lib/utils/math.js';
 	import { getShuffled } from './_getShuffled.js';
@@ -37,15 +38,12 @@
 
 	let serverSide = false;
 
+	let defaultAlignment: ColumnAlignment | undefined;
+
 	const table = createTable(data, {
 		align: addAlignedColumns({
-			defaultAlignment: 'center',
-			// initialAlignments: [
-			// 	{ id: 'age', alignment: 'center' },
-			// 	{ id: 'visits', alignment: 'center' },
-			// ],
-			toggleOrder: [null, 'left', 'center', 'right'],
-			span: 'body',
+			defaultAlignment,
+			toggleOrder: ['auto', 'right'],
 		}),
 		subRows: addSubRows({
 			children: 'children',
@@ -209,6 +207,7 @@
 					plugins: {
 						align: {
 							alignment: 'right',
+							// disable: true,
 						},
 						group: {
 							getAggregateValue: (values) => mean(values),
@@ -279,7 +278,7 @@
 	const { headerRows, pageRows, tableAttrs, tableBodyAttrs, visibleColumns, pluginStates } =
 		table.createViewModel(columns);
 
-	const { alignments } = pluginStates.align;
+	const { alignments, alignDefault } = pluginStates.align;
 
 	const { groupByIds } = pluginStates.group;
 	const { sortKeys } = pluginStates.sort;
@@ -299,6 +298,27 @@
 </script>
 
 <h1>svelte-headless-table</h1>
+
+<div class="default-table-align">
+	Table default alignment :
+	<label for="rb_auto">
+		auto
+		<input type="radio" id="rb_auto" value="auto" bind:group={$alignDefault} />
+	</label>
+	<label for="rb_left">
+		left
+		<input type="radio" id="rb_left" value="left" bind:group={$alignDefault} />
+	</label>
+	<label for="rb_center">
+		center
+		<input type="radio" id="rb_center" value="center" bind:group={$alignDefault} />
+	</label>
+	<label for="rb_right">
+		right
+		<input type="radio" id="rb_right" value="right" bind:group={$alignDefault} />
+	</label>
+	(current : {$alignDefault})
+</div>
 
 <button on:click={() => ($columnIdOrder = getShuffled($columnIdOrder))}>Shuffle columns</button>
 <div>
@@ -334,11 +354,10 @@
 										⬆️
 									{/if}
 								</div>
-								{#if !props.align.disabled}
+
+								{#if !props.align.disabled && props.align.alignment !== undefined}
 									<button use:props.align.toggle>
-										{typeof props.align.alignment === 'string'
-											? props.align.alignment
-											: JSON.stringify(props.align.alignment)}
+										{props.align.alignment}
 									</button>
 									<button use:props.align.clear>x</button>
 								{/if}
@@ -404,6 +423,7 @@
 <pre>{JSON.stringify(
 		{
 			alignments: $alignments,
+			alignDefault: $alignDefault,
 			groupByIds: $groupByIds,
 			sortKeys: $sortKeys,
 			filterValues: $filterValues,
@@ -462,6 +482,11 @@ serverSide: {serverSide}</pre>
 
 	.matches {
 		font-weight: 700;
+	}
+
+	.default-table-align label {
+		padding: 0.1em 0.2em;
+		border: 1px solid currentColor;
 	}
 
 	.group {
