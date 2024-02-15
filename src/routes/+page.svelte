@@ -18,6 +18,7 @@
 		matchFilter,
 		numberRangeFilter,
 		textPrefixFilter,
+		addAlignedColumns,
 	} from '../lib/plugins/index.js';
 	import { mean, sum } from '../lib/utils/math.js';
 	import { getShuffled } from './_getShuffled.js';
@@ -37,6 +38,15 @@
 	let serverSide = false;
 
 	const table = createTable(data, {
+		align: addAlignedColumns({
+			defaultAlignment: 'center',
+			// initialAlignments: [
+			// 	{ id: 'age', alignment: 'center' },
+			// 	{ id: 'visits', alignment: 'center' },
+			// ],
+			toggleOrder: [null, 'left', 'center', 'right'],
+			span: 'body',
+		}),
 		subRows: addSubRows({
 			children: 'children',
 		}),
@@ -148,14 +158,14 @@
 			header: (_, { rows, pageRows }) =>
 				derived(
 					[rows, pageRows],
-					([_rows, _pageRows]) => `Name (${_rows.length} records, ${_pageRows.length} in page)`
+					([_rows, _pageRows]) => `Name (${_rows.length} records, ${_pageRows.length} in page)`,
 				),
 			columns: [
 				table.column({
 					header: (cell) => {
 						return createRender(
 							Italic,
-							derived(cell.props(), (_props) => ({ text: `First Name ${_props.sort.order}` }))
+							derived(cell.props(), (_props) => ({ text: `First Name ${_props.sort.order}` })),
 						);
 					},
 					accessor: 'firstName',
@@ -190,13 +200,16 @@
 			header: (_, { rows }) =>
 				createRender(
 					Italic,
-					derived(rows, (_rows) => ({ text: `Info (${_rows.length} samples)` }))
+					derived(rows, (_rows) => ({ text: `Info (${_rows.length} samples)` })),
 				),
 			columns: [
 				table.column({
 					header: 'Age',
 					accessor: 'age',
 					plugins: {
+						align: {
+							alignment: { body: 'right' },
+						},
 						group: {
 							getAggregateValue: (values) => mean(values),
 							cell: ({ value }) => `${(value as number).toFixed(2)} (avg)`,
@@ -233,6 +246,10 @@
 					header: 'Visits',
 					accessor: 'visits',
 					plugins: {
+						align: {
+							alignment: 'center',
+							span: 'body',
+						},
 						group: {
 							getAggregateValue: (values) => sum(values),
 							cell: ({ value }) => `${value} (total)`,
@@ -261,6 +278,8 @@
 
 	const { headerRows, pageRows, tableAttrs, tableBodyAttrs, visibleColumns, pluginStates } =
 		table.createViewModel(columns);
+
+	const { alignments } = pluginStates.align;
 
 	const { groupByIds } = pluginStates.group;
 	const { sortKeys } = pluginStates.sort;
@@ -315,6 +334,14 @@
 										⬆️
 									{/if}
 								</div>
+								{#if !props.align.disabled}
+									<button use:props.align.toggle>
+										{typeof props.align.alignment === 'string'
+											? props.align.alignment
+											: JSON.stringify(props.align.alignment)}
+									</button>
+									<button use:props.align.clear>x</button>
+								{/if}
 								{#if !props.group.disabled}
 									<button on:click|stopPropagation={props.group.toggle}>
 										{#if props.group.grouped}
@@ -376,6 +403,7 @@
 
 <pre>{JSON.stringify(
 		{
+			alignments: $alignments,
 			groupByIds: $groupByIds,
 			sortKeys: $sortKeys,
 			filterValues: $filterValues,
@@ -387,7 +415,7 @@
 			columnWidths: $columnWidths,
 		},
 		null,
-		2
+		2,
 	)}
 serverSide: {serverSide}</pre>
 

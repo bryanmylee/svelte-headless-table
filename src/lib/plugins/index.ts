@@ -1,3 +1,4 @@
+export * from './addAlignedColumns.js';
 export * from './addColumnFilters.js';
 export * from './addColumnOrder.js';
 export * from './addDataExport.js';
