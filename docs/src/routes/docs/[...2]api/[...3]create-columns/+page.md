@@ -85,6 +85,13 @@ Defines the id of the data column. **Duplicate ids are not allowed** on a single
 
 _Defaults to the value of `accessor` if a string accessor is passed. If a function accessor is passed, defaults to the value of `header` instead_.
 
+
+:::admonition type="tip"
+
+The `id` will be parsed with [`svelte-keyed`](https://github.com/bryanmylee/svelte-keyed), so make sure to format it without dot notation (`object.prop`) or array notation (`object[0]`).
+
+:::
+
 #### `columnDef.header: RenderConfig | ((headerCell, state) => RenderConfig)`
 
 Defines the component to use for the header cell of the data column.
