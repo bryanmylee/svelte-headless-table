@@ -81,16 +81,15 @@ const columns = table.createColumns([
 
 #### `columnDef.id?: string`
 
-Defines the id of the data column. **Duplicate ids are not allowed** on a single table.
-
-_Defaults to the value of `accessor` if a string accessor is passed. If a function accessor is passed, defaults to the value of `header` instead_.
-
-
-:::admonition type="tip"
+:::admonition type="warning"
 
 The `id` will be parsed with [`svelte-keyed`](https://github.com/bryanmylee/svelte-keyed), so make sure to format it without dot notation (`object.prop`) or array notation (`object[0]`).
 
 :::
+
+Defines the id of the data column. **Duplicate ids are not allowed** on a single table.
+
+_Defaults to the value of `accessor` if a string accessor is passed. If a function accessor is passed, defaults to the value of `header` instead_.
 
 #### `columnDef.header: RenderConfig | ((headerCell, state) => RenderConfig)`
 
