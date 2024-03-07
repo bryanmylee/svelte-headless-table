@@ -67,8 +67,8 @@ The sub rows of the current row if it exists. `undefined` if this row has no sub
 
 By default, the following plugins can define sub-rows:
 
-- [addSubRows](../plugins/add-sub-rows.md)
-- [addGroupBy](../plugins/add-group-by.md)
+- [addSubRows](../../plugins/add-sub-rows.md)
+- [addGroupBy](../../plugins/add-group-by.md)
 
 ### `isData: () => boolean`
 
