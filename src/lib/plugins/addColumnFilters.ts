@@ -92,6 +92,16 @@ const getFilteredRows = <Item, Row extends BodyRow<Item>>(
 	return $filteredRows;
 };
 
+const setServerFilters = <Item>(
+	filterValues: Record<string, unknown>,
+	columnOptions: Record<string, ColumnFiltersColumnOptions<Item>>,
+) => {
+	for (const [columnId, columnOption] of Object.entries(columnOptions)) {
+		const filterValue = filterValues[columnId];
+		columnOption.fn({ value: columnId, filterValue });
+	}
+};
+
 export const addColumnFilters =
 	<Item>({ serverSide = false }: ColumnFiltersConfig = {}): TablePlugin<
 		Item,
@@ -110,6 +120,7 @@ export const addColumnFilters =
 			return derived([rows, filterValues], ([$rows, $filterValues]) => {
 				preFilteredRows.set($rows);
 				if (serverSide) {
+					setServerFilters($filterValues, columnOptions);
 					filteredRows.set($rows);
 					return $rows;
 				}
