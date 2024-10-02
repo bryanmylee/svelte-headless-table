@@ -98,7 +98,9 @@ const setServerFilters = <Item>(
 ) => {
 	for (const [columnId, columnOption] of Object.entries(columnOptions)) {
 		const filterValue = filterValues[columnId];
-		columnOption.fn({ value: columnId, filterValue });
+		if (columnOption.fn !== undefined) {
+			columnOption.fn({ value: columnId, filterValue });
+		}
 	}
 };
 
@@ -120,7 +122,9 @@ export const addColumnFilters =
 			return derived([rows, filterValues], ([$rows, $filterValues]) => {
 				preFilteredRows.set($rows);
 				if (serverSide) {
-					setServerFilters($filterValues, columnOptions);
+					if (window !== undefined) {
+						setServerFilters($filterValues, columnOptions);
+					}
 					filteredRows.set($rows);
 					return $rows;
 				}
