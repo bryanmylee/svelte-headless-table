@@ -122,7 +122,7 @@ export const addColumnFilters =
 			return derived([rows, filterValues], ([$rows, $filterValues]) => {
 				preFilteredRows.set($rows);
 				if (serverSide) {
-					if (window !== undefined) {
+					if (typeof window !== 'undefined' || typeof document !== 'undefined') {
 						setServerFilters($filterValues, columnOptions);
 					}
 					filteredRows.set($rows);
