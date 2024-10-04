@@ -17,7 +17,7 @@ export interface ColumnFiltersState<Item> {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface ColumnFiltersColumnOptions<Item, FilterValue = any> {
-	fn: ColumnFilterFn<FilterValue>;
+	fn?: ColumnFilterFn<FilterValue>;
 	initialFilterValue?: FilterValue;
 	render?: (props: ColumnRenderConfigPropArgs<Item, FilterValue>) => RenderConfig;
 }
@@ -82,7 +82,7 @@ const getFilteredRows = <Item, Row extends BodyRow<Item>>(
 				if (filterValue === undefined) {
 					continue;
 				}
-				const isMatch = columnOption.fn({ value, filterValue });
+				const isMatch = columnOption.fn?.({ value, filterValue });
 				if (!isMatch) {
 					return false;
 				}
