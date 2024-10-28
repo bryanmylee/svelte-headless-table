@@ -32,7 +32,7 @@
 	import { getDistinct } from '../lib/utils/array.js';
 	import SelectIndicator from './_SelectIndicator.svelte';
 
-	const data = readable(createSamples(2, 2));
+	const data = readable(createSamples(5, 2));
 
 	let serverSide = false;
 

@@ -16,7 +16,9 @@ export const createSamples = (...lengths: number[]) => {
 		return [...Array(length)].map(() => {
 			return {
 				...getSample(),
-				...(lengths[depth + 1] !== undefined ? { children: createSamplesLevel(depth + 1) } : {}),
+				...(lengths[depth + 1] !== undefined && Math.random() >= 0.25
+					? { children: createSamplesLevel(depth + 1) }
+					: { children: [] }),
 			};
 		});
 	};

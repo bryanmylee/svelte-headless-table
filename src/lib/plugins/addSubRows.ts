@@ -35,8 +35,17 @@ export const addSubRows =
 		NewTablePropSet<never>
 	> =>
 	() => {
-		const getChildren: ValidChildrenFn<Item> =
-			children instanceof Function ? children : (item) => item[children] as unknown as Item[];
+		let getChildren: ValidChildrenFn<Item>;
+		if (children instanceof Function) {
+			getChildren = children;
+		} else {
+			getChildren = (item) => {
+				const unknownVal = item[children];
+				return unknownVal instanceof Array && unknownVal.length > 0
+					? (unknownVal as unknown as Item[])
+					: undefined;
+			};
+		}
 
 		const deriveRows: DeriveRowsFn<Item> = (rows) => {
 			return derived(rows, ($rows) => {
