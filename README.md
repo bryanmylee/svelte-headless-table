@@ -14,6 +14,12 @@
 
 </div>
 
+## 🚧 Deprecation
+
+> I've really appreciated all the support this project has received over the years, but I've been struggling to juggle my full-time job and this project simultaneously.
+>
+> There are no current plans to work on a Svelte 5 port of this project nor is there a maintenance schedule for Svelte 3/4. I'll merge fixes and PRs as they arrive, but I'd highly recommend seeking an alternative library for your future projects or forking this one.
+
 **Unopinionated and extensible data tables for Svelte**
 
 > Build and design powerful datagrid experiences while retaining 100% control over styles and markup.
