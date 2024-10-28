@@ -19,4 +19,4 @@ export type DisplayLabel<Item, Plugins extends AnyPlugins = AnyPlugins> = (
 // inferred for subtypes.
 export type HeaderLabel<Item, Plugins extends AnyPlugins = AnyPlugins> =
 	| RenderConfig
-	| ((cell: HeaderCell<Item>, state: TableState<Item, Plugins>) => RenderConfig);
+	| ((cell: HeaderCell<Item, Plugins>, state: TableState<Item, Plugins>) => RenderConfig);
